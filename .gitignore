@@ -1,0 +1,7 @@
+# Publish ONLY the tool + docs. Ignore everything by default, then allow-list.
+/*
+!/.gitignore
+!/README.md
+!/LICENSE
+!/index.html
+!/SPB-Bonus-Density-Tool.html
