@@ -117,6 +117,9 @@ select:focus,input[type=number]:focus,input[type=text]:focus{outline:none;border
 .browcalc{margin-top:8px}
 .pctwarn{margin-top:6px;font-size:11.5px;line-height:1.4;color:#8a6d00;background:#fff7e0;border:1px solid #f0dca0;border-radius:4px;padding:5px 8px}
 .nosrc{margin-top:3px;font-size:10.5px;line-height:1.3;color:#8a6d00;font-weight:600}
+.brecur{margin-top:8px;font-size:12px;display:flex;align-items:center;flex-wrap:wrap;gap:4px}
+.brecur-lab{display:inline-flex;align-items:center;gap:6px;font-weight:600;cursor:pointer}
+.brecur .bterm{width:56px;padding:2px 4px;font-size:12px}
 .calflag{margin:10px 0;font-size:12px;line-height:1.45;color:#8a6d00;background:#fff7e0;border:1px solid #f0dca0;border-radius:5px;padding:8px 11px}
 @media(max-width:560px){.inputs{grid-template-columns:repeat(2,1fr)}}
 .brow input{padding:6px 7px;font-size:13px}
@@ -585,7 +588,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
         <p class="lede" style="margin:0 0 8px"><b>What the code does <i>not</i> set.</b> The SPB code contains no contribution rate, no benefit-valuation formula, and no floor or ceiling on what a developer must offer, the only statutory weighting is Chapter 163 proportionate-share ("in proportion to the impacts caused"), which is the basis for the impact-mitigation floor. The ZOPA bounds in this tool, and the 15–25% contribution / 25–50% capture guardrails cited below, are therefore <b>analytic overlays from the supporting framework, not adopted code</b>; the value-ratio math is a staff sketch over the code's discretionary merit-basis review.</p>
         <p class="lede" style="margin:0"><b>Supporting framework.</b> This tool operationalizes the approach in <i>A Framework for Density Bonus Valuation in St. Pete Beach</i> (Tampa Bay Regional Planning Council, April 2026): density here is an <b>allocation</b> of a finite, non-renewable pool, not a growth incentive, so each bonus unit carries scarcity value, and the negotiation is bounded by a Zone of Possible Agreement between a scarcity-adjusted city floor and a developer walk-away ceiling. That framework documents the legal basis for the floor (Florida proportionate-share statute F.S. §163.3180; the Nollan–Dolan–Koontz nexus and rough-proportionality standards) and the value-capture rationale for the ceiling (Lincoln Institute / ULI), and it frames public benefits across five value layers, construction cost, city replacement-cost premium, lifecycle O&amp;M, resilience / avoided damage, and regional economic impact. This tool intentionally uses a simpler single-value-per-benefit model; the framework’s layered valuation and its 15–25% contribution / 25–50% capture guardrails are documented there for staff who want the fuller rationale.</p>
         <p class="lede" style="margin:8px 0 0"><b>Sources &amp; benchmarks.</b> The benchmark figures behind this tool trace to published sources, carried on the Assumptions and Benefit-library pages (Source column): construction cost <b>RSMeans</b> and <b>ICC Building Valuation Data</b>; lodging <b>STR / HVS</b>; soft costs and developer margin <b>ULI / CBRE</b>; condo comps <b>Redfin</b>; benefit unit costs from <b>SFRPC</b> (Resilient BCA Database / REBECCA), <b>FEMA</b> (Ecosystem Service Values; BCA Sustainment v13), <b>FDEP</b>, <b>FHWA</b>, <b>WGI</b>, <b>Forward Pinellas</b>, <b>UF Shimberg</b>, and <b>HUD</b>. The framework’s fuller valuation method draws on residual-land-value practice (<b>Keyser Marston</b>; <b>BAE Urban Economics</b>) and value-layer multipliers (<b>NIBS</b> <i>Natural Hazard Mitigation Saves</i> 2019 for resilience; <b>GASB 34 / FHWA</b> lifecycle; <b>FL Statute 255.20</b> public-procurement premium; <b>BEA / RIMS II</b> economic impact). Those layers inform the benchmarks but are not recomputed here.</p>
-        <p class="lede" style="margin:10px 0 0;font-size:12px;color:var(--ink3)"><b>Version &amp; changelog.</b> Tool <b>v1.3.0</b> · methodology dated <b>2026-06-10</b> (stamped on every printout). <b>v1.3.0</b>: lodging value now varies by Market Sub-Type, the income approach uses a Gulf-front resort ADR or an inland / mid-market ADR (blended when no sub-type is chosen) instead of one islandwide rate; §G splits ADR into two sourced rows. <b>v1.2.2</b>: editorial pass, removed em-dashes from the interface copy (replaced with commas, colons, or rephrasing); no model or methodology change. <b>v1.2.1</b>: value-to-developer described as a cost-driven range in the Methods card (feasibility on the conservative low end, high end the negotiation target); robustness card states the ±20% stresses the midpoint, not the conservative verdict basis; loading an older-version scenario now warns that figures recompute under current methodology; un-sourced Assumptions/Library rows flagged as uncalibrated placeholders (carried onto the PDF); a warning chip when a benefit line sits at 100% above code; lodging ADR annotated as a blended islandwide rate; lock/enable-editing banners moved to the bottom of the editable tables. <b>v1.2</b>: lodging income approach (value per key = ADR × occ × ancillary × EBITDA ÷ cap); cost-driven value-to-developer range with the feasibility verdict run on the conservative (low) end and the high end shown as the negotiation target. <b>v1.1</b>: verdict moved to plain dollars; category multipliers demoted to ranking only; "city minimum" renamed "lawful mitigation baseline." <b>v1.0</b>: initial sketch model. A scenario or PDF produced under an earlier version is identifiable by its stamp; a changed verdict between versions reflects a deliberate methodology fix, not a contradiction.</p>
+        <p class="lede" style="margin:10px 0 0;font-size:12px;color:var(--ink3)"><b>Version &amp; changelog.</b> Tool <b>v1.4.0</b> · methodology dated <b>2026-06-10</b> (stamped on every printout). <b>v1.4.0</b>: benefits can be marked recurring (annual), valued as the present value of a growing annuity over a term (new Assumptions § H: discount rate, escalation rate, default term); the escalation-below-discount rule is enforced with a flag on the line; recurring lines are marked on the printout. <b>v1.3.0</b>: lodging value now varies by Market Sub-Type, the income approach uses a Gulf-front resort ADR or an inland / mid-market ADR (blended when no sub-type is chosen) instead of one islandwide rate; §G splits ADR into two sourced rows. <b>v1.2.2</b>: editorial pass, removed em-dashes from the interface copy (replaced with commas, colons, or rephrasing); no model or methodology change. <b>v1.2.1</b>: value-to-developer described as a cost-driven range in the Methods card (feasibility on the conservative low end, high end the negotiation target); robustness card states the ±20% stresses the midpoint, not the conservative verdict basis; loading an older-version scenario now warns that figures recompute under current methodology; un-sourced Assumptions/Library rows flagged as uncalibrated placeholders (carried onto the PDF); a warning chip when a benefit line sits at 100% above code; lodging ADR annotated as a blended islandwide rate; lock/enable-editing banners moved to the bottom of the editable tables. <b>v1.2</b>: lodging income approach (value per key = ADR × occ × ancillary × EBITDA ÷ cap); cost-driven value-to-developer range with the feasibility verdict run on the conservative (low) end and the high end shown as the negotiation target. <b>v1.1</b>: verdict moved to plain dollars; category multipliers demoted to ranking only; "city minimum" renamed "lawful mitigation baseline." <b>v1.0</b>: initial sketch model. A scenario or PDF produced under an earlier version is identifiable by its stamp; a changed verdict between versions reflects a deliberate methodology fix, not a contradiction.</p>
       </div>
     </section>
 
@@ -624,7 +627,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 
 <script>
 "use strict";
-const VERSION="1.3.0", VERSION_DATE="2026-06-10";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
+const VERSION="1.4.0", VERSION_DATE="2026-06-10";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
 const K={hardCondo:237500,hardHotel:170000,soft:0.24,margin:0.15,decline:0.80,impact:28000};
 const CATMULT={"Workforce Housing":1.4,"Community Development":1.5,"Transportation":1.7,"Environmental":2.0,"Resilience":2.5,"Monetary / Cash":1.0};
 const BMULT={"Low-rise (1-3)":1.0,"Mid-rise (4-7)":1.15,"High-rise (8+)":1.35};
@@ -657,8 +660,8 @@ function poolRemaining(p){return (POOL_TOTAL[p]||0)-poolAllocated(p);}
 function poolSummaryText(){return "RU: "+POOL_TOTAL.RU+" total \u2212 "+poolAllocated("RU")+" approved = <b>"+poolRemaining("RU")+" remaining</b>  \u00b7  TLU: "+POOL_TOTAL.TLU+" total \u2212 "+poolAllocated("TLU")+" approved = <b>"+poolRemaining("TLU")+" remaining</b>";}
 function refreshRemaining(){const unit=(S.use==="Temporary Lodging")?"TLU":"RU";S.rem=poolRemaining(unit);const el=document.getElementById("rem");if(el){el.value=S.rem;setP(el);}}
 function afterHistoryChange(){refreshRemaining();const ps=document.getElementById("pool-summary");if(ps)ps.innerHTML=poolSummaryText();render();}
-function hfld(i,fld,val,type,cls){const r=HISTORY[i]||{};const who=(r.project&&(""+r.project).trim())?r.project:("row "+(i+1));const al=(who+" \u2014 "+fld).replace(/"/g,"");const safe=(val==null?"":(""+val).replace(/"/g,"&quot;"));const ttl=(safe!=="")?' title="'+safe+'"':"";return '<input type="'+type+'" aria-label="'+al+'"'+ttl+' data-i="'+i+'" data-fld="'+fld+'" value="'+safe+'" class="'+cls+'">';}
-function hsel(i,fld,val,opts){const r=HISTORY[i]||{};const who=(r.project&&(""+r.project).trim())?r.project:("row "+(i+1));const al=(who+" \u2014 "+fld).replace(/"/g,"");return '<select aria-label="'+al+'" data-i="'+i+'" data-fld="'+fld+'" class="hsel">'+opts.map(x=>'<option'+(x===val?' selected':'')+'>'+x+'</option>').join('')+'</select>';}
+function hfld(i,fld,val,type,cls){const r=HISTORY[i]||{};const who=(r.project&&(""+r.project).trim())?r.project:("row "+(i+1));const al=(who+", "+fld).replace(/"/g,"");const safe=(val==null?"":(""+val).replace(/"/g,"&quot;"));const ttl=(safe!=="")?' title="'+safe+'"':"";return '<input type="'+type+'" aria-label="'+al+'"'+ttl+' data-i="'+i+'" data-fld="'+fld+'" value="'+safe+'" class="'+cls+'">';}
+function hsel(i,fld,val,opts){const r=HISTORY[i]||{};const who=(r.project&&(""+r.project).trim())?r.project:("row "+(i+1));const al=(who+", "+fld).replace(/"/g,"");return '<select aria-label="'+al+'" data-i="'+i+'" data-fld="'+fld+'" class="hsel">'+opts.map(x=>'<option'+(x===val?' selected':'')+'>'+x+'</option>').join('')+'</select>';}
 /* free-text ledger cell: wrapping plain text when locked (legible, no cut-off), editable input when unlocked */
 function htxt(i,fld,val){return advUnlocked?hfld(i,fld,val,"text","htext"):esc(val||"");}
 function buildHistory(){
@@ -809,6 +812,13 @@ const LODGE={adrGulf:410,adrInland:220,occ:0.70,ancillary:1.25,ebitda:0.30,cap:0
 /* ADR is split by sub-type: Gulf-front resort vs inland / mid-market. With no sub-type chosen yet, use the blend of the two. */
 function lodgeADR(subtype){return (subtype==="Gulf-front")?LODGE.adrGulf:(subtype==="Inland/Non-front")?LODGE.adrInland:(LODGE.adrGulf+LODGE.adrInland)/2;}
 function lodgeValuePerKey(subtype){const adr=lodgeADR(subtype);return LODGE.cap>0?(adr*365*LODGE.occ*LODGE.ancillary*LODGE.ebitda)/LODGE.cap:0;}
+/* present value of a recurring (annual) benefit: growing annuity, payments at year-end, over n years.
+   Guard: escalation should stay below the discount rate; if it does not, the model still returns a finite
+   value over the finite term but flags it (recurringGuardOK), since a stream that grows faster than it is
+   discounted is a red flag for over-crediting a long obligation. */
+const PVD={disc:0.03,esc:0.02,term:30};
+function recurringGuardOK(){return PVD.esc<PVD.disc;}
+function pvFactor(g,r,n){if(!(n>0))return 0;if(Math.abs(r-g)<1e-9)return n/(1+r);return (1-Math.pow((1+g)/(1+r),n))/(r-g);}
 const ASSUMP=[
  {sec:"A. Marginal cost assumptions",label:"Hard cost, condo / multifamily",unit:"$/unit",basis:"unit",sf:2269,low:380000,high:630000,override:null,notes:"Range ≈ $167–278/SF on a 2,269-SF unit: low ≈ RSMeans 2025 multifamily ¼-quartile ($169/SF), high ≈ RSMeans median ($277/SF); ICC Aug-2025 R-2 Type IA ($234.59/SF ≈ $532k/unit) sits between. NATIONAL data, apply a Pinellas City Cost Index before relying on it. Enter as $/unit, or switch the basis to $/SF.",fmt:"$",apply:v=>K.hardCondo=v},
  {sec:"A. Marginal cost assumptions",label:"Hard cost, temporary lodging",unit:"$/key",basis:"unit",sf:750,low:120000,high:220000,override:null,notes:"Full-service resort key; HVS / STR. Enter as $/key, or switch the basis to $/SF and set the average key size (gross)",fmt:"$",apply:v=>K.hardHotel=v},
@@ -846,7 +856,10 @@ const ASSUMP=[
  {sec:"G. Lodging income approach (value per key)",label:"Occupancy rate",unit:"%",low:65,high:75,override:null,notes:"Submarket stabilized occupancy.",fmt:"%",apply:v=>LODGE.occ=v/100},
  {sec:"G. Lodging income approach (value per key)",label:"Ancillary revenue multiplier",unit:"×",low:1.15,high:1.35,override:null,notes:"F&B, spa, parking, resort fees on top of room revenue.",fmt:"x",apply:v=>LODGE.ancillary=v},
  {sec:"G. Lodging income approach (value per key)",label:"EBITDA margin",unit:"%",low:25,high:35,override:null,notes:"Hotel operating margin (EBITDA ÷ total revenue).",fmt:"%",apply:v=>LODGE.ebitda=v/100},
- {sec:"G. Lodging income approach (value per key)",label:"Hotel cap rate",unit:"%",low:7.0,high:8.0,override:null,notes:"FL coastal resort stabilized cap rate. Value per key = ADR × 365 × occ × ancillary × EBITDA ÷ cap.",fmt:"%",apply:v=>LODGE.cap=v/100}
+ {sec:"G. Lodging income approach (value per key)",label:"Hotel cap rate",unit:"%",low:7.0,high:8.0,override:null,notes:"FL coastal resort stabilized cap rate. Value per key = ADR × 365 × occ × ancillary × EBITDA ÷ cap.",fmt:"%",apply:v=>LODGE.cap=v/100},
+ {sec:"H. Recurring-benefit present value",label:"Discount rate (real)",unit:"%",low:2.0,high:4.0,override:null,notes:"Real municipal discount rate used to value a stream of future public benefit. Must stay above the escalation rate below.",fmt:"%",apply:v=>PVD.disc=v/100},
+ {sec:"H. Recurring-benefit present value",label:"Benefit escalation rate",unit:"%",low:1.0,high:3.0,override:null,notes:"Annual growth of a recurring benefit amount. Kept below the discount rate, otherwise a long obligation is over-credited (flagged on the benefit line).",fmt:"%",apply:v=>PVD.esc=v/100},
+ {sec:"H. Recurring-benefit present value",label:"Default benefit term",unit:"years",low:20,high:40,override:null,notes:"Years a recurring obligation runs unless a benefit line sets its own term. Caps how long the stream is counted.",fmt:"",apply:v=>PVD.term=v}
 ];
 /* aApplied always returns the NATIVE model unit ($/unit or $/key). The cost basis
    only changes how a row is entered and displayed, never what feeds the model. */
@@ -859,11 +872,13 @@ function aFromDisp(r,v){if(aInSF(r)&&v!=null&&v!==""&&r.sf)return (+v)*r.sf; ret
 function aBasisUnit(r){return aInSF(r)?"$/SF":r.unit;}
 function fmtAssump(r){const v=aApplied(r);
   if(r.fmt==="$"){const d=aInSF(r)?(v/r.sf):v; return "$"+(aInSF(r)?(Math.round(d*100)/100).toLocaleString():Math.round(d).toLocaleString());}
-  if(r.fmt==="%")return v.toFixed(1)+"%"; return (Math.round(v*1000)/1000)+"×";}
+  if(r.fmt==="%")return v.toFixed(1)+"%";
+  if(r.fmt==="")return ""+(Math.round(v*1000)/1000);   // plain number (e.g. years)
+  return (Math.round(v*1000)/1000)+"×";}
 /* the implied figure in the OTHER unit, shown in Notes */
 function aImplied(r){if(r.basis===undefined||!r.sf)return ""; const v=aApplied(r);
   return aInSF(r)?("= $"+Math.round(v).toLocaleString()+" "+r.unit):("= $"+(Math.round(v/r.sf*100)/100).toLocaleString()+" /SF");}
-function fld(i,col,val,cls,fmt){const disp=(fmt==="$"&&val!=null&&val!=="")?(+val).toLocaleString():(val==null?"":val);const r=ASSUMP[i];const al=((r&&r.label?r.label:"value")+" \u2014 "+col).replace(/"/g,"");return '<input type="text" inputmode="decimal" aria-label="'+al+'" data-i="'+i+'" data-col="'+col+'" value="'+disp+'" class="'+cls+'">';}
+function fld(i,col,val,cls,fmt){const disp=(fmt==="$"&&val!=null&&val!=="")?(+val).toLocaleString():(val==null?"":val);const r=ASSUMP[i];const al=((r&&r.label?r.label:"value")+", "+col).replace(/"/g,"");return '<input type="text" inputmode="decimal" aria-label="'+al+'" data-i="'+i+'" data-col="'+col+'" value="'+disp+'" class="'+cls+'">';}
 ASSUMP.forEach(r=>{if(r.source===undefined)r.source="";});
 (function(){const seed={
   "ICC building valuation, R-2 Type IA":"ICC Building Safety Journal, Building Valuation Data (Aug 2025)",
@@ -879,7 +894,10 @@ ASSUMP.forEach(r=>{if(r.source===undefined)r.source="";});
   "Occupancy rate":"Visit St. Pete-Clearwater; submarket stabilized",
   "Ancillary revenue multiplier":"STR / HVS resort operating data",
   "EBITDA margin":"CBRE Hotels 2025",
-  "Hotel cap rate":"CBRE Hotels / PwC Real Estate Investor Survey (FL coastal resort)"};
+  "Hotel cap rate":"CBRE Hotels / PwC Real Estate Investor Survey (FL coastal resort)",
+  "Discount rate (real)":"OMB Circular A-94 / municipal-finance convention (real rate)",
+  "Benefit escalation rate":"Long-run CPI / municipal-cost inflation convention",
+  "Default benefit term":"Typical CUP / development-agreement obligation horizon"};
   ASSUMP.forEach(r=>{if(seed[r.label])r.source=seed[r.label];});})();
 const DEF_ASSUMP=ASSUMP.map(r=>({low:r.low,high:r.high,override:r.override}));
 const DEFAULTS=JSON.parse(JSON.stringify(S));
@@ -941,10 +959,14 @@ function compute(){
     const devU=(b.dev!=null)?b.dev:L.dev;
     const cityU=(b.city!=null)?b.city:L.city;
     const mult=CATMULT[L.cat]||1;
-    const devCost=b.qty*devU*b.pct;
-    const cityPlain=b.qty*cityU*b.pct;          // plain-dollar city cost-to-provide → the verdict basis
+    const recurring=!!b.recurring;
+    const term=recurring?((b.term>0)?b.term:PVD.term):0;
+    const pvf=recurring?pvFactor(PVD.esc,PVD.disc,term):1;   // one-time benefits use a factor of 1
+    const annualDev=b.qty*devU*b.pct, annualCity=b.qty*cityU*b.pct;  // for recurring, these are per-year amounts
+    const devCost=annualDev*pvf;
+    const cityPlain=annualCity*pvf;             // plain-dollar city cost-to-provide → the verdict basis (PV when recurring)
     const cityVal=cityPlain*mult;                // priority-weighted value → ranking only, never pass/fail
-    return {...b,cat:L.cat,unit:L.unit,dev:devU,city:cityU,mult,devCost,cityPlain,cityVal,gain:devCost?cityVal/devCost:0};
+    return {...b,cat:L.cat,unit:L.unit,dev:devU,city:cityU,mult,recurring,term,pvf,annualDev,annualCity,devCost,cityPlain,cityVal,gain:devCost?cityVal/devCost:0};
   });
   const A=rows.reduce((s,x)=>s+x.devCost,0);
   const Bplain=rows.reduce((s,x)=>s+x.cityPlain,0);   // PLAIN public value, compared to the baseline
@@ -1058,7 +1080,7 @@ function render(){
     ? ("District base "+S.base+" du/ac × "+S.acres+" ac ≈ <b>"+Math.round(m.byrightDerived).toLocaleString()+"</b> by-right"+(Math.abs(m.byrightDerived-S.byright)>1?", entered "+S.byright.toLocaleString():" ✓"))
     : "Set the district and site area to auto-check this.";}
   const cn=document.getElementById("cap-note");
-  if(cn){ if(S.cap>0&&S.acres>0){ cn.innerHTML="Site "+S.acres+" ac \u00d7 base "+S.base+" = "+Math.round(S.base*S.acres).toLocaleString()+" by-right; cap "+S.cap+"/ac = "+Math.round(m.maxUnits).toLocaleString()+" max. Requested total "+m.total.toLocaleString()+(m.overCap?(" \u2014 <b>exceeds the cap by "+Math.round(m.total-m.maxUnits).toLocaleString()+" units</b>; not grantable as bonus density without a comprehensive plan amendment."):(" \u2014 within the cap ("+Math.round(m.headroom).toLocaleString()+" units of headroom)."));}
+  if(cn){ if(S.cap>0&&S.acres>0){ cn.innerHTML="Site "+S.acres+" ac \u00d7 base "+S.base+" = "+Math.round(S.base*S.acres).toLocaleString()+" by-right; cap "+S.cap+"/ac = "+Math.round(m.maxUnits).toLocaleString()+" max. Requested total "+m.total.toLocaleString()+(m.overCap?(", <b>exceeds the cap by "+Math.round(m.total-m.maxUnits).toLocaleString()+" units</b>; not grantable as bonus density without a comprehensive plan amendment."):(", within the cap ("+Math.round(m.headroom).toLocaleString()+" units of headroom)."));}
     else { cn.innerHTML="Enter site area to check the request against the district cap."; } }
   const yrs=S.dem?((S.rem-S.bonus)/S.dem):99;
   const upool=(S.use==="Temporary Lodging")?"TLU":"RU";
@@ -1101,17 +1123,23 @@ function render(){
         '<div><div class="inp-lab">Notes</div><textarea rows="2" data-i="'+i+'" data-f="note" placeholder="(library default)" aria-label="'+esc(x.name)+', notes">'+esc(nVal)+'</textarea></div>'+
         '<div><div class="inp-lab">Source</div><textarea rows="2" data-i="'+i+'" data-f="source" placeholder="(library default)" aria-label="'+esc(x.name)+', source">'+esc(sVal)+'</textarea></div>'+
       '</div>'+
-      '<div class="browcalc hint">cost '+fmt(x.devCost)+' → city value '+fmt(x.cityPlain)+'  ('+x.cat+'; ×'+x.mult+' priority weight → ranking only)</div>'+
+      '<div class="brecur"><label class="brecur-lab"><input type="checkbox" data-i="'+i+'" data-f="recurring"'+(x.recurring?" checked":"")+'> Recurring annual benefit</label>'+
+        (x.recurring?(' <span class="anote">$/unit above are treated as <b>per-year</b> · term <input type="number" class="bterm" min="1" data-i="'+i+'" data-f="term" value="'+(x.term||PVD.term)+'"> yrs · PV factor '+x.pvf.toFixed(1)+'× (disc '+(PVD.disc*100).toFixed(1)+'%, esc '+(PVD.esc*100).toFixed(1)+'%)</span>'):"")+'</div>'+
+      '<div class="browcalc hint">'+(x.recurring
+        ? 'annual cost '+fmt(x.annualDev)+' → annual city value '+fmt(x.annualCity)+' · present value over '+x.term+' yrs: cost '+fmt(x.devCost)+' → city value '+fmt(x.cityPlain)
+        : 'cost '+fmt(x.devCost)+' → city value '+fmt(x.cityPlain))+'  ('+x.cat+'; ×'+x.mult+' priority weight → ranking only)</div>'+
+      ((x.recurring&&!recurringGuardOK())?'<div class="pctwarn">⚠ Escalation ('+(PVD.esc*100).toFixed(1)+'%) is not below the discount rate ('+(PVD.disc*100).toFixed(1)+'%). A stream that grows at least as fast as it is discounted over-credits a long obligation, lower escalation or raise the discount rate under Assumptions § H.</div>':"")+
       (x.pct>=1?'<div class="pctwarn">⚠ Counted as 100% above code, the full quantity credits as voluntary. If code already requires part of this benefit, lower "% above code" so only the genuinely above-code share counts.</div>':"");
     bl.appendChild(row);
   });
     bl.querySelectorAll("input,textarea").forEach(inp=>{
     if(inp.tagName==="TEXTAREA")autoGrowTA(inp);
+    if(inp.type==="checkbox"){inp.addEventListener("change",e=>{S.benefits[+e.target.dataset.i].recurring=e.target.checked;render();});return;}
     inp.addEventListener("input",e=>{
       if(e.target.tagName==="TEXTAREA")autoGrowTA(e.target);
       const i=+e.target.dataset.i,f=e.target.dataset.f;
       S.benefits[i][f]= (f==="note"||f==="source") ? e.target.value : (f==="pct" ? (parseNum(e.target.value)/100) : parseNum(e.target.value)); softRender();});
-    inp.addEventListener("change",e=>{const f=e.target.dataset.f; if(f!=="pct"&&f!=="note"&&f!=="source")e.target.value=fmtNum(parseNum(e.target.value));});});
+    inp.addEventListener("change",e=>{const f=e.target.dataset.f; if(f!=="pct"&&f!=="note"&&f!=="source"&&f!=="term")e.target.value=fmtNum(parseNum(e.target.value));});});
   bl.querySelectorAll("[data-x]").forEach(b=>b.onclick=()=>{S.benefits.splice(+b.dataset.x,1);render();});
   document.getElementById("tot-a").textContent=fmt(m.A);
   document.getElementById("tot-b").textContent=fmt(m.Bplain);
@@ -1535,16 +1563,16 @@ function applyDistrict(key){
   const ldcUrl=d.node?(ldcBase+"?nodeId="+d.node):ldcBase;
   const ldcLink='<a class="dr-link" target="_blank" rel="noopener" href="'+ldcUrl+'">\u2197 '+(d.node?"View This District in the Land Development Code":"City Land Development Code")+'</a>';
   if(key==="UNK"){
-    drEl.innerHTML="<b>Confirm the district.</b> Auto-detection didn't resolve \u2014 pick the district that applies. It sets the pathway and whether the density pool (and its scarcity cost) applies. "+ldcLink;
+    drEl.innerHTML="<b>Confirm the district.</b> Auto-detection didn't resolve, pick the district that applies. It sets the pathway and whether the density pool (and its scarcity cost) applies. "+ldcLink;
   }else{
     const cap=(d.cap&&d.cap!==d.base)?("\u2013"+d.cap):"";
     const baseTxt=d.base?("Base "+d.base+cap+" units/ac ("+d.unit+"). "):"";
     const poolMsg=(d.pathway==="Pool Allocation")
       ?"Bonus units draw from the density pool, so a pool scarcity cost applies (Step 2)."
       :((d.pathway==="LR District Ramp")
-        ?"Added density is within the district cap, not a pool draw \u2014 no scarcity cost."
+        ?"Added density is within the district cap, not a pool draw, no scarcity cost."
         :"Increases require a comprehensive plan amendment; no density pool here.");
-    drEl.innerHTML="<b>"+esc(d.label)+"</b> \u2014 "+esc(d.pathway)+". "+baseTxt+poolMsg+" "+ldcLink;
+    drEl.innerHTML="<b>"+esc(d.label)+"</b>, "+esc(d.pathway)+". "+baseTxt+poolMsg+" "+ldcLink;
   }
   render();
 }
@@ -1554,7 +1582,7 @@ function setPin(lat,lon){
   document.getElementById("dist-status").textContent="checking\u2026";
   lookupZoning(lat,lon).then(r=>{
     if(r.ok){document.getElementById("dist-status").textContent="Auto-detected";applyDistrict(r.key);}
-    else{document.getElementById("dist-status").textContent="Auto-detect Unavailable \u2014 Confirm Below";}
+    else{document.getElementById("dist-status").textContent="Auto-detect unavailable, confirm below";}
   });
   gatherSiteIntel(lat,lon);
 }
@@ -1904,7 +1932,7 @@ function buildPrintSheet(){
     '<div class="ps-sec">Community assets secured</div><ul class="ps-assets">'+assetList+'</ul>';
   let dt=""; try{dt=new Date().toISOString().slice(0,10);}catch(e){dt="";}
   const capCell=(S.cap>0&&S.acres>0)?(Math.round(m.maxUnits).toLocaleString()+(m.overCap?" (over cap)":"")):"n/a";
-  const rows=m.rows.map(function(x){return '<tr><td>'+esc(x.name)+'</td><td>'+esc(x.cat)+'</td><td class="r">'+x.qty+'</td><td class="r">'+Math.round(x.pct*100)+'%</td><td class="r">'+fmt(x.devCost)+'</td><td class="r">'+fmt(x.cityPlain)+'</td><td class="r">'+(x.gain?x.gain.toFixed(1)+'×':'-')+'</td></tr>';}).join("")||'<tr><td colspan="7">No benefits entered.</td></tr>';
+  const rows=m.rows.map(function(x){return '<tr><td>'+esc(x.name)+(x.recurring?' <span style="font-size:8px;color:#666">(PV, '+x.term+'-yr)</span>':'')+'</td><td>'+esc(x.cat)+'</td><td class="r">'+x.qty+'</td><td class="r">'+Math.round(x.pct*100)+'%</td><td class="r">'+fmt(x.devCost)+'</td><td class="r">'+fmt(x.cityPlain)+'</td><td class="r">'+(x.gain?x.gain.toFixed(1)+'×':'-')+'</td></tr>';}).join("")||'<tr><td colspan="7">No benefits entered.</td></tr>';
   document.getElementById("printsheet").innerHTML=
    '<div class="ps-h"><div><div class="ps-title">St. Pete Beach, Bonus Density Scenario</div><div class="ps-sub">Staff sketch tool, order-of-magnitude figures to frame a negotiation, not an appraisal, pro forma, or legal determination.</div></div><div class="ps-date">'+dt+'</div></div>'+
    execTop+
