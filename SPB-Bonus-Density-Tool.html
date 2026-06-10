@@ -65,7 +65,10 @@ nav.steps{position:sticky;top:108px;align-self:start;display:flex;flex-direction
 .navgrp.open .navcaret{transform:rotate(90deg)}
 .navgrp-body{display:none;flex-direction:column;gap:2px;padding-left:8px}
 .navgrp.open .navgrp-body{display:flex}
-.navfoot .rst{color:var(--fail)}
+.navfoot .rst{color:var(--fail);padding-left:13px;margin-top:6px;border-top:1px solid var(--line);border-radius:0;padding-top:11px}
+.navcredit{margin-top:10px;padding:10px 13px 0;border-top:1px solid var(--line);font-size:11px;color:var(--ink3)}
+.navcredit a{color:var(--accent);font-weight:600;text-decoration:none}
+.navcredit a:hover{text-decoration:underline}
 .navfoot .rst:hover{background:#f6e2e4;color:var(--fail)}
 .navfoot button{display:block;width:100%;text-align:left;background:none;border:none;cursor:pointer;font-family:inherit;font-size:13.5px;color:var(--ink2);padding:9px 13px;border-radius:var(--r-sm);transition:background .14s,color .14s}
 .navfoot button:hover{background:#e9ecee;color:var(--accent)}
@@ -149,6 +152,11 @@ select:focus,input[type=number]:focus,input[type=text]:focus{outline:none;border
 .bmeta-sub{margin-top:7px;font-size:12px;color:var(--ink3)}
 .bmeta-sub .bterm{width:56px;padding:2px 4px;font-size:12px;text-align:right}
 .calflag{margin:10px 0;font-size:12px;line-height:1.45;color:var(--warn-ink);background:var(--warn-bg);border:1px solid var(--warn-bd);border-radius:5px;padding:8px 11px}
+.pkgsum{margin:10px 0 2px;font-size:12.5px;line-height:1.5;color:var(--warn-ink);background:var(--warn-bg);border:1px solid var(--warn-bd);border-radius:6px;padding:8px 12px}
+.pkglink{background:none;border:none;font-family:inherit;font-size:12.5px;color:var(--warn-ink);text-decoration:underline;text-underline-offset:2px;cursor:pointer;padding:0}
+.pkglink:hover{color:var(--accent-d)}
+.vbody .pkgsum{margin-top:12px}
+.brow-flash{box-shadow:0 0 0 3px var(--brand-soft);transition:box-shadow .2s}
 .stephelp{font-size:12.5px;color:var(--ink3);margin:0 0 16px}
 .stephelp summary{cursor:pointer;color:var(--ink2);font-weight:600}
 .stephelp[open] summary{margin-bottom:6px}
@@ -226,13 +234,13 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 .deriv.deriv-flat{background:none;border:none;border-radius:0;padding:0}
 .atable-wrap{overflow:auto;max-height:62vh;margin-top:4px;border:1px solid var(--line);border-radius:var(--r-sm);scrollbar-width:thin}
 .atable{width:100%;border-collapse:collapse;font-size:13px}
-.atable th{position:sticky;top:0;z-index:5;text-align:left;font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;color:#fff;background:var(--ink);padding:9px 10px;font-weight:600;white-space:nowrap}
+.atable th{position:sticky;top:0;z-index:5;text-align:left;font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink);background:var(--brand-soft);border-bottom:1px solid #a9c8cb;padding:9px 10px;font-weight:700;white-space:nowrap}
 .atable th.r{text-align:right}
 .atable td{padding:7px 10px;border-bottom:1px solid var(--line2);vertical-align:middle;max-width:340px}
 .atable td.r{text-align:right}
 .atable .asecrow td,.atable .libaddrow td{max-width:none}
 .atable tbody tr:not(.asecrow):hover td{background:#f6f8f9}
-.asecrow td{background:var(--brand-soft);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--accent-d)}
+.asecrow td{background:var(--accent-soft);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--accent-d)}
 /* one consistent width for every boxed numeric input across all tables */
 .atable input{width:96px;padding:5px 7px;font-size:12.5px;border:1px solid var(--line);border-radius:4px;font-family:inherit;text-align:right}
 .atable input.alow,.atable input.ahigh{background:#fdfbe9}
@@ -267,6 +275,8 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 .libnamewrap{display:flex;gap:6px;align-items:center}
 .libnamewrap input,.libnamewrap .libnm{flex:1;min-width:0}
 .libnamewrap .libdel{flex:none}
+.libcm{display:inline-flex;align-items:center;gap:5px;margin-top:5px;font-size:10.5px;color:var(--ink3);cursor:pointer}
+.libcm-badge{display:inline-block;margin-top:4px;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--accent-d);background:var(--brand-soft);padding:1px 6px;border-radius:4px}
 .libaddrow td{padding:8px 7px}
 .siteintel{margin-top:6px;border:1px solid var(--line);border-radius:var(--r-sm);overflow:hidden}
 .siteintel .si-row{display:flex;justify-content:space-between;gap:12px;align-items:baseline;padding:7px 11px;font-size:12.5px;border-bottom:1px solid var(--line2)}
@@ -489,6 +499,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
         <h3>Offered Benefits</h3>
         <details class="stephelp"><summary>How lines are counted</summary>Per line, set the quantity, the percent above code (only that share counts), and, if you have them, the developer's submitted cost and the city's value per unit; defaults come from the library. The pill at the top-right of each line is its value ratio (public value per developer dollar, after the category multiplier; higher is better, cash is 1×). The "% above code" field is a different guard from the break-even floor: the floor offsets the project's impacts, while percent above code prevents crediting work the code already requires. Multipliers and cost factors are editable under Assumptions.</details>
         <div id="blist"></div>
+        <div id="pkg-summary"></div>
         <div class="btot"><span>Developer cost</span><span class="mono" id="tot-a"></span></div>
         <div class="btot" style="border-top:1px solid var(--line);margin-top:4px;padding-top:9px"><span>Public value offered</span><span class="mono" id="tot-b"></span></div>
         <div class="addbar">
@@ -642,7 +653,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
         <p class="lede" style="margin:0 0 8px"><b>What the code does <i>not</i> set.</b> The SPB code contains no contribution rate, no benefit-valuation formula, and no floor or ceiling on what a developer must offer, the only statutory weighting is Chapter 163 proportionate-share ("in proportion to the impacts caused"), which is the basis for the impact-mitigation floor. The ZOPA bounds in this tool, and the 15–25% contribution / 25–50% capture guardrails cited below, are therefore <b>analytic overlays from the supporting framework, not adopted code</b>; the value-ratio math is a staff sketch over the code's discretionary merit-basis review.</p>
         <p class="lede" style="margin:0"><b>Supporting framework.</b> <i>Coming soon.</i> A fuller write-up of the supporting framework (<i>A Framework for Density Bonus Valuation in St. Pete Beach</i>, Tampa Bay Regional Planning Council, April 2026) will appear here.</p>
         <p class="lede" style="margin:8px 0 0"><b>Sources &amp; benchmarks.</b> The benchmark figures behind this tool trace to published sources, carried on the Assumptions and Benefit-library pages (Source column): construction cost <b>RSMeans</b> and <b>ICC Building Valuation Data</b>; lodging <b>STR / HVS</b>; soft costs and developer margin <b>ULI / CBRE</b>; condo comps <b>Redfin</b>; benefit unit costs from <b>SFRPC</b> (Resilient BCA Database / REBECCA), <b>FEMA</b> (Ecosystem Service Values; BCA Sustainment v13), <b>FDEP</b>, <b>FHWA</b>, <b>WGI</b>, <b>Forward Pinellas</b>, <b>UF Shimberg</b>, and <b>HUD</b>. The framework’s fuller valuation method draws on residual-land-value practice (<b>Keyser Marston</b>; <b>BAE Urban Economics</b>) and value-layer multipliers (<b>NIBS</b> <i>Natural Hazard Mitigation Saves</i> 2019 for resilience; <b>GASB 34 / FHWA</b> lifecycle; <b>FL Statute 255.20</b> public-procurement premium; <b>BEA / RIMS II</b> economic impact). Those layers inform the benchmarks but are not recomputed here.</p>
-        <p class="lede" style="margin:10px 0 0;font-size:12px;color:var(--ink3)"><b>Version &amp; changelog.</b> Tool <b>v1.7.2</b> · methodology dated <b>2026-06-10</b> (stamped on every printout). <b>v1.7.2</b>: Benefits step redesigned, each benefit is now a bordered card with one input row, a single meta row (recurring, secured-by, derivation), and the warnings as compact pills (full text on hover) instead of full-width banners; Notes/Source shrink to one line and expand on focus; the value ratio is a labeled pill and delete is an explicit icon button; the intro prose folded into a "How lines are counted" disclosure. Added a third brand tone #c4dcde (table section headers, text selection); remaining black buttons recolored to the brand. Copy-only chip wording (no model change). <b>v1.7.1</b>: palette refresh, brand color #27576a (buttons, the context bar, the public / city charts) and accent #df9b49 (the developer charts and highlights); no model change. <b>v1.7.0</b>: added a <b>counter-package solver</b> on Results, it proposes the most plain-value-efficient library benefits sized to clear the break-even floor within the developer budget (enforceability assumed at condition-of-approval) and can load the package onto the Benefits step; the ZOPA chart now shows an empty state instead of stacked $0 labels before a deal is entered; the Step 1 map is layered below the sticky header so it no longer paints over it; Workspace menu group ordered above Reference. <b>v1.6.1</b>: header and deal-context strip combined into one sticky block (no overlap on scroll); the current step is remembered across a page refresh when served as a hosted page; the readout info glyph removed in favor of a dotted underline; menu caret enlarged. <b>v1.6.0</b>: "lawful mitigation baseline" renamed "break-even floor" (legal term retained in the derivation and methods note); component labels renamed (Pool value used, Impact offset) and plain-terms definitions rewritten; the % above code guard disambiguated from the floor; Results page reworked (verdict shown as a color pill folding in the robustness one-liner, action bar moved below the numbers, cards reordered to ZOPA then value-split then ranked benefits and explorer, with diagnostics grouped below); a persistent deal-context strip (district, use, bonus, pool remaining) on every step; aux toolbar grouped into collapsible Reference and Workspace umbrellas (default collapsed); a two-color semantic palette (teal public, warm developer); Step 1 reordered to lead with location; the Pool step now shows the allocation ledger; supporting-framework section set to coming soon; body and small-text sizes bumped. <b>v1.5.0</b>: each benefit can name the instrument that secures it (recorded covenant, development agreement, bond, condition of approval, letter of intent, none), applying an enforceability credit to its public value in both the verdict and the ranking; an unspecified instrument credits at 100% but is flagged; factors are editable in new Assumptions § I. <b>v1.4.0</b>: benefits can be marked recurring (annual), valued as the present value of a growing annuity over a term (new Assumptions § H: discount rate, escalation rate, default term); the escalation-below-discount rule is enforced with a flag on the line; recurring lines are marked on the printout. <b>v1.3.0</b>: lodging value now varies by Market Sub-Type, the income approach uses a Gulf-front resort ADR or an inland / mid-market ADR (blended when no sub-type is chosen) instead of one islandwide rate; §G splits ADR into two sourced rows. <b>v1.2.2</b>: editorial pass, removed em-dashes from the interface copy (replaced with commas, colons, or rephrasing); no model or methodology change. <b>v1.2.1</b>: value-to-developer described as a cost-driven range in the Methods card (feasibility on the conservative low end, high end the negotiation target); robustness card states the ±20% stresses the midpoint, not the conservative verdict basis; loading an older-version scenario now warns that figures recompute under current methodology; un-sourced Assumptions/Library rows flagged as uncalibrated placeholders (carried onto the PDF); a warning chip when a benefit line sits at 100% above code; lodging ADR annotated as a blended islandwide rate; lock/enable-editing banners moved to the bottom of the editable tables. <b>v1.2</b>: lodging income approach (value per key = ADR × occ × ancillary × EBITDA ÷ cap); cost-driven value-to-developer range with the feasibility verdict run on the conservative (low) end and the high end shown as the negotiation target. <b>v1.1</b>: verdict moved to plain dollars; category multipliers demoted to ranking only; "city minimum" renamed "lawful mitigation baseline." <b>v1.0</b>: initial sketch model. A scenario or PDF produced under an earlier version is identifiable by its stamp; a changed verdict between versions reflects a deliberate methodology fix, not a contradiction.</p>
+        <p class="lede" style="margin:10px 0 0;font-size:12px;color:var(--ink3)"><b>Version &amp; changelog.</b> Tool <b>v1.8.0</b> · methodology dated <b>2026-06-10</b> (stamped on every printout). <b>v1.8.0</b> (methodology): a benefit line with <b>no enforceability instrument named is now treated as unsecured</b> and credited at the §I unsecured factor (default 40%) rather than 100%, so full credit requires affirmatively naming an instrument (this lowers offered value on older scenarios that left it blank, by design). The 100%-above-code chip now fires only on benefits flagged with a <b>code minimum</b> (a per-benefit, editable flag on the Benefit library; seeded on for landscaping, parking, streetscape, and seawall pending coastal-code review, off for workforce housing, easements, art, slips, and cash). A package <b>open-questions summary</b> (unsecured, 100%-above-a-code-minimum, escalation violations) sits above the totals, mirrors near the verdict and on the printout, and each item jumps to its line. The verdict gained two guards: an <b>incomplete</b> state when no use or market is set, and a <b>fair-share capture gate</b> that flags a floor-clearing, feasible offer that still captures below the target band; the verdict also cautions when a material share of value is unsecured. <b>v1.7.2</b>: Benefits step redesigned, each benefit is now a bordered card with one input row, a single meta row (recurring, secured-by, derivation), and the warnings as compact pills (full text on hover) instead of full-width banners; Notes/Source shrink to one line and expand on focus; the value ratio is a labeled pill and delete is an explicit icon button; the intro prose folded into a "How lines are counted" disclosure. Added a third brand tone #c4dcde (table section headers, text selection); remaining black buttons recolored to the brand. Copy-only chip wording (no model change). <b>v1.7.1</b>: palette refresh, brand color #27576a (buttons, the context bar, the public / city charts) and accent #df9b49 (the developer charts and highlights); no model change. <b>v1.7.0</b>: added a <b>counter-package solver</b> on Results, it proposes the most plain-value-efficient library benefits sized to clear the break-even floor within the developer budget (enforceability assumed at condition-of-approval) and can load the package onto the Benefits step; the ZOPA chart now shows an empty state instead of stacked $0 labels before a deal is entered; the Step 1 map is layered below the sticky header so it no longer paints over it; Workspace menu group ordered above Reference. <b>v1.6.1</b>: header and deal-context strip combined into one sticky block (no overlap on scroll); the current step is remembered across a page refresh when served as a hosted page; the readout info glyph removed in favor of a dotted underline; menu caret enlarged. <b>v1.6.0</b>: "lawful mitigation baseline" renamed "break-even floor" (legal term retained in the derivation and methods note); component labels renamed (Pool value used, Impact offset) and plain-terms definitions rewritten; the % above code guard disambiguated from the floor; Results page reworked (verdict shown as a color pill folding in the robustness one-liner, action bar moved below the numbers, cards reordered to ZOPA then value-split then ranked benefits and explorer, with diagnostics grouped below); a persistent deal-context strip (district, use, bonus, pool remaining) on every step; aux toolbar grouped into collapsible Reference and Workspace umbrellas (default collapsed); a two-color semantic palette (teal public, warm developer); Step 1 reordered to lead with location; the Pool step now shows the allocation ledger; supporting-framework section set to coming soon; body and small-text sizes bumped. <b>v1.5.0</b>: each benefit can name the instrument that secures it (recorded covenant, development agreement, bond, condition of approval, letter of intent, none), applying an enforceability credit to its public value in both the verdict and the ranking; an unspecified instrument credits at 100% but is flagged; factors are editable in new Assumptions § I. <b>v1.4.0</b>: benefits can be marked recurring (annual), valued as the present value of a growing annuity over a term (new Assumptions § H: discount rate, escalation rate, default term); the escalation-below-discount rule is enforced with a flag on the line; recurring lines are marked on the printout. <b>v1.3.0</b>: lodging value now varies by Market Sub-Type, the income approach uses a Gulf-front resort ADR or an inland / mid-market ADR (blended when no sub-type is chosen) instead of one islandwide rate; §G splits ADR into two sourced rows. <b>v1.2.2</b>: editorial pass, removed em-dashes from the interface copy (replaced with commas, colons, or rephrasing); no model or methodology change. <b>v1.2.1</b>: value-to-developer described as a cost-driven range in the Methods card (feasibility on the conservative low end, high end the negotiation target); robustness card states the ±20% stresses the midpoint, not the conservative verdict basis; loading an older-version scenario now warns that figures recompute under current methodology; un-sourced Assumptions/Library rows flagged as uncalibrated placeholders (carried onto the PDF); a warning chip when a benefit line sits at 100% above code; lodging ADR annotated as a blended islandwide rate; lock/enable-editing banners moved to the bottom of the editable tables. <b>v1.2</b>: lodging income approach (value per key = ADR × occ × ancillary × EBITDA ÷ cap); cost-driven value-to-developer range with the feasibility verdict run on the conservative (low) end and the high end shown as the negotiation target. <b>v1.1</b>: verdict moved to plain dollars; category multipliers demoted to ranking only; "city minimum" renamed "lawful mitigation baseline." <b>v1.0</b>: initial sketch model. A scenario or PDF produced under an earlier version is identifiable by its stamp; a changed verdict between versions reflects a deliberate methodology fix, not a contradiction.</p>
       </div>
     </section>
 
@@ -681,7 +692,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 
 <script>
 "use strict";
-const VERSION="1.7.2", VERSION_DATE="2026-06-10";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
+const VERSION="1.8.0", VERSION_DATE="2026-06-10";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
 const K={hardCondo:237500,hardHotel:170000,soft:0.24,margin:0.15,decline:0.80,impact:28000};
 const CATMULT={"Workforce Housing":1.4,"Community Development":1.5,"Transportation":1.7,"Environmental":2.0,"Resilience":2.5,"Monetary / Cash":1.0};
 const BMULT={"Low-rise (1-3)":1.0,"Mid-rise (4-7)":1.15,"High-rise (8+)":1.35};
@@ -775,7 +786,13 @@ const CATS_ORDER=["Resilience","Community Development","Transportation","Workfor
    Low/High/Override, mirroring the Assumptions format. Seeded with Low=High=the
    original point value, so the Applied midpoint reproduces the prior defaults.
    LIB rows carry an optional [5]=true flag marking a user-added custom benefit. */
-const LIBCAL=LIB.map(r=>({devLow:r[3],devHigh:r[3],devOv:null,cityLow:r[4],cityHigh:r[4],cityOv:null,note:"",source:""}));
+/* codeMin: does the SPB code set a baseline for this benefit (so 100% above-code is a double-count flag)?
+   Seeded per benefit, not per category (an easement and a streetscape share a category but differ here).
+   Workforce housing is OFF (no SPB inclusionary requirement; it is a voluntary §4.12(d) benefit).
+   Seawall is ON pending verification against the SPB LDC coastal provisions (bulkhead upkeep may be code-required). */
+const CODEMIN_ON=["Seawall / bulkhead","Tree canopy planting (above code)","Streetscape / hardscape (above code)","Structured public parking","Surface public parking"];
+const LIBCAL=LIB.map(r=>({devLow:r[3],devHigh:r[3],devOv:null,cityLow:r[4],cityHigh:r[4],cityOv:null,note:"",source:"",codeMin:CODEMIN_ON.indexOf(r[0])>-1}));
+function libCodeMin(name){const i=libIndexOf(name);return (i>=0&&LIBCAL[i])?!!LIBCAL[i].codeMin:false;}
 /* dynamic lookup, LIB grows when users add custom benefits, so don't freeze an index map */
 function libIndexOf(name){for(let i=0;i<LIB.length;i++){if(LIB[i][0]===name)return i;}return -1;}
 /* Seed Notes/Source, and, where the unit cleanly maps, the city Low/High/Override, 
@@ -1037,11 +1054,15 @@ function compute(){
     const pvf=recurring?pvFactor(PVD.esc,PVD.disc,term):1;   // one-time benefits use a factor of 1
     const annualDev=b.qty*devU*b.pct, annualCity=b.qty*cityU*b.pct;  // for recurring, these are per-year amounts
     const instr=b.instr||"";
-    const hc=enforceFactor(instr);              // enforceability haircut on public value only (1.0 when unspecified)
+    const unsecured=!instr;                      // no instrument named -> treated as unsecured
+    const hc=unsecured?ENFORCE.none:enforceFactor(instr);   // unspecified defaults to the unsecured (§I) factor, not 100%
+    const codeMin=libCodeMin(b.name);            // does code set a baseline for this benefit?
+    const aboveCodeFlag=(b.pct>=1)&&codeMin;     // 100% above code only flags where a code minimum exists
+    const escViol=recurring&&!recurringGuardOK();
     const devCost=annualDev*pvf;                // developer cost is never haircut
     const cityPlain=annualCity*pvf*hc;          // plain-dollar city value the city can count on → the verdict basis
     const cityVal=cityPlain*mult;                // priority-weighted value → ranking only, never pass/fail (also haircut)
-    return {...b,cat:L.cat,unit:L.unit,dev:devU,city:cityU,mult,recurring,term,pvf,instr,hc,annualDev,annualCity,devCost,cityPlain,cityVal,gain:devCost?cityVal/devCost:0};
+    return {...b,cat:L.cat,unit:L.unit,dev:devU,city:cityU,mult,recurring,term,pvf,instr,hc,unsecured,codeMin,aboveCodeFlag,escViol,annualDev,annualCity,devCost,cityPlain,cityVal,gain:devCost?cityVal/devCost:0};
   });
   const A=rows.reduce((s,x)=>s+x.devCost,0);
   const Bplain=rows.reduce((s,x)=>s+x.cityPlain,0);   // PLAIN public value, compared to the baseline
@@ -1054,7 +1075,17 @@ function compute(){
   const byrightDerived=(S.base||0)*(S.acres||0);
   const overCap=(S.cap>0&&S.acres>0)?(total>maxUnits+1e-9):false;
   const headroom=maxUnits-total;
-  return {r,V,Vlow,Vhigh,scar,D,I,cityMin,rows,A,B,Bplain,g,gPlain,zFloor,zCeil,room,worth,feas,poolPath,total,maxUnits,byrightDerived,overCap,headroom,tc,impMargin};
+  /* package-level open questions */
+  const nUnsecured=rows.filter(x=>x.unsecured).length;
+  const nAboveCode=rows.filter(x=>x.aboveCodeFlag).length;
+  const nEsc=rows.filter(x=>x.escViol).length;
+  const unsecuredValue=rows.filter(x=>x.unsecured).reduce((s,x)=>s+x.cityPlain,0);
+  const unsecuredShare=Bplain>0?unsecuredValue/Bplain:0;
+  const flags={nUnsecured,nAboveCode,nEsc,unsecuredValue,unsecuredShare,any:(nUnsecured+nAboveCode+nEsc)>0};
+  /* capture gate: even a feasible, floor-clearing offer below the fair-share target is left on the table */
+  const captureRate=Vlow>0?A/Vlow:0;
+  const belowCapture=worth&&feas&&Vlow>0&&(A<CAPTURE.capLo*Vlow);
+  return {r,V,Vlow,Vhigh,scar,D,I,cityMin,rows,A,B,Bplain,g,gPlain,zFloor,zCeil,room,worth,feas,poolPath,total,maxUnits,byrightDerived,overCap,headroom,tc,impMargin,flags,captureRate,belowCapture};
 }
 
 const fmt=n=>{const s=n<0?"-":"";return s+"$"+Math.round(Math.abs(n)).toLocaleString();};
@@ -1071,7 +1102,8 @@ navfoot.innerHTML='<div class="navgrp" data-grp="work"><button class="navgrp-h" 
   '<button id="openassume">Assumptions</button><button id="openhistory">Allocation history</button><button id="openscenarios">Saved scenarios</button></div></div>'+
   '<div class="navgrp" data-grp="ref"><button class="navgrp-h" data-navtoggle="1"><span class="navcaret">▸</span> Reference</button><div class="navgrp-body">'+
   '<button id="openmethod">Method</button><button id="opencases">Case studies</button><button id="openlibrary">Benefit library</button></div></div>'+
-  '<button id="resetall" class="rst">Reset all</button>';
+  '<button id="resetall" class="rst">Reset all</button>'+
+  '<div class="navcredit">A <a href="https://www.tbrpc.org" target="_blank" rel="noopener">TBRPC Civic Tech</a> tool</div>';
 stepnav.appendChild(navfoot);
 navfoot.querySelectorAll("[data-navtoggle]").forEach(b=>b.addEventListener("click",()=>{const g=b.closest(".navgrp");const open=g.classList.toggle("open");b.setAttribute("aria-expanded",open?"true":"false");}));
 navfoot.querySelectorAll(".navgrp-h").forEach(b=>b.setAttribute("aria-expanded","false"));
@@ -1137,6 +1169,25 @@ function readoutHTML(m,v){
     '<div class="rd clk" role="button" tabindex="0" data-aux="explainV" title="how this is calculated"><div class="k">Value to developer</div><div class="v mono">'+fmt(m.V)+'</div></div>'+
     '<div class="rd clk" role="button" tabindex="0" data-aux="explainCityMin" title="how this is calculated"><div class="k">Break-even floor</div><div class="v mono">'+fmt(m.cityMin)+'</div></div>'+
     '<div class="rd clk" role="button" tabindex="0" data-aux="explainB" title="how this is calculated"><div class="k">Public value offered</div><div class="v mono">'+fmt(m.Bplain)+'</div></div>';
+}
+/* package-level open-questions rollup; on Results the links jump to the Benefits step, on the
+   Benefits step they scroll to the offending line. Renders nothing when there are no open questions. */
+function packageSummaryHTML(m,results){
+  if(!m.flags||!m.flags.any) return "";
+  const firstIdx=pred=>{for(let i=0;i<m.rows.length;i++){if(pred(m.rows[i]))return i;}return -1;};
+  const mk=(idx,txt)=>'<button class="pkglink" data-goto="'+idx+'"'+(results?' data-results="1"':'')+'>'+txt+'</button>';
+  const part=[];
+  if(m.flags.nUnsecured) part.push(mk(firstIdx(x=>x.unsecured),m.flags.nUnsecured+' unsecured ('+Math.round(m.flags.unsecuredShare*100)+'% of value)'));
+  if(m.flags.nAboveCode) part.push(mk(firstIdx(x=>x.aboveCodeFlag),m.flags.nAboveCode+' at 100% above a code minimum'));
+  if(m.flags.nEsc) part.push(mk(firstIdx(x=>x.escViol),m.flags.nEsc+' with escalation not below discount'));
+  return '<div class="pkgsum"><b>Open questions:</b> '+part.join(' · ')+'</div>';
+}
+function wirePkgLinks(scope){
+  (scope||document).querySelectorAll(".pkglink").forEach(b=>b.onclick=()=>{
+    const i=b.dataset.goto;
+    const jump=()=>{const el=document.getElementById("brow-"+i); if(el){el.scrollIntoView({behavior:"smooth",block:"center"});el.classList.add("brow-flash");setTimeout(()=>el.classList.remove("brow-flash"),1300);}};
+    if(b.dataset.results){goto(2);setTimeout(jump,260);} else jump();
+  });
 }
 function numgridHTML(m){
   const mp=Math.round(m.impMargin*100);
@@ -1212,14 +1263,14 @@ function render(){
     const li=libIndexOf(x.name);
     const nVal=(x.note!=null)?x.note:((li>=0&&LIBCAL[li])?(LIBCAL[li].note||""):"");
     const sVal=(x.source!=null)?x.source:((li>=0&&LIBCAL[li])?(LIBCAL[li].source||""):"");
-    const row=document.createElement("div");row.className="brow";
+    const row=document.createElement("div");row.className="brow";row.id="brow-"+i;
     const derivTxt=(x.recurring
       ? 'annual cost '+fmt(x.annualDev)+' → annual city '+fmt(x.annualCity)+' · PV: cost '+fmt(x.devCost)+' → city value '+fmt(x.cityPlain)
       : 'cost '+fmt(x.devCost)+' → city value '+fmt(x.cityPlain))+(x.hc<1?' (after '+Math.round(x.hc*100)+'% credit)':'');
     let chips='';
-    if(x.recurring&&!recurringGuardOK()) chips+='<span class="pctwarn" title="Escalation ('+(PVD.esc*100).toFixed(1)+'%) is not below the discount rate ('+(PVD.disc*100).toFixed(1)+'%). A stream that grows at least as fast as it is discounted over-credits a long obligation; lower escalation or raise the discount rate under Assumptions section H.">⚠ Escalation not below discount</span>';
-    if(!x.instr) chips+='<span class="pctwarn" title="No enforceability instrument selected, so this value is credited at 100%. Name what secures it (covenant, development agreement, condition of approval, bond) to risk-adjust the public value.">⚠ Unsecured, credited 100%</span>';
-    if(x.pct>=1) chips+='<span class="pctwarn" title="Counted as 100% above code, so the full quantity credits as voluntary. If code already requires part of this benefit, lower percent above code so only the above-code share counts.">⚠ 100% above code</span>';
+    if(x.escViol) chips+='<span class="pctwarn" title="Escalation ('+(PVD.esc*100).toFixed(1)+'%) is not below the discount rate ('+(PVD.disc*100).toFixed(1)+'%). A stream that grows at least as fast as it is discounted over-credits a long obligation; lower escalation or raise the discount rate under Assumptions section H.">⚠ Escalation not below discount</span>';
+    if(x.unsecured) chips+='<span class="pctwarn" title="No enforceability instrument named, so this promise is treated as unsecured and credited at '+Math.round(x.hc*100)+'% (the §I unsecured factor). Name what secures it (covenant, development agreement, condition of approval, bond) for full credit.">⚠ Unsecured, credited '+Math.round(x.hc*100)+'%</span>';
+    if(x.aboveCodeFlag) chips+='<span class="pctwarn" title="This benefit has a code minimum and is entered at 100% above code, so the full quantity credits as voluntary. If code already requires part of it, lower percent above code so only the above-code share counts.">⚠ 100% above a code minimum</span>';
     row.innerHTML='<div class="browtop"><div><div class="nm">'+x.name+'</div><div class="cat">'+x.cat+' · unit: '+x.unit+'</div></div>'+
       '<div class="browg"><span class="bratio" title="public value per developer dollar">'+(x.gain?x.gain.toFixed(1)+"×":"-")+'</span>'+
       '<button class="bdel" data-x="'+i+'" aria-label="Remove benefit" title="Remove benefit">×</button></div></div>'+
@@ -1233,9 +1284,9 @@ function render(){
       '</div>'+
       '<div class="bmeta">'+
         '<label class="brecur-lab"><input type="checkbox" data-i="'+i+'" data-f="recurring"'+(x.recurring?" checked":"")+'> Recurring</label>'+
-        '<span class="bsec"><label for="binstr'+i+'">Secured by</label> <select id="binstr'+i+'" class="binstr" data-i="'+i+'" data-f="instr"><option value=""'+(x.instr?"":" selected")+'>Not specified (100%)</option>'+
+        '<span class="bsec"><label for="binstr'+i+'">Secured by</label> <select id="binstr'+i+'" class="binstr" data-i="'+i+'" data-f="instr"><option value=""'+(x.instr?"":" selected")+'>Not specified (unsecured, '+Math.round(ENFORCE.none*100)+'% credit)</option>'+
           ENFORCE_ORDER.map(function(k){return '<option value="'+k+'"'+(x.instr===k?" selected":"")+'>'+ENFORCE_LABEL[k]+' ('+Math.round(ENFORCE[k]*100)+'%)</option>';}).join("")+'</select>'+
-          (x.instr?' <span class="anote">'+Math.round(x.hc*100)+'%</span>':"")+'</span>'+
+          ' <span class="anote">'+Math.round(x.hc*100)+'%</span></span>'+
         '<span class="deriv">'+derivTxt+'</span>'+
       '</div>'+
       (x.recurring?'<div class="bmeta-sub">$/unit treated as <b>per-year</b> · term <input type="number" class="bterm" min="1" data-i="'+i+'" data-f="term" value="'+(x.term||PVD.term)+'"> yrs · PV factor '+x.pvf.toFixed(1)+'× (disc '+(PVD.disc*100).toFixed(1)+'%, esc '+(PVD.esc*100).toFixed(1)+'%)</div>':"")+
@@ -1252,6 +1303,7 @@ function render(){
   bl.querySelectorAll("[data-x]").forEach(b=>b.onclick=()=>{S.benefits.splice(+b.dataset.x,1);render();});
   document.getElementById("tot-a").textContent=fmt(m.A);
   document.getElementById("tot-b").textContent=fmt(m.Bplain);
+  const ps=document.getElementById("pkg-summary"); if(ps){ps.innerHTML=packageSummaryHTML(m,false);wirePkgLinks(ps);}
 
   document.getElementById("numgrid").innerHTML=numgridHTML(m);
   paintVerdict(m,v);
@@ -1261,6 +1313,7 @@ function softRender(){
   const m=compute();
   document.getElementById("tot-a").textContent=fmt(m.A);
   document.getElementById("tot-b").textContent=fmt(m.Bplain);
+  const ps=document.getElementById("pkg-summary"); if(ps){ps.innerHTML=packageSummaryHTML(m,false);wirePkgLinks(ps);}
   const v=verdictObj(m);
   document.getElementById("readout").innerHTML=readoutHTML(m,v);
   document.querySelectorAll("#blist .brow").forEach((row,i)=>{const x=m.rows[i];
@@ -1331,12 +1384,16 @@ function drawXCheck(m){
 function verdictObj(m){
   const C={ok:["#e7f1ea","#1f5c3c"],warn:["#f6efde","#7a5a12"],bad:["#f6e2e4","#8a2832"],neu:["#eef0f2","#54616c"]};
   const capPre=m.overCap?"The requested total exceeds the district density cap; as bonus density it would require a comprehensive plan amendment. On the economics: ":"";
+  const unsecuredNote=(m.flags&&m.flags.unsecuredShare>=0.25)?(' <b>Caution:</b> '+Math.round(m.flags.unsecuredShare*100)+'% of the offered value rests on unsecured promises (no instrument named, credited at '+Math.round(ENFORCE.none*100)+'%); name what secures them or read the offer as softer than it looks.'):"";
   if(m.A===0 && m.Bplain===0) return {tag:"No offer yet",bg:C.neu[0],fg:C.neu[1],light:"#9aa3a8",status:"No offer yet",tip:"Add public benefits on the Benefits step to evaluate the request.",head:"No offer entered yet",
     body:capPre+"No public benefits have been entered, so there is nothing to evaluate against the break-even floor. For this request the break-even floor is "+fmt(m.cityMin)+" ("+(m.D>0?("pool value used "+fmt(m.D)+" + "):"")+"impact mitigation "+fmt(m.I)+"), and the bonus is worth up to "+fmt(m.V)+" to the developer. Add benefits on the Benefits step to test an offer against that minimum."};
-  if(m.worth && m.feas) return {tag:"Favorable",bg:C.ok[0],fg:C.ok[1],light:"#1f9d57",status:"Viable",tip:"Meets the break-even floor and fits within the developer’s budget, approvable, with room to ask for more.",head:"Favorable",
-    body:capPre+"Offered public value ("+fmt(m.Bplain)+") meets the break-even floor ("+fmt(m.cityMin)+"). Package cost ("+fmt(m.A)+") is within the conservative value to the developer ("+fmt(m.Vlow)+"; the negotiation target runs up to "+fmt(m.Vhigh)+" if bonus units build cheaper than average). Unspent developer budget is "+fmt(Math.max(0,m.room))+". The city may require only the impact-proportional amount ("+fmt(m.I)+") as a condition; benefit above that is voluntary incentive for the discretionary density."};
+  if(!(m.zCeil>0)) return {tag:"Incomplete",bg:C.neu[0],fg:C.neu[1],light:"#9aa3a8",status:"Incomplete inputs",tip:"Set a use type and market value on Step 1 so the value to developer and the break-even floor are defined.",head:"Incomplete, set the project basics first",
+    body:capPre+"A benefit package is entered, but without a use type and market value the value to the developer (the ceiling) and the break-even floor are not yet defined, so feasibility cannot be judged. Set them on Step 1."+unsecuredNote};
+  if(m.worth && m.feas){const gated=m.belowCapture;
+    return {tag:"Favorable",bg:C.ok[0],fg:C.ok[1],light:gated?"#d9a400":"#1f9d57",status:gated?"Favorable, below fair-share":"Viable",tip:"Meets the break-even floor and fits within the developer’s budget.",head:gated?"Favorable, but below the fair-share target":"Favorable",
+    body:capPre+"Offered public value ("+fmt(m.Bplain)+") meets the break-even floor ("+fmt(m.cityMin)+"). Package cost ("+fmt(m.A)+") is within the conservative value to the developer ("+fmt(m.Vlow)+"; the negotiation target runs up to "+fmt(m.Vhigh)+" if bonus units build cheaper than average). Unspent developer budget is "+fmt(Math.max(0,m.room))+". "+(gated?("This offer captures only "+Math.round(m.captureRate*100)+"% of the value to developer, below the fair-share target of "+Math.round(CAPTURE.capLo*100)+" to "+Math.round(CAPTURE.capHi*100)+"%; there is room to ask for more."):("The city may require only the impact-proportional amount ("+fmt(m.I)+") as a condition; benefit above that is voluntary incentive for the discretionary density."))+unsecuredNote};}
   if(!m.worth && m.room>0) return {tag:"Below minimum",bg:C.warn[0],fg:C.warn[1],light:"#d9a400",status:"Keep negotiating",tip:"Public value is below the break-even floor, but the developer still has budget room, add higher-ratio benefits to close the gap.",head:"Below break-even floor, renegotiate",
-    body:capPre+"Offered public value is short of the break-even floor by "+fmt(m.cityMin-m.Bplain)+", so as it stands the public is subsidizing the project. Developer budget room of "+fmt(m.room)+" remains, so the shortfall can be closed by adding higher value-to-cost benefits."};
+    body:capPre+"Offered public value is short of the break-even floor by "+fmt(m.cityMin-m.Bplain)+", so as it stands the public is subsidizing the project. Developer budget room of "+fmt(m.room)+" remains, so the shortfall can be closed by adding higher value-to-cost benefits."+unsecuredNote};
   if(!m.feas) return {tag:"Over budget",bg:C.bad[0],fg:C.bad[1],light:"#c0392b",status:"Stalled",tip:"The package costs more than the bonus is worth to the developer; they would build by-right. Trim the package or grant more units.",head:"Package exceeds developer budget",
     body:"Package cost ("+fmt(m.A)+") exceeds the conservative value to the developer ("+fmt(m.Vlow)+"; even the high-end estimate is "+fmt(m.Vhigh)+"). The applicant would build by-right instead. Reduce the package or increase the unit allocation."};
   return {tag:"No zone",bg:C.bad[0],fg:C.bad[1],light:"#c0392b",status:"No agreement zone",tip:"Even a minimal acceptable package costs more than the bonus is worth, deny or restructure.",head:"No agreement zone",
@@ -1921,9 +1978,12 @@ function buildLibrary(){
       const nameInner=custom
         ? '<input type="text" class="libname" data-lib="'+i+'" data-col="name" value="'+esc(r[0])+'" placeholder="Custom benefit name" aria-label="Custom benefit name">'
         : '<span class="libnm">'+esc(r[0])+'</span>';
-      const nameCell=advUnlocked
+      const cmCtrl=advUnlocked
+        ? '<label class="libcm" title="Does the SPB code set a baseline for this benefit? If so, entering 100% above code is flagged as a possible double-count."><input type="checkbox" class="libcmchk" data-lib="'+i+'"'+(c.codeMin?" checked":"")+'> code sets a minimum</label>'
+        : (c.codeMin?'<div class="libcm-badge" title="Code sets a minimum for this benefit; entering 100% above code is flagged on the Benefits step">code min</div>':"");
+      const nameCell=(advUnlocked
         ? '<div class="libnamewrap">'+nameInner+'<button class="x libdel" data-libdel="'+i+'" aria-label="Delete benefit" title="Delete this benefit">×</button></div>'
-        : (custom?nameInner:esc(r[0]));
+        : (custom?nameInner:'<span class="libnm">'+esc(r[0])+'</span>'))+cmCtrl;
       const unitCell=custom
         ? '<input type="text" class="libunit" data-lib="'+i+'" data-col="unit" value="'+esc(r[2])+'" placeholder="$/unit" aria-label="Unit">'
         : '<span class="anote">'+r[2]+'</span>';
@@ -1968,6 +2028,7 @@ function libSetAll(collapsed){CATS_ORDER.forEach(function(c){libCollapsed[c]=col
 function libEdit(e){
   const t=e.target; if(t.tagName!=="INPUT"||t.dataset.lib===undefined)return;
   const i=+t.dataset.lib, col=t.dataset.col;
+  if(t.classList&&t.classList.contains("libcmchk")){if(LIBCAL[i])LIBCAL[i].codeMin=t.checked;render();return;}
   if(col==="name"||col==="unit"){            // custom-benefit text fields
     if(LIB[i])LIB[i][col==="name"?0:2]=t.value;
     buildAddSel(); render();
@@ -2075,11 +2136,11 @@ function roboShort(m){
 }
 function verdictHTML(m,v){
   const empty=(m.A===0&&m.Bplain===0);
-  const rs=empty?"":roboShort(m);
+  const rs=(empty||v.tag==="Incomplete")?"":roboShort(m);
   return '<div class="vpill" style="background:'+v.bg+';color:'+v.fg+'"><span class="tlight" style="background:'+v.light+'"></span><span>'+v.head+'</span><span class="vstatus" style="color:'+v.fg+';opacity:.8">'+v.status+'</span></div>'+
-    '<div class="vbody">'+v.body+(rs?' <b>'+rs+'</b>':'')+(empty?' <button class="alink" id="v-goto-benefits">Go to the Benefits step →</button>':'')+'</div>';
+    '<div class="vbody">'+v.body+(rs?' <b>'+rs+'</b>':'')+(empty?' <button class="alink" id="v-goto-benefits">Go to the Benefits step →</button>':'')+packageSummaryHTML(m,true)+'</div>';
 }
-function paintVerdict(m,v){const vb=document.getElementById("verdict");if(!vb)return;vb.style.cssText="";vb.innerHTML=verdictHTML(m,v);const gb=document.getElementById("v-goto-benefits");if(gb)gb.onclick=()=>goto(2);}
+function paintVerdict(m,v){const vb=document.getElementById("verdict");if(!vb)return;vb.style.cssText="";vb.innerHTML=verdictHTML(m,v);const gb=document.getElementById("v-goto-benefits");if(gb)gb.onclick=()=>goto(2);wirePkgLinks(vb);}
 function drawRobo(m){
   const el=document.getElementById("robo"); if(!el)return;
   const band=x=>'<td class="r mono">'+fmt(x*0.8)+'</td><td class="r mono">'+fmt(x)+'</td><td class="r mono">'+fmt(x*1.2)+'</td>';
@@ -2126,7 +2187,8 @@ function buildPrintSheet(){
    '<table class="ps-meta"><tr><td><b>Project</b><br>'+esc(S.pname)+'</td><td><b>Applicant</b><br>'+esc(S.papp)+'</td><td><b>Location</b><br>'+esc(S.paddr)+'</td></tr>'+
    '<tr><td><b>District</b><br>'+esc(d.label)+'</td><td><b>Pathway</b><br>'+esc(S.pathway)+'</td><td><b>Use type</b><br>'+esc(S.use)+'</td></tr>'+
    '<tr><td><b>By-right</b><br>'+S.byright+' '+d.unit+'</td><td><b>Bonus requested</b><br>'+S.bonus+' '+d.unit+'</td><td><b>Total / district max</b><br>'+m.total+' / '+capCell+'</td></tr></table>'+
-   '<div class="ps-verdict" style="border-left:4px solid '+v.fg+'"><b>'+v.head+'</b><br>'+v.body+'</div>'+
+   '<div class="ps-verdict" style="border-left:4px solid '+v.fg+'"><b>'+v.head+'</b><br>'+v.body+
+     (m.flags&&m.flags.any?'<br><b>Open questions:</b> '+[m.flags.nUnsecured?(m.flags.nUnsecured+' unsecured ('+Math.round(m.flags.unsecuredShare*100)+'% of value)'):"",m.flags.nAboveCode?(m.flags.nAboveCode+' at 100% above a code minimum'):"",m.flags.nEsc?(m.flags.nEsc+' with escalation not below discount'):""].filter(Boolean).join(' · '):'')+'</div>'+
    '<table class="ps-fig"><tr><th>Value to developer</th><th>Pool value used</th><th>Impact offset</th><th>Break-even floor</th></tr>'+
    '<tr><td>'+fmt(m.V)+'</td><td>'+fmt(m.D)+'</td><td>'+fmt(m.I)+'</td><td>'+fmt(m.cityMin)+'</td></tr></table>'+
    '<div class="ps-sec">Public benefit package</div>'+
