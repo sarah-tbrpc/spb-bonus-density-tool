@@ -88,8 +88,10 @@ select:focus,input[type=number]:focus,input[type=text]:focus{outline:none;border
 .seg button[data-on=fail]{border-color:var(--fail);background:var(--fail);color:#fff}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:16px 14px;margin:18px 0}
 @media(max-width:560px){.row2{grid-template-columns:1fr}}
-.locgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:20px;align-items:start;margin-top:14px}
-@media(max-width:860px){.locgrid{grid-template-columns:1fr}}
+.locgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:20px;align-items:stretch;margin-top:14px}
+.locmap{display:flex;flex-direction:column}
+.locmap #map{flex:1 1 auto;min-height:340px}
+@media(max-width:860px){.locgrid{grid-template-columns:1fr}.locmap #map{min-height:340px}}
 .vgrid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:26px;align-items:start;margin-top:6px}
 .vgrid .vchart{position:sticky;top:80px}
 @media(max-width:860px){.vgrid{grid-template-columns:1fr}.vgrid .vchart{position:static}}
@@ -107,10 +109,15 @@ select:focus,input[type=number]:focus,input[type=text]:focus{outline:none;border
 .brow .cat{font-size:11px;color:var(--ink3)}
 .browg{display:flex;align-items:center;gap:8px;flex:none}
 .brow .gain{font-variant-numeric:tabular-nums;font-size:14px;font-weight:600}
-.inputs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:9px}
+.inputs{display:grid;grid-template-columns:0.5fr 0.7fr 0.95fr 0.95fr 2.1fr 2.1fr;gap:8px;margin-top:9px;align-items:start}
+.inputs textarea{width:100%;box-sizing:border-box;font-family:inherit;font-size:13px;padding:8px 10px;border:1px solid var(--line);border-radius:var(--r-sm);background:#fff;color:var(--ink);resize:none;overflow:hidden;min-height:40px;line-height:1.4}
+.inputs textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(42,111,106,.12)}
 .inp-lab{font-size:10px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink3);margin-bottom:3px}
 .inputs input{padding:6px 7px;font-size:13px;width:100%}
 .browcalc{margin-top:8px}
+.pctwarn{margin-top:6px;font-size:11.5px;line-height:1.4;color:#8a6d00;background:#fff7e0;border:1px solid #f0dca0;border-radius:4px;padding:5px 8px}
+.nosrc{margin-top:3px;font-size:10.5px;line-height:1.3;color:#8a6d00;font-weight:600}
+.calflag{margin:10px 0;font-size:12px;line-height:1.45;color:#8a6d00;background:#fff7e0;border:1px solid #f0dca0;border-radius:5px;padding:8px 11px}
 @media(max-width:560px){.inputs{grid-template-columns:repeat(2,1fr)}}
 .brow input{padding:6px 7px;font-size:13px}
 .brow .x{border:none;background:transparent;color:var(--ink3);cursor:pointer;font-size:16px;padding:0 4px}
@@ -210,8 +217,12 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 .libtable input.libname{width:100%;min-width:0;text-align:left}
 .libtable input.libunit{width:100%;text-align:left}
 .libtable input.libtext{width:100%;text-align:left;font-size:12px}
-.libtable td,.libtable th{padding:6px 7px}
+.libtable td,.libtable th{padding:9px 8px}
 .libtable td{vertical-align:top;word-break:break-word}
+.libtable tbody tr:not(.asecrow):not(.libaddrow){border-bottom:1px solid var(--line2)}
+.libnamewrap{display:flex;gap:6px;align-items:center}
+.libnamewrap input,.libnamewrap .libnm{flex:1;min-width:0}
+.libnamewrap .libdel{flex:none}
 .libaddrow td{padding:8px 7px}
 .siteintel{margin-top:6px;border:1px solid var(--line);border-radius:var(--r-sm);overflow:hidden}
 .siteintel .si-row{display:flex;justify-content:space-between;gap:12px;align-items:baseline;padding:7px 11px;font-size:12.5px;border-bottom:1px solid var(--line2)}
@@ -324,7 +335,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
             <div class="field" style="margin-top:0"><label class="lab"><span>District / Land-Use Category</span><span class="val" id="dist-status"></span></label>
               <select id="district"></select></div>
             <div id="dist-rules" class="hint"></div>
-            <div class="field" style="margin-bottom:0;margin-top:14px"><label class="lab"><span>Property &amp; Site Data</span><span class="val anote">auto-filled from county &amp; FEMA · verify</span></label>
+            <div class="field" style="margin-bottom:0;margin-top:14px"><label class="lab"><span>Property &amp; Site Data</span><span class="val anote">Auto-filled from County &amp; FEMA · Verify</span></label>
               <div id="site-intel" class="siteintel"><div class="hint">Drop the pin or search an address to pull parcel, flood, and evacuation data.</div></div></div>
           </div>
           <div class="locmap">
@@ -335,7 +346,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
                 <button class="addbtn" id="addrgo">Search</button>
               </div>
             </div>
-            <div id="map" style="height:340px;border:1px solid var(--line);border-radius:6px;background:#e9ecee"></div>
+            <div id="map" style="border:1px solid var(--line);border-radius:6px;background:#e9ecee"></div>
             <div class="hint" id="pin-coords" style="margin-top:8px"></div>
           </div>
         </div>
@@ -491,7 +502,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
       </div>
       <div class="card">
         <h3>Robustness (±20% Sketch Sensitivity)</h3>
-        <div class="sub">Stress-tests the recommendation by moving each headline figure 20% in the least-favorable direction, all at once, and reports whether the verdict survives.</div>
+        <div class="sub">Stress-tests the recommendation by moving each headline figure 20% in the least-favorable direction, all at once, and reports whether the verdict survives. The ±20% is applied around the <b>central (midpoint)</b> estimates — deliberately <i>not</i> stacked on the conservative low end the verdict already uses, so the two cautions don't compound.</div>
         <div id="robo"></div>
       </div>
     </section>
@@ -542,7 +553,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 
       <div class="card">
         <h3>The Numbers, in Plain Terms</h3>
-        <p class="lede" style="margin:0 0 8px"><b>Value to developer</b> — the most the bonus units are worth to the developer (their residual profit, slightly discounted): the walk-away ceiling.</p>
+        <p class="lede" style="margin:0 0 8px"><b>Value to developer</b> — the most the bonus units are worth to the developer (their residual profit, slightly discounted): the walk-away ceiling. Shown as a <b>cost-driven range</b> — the <b>conservative low end</b> (high build cost) is what the feasibility verdict tests against; the <b>high end</b> (marginal units build cheaper than average) is the negotiation target.</p>
         <p class="lede" style="margin:0 0 8px"><b>Pool opportunity cost</b> — the value of giving up scarce pool units. Near zero when the pool is plentiful; rises as it nears depletion. Applies only on the pool-allocation pathway.</p>
         <p class="lede" style="margin:0 0 8px"><b>Impact mitigation floor</b> — the development's impact that can lawfully be required as a condition; the most the city can compel. Benefit beyond it is voluntary incentive.</p>
         <p class="lede" style="margin:0 0 8px"><b>Lawful mitigation baseline</b> — opportunity cost plus impact mitigation: the least public value the deal should return.</p>
@@ -553,7 +564,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 
       <div class="card">
         <h3>How the Recommendation Is Reached</h3>
-        <p class="lede" style="margin:0">The deal is <b>worthwhile</b> when the public value offered meets the lawful mitigation baseline, and <b>feasible</b> when the developer cost stays under the value to developer. The zone of possible agreement runs from the least developer spending that satisfies the city up to the value to developer; the gap is the negotiating room. Fill that room with the highest value-ratio benefits first.</p>
+        <p class="lede" style="margin:0">The deal is <b>worthwhile</b> when the public value offered meets the lawful mitigation baseline, and <b>feasible</b> when the developer cost stays under the value to developer — tested on the <b>conservative (low) end</b> of that range, so the city is never accused of demanding an infeasible deal. The zone of possible agreement runs from the least developer spending that satisfies the city up to that conservative ceiling; the high end of the range is the private negotiation target. Fill the room with the highest value-ratio benefits first.</p>
       </div>
 
       <div class="card">
@@ -651,11 +662,12 @@ function hsel(i,fld,val,opts){const r=HISTORY[i]||{};const who=(r.project&&(""+r
 /* free-text ledger cell: wrapping plain text when locked (legible, no cut-off), editable input when unlocked */
 function htxt(i,fld,val){return advUnlocked?hfld(i,fld,val,"text","htext"):esc(val||"");}
 function buildHistory(){
-  let h=lockBar("Allocation ledger","The institutional record of pool draws that drives the scarcity calculation.")+'<fieldset class="lockfs"'+(advUnlocked?'':' disabled')+'>';
+  let h='<fieldset class="lockfs"'+(advUnlocked?'':' disabled')+'>';
   h+='<div class="card"><h3>Density pool</h3><div class="sub">Remaining = pool total minus approved allocations below. This drives the scarcity cost on the Pool step.</div><div class="agrid" style="grid-template-columns:repeat(2,1fr)"><div><label>RU pool total</label><input type="number" id="poolRU" value="'+POOL_TOTAL.RU+'"></div><div><label>TLU pool total</label><input type="number" id="poolTLU" value="'+POOL_TOTAL.TLU+'"></div></div><div class="hint" id="pool-summary" style="margin-top:10px">'+poolSummaryText()+'</div><div class="hint" style="margin-top:6px">The modeled TLU pool (325) is the Town Center-2 / Activity Center / Bayou Residential pool. SPB also has separate transient-lodging pools the tool does not total — Boutique Hotel/Condo 125, Town Center Core (TC-1) 50, Upham Beach Village 175. Lodging deals outside the TC-2/AC/Bayou districts draw from those instead.</div></div>';
   h+='<div class="atable-wrap"><table class="atable histtable"><colgroup><col style="width:8%"><col style="width:17%"><col style="width:7%"><col style="width:7%"><col style="width:7%"><col style="width:11%"><col style="width:18%"><col style="width:21%"><col style="width:4%"></colgroup><thead><tr><th scope="col">Date</th><th scope="col">Project / Applicant</th><th scope="col">Pool</th><th scope="col" class="r">Approved</th><th scope="col" class="r">Requested</th><th scope="col">Decision</th><th scope="col">Source / Ordinance</th><th scope="col">Notes</th><th scope="col"><span class="sr-only">Delete</span></th></tr></thead><tbody>';
   HISTORY.forEach((r,i)=>{h+='<tr><td>'+hfld(i,"date",r.date,"text","hdate")+'</td><td>'+htxt(i,"project",r.project)+'</td><td>'+hsel(i,"pool",r.pool,["RU","TLU"])+'</td><td class="r">'+hfld(i,"approved",r.approved,"number","hnum")+'</td><td class="r">'+hfld(i,"requested",r.requested,"number","hnum")+'</td><td>'+hsel(i,"decision",r.decision,["Approved","Denied","Pending","Withdrawn","Superseded","Other pool"])+'</td><td>'+htxt(i,"source",r.source)+'</td><td>'+htxt(i,"notes",r.notes)+'</td><td>'+(advUnlocked?'<button class="x" data-del="'+i+'">\u00d7</button>':'')+'</td></tr>';});
   h+='</tbody></table></div><button class="addbtn" id="histadd" style="margin-top:12px">+ Add row</button></fieldset>';
+  h+=lockBar("Allocation ledger","The institutional record of pool draws that drives the scarcity calculation.");
   h+='<p class="lede" style="margin-top:14px">The remaining pool flows into the Pool step and the scarcity cost automatically. Set a decision to anything other than Approved to exclude a row from the allocated total — use <b>Superseded</b> for a returned/divested approval and <b>Other pool</b> for a real allocation that draws from a different pool than the RU 195 / TLU 325 modeled here.</p>';
   return h;
 }
@@ -762,7 +774,12 @@ function libInfo(name){const i=libIndexOf(name); if(i<0)return {cat:"Monetary / 
 function addCustomBenefit(cat){
   LIB.push(["",cat,"$/unit",0,0,true]);
   LIBCAL.push({devLow:0,devHigh:0,devOv:null,cityLow:0,cityHigh:0,cityOv:null,note:"",source:""});
+  const newIdx=LIB.length-1;
+  libCollapsed[cat]=false;   // make sure the category is open so the new row is visible
   buildAddSel(); renderAux("library"); render();
+  /* keep the user in place: scroll the new row into view and focus its name field (no jump to top) */
+  const el=document.querySelector('#aux-library input.libname[data-lib="'+newIdx+'"]');
+  if(el){try{el.scrollIntoView({block:"center"});}catch(e){} el.focus();}
 }
 function delCustomBenefit(i){
   if(!LIB[i])return;
@@ -822,7 +839,7 @@ const ASSUMP=[
  {sec:"F. Optional cross-check (Tampa 10:1 / ICC)",label:"Contribution floor — upper bound",unit:"% of value to dev",low:25,high:25,override:null,notes:"Upper edge of the contribution-floor band (where it meets the value-capture zone).",fmt:"%",apply:v=>CAPTURE.contribHi=v/100},
  {sec:"F. Optional cross-check (Tampa 10:1 / ICC)",label:"Value-capture target — lower bound",unit:"% of value to dev",low:25,high:25,override:null,notes:"Lower edge of the shaded 'target capture zone' (the developer-side value-capture range). Analytic overlay, not adopted code.",fmt:"%",apply:v=>CAPTURE.capLo=v/100},
  {sec:"F. Optional cross-check (Tampa 10:1 / ICC)",label:"Value-capture target — upper bound",unit:"% of value to dev",low:50,high:50,override:null,notes:"Upper edge of the target capture zone — the developer walk-away ceiling rate. Analytic overlay, not adopted code.",fmt:"%",apply:v=>CAPTURE.capHi=v/100},
- {sec:"G. Lodging income approach (value per key)",label:"ADR (average daily rate)",unit:"$/night",low:240,high:320,override:null,notes:"St. Pete Beach barrier-island resort rate. Drives value per key when Use type = Temporary Lodging.",fmt:"$",apply:v=>LODGE.adr=v},
+ {sec:"G. Lodging income approach (value per key)",label:"ADR (average daily rate)",unit:"$/night",low:240,high:320,override:null,notes:"BLENDED islandwide barrier-island rate (≈ $358k/key with the §G defaults) — Gulf-front resort product runs materially higher than mid-market / inland, but the tool does not yet split lodging by Market Sub-type, so adjust ADR (or override the key value on Step 1) for a specific project. Drives value per key when Use type = Temporary Lodging.",fmt:"$",apply:v=>LODGE.adr=v},
  {sec:"G. Lodging income approach (value per key)",label:"Occupancy rate",unit:"%",low:65,high:75,override:null,notes:"Submarket stabilized occupancy.",fmt:"%",apply:v=>LODGE.occ=v/100},
  {sec:"G. Lodging income approach (value per key)",label:"Ancillary revenue multiplier",unit:"×",low:1.15,high:1.35,override:null,notes:"F&B, spa, parking, resort fees on top of room revenue.",fmt:"x",apply:v=>LODGE.ancillary=v},
  {sec:"G. Lodging income approach (value per key)",label:"EBITDA margin",unit:"%",low:25,high:35,override:null,notes:"Hotel operating margin (EBITDA ÷ total revenue).",fmt:"%",apply:v=>LODGE.ebitda=v/100},
@@ -856,8 +873,9 @@ ASSUMP.forEach(r=>{if(r.source===undefined)r.source="";});
   "Condo sale price — gulf / waterfront":"Redfin Q2 2026 comps",
   "ADR (average daily rate)":"Visit St. Pete/Clearwater Jan 2026 (submarket)",
   "Occupancy rate":"Visit St. Pete/Clearwater; submarket stabilized",
+  "Ancillary revenue multiplier":"STR / HVS resort operating data",
   "EBITDA margin":"CBRE Hotels 2025",
-  "Hotel cap rate":"CBRE Hotels / HVS (FL coastal resort)"};
+  "Hotel cap rate":"CBRE Hotels / PwC Real Estate Investor Survey (FL coastal resort)"};
   ASSUMP.forEach(r=>{if(seed[r.label])r.source=seed[r.label];});})();
 const DEF_ASSUMP=ASSUMP.map(r=>({low:r.low,high:r.high,override:r.override}));
 const DEFAULTS=JSON.parse(JSON.stringify(S));
@@ -872,7 +890,7 @@ function syncInputsFromState(){
   const psf=document.getElementById("mkt-psf"); if(psf)psf.value="";
 }
 function resetAll(){
-  let ok=true; try{ok=window.confirm("Start a clean analysis? This clears the project inputs and benefit package. The Assumptions and the allocation ledger are kept.");}catch(e){ok=true;}
+  let ok=true; try{ok=window.confirm("Start a clean analysis? This clears the project inputs and benefit package. The assumptions and the allocation ledger are kept.");}catch(e){ok=true;}
   if(!ok)return;
   Object.assign(S,JSON.parse(JSON.stringify(DEFAULTS)));
   applyAssumptions();   // re-derive margin / decline / impact / multipliers from the CURRENT (kept) Assumptions
@@ -961,6 +979,7 @@ document.getElementById("back").onclick=()=>goto(cur-1);
 document.getElementById("next").onclick=()=>goto(cur+1);
 
 function setP(el){const min=+el.min,max=+el.max;el.style.setProperty("--p",((el.value-min)/(max-min)*100)+"%");}
+function autoGrowTA(ta){ta.style.height="auto";ta.style.height=(ta.scrollHeight+2)+"px";}   // textarea grows to fit its text — no inner scrollbar
 function bindRange(id,key){const el=document.getElementById(id);
   el.addEventListener("input",()=>{S[key]=+el.value;setP(el);render();});setP(el);}
 bindRange("mv","market");bindRange("bonus","bonus");bindRange("rem","rem");bindRange("dem","dem");bindRange("hor","hor");
@@ -1064,6 +1083,9 @@ function render(){
 
   const bl=document.getElementById("blist");bl.innerHTML="";
   m.rows.forEach((x,i)=>{
+    const li=libIndexOf(x.name);
+    const nVal=(x.note!=null)?x.note:((li>=0&&LIBCAL[li])?(LIBCAL[li].note||""):"");
+    const sVal=(x.source!=null)?x.source:((li>=0&&LIBCAL[li])?(LIBCAL[li].source||""):"");
     const row=document.createElement("div");row.className="brow";
     row.innerHTML='<div class="browtop"><div><div class="nm">'+x.name+'</div><div class="cat">'+x.cat+' · unit: '+x.unit+'</div></div>'+
       '<div class="browg"><span class="gain" title="public value per developer dollar">'+(x.gain?x.gain.toFixed(1)+"×":"-")+'</span><button class="x" data-x="'+i+'">×</button></div></div>'+
@@ -1072,15 +1094,20 @@ function render(){
         '<div><div class="inp-lab">% above code</div><input type="number" value="'+Math.round(x.pct*100)+'" data-i="'+i+'" data-f="pct"></div>'+
         '<div><div class="inp-lab">Dev $/unit</div><input type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.dev))+'" data-i="'+i+'" data-f="dev"></div>'+
         '<div><div class="inp-lab">City $/unit</div><input type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.city))+'" data-i="'+i+'" data-f="city"></div>'+
+        '<div><div class="inp-lab">Notes</div><textarea rows="2" data-i="'+i+'" data-f="note" placeholder="(library default)" aria-label="'+esc(x.name)+' — notes">'+esc(nVal)+'</textarea></div>'+
+        '<div><div class="inp-lab">Source</div><textarea rows="2" data-i="'+i+'" data-f="source" placeholder="(library default)" aria-label="'+esc(x.name)+' — source">'+esc(sVal)+'</textarea></div>'+
       '</div>'+
-      '<div class="browcalc hint">cost '+fmt(x.devCost)+' → city value '+fmt(x.cityPlain)+'  ('+x.cat+'; ×'+x.mult+' priority weight → ranking only)</div>';
+      '<div class="browcalc hint">cost '+fmt(x.devCost)+' → city value '+fmt(x.cityPlain)+'  ('+x.cat+'; ×'+x.mult+' priority weight → ranking only)</div>'+
+      (x.pct>=1?'<div class="pctwarn">⚠ Counted as 100% above code — the full quantity credits as voluntary. If code already requires part of this benefit, lower "% above code" so only the genuinely above-code share counts.</div>':"");
     bl.appendChild(row);
   });
-    bl.querySelectorAll("input").forEach(inp=>{
+    bl.querySelectorAll("input,textarea").forEach(inp=>{
+    if(inp.tagName==="TEXTAREA")autoGrowTA(inp);
     inp.addEventListener("input",e=>{
+      if(e.target.tagName==="TEXTAREA")autoGrowTA(e.target);
       const i=+e.target.dataset.i,f=e.target.dataset.f;
-      S.benefits[i][f]= f==="pct" ? (parseNum(e.target.value)/100) : parseNum(e.target.value); softRender();});
-    inp.addEventListener("change",e=>{if(e.target.dataset.f!=="pct")e.target.value=fmtNum(parseNum(e.target.value));});});
+      S.benefits[i][f]= (f==="note"||f==="source") ? e.target.value : (f==="pct" ? (parseNum(e.target.value)/100) : parseNum(e.target.value)); softRender();});
+    inp.addEventListener("change",e=>{const f=e.target.dataset.f; if(f!=="pct"&&f!=="note"&&f!=="source")e.target.value=fmtNum(parseNum(e.target.value));});});
   bl.querySelectorAll("[data-x]").forEach(b=>b.onclick=()=>{S.benefits.splice(+b.dataset.x,1);render();});
   document.getElementById("tot-a").textContent=fmt(m.A);
   document.getElementById("tot-b").textContent=fmt(m.Bplain);
@@ -1466,9 +1493,9 @@ async function gatherSiteIntel(lat,lon){
   else {fluHtml="—";}
   /* combine FEMA flood zone + base flood elevation + evacuation zone into one flood-risk line */
   const frParts=[];
-  if(fldZone)frParts.push("FEMA "+fldZone+(cz?" → coastal "+cz:""));
+  if(fldZone)frParts.push("FEMA "+fldZone+(cz?" → Coastal "+cz:""));
   if(bfe!=null)frParts.push("BFE "+bfe+" ft");
-  if(evac)frParts.push("evac zone "+evac);
+  if(evac)frParts.push("Evac Zone "+evac);
   const frVal=frParts.length?frParts.join(" · "):null;
   let frHtml="—";
   if(frVal){const fl=[];
@@ -1477,12 +1504,13 @@ async function gatherSiteIntel(lat,lon){
     frHtml=esc(frVal)+(fl.length?' '+fl.join(' '):'');}
   el.innerHTML=
       rowRaw("Within St. Pete Beach CRA",craHtml)
-      +rowRaw("Future Land Use district",fluHtml)
+      +rowRaw("Future Land Use District",fluHtml)
       +rowRaw("Parcel ID",pinHtml)
-      +row("Parcel stated area",area!=null?area+(filled.indexOf("acres")>-1?" → site area (verify units)":""):null,filled.indexOf("acres")>-1)
-      +row("Property use",usecode?(usecode+(useCodeDesc(usecode)?" — "+titleCase(useCodeDesc(usecode)):"")):null,filled.indexOf("use")>-1)
-      +rowRaw("Flood risk",frHtml)
+      +row("Parcel Stated Area",area!=null?area+(filled.indexOf("acres")>-1?" → Site Area (verify units)":""):null,filled.indexOf("acres")>-1)
+      +row("Property Use",usecode?(usecode+(useCodeDesc(usecode)?" — "+titleCase(useCodeDesc(usecode)):"")):null,filled.indexOf("use")>-1)
+      +rowRaw("Flood Risk",frHtml)
       +(!anyData?'<div class="si-row"><span class="anote" style="font-size:11px">Parcel / flood services offline — values above are from embedded city data.</span></div>':"");
+  if(map)setTimeout(()=>{if(map)map.invalidateSize();},0);
 }
 function syncUseDerived(){
   const unit=(S.use==="Temporary Lodging")?"TLU":"RU";
@@ -1521,8 +1549,8 @@ function setPin(lat,lon){
   document.getElementById("pin-coords").textContent="Pin: "+lat.toFixed(5)+", "+lon.toFixed(5);
   document.getElementById("dist-status").textContent="checking\u2026";
   lookupZoning(lat,lon).then(r=>{
-    if(r.ok){document.getElementById("dist-status").textContent="auto-detected";applyDistrict(r.key);}
-    else{document.getElementById("dist-status").textContent="auto-detect unavailable \u2014 confirm below";}
+    if(r.ok){document.getElementById("dist-status").textContent="Auto-detected";applyDistrict(r.key);}
+    else{document.getElementById("dist-status").textContent="Auto-detect Unavailable \u2014 Confirm Below";}
   });
   gatherSiteIntel(lat,lon);
 }
@@ -1672,7 +1700,9 @@ function libtxt(i,col,val,label){
 function libRatio(i){const r=LIB[i],c=LIBCAL[i];const dev=libApplied(c,"dev"),city=libApplied(c,"city");const mult=CATMULT[r[1]]||1;return dev>0?((city*mult)/dev):0;}
 function libApplDisp(i,which){return "$"+Math.round(libApplied(LIBCAL[i],which)).toLocaleString();}
 function buildLibrary(){
-  let h=lockBar("Benefit-library values","The city’s valuation of each public benefit, shared across all projects.");
+  let h="";
+  const nLibNoSrc=LIBCAL.filter(c=>c&&!(c.source&&String(c.source).trim())).length;
+  if(nLibNoSrc)h+='<div class="calflag"><b>'+nLibNoSrc+' of '+LIBCAL.length+' library values lack a cited source.</b> Those are sketch-grade placeholders until calibrated to local data; each is flagged below and counted on the printed summary.</div>';
   h+='<div class="libsearch"><input type="text" id="lib-search" placeholder="Search benefits…" aria-label="Search benefits" value="'+esc(libSearchQ)+'">'+
     '<button class="alink" id="lib-expand">Expand all</button><button class="alink" id="lib-collapse">Collapse all</button></div>';
   h+='<fieldset class="lockfs"'+(advUnlocked?'':' disabled')+'>';
@@ -1688,10 +1718,12 @@ function buildLibrary(){
     h+='<tr class="asecrow libsec" data-section="'+esc(cat)+'" role="button" tabindex="0" aria-label="Toggle '+esc(cat)+'"><td colspan="8"><span class="lib-caret">▾</span> '+cat+' · ×'+(CATMULT[cat]||1)+' multiplier <span class="anote">('+n+')</span></td></tr>';
     LIB.forEach((r,i)=>{ if(r[1]!==cat)return; const c=LIBCAL[i]; const custom=!!r[5];
       const hay=esc((""+r[0]+" "+r[2]+" "+(c.note||"")+" "+(c.source||"")).toLowerCase());
-      const delBtn=advUnlocked?' <button class="x libdel" data-libdel="'+i+'" aria-label="Delete benefit" title="Delete this benefit">×</button>':'';
-      const nameCell=custom
-        ? '<input type="text" class="libname" data-lib="'+i+'" data-col="name" value="'+esc(r[0])+'" placeholder="Custom benefit name" aria-label="Custom benefit name">'+delBtn
-        : esc(r[0])+delBtn;
+      const nameInner=custom
+        ? '<input type="text" class="libname" data-lib="'+i+'" data-col="name" value="'+esc(r[0])+'" placeholder="Custom benefit name" aria-label="Custom benefit name">'
+        : '<span class="libnm">'+esc(r[0])+'</span>';
+      const nameCell=advUnlocked
+        ? '<div class="libnamewrap">'+nameInner+'<button class="x libdel" data-libdel="'+i+'" aria-label="Delete benefit" title="Delete this benefit">×</button></div>'
+        : (custom?nameInner:esc(r[0]));
       const unitCell=custom
         ? '<input type="text" class="libunit" data-lib="'+i+'" data-col="unit" value="'+esc(r[2])+'" placeholder="$/unit" aria-label="Unit">'
         : '<span class="anote">'+r[2]+'</span>';
@@ -1701,11 +1733,12 @@ function buildLibrary(){
         '<td class="r"><span class="aapplied" id="libcity-'+i+'">'+libApplDisp(i,"city")+'</span></td>'+
         '<td class="r">'+libfld(i,"cityOv",c.cityOv,"ov")+'</td>'+
         '<td class="tnote">'+libtxt(i,"note",c.note,"Notes")+'</td>'+
-        '<td class="tnote">'+libtxt(i,"source",c.source,"Source")+'</td></tr>';
+        '<td class="tnote">'+libtxt(i,"source",c.source,"Source")+((c.source&&String(c.source).trim())?"":'<div class="nosrc">⚠ Uncalibrated — no cited source</div>')+'</td></tr>';
     });
     if(advUnlocked)h+='<tr class="libaddrow" data-cat="'+esc(cat)+'"><td colspan="8"><button class="alink" data-libadd="'+esc(cat)+'">+ Add custom benefit to '+cat+'</button></td></tr>';
   });
   h+='</tbody></table></div></fieldset>';
+  h+=lockBar("Benefit-library values","The city’s valuation of each public benefit, shared across all projects.");
   h+='<p class="lede" style="margin-top:14px">These are the <b>city’s value</b> of each benefit (Low / High / Applied / Override) — the developer’s cost is entered per project on the Benefits step. <b>Notes</b> and <b>Source</b> are free-text: record the basis for a figure and where it came from (a few rows are pre-seeded from the Corey Landings staff report as worked examples). Search matches names, notes, and sources. Click a category header to collapse it; edit Low/High to set a range, or enter an Override (blue) for a firm figure (Applied is the midpoint unless an Override is given). Use <b>+ Add custom benefit</b> to create your own item — give it a name, unit, and city value; once named it appears in the Benefits-step menu. The library (including custom benefits, notes, and sources) is kept on Reset all and saved with scenarios.</p>';
   return h;
 }
@@ -1775,7 +1808,9 @@ function lockBar(title,note){
     : '<span>🔒 <b>'+title+'</b> — '+note+'</span><button class="btn" data-lock="1">Enable editing</button>')+'</div>';
 }
 function buildAssumptions(){
-  let h=lockBar("Calibrated model defaults","Construction costs, multipliers, scarcity shape, market comps, and policy guardrails.")+'<fieldset class="lockfs"'+(advUnlocked?'':' disabled')+'><div class="atable-wrap"><table class="atable assumptable"><colgroup><col style="width:17%"><col style="width:10%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:24%"><col style="width:17%"></colgroup><thead><tr><th scope="col">Benchmark</th><th scope="col">Units</th><th scope="col" class="r">Low</th><th scope="col" class="r">High</th><th scope="col" class="r">Applied</th><th scope="col" class="r">Override</th><th scope="col">Notes</th><th scope="col">Source</th></tr></thead><tbody>';
+  const nNoSrc=ASSUMP.filter(r=>!(r.source&&String(r.source).trim())).length;
+  const srcBanner=nNoSrc?'<div class="calflag"><b>'+nNoSrc+' of '+ASSUMP.length+' benchmarks lack a cited source.</b> Treat those rows as sketch-grade placeholders until calibrated to local SPB / Pinellas data; each is flagged below and counted on the printed summary.</div>':'';
+  let h=srcBanner+'<fieldset class="lockfs"'+(advUnlocked?'':' disabled')+'><div class="atable-wrap"><table class="atable assumptable"><colgroup><col style="width:17%"><col style="width:10%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:24%"><col style="width:17%"></colgroup><thead><tr><th scope="col">Benchmark</th><th scope="col">Units</th><th scope="col" class="r">Low</th><th scope="col" class="r">High</th><th scope="col" class="r">Applied</th><th scope="col" class="r">Override</th><th scope="col">Notes</th><th scope="col">Source</th></tr></thead><tbody>';
   let sec="";
   ASSUMP.forEach((r,i)=>{
     if(r.sec!==sec){sec=r.sec;h+='<tr class="asecrow"><td colspan="8">'+sec+'</td></tr>';}
@@ -1791,9 +1826,11 @@ function buildAssumptions(){
     const noteCell=advUnlocked
       ? '<input type="text" class="asrc" data-i="'+i+'" data-col="notes" value="'+esc(r.notes||"")+'" placeholder="notes…" aria-label="'+esc(r.label)+' — notes">'+implied
       : (esc(r.notes||"")+implied);
-    const srcCell=advUnlocked
+    const noSrc=!(r.source&&String(r.source).trim());
+    const srcFlag=noSrc?'<div class="nosrc">⚠ Uncalibrated — no cited source</div>':"";
+    const srcCell=(advUnlocked
       ? '<input type="text" class="asrc" data-i="'+i+'" data-col="source" value="'+esc(r.source||"")+'" placeholder="source…" aria-label="'+esc(r.label)+' — source">'
-      : esc(r.source||"");
+      : esc(r.source||""))+srcFlag;
     h+='<tr><td>'+r.label+'</td><td class="anote">'+unitCell+'</td>'+
        '<td class="r">'+fld(i,"low",aToDisp(r,r.low),"alow",r.fmt)+'</td>'+
        '<td class="r">'+fld(i,"high",aToDisp(r,r.high),"ahigh",r.fmt)+'</td>'+
@@ -1803,6 +1840,7 @@ function buildAssumptions(){
        '<td class="tnote">'+srcCell+'</td></tr>';
   });
   h+='</tbody></table></div></fieldset>';
+  h+=lockBar("Calibrated model defaults","Construction costs, multipliers, scarcity shape, market comps, and policy guardrails.");
   h+='<p class="lede" style="margin-top:14px">Applied is the midpoint of Low and High unless an Override is entered. Edit Low/High to reset the range, or enter an Override (blue) when a project-specific analysis gives a firm number. For hard costs, switch the basis to <b>$/SF</b> and set the average unit size if your cost data is per square foot — the model always stores the result per unit. Every Applied value flows into the model.</p>';
   return h;
 }
@@ -1878,6 +1916,7 @@ function buildPrintSheet(){
    '<tfoot><tr><td colspan="4">Totals</td><td class="r">'+fmt(m.A)+'</td><td class="r">'+fmt(m.Bplain)+'</td><td class="r">'+(m.gPlain?m.gPlain.toFixed(2)+'×':'-')+'</td></tr></tfoot></table>'+
    '<table class="ps-meta"><tr><td><b>ZOPA floor</b><br>'+fmt(m.zFloor)+'</td><td><b>Ceiling (value to developer)</b><br>'+fmt(m.zCeil)+'</td><td><b>Unspent budget room</b><br>'+fmt(Math.max(0,m.room))+'</td></tr></table>'+
    '<div class="ps-robo"><b>Robustness (±20%):</b> '+roboNote(m).replace(/<\/?b>/g,"")+'</div>'+
+   (function(){const aN=ASSUMP.filter(r=>!(r.source&&String(r.source).trim())).length,lN=LIBCAL.filter(c=>c&&!(c.source&&String(c.source).trim())).length;return (aN||lN)?'<div class="ps-robo"><b>Calibration:</b> '+aN+' of '+ASSUMP.length+' model benchmarks and '+lN+' of '+LIBCAL.length+' benefit-library values carry no cited source and remain sketch-grade placeholders.</div>':'<div class="ps-robo"><b>Calibration:</b> all model benchmarks and benefit-library values carry a cited source.</div>';})()+
    '<div class="ps-foot">All dollar figures are sketch-grade placeholders pending calibration to local data (RSMeans coastal construction, Redfin comps, SPB / Pinellas impact-fee schedules, and the adopted CUP ledger). Generated by the SPB Bonus Density Tool v'+VERSION+' · methodology '+VERSION_DATE+'.</div>';
 }
 function printSummary(){buildPrintSheet();window.print();}
@@ -1941,6 +1980,8 @@ function saveScenario(){
 }
 function loadScenario(idx){
   const sc=scenarios[idx]; if(!sc)return; const st=sc.state;
+  const sv=sc.version||"1.0";
+  if(sv!==VERSION){try{window.alert("This scenario was saved under v"+sv+". Its inputs are restored, but the figures recompute under the current v"+VERSION+" methodology — the stored verdict may change.");}catch(e){}}
   Object.assign(S,JSON.parse(JSON.stringify(st.S)));
   ASSUMP.forEach(function(r,k){if(st.ASSUMP&&st.ASSUMP[k]){r.low=st.ASSUMP[k].low;r.high=st.ASSUMP[k].high;r.override=st.ASSUMP[k].override;if("source" in st.ASSUMP[k])r.source=st.ASSUMP[k].source;if("notes" in st.ASSUMP[k])r.notes=st.ASSUMP[k].notes;}});
   if(st.LIB&&Array.isArray(st.LIB)){           // name-keyed library (restores custom benefits too)
@@ -2027,7 +2068,7 @@ function loadCase(idx){
   goto(STEPS.length-1);          // jump to Results to show the worked outcome
 }
 function buildScenarios(){
-  let h='<div class="card"><div class="sub">'+(scenHosted?"Saved to this browser (localStorage). Browser data can be cleared at any time — use Export to keep a copy as a file you can re-import later.":"Held in memory only — this is not a hosted page, so saved scenarios clear on reload. Use Export to save them to a file and Import to restore them.")+'</div>'+
+  let h='<div class="card"><div class="sub">'+(scenHosted?"Saved to this browser (localStorage). Browser storage can be cleared at any time and is not shared between machines — <b>the exported .json file is the durable copy</b>. Use Export to keep a file you can re-import later or share.":"Held in memory only — this is not a hosted page, so saved scenarios clear on reload. <b>The exported .json file is the durable copy</b> — use Export to save them to a file and Import to restore them.")+'</div>'+
     '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:stretch">'+
     '<button class="addbtn" id="scen-save">+ Save current scenario</button>'+
     '<button class="btn" id="scen-export">Export all (.json)</button>'+
@@ -2037,7 +2078,7 @@ function buildScenarios(){
     h+='<p class="lede">No saved scenarios yet. Save snapshots the current inputs and results so you can compare alternatives — for example, the same project at different bonus counts or benefit packages.</p>';
     return h;
   }
-  h+='<div class="atable-wrap"><table class="atable"><thead><tr><th scope="col">Scenario</th><th scope="col">Saved</th><th scope="col">Use / district</th><th scope="col" class="r">Bonus</th><th scope="col" class="r">Acres</th><th scope="col" class="r">Value to dev</th><th scope="col" class="r">City min</th><th scope="col" class="r">Dev cost</th><th scope="col" class="r">Public value</th><th scope="col" class="r">Pub val / acre</th><th scope="col" class="r">Ratio</th><th scope="col" class="r" title="Public value as a multiple of the lawful mitigation baseline">× over min</th><th scope="col">Verdict</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead><tbody>';
+  h+='<div class="atable-wrap"><table class="atable"><thead><tr><th scope="col">Scenario</th><th scope="col">Saved</th><th scope="col">Use / district</th><th scope="col" class="r">Bonus</th><th scope="col" class="r">Acres</th><th scope="col" class="r">Value to dev</th><th scope="col" class="r">Baseline</th><th scope="col" class="r">Dev cost</th><th scope="col" class="r">Public value</th><th scope="col" class="r">Pub val / acre</th><th scope="col" class="r">Ratio</th><th scope="col" class="r" title="Public value as a multiple of the lawful mitigation baseline">× over baseline</th><th scope="col">Verdict</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead><tbody>';
   scenarios.forEach(function(s,i){const u=s.sum||{};
     const ac=u.acres, pva=(ac>0&&u.B!=null)?u.B/ac:null, overMin=(u.cityMin>0&&u.B!=null)?u.B/u.cityMin:null;
     h+='<tr><td>'+esc(s.name)+'</td><td class="anote">'+esc(s.ts)+(s.version?(' · v'+esc(s.version)):' · v1.0')+'</td><td class="anote">'+esc(u.use)+' / '+esc(u.district)+'</td>'+
