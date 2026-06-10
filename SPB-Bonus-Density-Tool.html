@@ -13,7 +13,7 @@
 <style>
 :root{
   --bg:#f3f4f6; --card:#ffffff; --ink:#1b1f23; --ink2:#4d5862; --ink3:#69737c;
-  --accent:#27576a; --accent-d:#1d4250; --accent-soft:#e3eaee;
+  --accent:#27576a; --accent-d:#1d4250; --accent-soft:#e3eaee; --brand-soft:#c4dcde;
   --public:#27576a; --public-soft:#e3eaee; --developer:#df9b49; --developer-soft:#f9ecd6;
   --pass:#2f7d4f; --warn:#8a5d0f; --fail:#a23440;
   --warn-bg:#fff7e0; --warn-bd:#f0dca0; --warn-ink:#8a6d00;
@@ -28,7 +28,7 @@ html{scroll-behavior:smooth;overflow-y:scroll;scrollbar-gutter:stable}
 body{font-family:"Lexend",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   background:var(--bg);color:var(--ink);line-height:1.55;font-size:16px;
   -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
-::selection{background:var(--accent-soft);color:var(--accent-d)}
+::selection{background:var(--brand-soft);color:var(--accent-d)}
 .mono{font-variant-numeric:tabular-nums}
 .wrap{max-width:none;margin:0;padding:0 28px}
 
@@ -124,33 +124,41 @@ select:focus,input[type=number]:focus,input[type=text]:focus{outline:none;border
 @media(max-width:820px){.case-grid{grid-template-columns:1fr}}
 .hint{font-size:12px;color:var(--ink3);margin-top:6px}
 
-.brow{padding:13px 0;border-bottom:1px solid var(--line2)}
+.brow{border:1px solid var(--line);border-radius:10px;background:var(--card);padding:14px 16px;margin-bottom:10px;box-shadow:var(--sh-sm)}
 .browtop{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
-.brow .nm{font-size:13.5px;font-weight:600}
-.brow .cat{font-size:11px;color:var(--ink3)}
-.browg{display:flex;align-items:center;gap:8px;flex:none}
-.brow .gain{font-variant-numeric:tabular-nums;font-size:14px;font-weight:600}
-.inputs{display:grid;grid-template-columns:0.5fr 0.7fr 0.95fr 0.95fr 2.1fr 2.1fr;gap:8px;margin-top:9px;align-items:start}
-.inputs textarea{width:100%;box-sizing:border-box;font-family:inherit;font-size:13px;padding:8px 10px;border:1px solid var(--line);border-radius:var(--r-sm);background:#fff;color:var(--ink);resize:none;overflow:hidden;min-height:40px;line-height:1.4}
-.inputs textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(42,111,106,.12)}
+.brow .nm{font-size:14px;font-weight:600}
+.brow .cat{font-size:11px;color:var(--ink3);margin-top:1px}
+.browg{display:flex;align-items:center;flex:none}
+.bratio{font-variant-numeric:tabular-nums;font-size:12.5px;font-weight:600;background:var(--public-soft);color:var(--accent-d);padding:3px 11px;border-radius:999px}
+.bdel{margin-left:14px;width:26px;height:26px;border-radius:6px;border:1px solid var(--line);background:none;color:var(--ink3);line-height:1;cursor:pointer;font-size:15px}
+.bdel:hover{color:var(--fail);border-color:currentColor}
+.inputs{display:grid;gap:10px;align-items:start;grid-template-columns:70px 110px 120px 120px minmax(0,1fr) minmax(0,1fr);margin-top:12px}
+.inputs textarea{width:100%;box-sizing:border-box;font-family:inherit;font-size:13px;padding:8px 10px;border:1px solid var(--line);border-radius:var(--r-sm);background:#fff;color:var(--ink);height:38px;min-height:38px;resize:none;overflow:hidden;transition:height .15s ease;line-height:1.4}
+.inputs textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(39,87,106,.14);height:76px;overflow:auto}
 .inp-lab{font-size:10px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink3);margin-bottom:3px}
-.inputs input{padding:6px 7px;font-size:13px;width:100%}
+.inputs input{padding:6px 8px;font-size:13px;width:100%;height:38px;text-align:right;font-variant-numeric:tabular-nums}
 .browcalc{margin-top:8px}
-.pctwarn{margin-top:6px;font-size:11.5px;line-height:1.4;color:var(--warn-ink);background:var(--warn-bg);border:1px solid var(--warn-bd);border-radius:4px;padding:5px 8px}
+.bchips{display:flex;flex-wrap:wrap}
+.pctwarn{display:inline-flex;align-items:center;gap:5px;width:auto;padding:3px 10px;font-size:11.5px;line-height:1.3;color:var(--warn-ink);background:var(--warn-bg);border:1px solid var(--warn-bd);border-radius:999px;margin:8px 8px 0 0;cursor:help}
 .nosrc{margin-top:3px;font-size:10.5px;line-height:1.3;color:var(--warn-ink);font-weight:600}
-.brecur{margin-top:8px;font-size:12px;display:flex;align-items:center;flex-wrap:wrap;gap:4px}
-.brecur-lab{display:inline-flex;align-items:center;gap:6px;font-weight:600;cursor:pointer}
-.brecur .bterm{width:56px;padding:2px 4px;font-size:12px}
-.brecur .binstr{font-size:12px;padding:2px 4px;max-width:340px}
+.bmeta{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:12px;font-size:12.5px}
+.bmeta .brecur-lab{display:inline-flex;align-items:center;gap:6px;font-weight:600;cursor:pointer}
+.bmeta .bsec{display:inline-flex;align-items:center;gap:6px}
+.bmeta select{height:34px;font-size:12.5px;padding:2px 6px;max-width:260px}
+.bmeta .deriv{margin-left:auto;font-size:12.5px;color:var(--ink3)}
+.bmeta-sub{margin-top:7px;font-size:12px;color:var(--ink3)}
+.bmeta-sub .bterm{width:56px;padding:2px 4px;font-size:12px;text-align:right}
 .calflag{margin:10px 0;font-size:12px;line-height:1.45;color:var(--warn-ink);background:var(--warn-bg);border:1px solid var(--warn-bd);border-radius:5px;padding:8px 11px}
-@media(max-width:560px){.inputs{grid-template-columns:repeat(2,1fr)}}
-.brow input{padding:6px 7px;font-size:13px}
+.stephelp{font-size:12.5px;color:var(--ink3);margin:0 0 16px}
+.stephelp summary{cursor:pointer;color:var(--ink2);font-weight:600}
+.stephelp[open] summary{margin-bottom:6px}
+@media(max-width:620px){.inputs{grid-template-columns:repeat(2,1fr)}.bmeta .deriv{margin-left:0}}
 .brow .x{border:none;background:transparent;color:var(--ink3);cursor:pointer;font-size:16px;padding:0 4px}
 .btot{display:flex;justify-content:space-between;padding:11px 0 2px;font-weight:700;font-size:14px}
 .addbar{display:flex;gap:8px;margin-top:12px}
 .addbar select{flex:1}
-.addbtn{background:var(--ink);color:#fff;border:none;border-radius:var(--r-sm);padding:0 18px;font-family:inherit;font-weight:600;font-size:13px;cursor:pointer;transition:background .15s,transform .04s}
-.addbtn:hover{background:#2e353c}
+.addbtn{background:var(--accent);color:#fff;border:none;border-radius:var(--r-sm);padding:0 18px;font-family:inherit;font-weight:600;font-size:13px;cursor:pointer;transition:background .15s,transform .04s}
+.addbtn:hover{background:var(--accent-d)}
 .addbtn:active{transform:translateY(1px)}
 
 .numgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
@@ -224,7 +232,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 .atable td.r{text-align:right}
 .atable .asecrow td,.atable .libaddrow td{max-width:none}
 .atable tbody tr:not(.asecrow):hover td{background:#f6f8f9}
-.asecrow td{background:#eef0f2;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink2)}
+.asecrow td{background:var(--brand-soft);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--accent-d)}
 /* one consistent width for every boxed numeric input across all tables */
 .atable input{width:96px;padding:5px 7px;font-size:12.5px;border:1px solid var(--line);border-radius:4px;font-family:inherit;text-align:right}
 .atable input.alow,.atable input.ahigh{background:#fdfbe9}
@@ -288,7 +296,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 .libsearch{display:flex;gap:8px;align-items:center;margin-bottom:12px}
 .libsearch #lib-search{flex:1;min-width:0}
 .libsec{cursor:pointer;user-select:none}
-.libsec:hover td{background:#e2e6e9}
+.libsec:hover td{background:#b2d2d4}
 .lib-caret{display:inline-block;width:1em;color:var(--accent);font-size:11px}
 .atable .x{border:none;background:none;color:var(--ink3);cursor:pointer;font-size:16px}
 .atable .x:hover{color:var(--fail)}
@@ -476,11 +484,10 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
     <section class="panel" data-step="2">
       <div class="eyebrow">Step 3 of 4</div>
       <h2 class="step-h">Public Benefit Package</h2>
-      <p class="lede">Select benefits from the library. Each carries a developer cost and a city value; the value-to-cost ratio indicates relative efficiency. Enter quantity and the share above code, only the above-code portion is counted.</p>
+      <p class="lede">Select benefits from the library, set the quantity and the share above code, and the tool ranks each by public value per developer dollar.</p>
       <div class="card">
         <h3>Offered Benefits</h3>
-        <div class="sub">Per line, set the quantity, the percent above code (only that share counts), and, if you have them, the developer's submitted cost and the city's value per unit. Defaults come from the library. This is a different guard from the break-even floor: the floor offsets the project's impacts; % above code prevents crediting work the code already requires.</div>
-        <div class="hint" style="margin:0 0 4px">The number top-right of each line is its value ratio: public value per developer dollar, after the category multiplier (higher is better; cash is 1×). Multipliers and cost factors are editable under <b>Assumptions</b>, top right.</div>
+        <details class="stephelp"><summary>How lines are counted</summary>Per line, set the quantity, the percent above code (only that share counts), and, if you have them, the developer's submitted cost and the city's value per unit; defaults come from the library. The pill at the top-right of each line is its value ratio (public value per developer dollar, after the category multiplier; higher is better, cash is 1×). The "% above code" field is a different guard from the break-even floor: the floor offsets the project's impacts, while percent above code prevents crediting work the code already requires. Multipliers and cost factors are editable under Assumptions.</details>
         <div id="blist"></div>
         <div class="btot"><span>Developer cost</span><span class="mono" id="tot-a"></span></div>
         <div class="btot" style="border-top:1px solid var(--line);margin-top:4px;padding-top:9px"><span>Public value offered</span><span class="mono" id="tot-b"></span></div>
@@ -635,7 +642,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
         <p class="lede" style="margin:0 0 8px"><b>What the code does <i>not</i> set.</b> The SPB code contains no contribution rate, no benefit-valuation formula, and no floor or ceiling on what a developer must offer, the only statutory weighting is Chapter 163 proportionate-share ("in proportion to the impacts caused"), which is the basis for the impact-mitigation floor. The ZOPA bounds in this tool, and the 15–25% contribution / 25–50% capture guardrails cited below, are therefore <b>analytic overlays from the supporting framework, not adopted code</b>; the value-ratio math is a staff sketch over the code's discretionary merit-basis review.</p>
         <p class="lede" style="margin:0"><b>Supporting framework.</b> <i>Coming soon.</i> A fuller write-up of the supporting framework (<i>A Framework for Density Bonus Valuation in St. Pete Beach</i>, Tampa Bay Regional Planning Council, April 2026) will appear here.</p>
         <p class="lede" style="margin:8px 0 0"><b>Sources &amp; benchmarks.</b> The benchmark figures behind this tool trace to published sources, carried on the Assumptions and Benefit-library pages (Source column): construction cost <b>RSMeans</b> and <b>ICC Building Valuation Data</b>; lodging <b>STR / HVS</b>; soft costs and developer margin <b>ULI / CBRE</b>; condo comps <b>Redfin</b>; benefit unit costs from <b>SFRPC</b> (Resilient BCA Database / REBECCA), <b>FEMA</b> (Ecosystem Service Values; BCA Sustainment v13), <b>FDEP</b>, <b>FHWA</b>, <b>WGI</b>, <b>Forward Pinellas</b>, <b>UF Shimberg</b>, and <b>HUD</b>. The framework’s fuller valuation method draws on residual-land-value practice (<b>Keyser Marston</b>; <b>BAE Urban Economics</b>) and value-layer multipliers (<b>NIBS</b> <i>Natural Hazard Mitigation Saves</i> 2019 for resilience; <b>GASB 34 / FHWA</b> lifecycle; <b>FL Statute 255.20</b> public-procurement premium; <b>BEA / RIMS II</b> economic impact). Those layers inform the benchmarks but are not recomputed here.</p>
-        <p class="lede" style="margin:10px 0 0;font-size:12px;color:var(--ink3)"><b>Version &amp; changelog.</b> Tool <b>v1.7.1</b> · methodology dated <b>2026-06-10</b> (stamped on every printout). <b>v1.7.1</b>: palette refresh, brand color #27576a (buttons, the context bar, the public / city charts) and accent #df9b49 (the developer charts and highlights); no model change. <b>v1.7.0</b>: added a <b>counter-package solver</b> on Results, it proposes the most plain-value-efficient library benefits sized to clear the break-even floor within the developer budget (enforceability assumed at condition-of-approval) and can load the package onto the Benefits step; the ZOPA chart now shows an empty state instead of stacked $0 labels before a deal is entered; the Step 1 map is layered below the sticky header so it no longer paints over it; Workspace menu group ordered above Reference. <b>v1.6.1</b>: header and deal-context strip combined into one sticky block (no overlap on scroll); the current step is remembered across a page refresh when served as a hosted page; the readout info glyph removed in favor of a dotted underline; menu caret enlarged. <b>v1.6.0</b>: "lawful mitigation baseline" renamed "break-even floor" (legal term retained in the derivation and methods note); component labels renamed (Pool value used, Impact offset) and plain-terms definitions rewritten; the % above code guard disambiguated from the floor; Results page reworked (verdict shown as a color pill folding in the robustness one-liner, action bar moved below the numbers, cards reordered to ZOPA then value-split then ranked benefits and explorer, with diagnostics grouped below); a persistent deal-context strip (district, use, bonus, pool remaining) on every step; aux toolbar grouped into collapsible Reference and Workspace umbrellas (default collapsed); a two-color semantic palette (teal public, warm developer); Step 1 reordered to lead with location; the Pool step now shows the allocation ledger; supporting-framework section set to coming soon; body and small-text sizes bumped. <b>v1.5.0</b>: each benefit can name the instrument that secures it (recorded covenant, development agreement, bond, condition of approval, letter of intent, none), applying an enforceability credit to its public value in both the verdict and the ranking; an unspecified instrument credits at 100% but is flagged; factors are editable in new Assumptions § I. <b>v1.4.0</b>: benefits can be marked recurring (annual), valued as the present value of a growing annuity over a term (new Assumptions § H: discount rate, escalation rate, default term); the escalation-below-discount rule is enforced with a flag on the line; recurring lines are marked on the printout. <b>v1.3.0</b>: lodging value now varies by Market Sub-Type, the income approach uses a Gulf-front resort ADR or an inland / mid-market ADR (blended when no sub-type is chosen) instead of one islandwide rate; §G splits ADR into two sourced rows. <b>v1.2.2</b>: editorial pass, removed em-dashes from the interface copy (replaced with commas, colons, or rephrasing); no model or methodology change. <b>v1.2.1</b>: value-to-developer described as a cost-driven range in the Methods card (feasibility on the conservative low end, high end the negotiation target); robustness card states the ±20% stresses the midpoint, not the conservative verdict basis; loading an older-version scenario now warns that figures recompute under current methodology; un-sourced Assumptions/Library rows flagged as uncalibrated placeholders (carried onto the PDF); a warning chip when a benefit line sits at 100% above code; lodging ADR annotated as a blended islandwide rate; lock/enable-editing banners moved to the bottom of the editable tables. <b>v1.2</b>: lodging income approach (value per key = ADR × occ × ancillary × EBITDA ÷ cap); cost-driven value-to-developer range with the feasibility verdict run on the conservative (low) end and the high end shown as the negotiation target. <b>v1.1</b>: verdict moved to plain dollars; category multipliers demoted to ranking only; "city minimum" renamed "lawful mitigation baseline." <b>v1.0</b>: initial sketch model. A scenario or PDF produced under an earlier version is identifiable by its stamp; a changed verdict between versions reflects a deliberate methodology fix, not a contradiction.</p>
+        <p class="lede" style="margin:10px 0 0;font-size:12px;color:var(--ink3)"><b>Version &amp; changelog.</b> Tool <b>v1.7.2</b> · methodology dated <b>2026-06-10</b> (stamped on every printout). <b>v1.7.2</b>: Benefits step redesigned, each benefit is now a bordered card with one input row, a single meta row (recurring, secured-by, derivation), and the warnings as compact pills (full text on hover) instead of full-width banners; Notes/Source shrink to one line and expand on focus; the value ratio is a labeled pill and delete is an explicit icon button; the intro prose folded into a "How lines are counted" disclosure. Added a third brand tone #c4dcde (table section headers, text selection); remaining black buttons recolored to the brand. Copy-only chip wording (no model change). <b>v1.7.1</b>: palette refresh, brand color #27576a (buttons, the context bar, the public / city charts) and accent #df9b49 (the developer charts and highlights); no model change. <b>v1.7.0</b>: added a <b>counter-package solver</b> on Results, it proposes the most plain-value-efficient library benefits sized to clear the break-even floor within the developer budget (enforceability assumed at condition-of-approval) and can load the package onto the Benefits step; the ZOPA chart now shows an empty state instead of stacked $0 labels before a deal is entered; the Step 1 map is layered below the sticky header so it no longer paints over it; Workspace menu group ordered above Reference. <b>v1.6.1</b>: header and deal-context strip combined into one sticky block (no overlap on scroll); the current step is remembered across a page refresh when served as a hosted page; the readout info glyph removed in favor of a dotted underline; menu caret enlarged. <b>v1.6.0</b>: "lawful mitigation baseline" renamed "break-even floor" (legal term retained in the derivation and methods note); component labels renamed (Pool value used, Impact offset) and plain-terms definitions rewritten; the % above code guard disambiguated from the floor; Results page reworked (verdict shown as a color pill folding in the robustness one-liner, action bar moved below the numbers, cards reordered to ZOPA then value-split then ranked benefits and explorer, with diagnostics grouped below); a persistent deal-context strip (district, use, bonus, pool remaining) on every step; aux toolbar grouped into collapsible Reference and Workspace umbrellas (default collapsed); a two-color semantic palette (teal public, warm developer); Step 1 reordered to lead with location; the Pool step now shows the allocation ledger; supporting-framework section set to coming soon; body and small-text sizes bumped. <b>v1.5.0</b>: each benefit can name the instrument that secures it (recorded covenant, development agreement, bond, condition of approval, letter of intent, none), applying an enforceability credit to its public value in both the verdict and the ranking; an unspecified instrument credits at 100% but is flagged; factors are editable in new Assumptions § I. <b>v1.4.0</b>: benefits can be marked recurring (annual), valued as the present value of a growing annuity over a term (new Assumptions § H: discount rate, escalation rate, default term); the escalation-below-discount rule is enforced with a flag on the line; recurring lines are marked on the printout. <b>v1.3.0</b>: lodging value now varies by Market Sub-Type, the income approach uses a Gulf-front resort ADR or an inland / mid-market ADR (blended when no sub-type is chosen) instead of one islandwide rate; §G splits ADR into two sourced rows. <b>v1.2.2</b>: editorial pass, removed em-dashes from the interface copy (replaced with commas, colons, or rephrasing); no model or methodology change. <b>v1.2.1</b>: value-to-developer described as a cost-driven range in the Methods card (feasibility on the conservative low end, high end the negotiation target); robustness card states the ±20% stresses the midpoint, not the conservative verdict basis; loading an older-version scenario now warns that figures recompute under current methodology; un-sourced Assumptions/Library rows flagged as uncalibrated placeholders (carried onto the PDF); a warning chip when a benefit line sits at 100% above code; lodging ADR annotated as a blended islandwide rate; lock/enable-editing banners moved to the bottom of the editable tables. <b>v1.2</b>: lodging income approach (value per key = ADR × occ × ancillary × EBITDA ÷ cap); cost-driven value-to-developer range with the feasibility verdict run on the conservative (low) end and the high end shown as the negotiation target. <b>v1.1</b>: verdict moved to plain dollars; category multipliers demoted to ranking only; "city minimum" renamed "lawful mitigation baseline." <b>v1.0</b>: initial sketch model. A scenario or PDF produced under an earlier version is identifiable by its stamp; a changed verdict between versions reflects a deliberate methodology fix, not a contradiction.</p>
       </div>
     </section>
 
@@ -674,7 +681,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 
 <script>
 "use strict";
-const VERSION="1.7.1", VERSION_DATE="2026-06-10";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
+const VERSION="1.7.2", VERSION_DATE="2026-06-10";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
 const K={hardCondo:237500,hardHotel:170000,soft:0.24,margin:0.15,decline:0.80,impact:28000};
 const CATMULT={"Workforce Housing":1.4,"Community Development":1.5,"Transportation":1.7,"Environmental":2.0,"Resilience":2.5,"Monetary / Cash":1.0};
 const BMULT={"Low-rise (1-3)":1.0,"Mid-rise (4-7)":1.15,"High-rise (8+)":1.35};
@@ -1206,34 +1213,38 @@ function render(){
     const nVal=(x.note!=null)?x.note:((li>=0&&LIBCAL[li])?(LIBCAL[li].note||""):"");
     const sVal=(x.source!=null)?x.source:((li>=0&&LIBCAL[li])?(LIBCAL[li].source||""):"");
     const row=document.createElement("div");row.className="brow";
+    const derivTxt=(x.recurring
+      ? 'annual cost '+fmt(x.annualDev)+' → annual city '+fmt(x.annualCity)+' · PV: cost '+fmt(x.devCost)+' → city value '+fmt(x.cityPlain)
+      : 'cost '+fmt(x.devCost)+' → city value '+fmt(x.cityPlain))+(x.hc<1?' (after '+Math.round(x.hc*100)+'% credit)':'');
+    let chips='';
+    if(x.recurring&&!recurringGuardOK()) chips+='<span class="pctwarn" title="Escalation ('+(PVD.esc*100).toFixed(1)+'%) is not below the discount rate ('+(PVD.disc*100).toFixed(1)+'%). A stream that grows at least as fast as it is discounted over-credits a long obligation; lower escalation or raise the discount rate under Assumptions section H.">⚠ Escalation not below discount</span>';
+    if(!x.instr) chips+='<span class="pctwarn" title="No enforceability instrument selected, so this value is credited at 100%. Name what secures it (covenant, development agreement, condition of approval, bond) to risk-adjust the public value.">⚠ Unsecured, credited 100%</span>';
+    if(x.pct>=1) chips+='<span class="pctwarn" title="Counted as 100% above code, so the full quantity credits as voluntary. If code already requires part of this benefit, lower percent above code so only the above-code share counts.">⚠ 100% above code</span>';
     row.innerHTML='<div class="browtop"><div><div class="nm">'+x.name+'</div><div class="cat">'+x.cat+' · unit: '+x.unit+'</div></div>'+
-      '<div class="browg"><span class="gain" title="public value per developer dollar">'+(x.gain?x.gain.toFixed(1)+"×":"-")+'</span><button class="x" data-x="'+i+'">×</button></div></div>'+
+      '<div class="browg"><span class="bratio" title="public value per developer dollar">'+(x.gain?x.gain.toFixed(1)+"×":"-")+'</span>'+
+      '<button class="bdel" data-x="'+i+'" aria-label="Remove benefit" title="Remove benefit">×</button></div></div>'+
       '<div class="inputs">'+
         '<div><div class="inp-lab">Qty</div><input type="text" inputmode="decimal" value="'+fmtNum(x.qty)+'" data-i="'+i+'" data-f="qty"></div>'+
         '<div><div class="inp-lab">% above code</div><input type="number" value="'+Math.round(x.pct*100)+'" data-i="'+i+'" data-f="pct"></div>'+
         '<div><div class="inp-lab">Dev $/unit</div><input type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.dev))+'" data-i="'+i+'" data-f="dev"></div>'+
         '<div><div class="inp-lab">City $/unit</div><input type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.city))+'" data-i="'+i+'" data-f="city"></div>'+
-        '<div><div class="inp-lab">Notes</div><textarea rows="2" data-i="'+i+'" data-f="note" placeholder="(library default)" aria-label="'+esc(x.name)+', notes">'+esc(nVal)+'</textarea></div>'+
-        '<div><div class="inp-lab">Source</div><textarea rows="2" data-i="'+i+'" data-f="source" placeholder="(library default)" aria-label="'+esc(x.name)+', source">'+esc(sVal)+'</textarea></div>'+
+        '<div><div class="inp-lab">Notes</div><textarea data-i="'+i+'" data-f="note" placeholder="(library default)" aria-label="'+esc(x.name)+', notes">'+esc(nVal)+'</textarea></div>'+
+        '<div><div class="inp-lab">Source</div><textarea data-i="'+i+'" data-f="source" placeholder="(library default)" aria-label="'+esc(x.name)+', source">'+esc(sVal)+'</textarea></div>'+
       '</div>'+
-      '<div class="brecur"><label class="brecur-lab"><input type="checkbox" data-i="'+i+'" data-f="recurring"'+(x.recurring?" checked":"")+'> Recurring annual benefit</label>'+
-        (x.recurring?(' <span class="anote">$/unit above are treated as <b>per-year</b> · term <input type="number" class="bterm" min="1" data-i="'+i+'" data-f="term" value="'+(x.term||PVD.term)+'"> yrs · PV factor '+x.pvf.toFixed(1)+'× (disc '+(PVD.disc*100).toFixed(1)+'%, esc '+(PVD.esc*100).toFixed(1)+'%)</span>'):"")+'</div>'+
-      '<div class="brecur"><label class="brecur-lab" for="binstr'+i+'">Secured by</label> <select id="binstr'+i+'" class="binstr" data-i="'+i+'" data-f="instr"><option value=""'+(x.instr?"":" selected")+'>Not specified (100% credit)</option>'+
-        ENFORCE_ORDER.map(function(k){return '<option value="'+k+'"'+(x.instr===k?" selected":"")+'>'+ENFORCE_LABEL[k]+' ('+Math.round(ENFORCE[k]*100)+'%)</option>';}).join("")+'</select>'+
-        (x.instr?' <span class="anote">enforceability credit '+Math.round(x.hc*100)+'%</span>':"")+'</div>'+
-      '<div class="browcalc hint">'+(x.recurring
-        ? 'annual cost '+fmt(x.annualDev)+' → annual city value '+fmt(x.annualCity)+' · present value over '+x.term+' yrs: cost '+fmt(x.devCost)+' → city value '+fmt(x.cityPlain)
-        : 'cost '+fmt(x.devCost)+' → city value '+fmt(x.cityPlain))+(x.hc<1?' (after '+Math.round(x.hc*100)+'% enforceability credit on '+fmt(x.annualCity*x.pvf)+')':'')+'  ('+x.cat+'; ×'+x.mult+' priority weight → ranking only)</div>'+
-      ((x.recurring&&!recurringGuardOK())?'<div class="pctwarn">⚠ Escalation ('+(PVD.esc*100).toFixed(1)+'%) is not below the discount rate ('+(PVD.disc*100).toFixed(1)+'%). A stream that grows at least as fast as it is discounted over-credits a long obligation, lower escalation or raise the discount rate under Assumptions § H.</div>':"")+
-      (!x.instr?'<div class="pctwarn">⚠ No enforceability instrument selected, this value is credited at 100%. Name what secures it (covenant, development agreement, condition of approval, bond) to risk-adjust the public value.</div>':"")+
-      (x.pct>=1?'<div class="pctwarn">⚠ Counted as 100% above code, the full quantity credits as voluntary. If code already requires part of this benefit, lower "% above code" so only the genuinely above-code share counts.</div>':"");
+      '<div class="bmeta">'+
+        '<label class="brecur-lab"><input type="checkbox" data-i="'+i+'" data-f="recurring"'+(x.recurring?" checked":"")+'> Recurring</label>'+
+        '<span class="bsec"><label for="binstr'+i+'">Secured by</label> <select id="binstr'+i+'" class="binstr" data-i="'+i+'" data-f="instr"><option value=""'+(x.instr?"":" selected")+'>Not specified (100%)</option>'+
+          ENFORCE_ORDER.map(function(k){return '<option value="'+k+'"'+(x.instr===k?" selected":"")+'>'+ENFORCE_LABEL[k]+' ('+Math.round(ENFORCE[k]*100)+'%)</option>';}).join("")+'</select>'+
+          (x.instr?' <span class="anote">'+Math.round(x.hc*100)+'%</span>':"")+'</span>'+
+        '<span class="deriv">'+derivTxt+'</span>'+
+      '</div>'+
+      (x.recurring?'<div class="bmeta-sub">$/unit treated as <b>per-year</b> · term <input type="number" class="bterm" min="1" data-i="'+i+'" data-f="term" value="'+(x.term||PVD.term)+'"> yrs · PV factor '+x.pvf.toFixed(1)+'× (disc '+(PVD.disc*100).toFixed(1)+'%, esc '+(PVD.esc*100).toFixed(1)+'%)</div>':"")+
+      '<div class="bchips">'+chips+'</div>';
     bl.appendChild(row);
   });
     bl.querySelectorAll("input,textarea").forEach(inp=>{
-    if(inp.tagName==="TEXTAREA")autoGrowTA(inp);
     if(inp.type==="checkbox"){inp.addEventListener("change",e=>{S.benefits[+e.target.dataset.i].recurring=e.target.checked;render();});return;}
     inp.addEventListener("input",e=>{
-      if(e.target.tagName==="TEXTAREA")autoGrowTA(e.target);
       const i=+e.target.dataset.i,f=e.target.dataset.f;
       S.benefits[i][f]= (f==="note"||f==="source") ? e.target.value : (f==="pct" ? (parseNum(e.target.value)/100) : parseNum(e.target.value)); softRender();});
     inp.addEventListener("change",e=>{const f=e.target.dataset.f; if(f!=="pct"&&f!=="note"&&f!=="source"&&f!=="term")e.target.value=fmtNum(parseNum(e.target.value));});});
@@ -1253,8 +1264,10 @@ function softRender(){
   const v=verdictObj(m);
   document.getElementById("readout").innerHTML=readoutHTML(m,v);
   document.querySelectorAll("#blist .brow").forEach((row,i)=>{const x=m.rows[i];
-    if(x){const gv=row.querySelector(".gain"); if(gv)gv.textContent=x.gain?x.gain.toFixed(1)+"×":"-";
-      const bc=row.querySelector(".browcalc"); if(bc)bc.innerHTML='cost '+fmt(x.devCost)+' → city value '+fmt(x.cityPlain)+'  ('+x.cat+'; ×'+x.mult+' priority weight → ranking only)';}});
+    if(x){const gv=row.querySelector(".bratio"); if(gv)gv.textContent=x.gain?x.gain.toFixed(1)+"×":"-";
+      const bc=row.querySelector(".bmeta .deriv"); if(bc)bc.textContent=(x.recurring
+        ? 'annual cost '+fmt(x.annualDev)+' → annual city '+fmt(x.annualCity)+' · PV: cost '+fmt(x.devCost)+' → city value '+fmt(x.cityPlain)
+        : 'cost '+fmt(x.devCost)+' → city value '+fmt(x.cityPlain))+(x.hc<1?' (after '+Math.round(x.hc*100)+'% credit)':'');}});
     if(cur===3){paintVerdict(m,v);
     document.getElementById("numgrid").innerHTML=numgridHTML(m);
     drawZopa(m);drawRanks(m);drawSpark(m);drawRobo(m);drawDensity(m);drawXCheck(m);drawValueStack(m);drawSolver(m);}
