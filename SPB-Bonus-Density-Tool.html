@@ -143,6 +143,7 @@ select:focus,input[type=number]:focus,input[type=text]:focus{outline:none;border
 .zopa-lab.top{top:-2px}.zopa-lab.bot{top:38px}
 .zopa-target{position:absolute;top:9px;height:34px;border-radius:4px;background:rgba(227,160,80,.16);border:1px dashed rgba(176,122,46,.75);box-sizing:border-box}
 .zopa-contrib{position:absolute;top:9px;height:34px;border-radius:4px;background:rgba(120,130,138,.10);box-sizing:border-box}
+.zopa-tmark{position:absolute;top:14px;height:24px;border-left:2px dashed var(--accent)}
 .rank{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line2)}
 .rank .bar{height:7px;border-radius:3px;background:var(--accent)}
 .rank .nm{font-size:13px;flex:none;width:170px}
@@ -190,6 +191,8 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 .assumptable td.anote{white-space:normal;word-break:break-word}
 .assumptable input.alow,.assumptable input.ahigh,.assumptable input.ov{width:100%;box-sizing:border-box}
 .assumptable input.asrc{width:100%;box-sizing:border-box;text-align:left;font-size:12px}
+.atable td.tnote{font-size:12px;color:var(--ink);line-height:1.45;white-space:normal;word-break:break-word;vertical-align:top}
+.atable td.tnote .anote{color:var(--ink3)}
 .histtable{table-layout:fixed}
 .histtable td{white-space:normal;word-break:break-word;vertical-align:top}
 .histtable input,.histtable select{width:100%;box-sizing:border-box}
@@ -325,9 +328,12 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
               <div id="site-intel" class="siteintel"><div class="hint">Drop the pin or search an address to pull parcel, flood, and evacuation data.</div></div></div>
           </div>
           <div class="locmap">
-            <div class="addbar" style="margin-bottom:12px">
-              <input type="text" id="paddr" style="flex:1" placeholder="Search an address to drop the pin..." value="">
-              <button class="addbtn" id="addrgo">Search</button>
+            <div class="field" style="margin-top:0">
+              <label class="lab"><span>Property address</span></label>
+              <div class="addbar" style="margin-top:0;margin-bottom:0">
+                <input type="text" id="paddr" style="flex:1" placeholder="Search an address to drop the pin..." value="">
+                <button class="addbtn" id="addrgo">Search</button>
+              </div>
             </div>
             <div id="map" style="height:340px;border:1px solid var(--line);border-radius:6px;background:#e9ecee"></div>
             <div class="hint" id="pin-coords" style="margin-top:8px"></div>
@@ -373,8 +379,9 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
         </div>
         <div class="field">
           <label class="lab"><span>Market Value per unit/key</span><span class="val" id="mv-v"></span></label>
-          <input type="range" id="mv" min="500000" max="3500000" step="25000" value="1800000">
-          <div class="hint">Seeded by market sub-type. SPB luxury condo comps run ≈ $1,100–1,250/SF (Vue Sarasota Bay; Corey Landings est. ≈ $2.6M/unit). Set the average unit size to cross-check $/SF, or enter a $/SF figure to drive the value.</div>
+          <input type="range" id="mv" min="150000" max="3500000" step="25000" value="1800000">
+          <div class="hint">Condo / MF: seeded by market sub-type from recent SPB / Pinellas barrier-island closings (≈ $1,100–1,250/SF luxury; Corey Landings est. ≈ $2.6M/unit). Cross-check via $/SF below. Temporary lodging: seeded by the income approach — inputs under Assumptions § G.</div>
+          <div class="hint" id="mkt-income" style="margin-top:6px"></div>
           <div class="row2" style="margin-top:10px">
             <div><label class="lab"><span>Avg Unit / Key Size (SF)</span></label><input type="text" inputmode="numeric" id="mkt-sf" value="2,269"></div>
             <div><label class="lab"><span>Or Enter as $ / SF</span></label><input type="text" inputmode="numeric" id="mkt-psf" placeholder="$ per SF"></div>
@@ -567,7 +574,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
         <p class="lede" style="margin:0 0 8px"><b>What the code does <i>not</i> set.</b> The SPB code contains no contribution rate, no benefit-valuation formula, and no floor or ceiling on what a developer must offer — the only statutory weighting is Chapter 163 proportionate-share ("in proportion to the impacts caused"), which is the basis for the impact-mitigation floor. The ZOPA bounds in this tool, and the 15–25% contribution / 25–50% capture guardrails cited below, are therefore <b>analytic overlays from the supporting framework, not adopted code</b>; the value-ratio math is a staff sketch over the code's discretionary merit-basis review.</p>
         <p class="lede" style="margin:0"><b>Supporting framework.</b> This tool operationalizes the approach in <i>A Framework for Density Bonus Valuation in St. Pete Beach</i> (Tampa Bay Regional Planning Council, April 2026): density here is an <b>allocation</b> of a finite, non-renewable pool, not a growth incentive, so each bonus unit carries scarcity value, and the negotiation is bounded by a Zone of Possible Agreement between a scarcity-adjusted city floor and a developer walk-away ceiling. That framework documents the legal basis for the floor (Florida proportionate-share statute F.S. §163.3180; the Nollan–Dolan–Koontz nexus and rough-proportionality standards) and the value-capture rationale for the ceiling (Lincoln Institute / ULI), and it frames public benefits across five value layers — construction cost, city replacement-cost premium, lifecycle O&amp;M, resilience / avoided damage, and regional economic impact. This tool intentionally uses a simpler single-value-per-benefit model; the framework’s layered valuation and its 15–25% contribution / 25–50% capture guardrails are documented there for staff who want the fuller rationale.</p>
         <p class="lede" style="margin:8px 0 0"><b>Sources &amp; benchmarks.</b> The benchmark figures behind this tool trace to published sources, carried on the Assumptions and Benefit-library pages (Source column): construction cost <b>RSMeans</b> and <b>ICC Building Valuation Data</b>; lodging <b>STR / HVS</b>; soft costs and developer margin <b>ULI / CBRE</b>; condo comps <b>Redfin</b>; benefit unit costs from <b>SFRPC</b> (Resilient BCA Database / REBECCA), <b>FEMA</b> (Ecosystem Service Values; BCA Sustainment v13), <b>FDEP</b>, <b>FHWA</b>, <b>WGI</b>, <b>Forward Pinellas</b>, <b>UF Shimberg</b>, and <b>HUD</b>. The framework’s fuller valuation method draws on residual-land-value practice (<b>Keyser Marston</b>; <b>BAE Urban Economics</b>) and value-layer multipliers (<b>NIBS</b> <i>Natural Hazard Mitigation Saves</i> 2019 for resilience; <b>GASB 34 / FHWA</b> lifecycle; <b>FL Statute 255.20</b> public-procurement premium; <b>BEA / RIMS II</b> economic impact) — those layers inform the benchmarks but are not recomputed here.</p>
-        <p class="lede" style="margin:10px 0 0;font-size:12px;color:var(--ink3)"><b>Version &amp; changelog.</b> Tool <b>v1.1</b> · methodology dated <b>2026-06-10</b> (stamped on every printout). <b>v1.1</b> — verdict moved to plain dollars; category multipliers demoted to ranking only; "city minimum" renamed "lawful mitigation baseline." <b>v1.0</b> — initial sketch model. A scenario or PDF produced under an earlier version is identifiable by its stamp; a changed verdict between versions reflects a deliberate methodology fix, not a contradiction.</p>
+        <p class="lede" style="margin:10px 0 0;font-size:12px;color:var(--ink3)"><b>Version &amp; changelog.</b> Tool <b>v1.2</b> · methodology dated <b>2026-06-10</b> (stamped on every printout). <b>v1.2</b> — lodging income approach (value per key = ADR × occ × ancillary × EBITDA ÷ cap); cost-driven value-to-developer range with the feasibility verdict run on the conservative (low) end and the high end shown as the negotiation target. <b>v1.1</b> — verdict moved to plain dollars; category multipliers demoted to ranking only; "city minimum" renamed "lawful mitigation baseline." <b>v1.0</b> — initial sketch model. A scenario or PDF produced under an earlier version is identifiable by its stamp; a changed verdict between versions reflects a deliberate methodology fix, not a contradiction.</p>
       </div>
     </section>
 
@@ -606,7 +613,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 
 <script>
 "use strict";
-const VERSION="1.1", VERSION_DATE="2026-06-10";   // bump + add a changelog line when the model logic changes
+const VERSION="1.2", VERSION_DATE="2026-06-10";   // bump + add a changelog line when the model logic changes
 const K={hardCondo:237500,hardHotel:170000,soft:0.24,margin:0.15,decline:0.80,impact:28000};
 const CATMULT={"Workforce Housing":1.4,"Community Development":1.5,"Transportation":1.7,"Environmental":2.0,"Resilience":2.5,"Monetary / Cash":1.0};
 const BMULT={"Low-rise (1-3)":1.0,"Mid-rise (4-7)":1.15,"High-rise (8+)":1.35};
@@ -647,7 +654,7 @@ function buildHistory(){
   let h=lockBar("Allocation ledger","The institutional record of pool draws that drives the scarcity calculation.")+'<fieldset class="lockfs"'+(advUnlocked?'':' disabled')+'>';
   h+='<div class="card"><h3>Density pool</h3><div class="sub">Remaining = pool total minus approved allocations below. This drives the scarcity cost on the Pool step.</div><div class="agrid" style="grid-template-columns:repeat(2,1fr)"><div><label>RU pool total</label><input type="number" id="poolRU" value="'+POOL_TOTAL.RU+'"></div><div><label>TLU pool total</label><input type="number" id="poolTLU" value="'+POOL_TOTAL.TLU+'"></div></div><div class="hint" id="pool-summary" style="margin-top:10px">'+poolSummaryText()+'</div><div class="hint" style="margin-top:6px">The modeled TLU pool (325) is the Town Center-2 / Activity Center / Bayou Residential pool. SPB also has separate transient-lodging pools the tool does not total — Boutique Hotel/Condo 125, Town Center Core (TC-1) 50, Upham Beach Village 175. Lodging deals outside the TC-2/AC/Bayou districts draw from those instead.</div></div>';
   h+='<div class="atable-wrap"><table class="atable histtable"><colgroup><col style="width:8%"><col style="width:17%"><col style="width:7%"><col style="width:7%"><col style="width:7%"><col style="width:11%"><col style="width:18%"><col style="width:21%"><col style="width:4%"></colgroup><thead><tr><th scope="col">Date</th><th scope="col">Project / Applicant</th><th scope="col">Pool</th><th scope="col" class="r">Approved</th><th scope="col" class="r">Requested</th><th scope="col">Decision</th><th scope="col">Source / Ordinance</th><th scope="col">Notes</th><th scope="col"><span class="sr-only">Delete</span></th></tr></thead><tbody>';
-  HISTORY.forEach((r,i)=>{h+='<tr><td>'+hfld(i,"date",r.date,"text","hdate")+'</td><td>'+htxt(i,"project",r.project)+'</td><td>'+hsel(i,"pool",r.pool,["RU","TLU"])+'</td><td class="r">'+hfld(i,"approved",r.approved,"number","hnum")+'</td><td class="r">'+hfld(i,"requested",r.requested,"number","hnum")+'</td><td>'+hsel(i,"decision",r.decision,["Approved","Denied","Pending","Withdrawn","Superseded","Other pool"])+'</td><td>'+htxt(i,"source",r.source)+'</td><td>'+htxt(i,"notes",r.notes)+'</td><td><button class="x" data-del="'+i+'">\u00d7</button></td></tr>';});
+  HISTORY.forEach((r,i)=>{h+='<tr><td>'+hfld(i,"date",r.date,"text","hdate")+'</td><td>'+htxt(i,"project",r.project)+'</td><td>'+hsel(i,"pool",r.pool,["RU","TLU"])+'</td><td class="r">'+hfld(i,"approved",r.approved,"number","hnum")+'</td><td class="r">'+hfld(i,"requested",r.requested,"number","hnum")+'</td><td>'+hsel(i,"decision",r.decision,["Approved","Denied","Pending","Withdrawn","Superseded","Other pool"])+'</td><td>'+htxt(i,"source",r.source)+'</td><td>'+htxt(i,"notes",r.notes)+'</td><td>'+(advUnlocked?'<button class="x" data-del="'+i+'">\u00d7</button>':'')+'</td></tr>';});
   h+='</tbody></table></div><button class="addbtn" id="histadd" style="margin-top:12px">+ Add row</button></fieldset>';
   h+='<p class="lede" style="margin-top:14px">The remaining pool flows into the Pool step and the scarcity cost automatically. Set a decision to anything other than Approved to exclude a row from the allocated total — use <b>Superseded</b> for a returned/divested approval and <b>Other pool</b> for a real allocation that draws from a different pool than the RU 195 / TLU 325 modeled here.</p>';
   return h;
@@ -758,7 +765,11 @@ function addCustomBenefit(cat){
   buildAddSel(); renderAux("library"); render();
 }
 function delCustomBenefit(i){
-  if(!LIB[i]||!LIB[i][5])return;          // only user-added rows are deletable
+  if(!LIB[i])return;
+  if(!LIB[i][5]){   // built-in catalog row → confirm (custom rows delete without a prompt)
+    let ok=true; try{ok=window.confirm('Remove "'+LIB[i][0]+'" from the benefit library? It will no longer be selectable on the Benefits step. (Kept on Reset all; travels with saved scenarios.)');}catch(e){ok=true;}
+    if(!ok)return;
+  }
   LIB.splice(i,1); LIBCAL.splice(i,1);
   buildAddSel(); renderAux("library"); render();
 }
@@ -775,6 +786,10 @@ const S={
   benefits:[]
 };
 const MKT={inland:1800000,gulf:2600000};
+/* Lodging income approach (value per key) — ADR × 365 × occupancy × ancillary × EBITDA margin ÷ cap rate.
+   Pinellas barrier-island defaults; editable in Assumptions § G. Used to seed market value when use = Temporary Lodging. */
+const LODGE={adr:280,occ:0.70,ancillary:1.25,ebitda:0.30,cap:0.075};
+function lodgeValuePerKey(){return LODGE.cap>0?(LODGE.adr*365*LODGE.occ*LODGE.ancillary*LODGE.ebitda)/LODGE.cap:0;}
 const ASSUMP=[
  {sec:"A. Marginal cost assumptions",label:"Hard cost — condo / multifamily",unit:"$/unit",basis:"unit",sf:2269,low:380000,high:630000,override:null,notes:"Range ≈ $167–278/SF on a 2,269-SF unit: low ≈ RSMeans 2025 multifamily ¼-quartile ($169/SF), high ≈ RSMeans median ($277/SF); ICC Aug-2025 R-2 Type IA ($234.59/SF ≈ $532k/unit) sits between. NATIONAL data — apply a Pinellas City Cost Index before relying on it. Enter as $/unit, or switch the basis to $/SF.",fmt:"$",apply:v=>K.hardCondo=v},
  {sec:"A. Marginal cost assumptions",label:"Hard cost — temporary lodging",unit:"$/key",basis:"unit",sf:750,low:120000,high:220000,override:null,notes:"Full-service resort key; HVS / STR. Enter as $/key, or switch the basis to $/SF and set the average key size (gross)",fmt:"$",apply:v=>K.hardHotel=v},
@@ -806,7 +821,12 @@ const ASSUMP=[
  {sec:"F. Optional cross-check (Tampa 10:1 / ICC)",label:"Contribution floor — lower bound",unit:"% of value to dev",low:15,high:15,override:null,notes:"TBRPC framework guardrail (ANALYTIC OVERLAY, not adopted code). Lower edge of the lighter 'contribution floor' band on the ZOPA bar — Koontz / FS 163.3180 proportionate-share basis. Set Low and High the same, or use Override.",fmt:"%",apply:v=>CAPTURE.contribLo=v/100},
  {sec:"F. Optional cross-check (Tampa 10:1 / ICC)",label:"Contribution floor — upper bound",unit:"% of value to dev",low:25,high:25,override:null,notes:"Upper edge of the contribution-floor band (where it meets the value-capture zone).",fmt:"%",apply:v=>CAPTURE.contribHi=v/100},
  {sec:"F. Optional cross-check (Tampa 10:1 / ICC)",label:"Value-capture target — lower bound",unit:"% of value to dev",low:25,high:25,override:null,notes:"Lower edge of the shaded 'target capture zone' (the developer-side value-capture range). Analytic overlay, not adopted code.",fmt:"%",apply:v=>CAPTURE.capLo=v/100},
- {sec:"F. Optional cross-check (Tampa 10:1 / ICC)",label:"Value-capture target — upper bound",unit:"% of value to dev",low:50,high:50,override:null,notes:"Upper edge of the target capture zone — the developer walk-away ceiling rate. Analytic overlay, not adopted code.",fmt:"%",apply:v=>CAPTURE.capHi=v/100}
+ {sec:"F. Optional cross-check (Tampa 10:1 / ICC)",label:"Value-capture target — upper bound",unit:"% of value to dev",low:50,high:50,override:null,notes:"Upper edge of the target capture zone — the developer walk-away ceiling rate. Analytic overlay, not adopted code.",fmt:"%",apply:v=>CAPTURE.capHi=v/100},
+ {sec:"G. Lodging income approach (value per key)",label:"ADR (average daily rate)",unit:"$/night",low:240,high:320,override:null,notes:"St. Pete Beach barrier-island resort rate. Drives value per key when Use type = Temporary Lodging.",fmt:"$",apply:v=>LODGE.adr=v},
+ {sec:"G. Lodging income approach (value per key)",label:"Occupancy rate",unit:"%",low:65,high:75,override:null,notes:"Submarket stabilized occupancy.",fmt:"%",apply:v=>LODGE.occ=v/100},
+ {sec:"G. Lodging income approach (value per key)",label:"Ancillary revenue multiplier",unit:"×",low:1.15,high:1.35,override:null,notes:"F&B, spa, parking, resort fees on top of room revenue.",fmt:"x",apply:v=>LODGE.ancillary=v},
+ {sec:"G. Lodging income approach (value per key)",label:"EBITDA margin",unit:"%",low:25,high:35,override:null,notes:"Hotel operating margin (EBITDA ÷ total revenue).",fmt:"%",apply:v=>LODGE.ebitda=v/100},
+ {sec:"G. Lodging income approach (value per key)",label:"Hotel cap rate",unit:"%",low:7.0,high:8.0,override:null,notes:"FL coastal resort stabilized cap rate. Value per key = ADR × 365 × occ × ancillary × EBITDA ÷ cap.",fmt:"%",apply:v=>LODGE.cap=v/100}
 ];
 /* aApplied always returns the NATIVE model unit ($/unit or $/key). The cost basis
    only changes how a row is entered and displayed, never what feeds the model. */
@@ -833,7 +853,11 @@ ASSUMP.forEach(r=>{if(r.source===undefined)r.source="";});
   "Soft costs":"ULI Developer Handbook (A&E, permits, legal, financing)",
   "Developer margin":"ULI / CBRE underwriting surveys (risk-adjusted return for feasibility)",
   "Condo sale price — inland / non-front":"Redfin Q2 2026 comps",
-  "Condo sale price — gulf / waterfront":"Redfin Q2 2026 comps"};
+  "Condo sale price — gulf / waterfront":"Redfin Q2 2026 comps",
+  "ADR (average daily rate)":"Visit St. Pete/Clearwater Jan 2026 (submarket)",
+  "Occupancy rate":"Visit St. Pete/Clearwater; submarket stabilized",
+  "EBITDA margin":"CBRE Hotels 2025",
+  "Hotel cap rate":"CBRE Hotels / HVS (FL coastal resort)"};
   ASSUMP.forEach(r=>{if(seed[r.label])r.source=seed[r.label];});})();
 const DEF_ASSUMP=ASSUMP.map(r=>({low:r.low,high:r.high,override:r.override}));
 const DEFAULTS=JSON.parse(JSON.stringify(S));
@@ -858,9 +882,9 @@ function resetAll(){
   goto(0);
 }
 
-function residualUnit(market,use,margin,btype,parking,coastal){
+function residualUnit(market,use,margin,btype,parking,coastal,baseOverride){
   if(!use)return 0;   // no use type selected yet — nothing to value
-  const base = use==="Temporary Lodging"?K.hardHotel:K.hardCondo;
+  const base = (baseOverride!=null)?baseOverride:(use==="Temporary Lodging"?K.hardHotel:K.hardCondo);
   const hard = base*(BMULT[btype]||1)*(PMULT[parking]||1)*(FMULT[coastal]||1);
   const sales = use==="Condominium"?market*0.06:0;
   const cost = hard*(1+K.soft)*(1+margin)+sales;
@@ -869,6 +893,14 @@ function residualUnit(market,use,margin,btype,parking,coastal){
 function compute(){
   const r=residualUnit(S.market,S.use,S.margin,S.btype,S.parking,S.coastal);
   const V=r*S.bonus*S.decline;
+  /* cost-driven value-to-developer range from the Low/High hard-cost bracket (market uncertainty NOT
+     included). High cost → conservative low value (feasibility verdict); low cost → aggressive high
+     value (negotiation target). Marginal bonus units are usually cheaper than average — Fable's point. */
+  const hcRow=ASSUMP.find(x=>x.label===(S.use==="Temporary Lodging"?"Hard cost — temporary lodging":"Hard cost — condo / multifamily"));
+  let Vlow=V,Vhigh=V;
+  if(S.use&&hcRow){const ov=(hcRow.override!=null&&hcRow.override!=="");const hcHi=ov?+hcRow.override:hcRow.high,hcLo=ov?+hcRow.override:hcRow.low;
+    Vlow=residualUnit(S.market,S.use,S.margin,S.btype,S.parking,S.coastal,hcHi)*S.bonus*S.decline;
+    Vhigh=residualUnit(S.market,S.use,S.margin,S.btype,S.parking,S.coastal,hcLo)*S.bonus*S.decline;}
   /* implied return-on-cost the bonus units actually carry at this market price — a
      sanity check on the inputs, not a model input. tc = delivered cost with no profit. */
   const baseHC=S.use==="Temporary Lodging"?K.hardHotel:K.hardCondo;
@@ -896,14 +928,14 @@ function compute(){
   const Bplain=rows.reduce((s,x)=>s+x.cityPlain,0);   // PLAIN public value — compared to the baseline
   const B=rows.reduce((s,x)=>s+x.cityVal,0);          // WEIGHTED — for ranking / priority view only
   const gPlain=A?Bplain/A:0, g=A?B/A:0;
-  const zFloor=gPlain?cityMin/gPlain:0, zCeil=V, room=V-A;
-  const worth=Bplain>=cityMin, feas=A<=V;
+  const zFloor=gPlain?cityMin/gPlain:0, zCeil=Vlow, room=Vlow-A;   // ceiling = conservative (low) end
+  const worth=Bplain>=cityMin, feas=A<=Vlow;                       // feasibility tested on the conservative end
   const total=S.byright+S.bonus;
   const maxUnits=(S.cap||0)*(S.acres||0);
   const byrightDerived=(S.base||0)*(S.acres||0);
   const overCap=(S.cap>0&&S.acres>0)?(total>maxUnits+1e-9):false;
   const headroom=maxUnits-total;
-  return {r,V,scar,D,I,cityMin,rows,A,B,Bplain,g,gPlain,zFloor,zCeil,room,worth,feas,poolPath,total,maxUnits,byrightDerived,overCap,headroom,tc,impMargin};
+  return {r,V,Vlow,Vhigh,scar,D,I,cityMin,rows,A,B,Bplain,g,gPlain,zFloor,zCeil,room,worth,feas,poolPath,total,maxUnits,byrightDerived,overCap,headroom,tc,impMargin};
 }
 
 const fmt=n=>{const s=n<0?"-":"";return s+"$"+Math.round(Math.abs(n)).toLocaleString();};
@@ -932,9 +964,15 @@ function setP(el){const min=+el.min,max=+el.max;el.style.setProperty("--p",((el.
 function bindRange(id,key){const el=document.getElementById(id);
   el.addEventListener("input",()=>{S[key]=+el.value;setP(el);render();});setP(el);}
 bindRange("mv","market");bindRange("bonus","bonus");bindRange("rem","rem");bindRange("dem","dem");bindRange("hor","hor");
-document.getElementById("use").addEventListener("change",e=>{S.use=e.target.value;syncUseDerived();render();});
+/* seed the market value: lodging → income approach (value per key); condo/MF → comp by sub-type */
+function seedMarket(){
+  S.market=(S.use==="Temporary Lodging")?Math.round(lodgeValuePerKey()):(S.subtype==="Gulf-front"?MKT.gulf:MKT.inland);
+  const el=document.getElementById("mv"); if(el){el.value=clampMv(S.market);setP(el);}
+}
+function applyLodgeValue(){S.market=Math.round(lodgeValuePerKey());const e=document.getElementById("mv");if(e){e.value=clampMv(S.market);setP(e);}render();}
+document.getElementById("use").addEventListener("change",e=>{S.use=e.target.value;seedMarket();syncUseDerived();render();});
 document.getElementById("btype").addEventListener("change",e=>{S.btype=e.target.value;render();});
-document.getElementById("subtype").addEventListener("change",e=>{S.subtype=e.target.value;S.market=S.subtype==="Gulf-front"?MKT.gulf:MKT.inland;const el=document.getElementById("mv");el.value=clampMv(S.market);setP(el);render();});
+document.getElementById("subtype").addEventListener("change",e=>{S.subtype=e.target.value;seedMarket();render();});
 function clampMv(v){const el=document.getElementById("mv");if(!el)return v;return Math.max(+el.min,Math.min(+el.max,v));}
 (function(){const sf=document.getElementById("mkt-sf"),psf=document.getElementById("mkt-psf");
   if(sf)sf.addEventListener("input",e=>{S.mktSF=parseNum(e.target.value)||0;render();});
@@ -974,15 +1012,18 @@ function numgridHTML(m){
   const mp=Math.round(m.impMargin*100);
   const flag=m.impMargin<0.05?' <span style="color:var(--fail)">— residual near zero</span>':(m.impMargin>0.45?' <span style="color:var(--ink3)">— high (land excluded)</span>':'');
   return [
-    ["Value to developer",m.V,"implied "+mp+"% return on cost"+flag],
+    ["Value to developer",(m.Vlow<m.Vhigh?fmt(m.Vlow)+" – "+fmt(m.Vhigh):fmt(m.V)),"cost-driven range; verdict uses the low end, target the high"+flag],
     ["Pool opportunity cost",m.D,m.D<5000?"pool not scarce":"scarcity binding"],
     ["Impact mitigation floor",m.I,"the most the city can require"],
     ["Lawful mitigation baseline",m.cityMin,"opportunity cost + impact mitigation"]
-  ].map(c=>'<div class="num"><div class="k">'+c[0]+'</div><div class="v">'+fmt(c[1])+'</div><div class="d">'+c[2]+'</div></div>').join("");}
+  ].map(c=>'<div class="num"><div class="k">'+c[0]+'</div><div class="v">'+(typeof c[1]==="string"?c[1]:fmt(c[1]))+'</div><div class="d">'+c[2]+'</div></div>').join("");}
 
 function render(){
   const m=compute();
-  document.getElementById("mv-v").textContent=fmt(S.market)+" / unit"+(S.mktSF>0?(" · $"+Math.round(S.market/S.mktSF).toLocaleString()+"/SF"):"");
+  const isLodge=S.use==="Temporary Lodging";
+  document.getElementById("mv-v").textContent=fmt(S.market)+(isLodge?" / key":" / unit")+((!isLodge&&S.mktSF>0)?(" · $"+Math.round(S.market/S.mktSF).toLocaleString()+"/SF"):"");
+  const mi=document.getElementById("mkt-income");
+  if(mi){if(isLodge){const lv=lodgeValuePerKey();mi.innerHTML="Income approach: $"+Math.round(LODGE.adr)+"/night × 365 × "+Math.round(LODGE.occ*100)+"% occ × "+LODGE.ancillary+" ancillary × "+Math.round(LODGE.ebitda*100)+"% EBITDA ÷ "+(LODGE.cap*100).toFixed(1)+"% cap = <b>"+fmt(lv)+" / key</b>"+(Math.abs(S.market-lv)>1000?' · <a href="#" style="color:var(--accent);font-weight:600;text-decoration:none" onclick="applyLodgeValue();return false;">use this</a>':' ✓');}else mi.innerHTML="";}
   document.getElementById("bonus-v").textContent=S.bonus+" units";
   document.getElementById("rem-v").textContent=S.rem+" units";
   document.getElementById("dem-v").textContent=S.dem+"/yr";
@@ -1080,22 +1121,22 @@ function updateExplore(m){
   m=m||compute();
   const sl=document.getElementById("explore"); if(!sl)return;
   const pct=+sl.value;
-  const spend=(m.V>0)?(pct/100)*m.V:0;
+  const spend=(m.zCeil>0)?(pct/100)*m.zCeil:0;
   const pubVal=(m.gPlain>0)?spend*m.gPlain:0;
   const vv=document.getElementById("explore-v"); if(vv)vv.textContent=fmt(spend)+" ("+pct+"% of ceiling)";
   const note=document.getElementById("explore-note"); if(!note)return;
   if(m.gPlain<=0){note.innerHTML="Add benefits first to set the value ratio (public value per developer dollar). The explorer then projects how a larger or smaller package of the same composition would land.";return;}
-  const fav=(spend>=m.zFloor-1e-6)&&(spend<=m.V+1e-6)&&(pubVal>=m.cityMin-1e-6);
+  const fav=(spend>=m.zFloor-1e-6)&&(spend<=m.zCeil+1e-6)&&(pubVal>=m.cityMin-1e-6);
   const pa=(S.acres>0)?(" Public value would be "+fmt(pubVal/S.acres)+"/acre."):"";
   let tag;
   if(fav)tag='<b style="color:var(--pass)">Favorable</b> — clears the lawful mitigation baseline and stays within the value to developer.';
   else if(spend<m.zFloor)tag='<b style="color:var(--warn)">Below minimum</b> — raise spend to about '+fmt(m.zFloor)+' to clear the city floor.';
-  else tag='<b style="color:var(--fail)">Over the ceiling</b> — exceeds the value to developer ('+fmt(m.V)+'); the applicant would build by-right.';
+  else tag='<b style="color:var(--fail)">Over the ceiling</b> — exceeds the conservative value to developer ('+fmt(m.zCeil)+'); the applicant would build by-right.';
   note.innerHTML="At <b>"+fmt(spend)+"</b> of developer spend, a package of this composition (ratio "+m.gPlain.toFixed(2)+"×) delivers <b>"+fmt(pubVal)+"</b> in public value."+pa+" "+tag+' <span class="anote">What-if only — your entered package is unchanged.</span>';
 }
 function drawDensity(m){
   const vd=document.getElementById("valuedensity"); if(vd)vd.innerHTML=vdHTML(m);
-  const sl=document.getElementById("explore"); if(sl)sl.value=(m.V>0)?Math.max(0,Math.min(100,Math.round(m.A/m.V*100))):0;
+  const sl=document.getElementById("explore"); if(sl)sl.value=(m.zCeil>0)?Math.max(0,Math.min(100,Math.round(m.A/m.zCeil*100))):0;
   updateExplore(m);
 }
 /* ---------- optional Tampa 10:1 / ICC construction-cost cross-check (reference only) ---------- */
@@ -1125,11 +1166,11 @@ function verdictObj(m){
   if(m.A===0 && m.Bplain===0) return {tag:"No offer yet",bg:C.neu[0],fg:C.neu[1],light:"#9aa3a8",status:"No offer yet",tip:"Add public benefits on the Benefits step to evaluate the request.",head:"No offer entered yet",
     body:capPre+"No public benefits have been entered, so there is nothing to evaluate against the lawful mitigation baseline. For this request the lawful mitigation baseline is "+fmt(m.cityMin)+" ("+(m.D>0?("pool opportunity cost "+fmt(m.D)+" + "):"")+"impact mitigation "+fmt(m.I)+"), and the bonus is worth up to "+fmt(m.V)+" to the developer. Add benefits on the Benefits step to test an offer against that minimum."};
   if(m.worth && m.feas) return {tag:"Favorable",bg:C.ok[0],fg:C.ok[1],light:"#1f9d57",status:"Viable",tip:"Meets the lawful mitigation baseline and fits within the developer’s budget — approvable, with room to ask for more.",head:"Favorable",
-    body:capPre+"Offered public value ("+fmt(m.Bplain)+") meets the lawful mitigation baseline ("+fmt(m.cityMin)+"). Package cost ("+fmt(m.A)+") is within the value to the developer ("+fmt(m.V)+"). Unspent developer budget is "+fmt(Math.max(0,m.room))+". The city may require only the impact-proportional amount ("+fmt(m.I)+") as a condition; benefit above that is voluntary incentive for the discretionary density."};
+    body:capPre+"Offered public value ("+fmt(m.Bplain)+") meets the lawful mitigation baseline ("+fmt(m.cityMin)+"). Package cost ("+fmt(m.A)+") is within the conservative value to the developer ("+fmt(m.Vlow)+"; the negotiation target runs up to "+fmt(m.Vhigh)+" if bonus units build cheaper than average). Unspent developer budget is "+fmt(Math.max(0,m.room))+". The city may require only the impact-proportional amount ("+fmt(m.I)+") as a condition; benefit above that is voluntary incentive for the discretionary density."};
   if(!m.worth && m.room>0) return {tag:"Below minimum",bg:C.warn[0],fg:C.warn[1],light:"#d9a400",status:"Keep negotiating",tip:"Public value is below the lawful mitigation baseline, but the developer still has budget room — add higher-ratio benefits to close the gap.",head:"Below lawful mitigation baseline — renegotiate",
     body:capPre+"Offered public value is short of the lawful mitigation baseline by "+fmt(m.cityMin-m.Bplain)+". Developer budget room of "+fmt(m.room)+" remains, so the shortfall can be closed by adding higher value-to-cost benefits."};
   if(!m.feas) return {tag:"Over budget",bg:C.bad[0],fg:C.bad[1],light:"#c0392b",status:"Stalled",tip:"The package costs more than the bonus is worth to the developer; they would build by-right. Trim the package or grant more units.",head:"Package exceeds developer budget",
-    body:"Package cost ("+fmt(m.A)+") exceeds the value to the developer ("+fmt(m.V)+"). The applicant would build by-right instead. Reduce the package or increase the unit allocation."};
+    body:"Package cost ("+fmt(m.A)+") exceeds the conservative value to the developer ("+fmt(m.Vlow)+"; even the high-end estimate is "+fmt(m.Vhigh)+"). The applicant would build by-right instead. Reduce the package or increase the unit allocation."};
   return {tag:"No zone",bg:C.bad[0],fg:C.bad[1],light:"#c0392b",status:"No agreement zone",tip:"Even a minimal acceptable package costs more than the bonus is worth — deny or restructure.",head:"No agreement zone",
     body:"The minimum acceptable package costs more than the bonus is worth to the developer. Deny or restructure the request."};
 }
@@ -1230,9 +1271,10 @@ function drawValueStack(m){
 function drawZopa(m){
   const t=document.getElementById("zopa");
   t.setAttribute("role","img");t.setAttribute("aria-label","Deal zone from lawful mitigation baseline "+fmt(m.zFloor)+" to developer ceiling "+fmt(m.zCeil)+"; current public value offered "+fmt(m.A)+".");
-  const max=Math.max(m.zCeil,m.A,m.zFloor)*1.08||1;
+  const max=Math.max(m.zCeil,m.Vhigh||0,m.A,m.zFloor)*1.08||1;
   const pct=x=>Math.max(0,Math.min(100,x/max*100));
   const fl=pct(m.zFloor),ce=pct(m.zCeil),of=pct(m.A);
+  const tg=(m.Vhigh>m.zCeil+1)?pct(m.Vhigh):-1;   // negotiation-target tick (high end of the value range)
   const V=m.zCeil;
   const band=(lo,hi,cls)=>{if(!(V>0))return"";const a=pct(lo*V),b=pct(hi*V);return '<div class="'+cls+'" style="left:'+a+'%;width:'+Math.max(0,b-a)+'%"></div>';};
   t.innerHTML=band(CAPTURE.contribLo,CAPTURE.contribHi,"zopa-contrib")+band(CAPTURE.capLo,CAPTURE.capHi,"zopa-target")+
@@ -1241,6 +1283,7 @@ function drawZopa(m){
     '<div class="zopa-mark" style="left:'+of+'%"></div>'+
     '<div class="zopa-lab top" style="left:'+fl+'%">floor '+fmt(m.zFloor)+'</div>'+
     '<div class="zopa-lab top" style="left:'+ce+'%">ceiling '+fmt(m.zCeil)+'</div>'+
+    (tg>=0?'<div class="zopa-tmark" style="left:'+tg+'%"></div><div class="zopa-lab top" style="left:'+tg+'%;color:var(--accent)">target '+fmt(m.Vhigh)+'</div>':'')+
     '<div class="zopa-lab bot" style="left:'+of+'%">offer '+fmt(m.A)+'</div>';
   const baseNote = m.A>m.zCeil
     ? "Offer exceeds the ceiling; the package is infeasible for the developer."
@@ -1278,7 +1321,9 @@ function drawSpark(m){
   }
   const xs=pts.map(p=>p.u),ns=pts.map(p=>p.net);
   const xmin=Math.min.apply(null,xs),xmax=Math.max.apply(null,xs),nmin=Math.min.apply(null,ns.concat([0])),nmax=Math.max.apply(null,ns.concat([1]));
-  const X=u=>(u-xmin)/(xmax-xmin||1)*560+20, Y=n=>140-(n-nmin)/(nmax-nmin||1)*126;
+  const sp=document.getElementById("spark");
+  const W=Math.max(320,(sp&&sp.clientWidth)||980); if(sp)sp.setAttribute("viewBox","0 0 "+W+" 150");  // render 1:1 to the real width → no horizontal distortion of dots/labels
+  const X=u=>(u-xmin)/(xmax-xmin||1)*(W-40)+20, Y=n=>140-(n-nmin)/(nmax-nmin||1)*126;
   const path=pts.map((p,i)=>(i?"L":"M")+X(p.u).toFixed(1)+" "+Y(p.net).toFixed(1)).join(" ");
   const reqX=X(Math.max(1,S.bonus));
   (function(){var sp=document.getElementById("spark");sp.setAttribute("role","img");sp.setAttribute("aria-label","Sensitivity chart: value to developer across bonus unit counts, marked at "+S.bonus+" units.");})();
@@ -1587,7 +1632,8 @@ function derivV(m){
    '<div class="step"><b>2. Residual value per bonus unit</b></div>'+
    '<div class="step">market '+fmtFull(S.market)+' − cost '+fmtFull(cost)+' = <b>'+fmtFull(m.r)+'</b></div>'+
    '<div class="step"><b>3. Value to developer</b></div>'+
-   '<div class="step">residual '+fmtFull(m.r)+' × '+S.bonus+' bonus units × decline factor '+S.decline+' = <span class="res">'+fmtFull(m.V)+'</span></div>'+
+   '<div class="step">residual '+fmtFull(m.r)+' × '+S.bonus+' bonus units × decline factor '+S.decline+' = <span class="res">'+fmtFull(m.V)+'</span> <span class="anote">(midpoint)</span></div>'+
+   (m.Vlow<m.Vhigh?'<div class="step"><b>Cost-driven range:</b> '+fmtFull(m.Vlow)+' (high build cost → conservative, used for the feasibility verdict) to '+fmtFull(m.Vhigh)+' (low build cost → negotiation target). <span class="anote">Cost-driven only — market-value uncertainty is not in this band. Marginal bonus units on an already-entitled site often build below average cost, so the high end is a realistic stretch.</span></div>':'')+
    '<div class="step"><b>Sanity check — implied return on cost</b></div>'+
    '<div class="step">delivered cost (no profit) = '+fmtFull(m.tc)+'; market '+fmtFull(S.market)+' ÷ '+fmtFull(m.tc)+' − 1 = <b>'+Math.round(m.impMargin*100)+'%</b> (assumed target ≈ '+Math.round(S.margin*100)+'%)</div>'+
    '</div>'+
@@ -1626,11 +1672,12 @@ function libtxt(i,col,val,label){
 function libRatio(i){const r=LIB[i],c=LIBCAL[i];const dev=libApplied(c,"dev"),city=libApplied(c,"city");const mult=CATMULT[r[1]]||1;return dev>0?((city*mult)/dev):0;}
 function libApplDisp(i,which){return "$"+Math.round(libApplied(LIBCAL[i],which)).toLocaleString();}
 function buildLibrary(){
-  let h='<div class="libsearch"><input type="text" id="lib-search" placeholder="Search benefits…" aria-label="Search benefits" value="'+esc(libSearchQ)+'">'+
+  let h=lockBar("Benefit-library values","The city’s valuation of each public benefit, shared across all projects.");
+  h+='<div class="libsearch"><input type="text" id="lib-search" placeholder="Search benefits…" aria-label="Search benefits" value="'+esc(libSearchQ)+'">'+
     '<button class="alink" id="lib-expand">Expand all</button><button class="alink" id="lib-collapse">Collapse all</button></div>';
-  h+=lockBar("Benefit-library values","The city’s valuation of each public benefit, shared across all projects.")+'<fieldset class="lockfs"'+(advUnlocked?'':' disabled')+'>';
+  h+='<fieldset class="lockfs"'+(advUnlocked?'':' disabled')+'>';
   h+='<div class="atable-wrap"><table class="atable libtable">'+
-    '<colgroup><col style="width:17%"><col style="width:7%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:24%"><col style="width:20%"></colgroup>'+
+    '<colgroup><col style="width:17%"><col style="width:10%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:24%"><col style="width:17%"></colgroup>'+
     '<thead><tr>'+
     '<th scope="col">Benefit</th><th scope="col">Unit</th>'+
     '<th scope="col" class="r">Low</th><th scope="col" class="r">High</th><th scope="col" class="r">Applied</th><th scope="col" class="r">Override</th>'+
@@ -1641,9 +1688,10 @@ function buildLibrary(){
     h+='<tr class="asecrow libsec" data-section="'+esc(cat)+'" role="button" tabindex="0" aria-label="Toggle '+esc(cat)+'"><td colspan="8"><span class="lib-caret">▾</span> '+cat+' · ×'+(CATMULT[cat]||1)+' multiplier <span class="anote">('+n+')</span></td></tr>';
     LIB.forEach((r,i)=>{ if(r[1]!==cat)return; const c=LIBCAL[i]; const custom=!!r[5];
       const hay=esc((""+r[0]+" "+r[2]+" "+(c.note||"")+" "+(c.source||"")).toLowerCase());
+      const delBtn=advUnlocked?' <button class="x libdel" data-libdel="'+i+'" aria-label="Delete benefit" title="Delete this benefit">×</button>':'';
       const nameCell=custom
-        ? '<input type="text" class="libname" data-lib="'+i+'" data-col="name" value="'+esc(r[0])+'" placeholder="Custom benefit name" aria-label="Custom benefit name"> <button class="x libdel" data-libdel="'+i+'" aria-label="Delete custom benefit" title="Delete this custom benefit">×</button>'
-        : esc(r[0]);
+        ? '<input type="text" class="libname" data-lib="'+i+'" data-col="name" value="'+esc(r[0])+'" placeholder="Custom benefit name" aria-label="Custom benefit name">'+delBtn
+        : esc(r[0])+delBtn;
       const unitCell=custom
         ? '<input type="text" class="libunit" data-lib="'+i+'" data-col="unit" value="'+esc(r[2])+'" placeholder="$/unit" aria-label="Unit">'
         : '<span class="anote">'+r[2]+'</span>';
@@ -1652,10 +1700,10 @@ function buildLibrary(){
         '<td class="r">'+libfld(i,"cityHigh",c.cityHigh,"ahigh")+'</td>'+
         '<td class="r"><span class="aapplied" id="libcity-'+i+'">'+libApplDisp(i,"city")+'</span></td>'+
         '<td class="r">'+libfld(i,"cityOv",c.cityOv,"ov")+'</td>'+
-        '<td>'+libtxt(i,"note",c.note,"Notes")+'</td>'+
-        '<td>'+libtxt(i,"source",c.source,"Source")+'</td></tr>';
+        '<td class="tnote">'+libtxt(i,"note",c.note,"Notes")+'</td>'+
+        '<td class="tnote">'+libtxt(i,"source",c.source,"Source")+'</td></tr>';
     });
-    h+='<tr class="libaddrow" data-cat="'+esc(cat)+'"><td colspan="8"><button class="alink" data-libadd="'+esc(cat)+'">+ Add custom benefit to '+cat+'</button></td></tr>';
+    if(advUnlocked)h+='<tr class="libaddrow" data-cat="'+esc(cat)+'"><td colspan="8"><button class="alink" data-libadd="'+esc(cat)+'">+ Add custom benefit to '+cat+'</button></td></tr>';
   });
   h+='</tbody></table></div></fieldset>';
   h+='<p class="lede" style="margin-top:14px">These are the <b>city’s value</b> of each benefit (Low / High / Applied / Override) — the developer’s cost is entered per project on the Benefits step. <b>Notes</b> and <b>Source</b> are free-text: record the basis for a figure and where it came from (a few rows are pre-seeded from the Corey Landings staff report as worked examples). Search matches names, notes, and sources. Click a category header to collapse it; edit Low/High to set a range, or enter an Override (blue) for a firm figure (Applied is the midpoint unless an Override is given). Use <b>+ Add custom benefit</b> to create your own item — give it a name, unit, and city value; once named it appears in the Benefits-step menu. The library (including custom benefits, notes, and sources) is kept on Reset all and saved with scenarios.</p>';
@@ -1724,10 +1772,10 @@ let advUnlocked=false;
 function lockBar(title,note){
   return '<div class="lockbar">'+(advUnlocked
     ? '<span>🔓 <b>Editing enabled.</b> '+note+' Changes apply across all projects — lock when done.</span><button class="btn" data-lock="1">🔒 Lock</button>'
-    : '<span>🔒 <b>'+title+'</b> — '+note+' Staff don’t normally change these.</span><button class="btn" data-lock="1">Enable editing</button>')+'</div>';
+    : '<span>🔒 <b>'+title+'</b> — '+note+'</span><button class="btn" data-lock="1">Enable editing</button>')+'</div>';
 }
 function buildAssumptions(){
-  let h=lockBar("Calibrated model defaults","Construction costs, multipliers, scarcity shape, market comps, and policy guardrails.")+'<fieldset class="lockfs"'+(advUnlocked?'':' disabled')+'><div class="atable-wrap"><table class="atable assumptable"><colgroup><col style="width:17%"><col style="width:11%"><col style="width:7%"><col style="width:7%"><col style="width:8%"><col style="width:8%"><col style="width:27%"><col style="width:15%"></colgroup><thead><tr><th scope="col">Benchmark</th><th scope="col">Units</th><th scope="col" class="r">Low</th><th scope="col" class="r">High</th><th scope="col" class="r">Applied</th><th scope="col" class="r">Override</th><th scope="col">Notes</th><th scope="col">Source</th></tr></thead><tbody>';
+  let h=lockBar("Calibrated model defaults","Construction costs, multipliers, scarcity shape, market comps, and policy guardrails.")+'<fieldset class="lockfs"'+(advUnlocked?'':' disabled')+'><div class="atable-wrap"><table class="atable assumptable"><colgroup><col style="width:17%"><col style="width:10%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:24%"><col style="width:17%"></colgroup><thead><tr><th scope="col">Benchmark</th><th scope="col">Units</th><th scope="col" class="r">Low</th><th scope="col" class="r">High</th><th scope="col" class="r">Applied</th><th scope="col" class="r">Override</th><th scope="col">Notes</th><th scope="col">Source</th></tr></thead><tbody>';
   let sec="";
   ASSUMP.forEach((r,i)=>{
     if(r.sec!==sec){sec=r.sec;h+='<tr class="asecrow"><td colspan="8">'+sec+'</td></tr>';}
@@ -1751,8 +1799,8 @@ function buildAssumptions(){
        '<td class="r">'+fld(i,"high",aToDisp(r,r.high),"ahigh",r.fmt)+'</td>'+
        '<td class="r"><span class="aapplied" data-i="'+i+'">'+fmtAssump(r)+'</span></td>'+
        '<td class="r">'+fld(i,"override",aToDisp(r,r.override),"ov",r.fmt)+'</td>'+
-       '<td class="anote">'+noteCell+'</td>'+
-       '<td class="anote">'+srcCell+'</td></tr>';
+       '<td class="tnote">'+noteCell+'</td>'+
+       '<td class="tnote">'+srcCell+'</td></tr>';
   });
   h+='</tbody></table></div></fieldset>';
   h+='<p class="lede" style="margin-top:14px">Applied is the midpoint of Low and High unless an Override is entered. Edit Low/High to reset the range, or enter an Override (blue) when a project-specific analysis gives a firm number. For hard costs, switch the basis to <b>$/SF</b> and set the average unit size if your cost data is per square foot — the model always stores the result per unit. Every Applied value flows into the model.</p>';
