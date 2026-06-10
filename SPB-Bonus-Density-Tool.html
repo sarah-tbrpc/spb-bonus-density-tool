@@ -120,6 +120,7 @@ select:focus,input[type=number]:focus,input[type=text]:focus{outline:none;border
 .brecur{margin-top:8px;font-size:12px;display:flex;align-items:center;flex-wrap:wrap;gap:4px}
 .brecur-lab{display:inline-flex;align-items:center;gap:6px;font-weight:600;cursor:pointer}
 .brecur .bterm{width:56px;padding:2px 4px;font-size:12px}
+.brecur .binstr{font-size:12px;padding:2px 4px;max-width:340px}
 .calflag{margin:10px 0;font-size:12px;line-height:1.45;color:#8a6d00;background:#fff7e0;border:1px solid #f0dca0;border-radius:5px;padding:8px 11px}
 @media(max-width:560px){.inputs{grid-template-columns:repeat(2,1fr)}}
 .brow input{padding:6px 7px;font-size:13px}
@@ -561,7 +562,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
         <p class="lede" style="margin:0 0 8px"><b>Impact mitigation floor</b>, the development's impact that can lawfully be required as a condition; the most the city can compel. Benefit beyond it is voluntary incentive.</p>
         <p class="lede" style="margin:0 0 8px"><b>Lawful mitigation baseline</b>, opportunity cost plus impact mitigation: the least public value the deal should return.</p>
         <p class="lede" style="margin:0 0 8px"><b>Developer cost</b>, what the offered package costs the developer to provide.</p>
-        <p class="lede" style="margin:0 0 8px"><b>Public value offered</b>, the city's <b>plain-dollar</b> cost to provide the offered package (qty × city $/unit × % above code). This is what the verdict compares to the baseline. Category multipliers do not enter this figure; they only rank benefits within a package.</p>
+        <p class="lede" style="margin:0 0 8px"><b>Public value offered</b>, the city's <b>plain-dollar</b> cost to provide the offered package (qty × city $/unit × % above code), present-valued when a benefit is recurring and reduced by an <b>enforceability credit</b> set by the instrument that secures each promise (a recorded covenant credits at 100%, an unsecured letter of intent far less). This is what the verdict compares to the baseline. Category multipliers do not enter this figure; they only rank benefits within a package.</p>
         <p class="lede" style="margin:0"><b>Value ratio</b>, public value per developer dollar. The amount above 1 is the gain from trade.</p>
       </div>
 
@@ -588,7 +589,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
         <p class="lede" style="margin:0 0 8px"><b>What the code does <i>not</i> set.</b> The SPB code contains no contribution rate, no benefit-valuation formula, and no floor or ceiling on what a developer must offer, the only statutory weighting is Chapter 163 proportionate-share ("in proportion to the impacts caused"), which is the basis for the impact-mitigation floor. The ZOPA bounds in this tool, and the 15–25% contribution / 25–50% capture guardrails cited below, are therefore <b>analytic overlays from the supporting framework, not adopted code</b>; the value-ratio math is a staff sketch over the code's discretionary merit-basis review.</p>
         <p class="lede" style="margin:0"><b>Supporting framework.</b> This tool operationalizes the approach in <i>A Framework for Density Bonus Valuation in St. Pete Beach</i> (Tampa Bay Regional Planning Council, April 2026): density here is an <b>allocation</b> of a finite, non-renewable pool, not a growth incentive, so each bonus unit carries scarcity value, and the negotiation is bounded by a Zone of Possible Agreement between a scarcity-adjusted city floor and a developer walk-away ceiling. That framework documents the legal basis for the floor (Florida proportionate-share statute F.S. §163.3180; the Nollan–Dolan–Koontz nexus and rough-proportionality standards) and the value-capture rationale for the ceiling (Lincoln Institute / ULI), and it frames public benefits across five value layers, construction cost, city replacement-cost premium, lifecycle O&amp;M, resilience / avoided damage, and regional economic impact. This tool intentionally uses a simpler single-value-per-benefit model; the framework’s layered valuation and its 15–25% contribution / 25–50% capture guardrails are documented there for staff who want the fuller rationale.</p>
         <p class="lede" style="margin:8px 0 0"><b>Sources &amp; benchmarks.</b> The benchmark figures behind this tool trace to published sources, carried on the Assumptions and Benefit-library pages (Source column): construction cost <b>RSMeans</b> and <b>ICC Building Valuation Data</b>; lodging <b>STR / HVS</b>; soft costs and developer margin <b>ULI / CBRE</b>; condo comps <b>Redfin</b>; benefit unit costs from <b>SFRPC</b> (Resilient BCA Database / REBECCA), <b>FEMA</b> (Ecosystem Service Values; BCA Sustainment v13), <b>FDEP</b>, <b>FHWA</b>, <b>WGI</b>, <b>Forward Pinellas</b>, <b>UF Shimberg</b>, and <b>HUD</b>. The framework’s fuller valuation method draws on residual-land-value practice (<b>Keyser Marston</b>; <b>BAE Urban Economics</b>) and value-layer multipliers (<b>NIBS</b> <i>Natural Hazard Mitigation Saves</i> 2019 for resilience; <b>GASB 34 / FHWA</b> lifecycle; <b>FL Statute 255.20</b> public-procurement premium; <b>BEA / RIMS II</b> economic impact). Those layers inform the benchmarks but are not recomputed here.</p>
-        <p class="lede" style="margin:10px 0 0;font-size:12px;color:var(--ink3)"><b>Version &amp; changelog.</b> Tool <b>v1.4.0</b> · methodology dated <b>2026-06-10</b> (stamped on every printout). <b>v1.4.0</b>: benefits can be marked recurring (annual), valued as the present value of a growing annuity over a term (new Assumptions § H: discount rate, escalation rate, default term); the escalation-below-discount rule is enforced with a flag on the line; recurring lines are marked on the printout. <b>v1.3.0</b>: lodging value now varies by Market Sub-Type, the income approach uses a Gulf-front resort ADR or an inland / mid-market ADR (blended when no sub-type is chosen) instead of one islandwide rate; §G splits ADR into two sourced rows. <b>v1.2.2</b>: editorial pass, removed em-dashes from the interface copy (replaced with commas, colons, or rephrasing); no model or methodology change. <b>v1.2.1</b>: value-to-developer described as a cost-driven range in the Methods card (feasibility on the conservative low end, high end the negotiation target); robustness card states the ±20% stresses the midpoint, not the conservative verdict basis; loading an older-version scenario now warns that figures recompute under current methodology; un-sourced Assumptions/Library rows flagged as uncalibrated placeholders (carried onto the PDF); a warning chip when a benefit line sits at 100% above code; lodging ADR annotated as a blended islandwide rate; lock/enable-editing banners moved to the bottom of the editable tables. <b>v1.2</b>: lodging income approach (value per key = ADR × occ × ancillary × EBITDA ÷ cap); cost-driven value-to-developer range with the feasibility verdict run on the conservative (low) end and the high end shown as the negotiation target. <b>v1.1</b>: verdict moved to plain dollars; category multipliers demoted to ranking only; "city minimum" renamed "lawful mitigation baseline." <b>v1.0</b>: initial sketch model. A scenario or PDF produced under an earlier version is identifiable by its stamp; a changed verdict between versions reflects a deliberate methodology fix, not a contradiction.</p>
+        <p class="lede" style="margin:10px 0 0;font-size:12px;color:var(--ink3)"><b>Version &amp; changelog.</b> Tool <b>v1.5.0</b> · methodology dated <b>2026-06-10</b> (stamped on every printout). <b>v1.5.0</b>: each benefit can name the instrument that secures it (recorded covenant, development agreement, bond, condition of approval, letter of intent, none), applying an enforceability credit to its public value in both the verdict and the ranking; an unspecified instrument credits at 100% but is flagged; factors are editable in new Assumptions § I. <b>v1.4.0</b>: benefits can be marked recurring (annual), valued as the present value of a growing annuity over a term (new Assumptions § H: discount rate, escalation rate, default term); the escalation-below-discount rule is enforced with a flag on the line; recurring lines are marked on the printout. <b>v1.3.0</b>: lodging value now varies by Market Sub-Type, the income approach uses a Gulf-front resort ADR or an inland / mid-market ADR (blended when no sub-type is chosen) instead of one islandwide rate; §G splits ADR into two sourced rows. <b>v1.2.2</b>: editorial pass, removed em-dashes from the interface copy (replaced with commas, colons, or rephrasing); no model or methodology change. <b>v1.2.1</b>: value-to-developer described as a cost-driven range in the Methods card (feasibility on the conservative low end, high end the negotiation target); robustness card states the ±20% stresses the midpoint, not the conservative verdict basis; loading an older-version scenario now warns that figures recompute under current methodology; un-sourced Assumptions/Library rows flagged as uncalibrated placeholders (carried onto the PDF); a warning chip when a benefit line sits at 100% above code; lodging ADR annotated as a blended islandwide rate; lock/enable-editing banners moved to the bottom of the editable tables. <b>v1.2</b>: lodging income approach (value per key = ADR × occ × ancillary × EBITDA ÷ cap); cost-driven value-to-developer range with the feasibility verdict run on the conservative (low) end and the high end shown as the negotiation target. <b>v1.1</b>: verdict moved to plain dollars; category multipliers demoted to ranking only; "city minimum" renamed "lawful mitigation baseline." <b>v1.0</b>: initial sketch model. A scenario or PDF produced under an earlier version is identifiable by its stamp; a changed verdict between versions reflects a deliberate methodology fix, not a contradiction.</p>
       </div>
     </section>
 
@@ -627,7 +628,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 
 <script>
 "use strict";
-const VERSION="1.4.0", VERSION_DATE="2026-06-10";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
+const VERSION="1.5.0", VERSION_DATE="2026-06-10";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
 const K={hardCondo:237500,hardHotel:170000,soft:0.24,margin:0.15,decline:0.80,impact:28000};
 const CATMULT={"Workforce Housing":1.4,"Community Development":1.5,"Transportation":1.7,"Environmental":2.0,"Resilience":2.5,"Monetary / Cash":1.0};
 const BMULT={"Low-rise (1-3)":1.0,"Mid-rise (4-7)":1.15,"High-rise (8+)":1.35};
@@ -819,6 +820,13 @@ function lodgeValuePerKey(subtype){const adr=lodgeADR(subtype);return LODGE.cap>
 const PVD={disc:0.03,esc:0.02,term:30};
 function recurringGuardOK(){return PVD.esc<PVD.disc;}
 function pvFactor(g,r,n){if(!(n>0))return 0;if(Math.abs(r-g)<1e-9)return n/(1+r);return (1-Math.pow((1+g)/(1+r),n))/(r-g);}
+/* enforceability haircut: a promised benefit is only worth what the city can actually compel.
+   The instrument securing it sets a credit factor applied to the public value (plain and weighted).
+   An unselected instrument credits at 100% but is flagged, the developer's cost is never haircut. */
+const ENFORCE={covenant:1.00,devagreement:0.95,bond:0.95,condition:0.90,loi:0.50,none:0.40};
+const ENFORCE_LABEL={covenant:"Recorded covenant / deed restriction",devagreement:"Recorded development agreement",bond:"Performance bond / surety",condition:"Condition of approval (CUP / ordinance)",loi:"Letter of intent / unsecured promise",none:"No instrument / unspecified commitment"};
+const ENFORCE_ORDER=["covenant","devagreement","bond","condition","loi","none"];
+function enforceFactor(instr){return instr?(ENFORCE[instr]!=null?ENFORCE[instr]:1):1;}
 const ASSUMP=[
  {sec:"A. Marginal cost assumptions",label:"Hard cost, condo / multifamily",unit:"$/unit",basis:"unit",sf:2269,low:380000,high:630000,override:null,notes:"Range ≈ $167–278/SF on a 2,269-SF unit: low ≈ RSMeans 2025 multifamily ¼-quartile ($169/SF), high ≈ RSMeans median ($277/SF); ICC Aug-2025 R-2 Type IA ($234.59/SF ≈ $532k/unit) sits between. NATIONAL data, apply a Pinellas City Cost Index before relying on it. Enter as $/unit, or switch the basis to $/SF.",fmt:"$",apply:v=>K.hardCondo=v},
  {sec:"A. Marginal cost assumptions",label:"Hard cost, temporary lodging",unit:"$/key",basis:"unit",sf:750,low:120000,high:220000,override:null,notes:"Full-service resort key; HVS / STR. Enter as $/key, or switch the basis to $/SF and set the average key size (gross)",fmt:"$",apply:v=>K.hardHotel=v},
@@ -859,7 +867,13 @@ const ASSUMP=[
  {sec:"G. Lodging income approach (value per key)",label:"Hotel cap rate",unit:"%",low:7.0,high:8.0,override:null,notes:"FL coastal resort stabilized cap rate. Value per key = ADR × 365 × occ × ancillary × EBITDA ÷ cap.",fmt:"%",apply:v=>LODGE.cap=v/100},
  {sec:"H. Recurring-benefit present value",label:"Discount rate (real)",unit:"%",low:2.0,high:4.0,override:null,notes:"Real municipal discount rate used to value a stream of future public benefit. Must stay above the escalation rate below.",fmt:"%",apply:v=>PVD.disc=v/100},
  {sec:"H. Recurring-benefit present value",label:"Benefit escalation rate",unit:"%",low:1.0,high:3.0,override:null,notes:"Annual growth of a recurring benefit amount. Kept below the discount rate, otherwise a long obligation is over-credited (flagged on the benefit line).",fmt:"%",apply:v=>PVD.esc=v/100},
- {sec:"H. Recurring-benefit present value",label:"Default benefit term",unit:"years",low:20,high:40,override:null,notes:"Years a recurring obligation runs unless a benefit line sets its own term. Caps how long the stream is counted.",fmt:"",apply:v=>PVD.term=v}
+ {sec:"H. Recurring-benefit present value",label:"Default benefit term",unit:"years",low:20,high:40,override:null,notes:"Years a recurring obligation runs unless a benefit line sets its own term. Caps how long the stream is counted.",fmt:"",apply:v=>PVD.term=v},
+ {sec:"I. Enforceability credit (× of public value)",label:"Recorded covenant / deed restriction",unit:"×",low:1.00,high:1.00,override:null,notes:"Runs with the land, most enforceable. No haircut.",fmt:"x",apply:v=>ENFORCE.covenant=v},
+ {sec:"I. Enforceability credit (× of public value)",label:"Recorded development agreement",unit:"×",low:0.90,high:1.00,override:null,notes:"Binding contract, recorded. Small haircut for amendment / performance risk.",fmt:"x",apply:v=>ENFORCE.devagreement=v},
+ {sec:"I. Enforceability credit (× of public value)",label:"Performance bond / surety",unit:"×",low:0.90,high:1.00,override:null,notes:"Cash / surety backs delivery. Small haircut for claims friction.",fmt:"x",apply:v=>ENFORCE.bond=v},
+ {sec:"I. Enforceability credit (× of public value)",label:"Condition of approval (CUP / ordinance)",unit:"×",low:0.85,high:0.95,override:null,notes:"Enforceable through the approval, but depends on monitoring / code enforcement.",fmt:"x",apply:v=>ENFORCE.condition=v},
+ {sec:"I. Enforceability credit (× of public value)",label:"Letter of intent / unsecured promise",unit:"×",low:0.40,high:0.60,override:null,notes:"Not independently enforceable, heavy haircut.",fmt:"x",apply:v=>ENFORCE.loi=v},
+ {sec:"I. Enforceability credit (× of public value)",label:"No instrument / unspecified",unit:"×",low:0.30,high:0.50,override:null,notes:"Used when an instrument is named 'none'. Lines left unspecified credit at 100% but are flagged.",fmt:"x",apply:v=>ENFORCE.none=v}
 ];
 /* aApplied always returns the NATIVE model unit ($/unit or $/key). The cost basis
    only changes how a row is entered and displayed, never what feeds the model. */
@@ -897,7 +911,13 @@ ASSUMP.forEach(r=>{if(r.source===undefined)r.source="";});
   "Hotel cap rate":"CBRE Hotels / PwC Real Estate Investor Survey (FL coastal resort)",
   "Discount rate (real)":"OMB Circular A-94 / municipal-finance convention (real rate)",
   "Benefit escalation rate":"Long-run CPI / municipal-cost inflation convention",
-  "Default benefit term":"Typical CUP / development-agreement obligation horizon"};
+  "Default benefit term":"Typical CUP / development-agreement obligation horizon",
+  "Recorded covenant / deed restriction":"Analyst judgment (instrument enforceability)",
+  "Recorded development agreement":"Analyst judgment (instrument enforceability)",
+  "Performance bond / surety":"Analyst judgment (instrument enforceability)",
+  "Condition of approval (CUP / ordinance)":"Analyst judgment (instrument enforceability)",
+  "Letter of intent / unsecured promise":"Analyst judgment (instrument enforceability)",
+  "No instrument / unspecified":"Analyst judgment (instrument enforceability)"};
   ASSUMP.forEach(r=>{if(seed[r.label])r.source=seed[r.label];});})();
 const DEF_ASSUMP=ASSUMP.map(r=>({low:r.low,high:r.high,override:r.override}));
 const DEFAULTS=JSON.parse(JSON.stringify(S));
@@ -963,10 +983,12 @@ function compute(){
     const term=recurring?((b.term>0)?b.term:PVD.term):0;
     const pvf=recurring?pvFactor(PVD.esc,PVD.disc,term):1;   // one-time benefits use a factor of 1
     const annualDev=b.qty*devU*b.pct, annualCity=b.qty*cityU*b.pct;  // for recurring, these are per-year amounts
-    const devCost=annualDev*pvf;
-    const cityPlain=annualCity*pvf;             // plain-dollar city cost-to-provide → the verdict basis (PV when recurring)
-    const cityVal=cityPlain*mult;                // priority-weighted value → ranking only, never pass/fail
-    return {...b,cat:L.cat,unit:L.unit,dev:devU,city:cityU,mult,recurring,term,pvf,annualDev,annualCity,devCost,cityPlain,cityVal,gain:devCost?cityVal/devCost:0};
+    const instr=b.instr||"";
+    const hc=enforceFactor(instr);              // enforceability haircut on public value only (1.0 when unspecified)
+    const devCost=annualDev*pvf;                // developer cost is never haircut
+    const cityPlain=annualCity*pvf*hc;          // plain-dollar city value the city can count on → the verdict basis
+    const cityVal=cityPlain*mult;                // priority-weighted value → ranking only, never pass/fail (also haircut)
+    return {...b,cat:L.cat,unit:L.unit,dev:devU,city:cityU,mult,recurring,term,pvf,instr,hc,annualDev,annualCity,devCost,cityPlain,cityVal,gain:devCost?cityVal/devCost:0};
   });
   const A=rows.reduce((s,x)=>s+x.devCost,0);
   const Bplain=rows.reduce((s,x)=>s+x.cityPlain,0);   // PLAIN public value, compared to the baseline
@@ -1125,10 +1147,14 @@ function render(){
       '</div>'+
       '<div class="brecur"><label class="brecur-lab"><input type="checkbox" data-i="'+i+'" data-f="recurring"'+(x.recurring?" checked":"")+'> Recurring annual benefit</label>'+
         (x.recurring?(' <span class="anote">$/unit above are treated as <b>per-year</b> · term <input type="number" class="bterm" min="1" data-i="'+i+'" data-f="term" value="'+(x.term||PVD.term)+'"> yrs · PV factor '+x.pvf.toFixed(1)+'× (disc '+(PVD.disc*100).toFixed(1)+'%, esc '+(PVD.esc*100).toFixed(1)+'%)</span>'):"")+'</div>'+
+      '<div class="brecur"><label class="brecur-lab" for="binstr'+i+'">Secured by</label> <select id="binstr'+i+'" class="binstr" data-i="'+i+'" data-f="instr"><option value=""'+(x.instr?"":" selected")+'>Not specified (100% credit)</option>'+
+        ENFORCE_ORDER.map(function(k){return '<option value="'+k+'"'+(x.instr===k?" selected":"")+'>'+ENFORCE_LABEL[k]+' ('+Math.round(ENFORCE[k]*100)+'%)</option>';}).join("")+'</select>'+
+        (x.instr?' <span class="anote">enforceability credit '+Math.round(x.hc*100)+'%</span>':"")+'</div>'+
       '<div class="browcalc hint">'+(x.recurring
         ? 'annual cost '+fmt(x.annualDev)+' → annual city value '+fmt(x.annualCity)+' · present value over '+x.term+' yrs: cost '+fmt(x.devCost)+' → city value '+fmt(x.cityPlain)
-        : 'cost '+fmt(x.devCost)+' → city value '+fmt(x.cityPlain))+'  ('+x.cat+'; ×'+x.mult+' priority weight → ranking only)</div>'+
+        : 'cost '+fmt(x.devCost)+' → city value '+fmt(x.cityPlain))+(x.hc<1?' (after '+Math.round(x.hc*100)+'% enforceability credit on '+fmt(x.annualCity*x.pvf)+')':'')+'  ('+x.cat+'; ×'+x.mult+' priority weight → ranking only)</div>'+
       ((x.recurring&&!recurringGuardOK())?'<div class="pctwarn">⚠ Escalation ('+(PVD.esc*100).toFixed(1)+'%) is not below the discount rate ('+(PVD.disc*100).toFixed(1)+'%). A stream that grows at least as fast as it is discounted over-credits a long obligation, lower escalation or raise the discount rate under Assumptions § H.</div>':"")+
+      (!x.instr?'<div class="pctwarn">⚠ No enforceability instrument selected, this value is credited at 100%. Name what secures it (covenant, development agreement, condition of approval, bond) to risk-adjust the public value.</div>':"")+
       (x.pct>=1?'<div class="pctwarn">⚠ Counted as 100% above code, the full quantity credits as voluntary. If code already requires part of this benefit, lower "% above code" so only the genuinely above-code share counts.</div>':"");
     bl.appendChild(row);
   });
@@ -1140,6 +1166,7 @@ function render(){
       const i=+e.target.dataset.i,f=e.target.dataset.f;
       S.benefits[i][f]= (f==="note"||f==="source") ? e.target.value : (f==="pct" ? (parseNum(e.target.value)/100) : parseNum(e.target.value)); softRender();});
     inp.addEventListener("change",e=>{const f=e.target.dataset.f; if(f!=="pct"&&f!=="note"&&f!=="source"&&f!=="term")e.target.value=fmtNum(parseNum(e.target.value));});});
+  bl.querySelectorAll("select.binstr").forEach(sel=>sel.addEventListener("change",e=>{S.benefits[+e.target.dataset.i].instr=e.target.value;render();}));
   bl.querySelectorAll("[data-x]").forEach(b=>b.onclick=()=>{S.benefits.splice(+b.dataset.x,1);render();});
   document.getElementById("tot-a").textContent=fmt(m.A);
   document.getElementById("tot-b").textContent=fmt(m.Bplain);
@@ -1932,7 +1959,7 @@ function buildPrintSheet(){
     '<div class="ps-sec">Community assets secured</div><ul class="ps-assets">'+assetList+'</ul>';
   let dt=""; try{dt=new Date().toISOString().slice(0,10);}catch(e){dt="";}
   const capCell=(S.cap>0&&S.acres>0)?(Math.round(m.maxUnits).toLocaleString()+(m.overCap?" (over cap)":"")):"n/a";
-  const rows=m.rows.map(function(x){return '<tr><td>'+esc(x.name)+(x.recurring?' <span style="font-size:8px;color:#666">(PV, '+x.term+'-yr)</span>':'')+'</td><td>'+esc(x.cat)+'</td><td class="r">'+x.qty+'</td><td class="r">'+Math.round(x.pct*100)+'%</td><td class="r">'+fmt(x.devCost)+'</td><td class="r">'+fmt(x.cityPlain)+'</td><td class="r">'+(x.gain?x.gain.toFixed(1)+'×':'-')+'</td></tr>';}).join("")||'<tr><td colspan="7">No benefits entered.</td></tr>';
+  const rows=m.rows.map(function(x){return '<tr><td>'+esc(x.name)+(x.recurring?' <span style="font-size:8px;color:#666">(PV, '+x.term+'-yr)</span>':'')+(x.hc<1?' <span style="font-size:8px;color:#666">('+Math.round(x.hc*100)+'% enforce)</span>':'')+'</td><td>'+esc(x.cat)+'</td><td class="r">'+x.qty+'</td><td class="r">'+Math.round(x.pct*100)+'%</td><td class="r">'+fmt(x.devCost)+'</td><td class="r">'+fmt(x.cityPlain)+'</td><td class="r">'+(x.gain?x.gain.toFixed(1)+'×':'-')+'</td></tr>';}).join("")||'<tr><td colspan="7">No benefits entered.</td></tr>';
   document.getElementById("printsheet").innerHTML=
    '<div class="ps-h"><div><div class="ps-title">St. Pete Beach, Bonus Density Scenario</div><div class="ps-sub">Staff sketch tool, order-of-magnitude figures to frame a negotiation, not an appraisal, pro forma, or legal determination.</div></div><div class="ps-date">'+dt+'</div></div>'+
    execTop+
