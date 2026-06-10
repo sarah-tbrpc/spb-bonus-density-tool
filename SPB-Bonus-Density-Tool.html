@@ -93,6 +93,12 @@ select:focus,input[type=number]:focus,input[type=text]:focus{outline:none;border
 .vgrid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:26px;align-items:start;margin-top:6px}
 .vgrid .vchart{position:sticky;top:80px}
 @media(max-width:860px){.vgrid{grid-template-columns:1fr}.vgrid .vchart{position:static}}
+.case-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,560px);gap:24px;align-items:stretch;margin-top:4px}
+.case-media{display:flex;flex-direction:column}
+.case-img{flex:3 1 0;min-height:0}
+.case-img img{width:100%;height:100%;object-fit:cover;border-radius:8px;border:1px solid var(--line);display:block}
+.case-map{border-radius:8px;border:1px solid var(--line);background:#e9ecee;margin-top:12px;flex:1 1 0;min-height:80px}
+@media(max-width:820px){.case-grid{grid-template-columns:1fr}}
 .hint{font-size:12px;color:var(--ink3);margin-top:6px}
 
 .brow{padding:13px 0;border-bottom:1px solid var(--line2)}
@@ -123,12 +129,20 @@ select:focus,input[type=number]:focus,input[type=text]:focus{outline:none;border
 .num .d{font-size:11px;color:var(--ink3);margin-top:3px;line-height:1.4}
 .verdict{border:1px solid var(--line);border-left-width:4px;border-radius:var(--r);padding:16px 20px;margin-bottom:16px;font-size:14px;line-height:1.6;background:var(--card);box-shadow:var(--sh-sm)}
 .verdict .vh{font-size:15px;font-weight:700;display:block;margin-bottom:5px}
+.tlight{display:inline-block;width:13px;height:13px;border-radius:50%;margin-right:9px;vertical-align:-1px;box-shadow:0 0 0 2px rgba(255,255,255,.75),0 0 0 3px rgba(0,0,0,.07)}
+.verdict .vstatus{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-left:4px}
+.lockbar{display:flex;align-items:center;gap:14px;justify-content:space-between;flex-wrap:wrap;background:#f3f5f6;border:1px solid var(--line);border-radius:var(--r-sm);padding:10px 14px;margin-bottom:12px;font-size:12.5px;line-height:1.45}
+.lockbar button{flex:none}
+.lockfs{border:0;margin:0;padding:0;min-width:0}
+.lockfs[disabled] input,.lockfs[disabled] select{background:#f1f2f3;color:#6b7378;cursor:not-allowed}
 .zopa-track{position:relative;height:52px;margin:24px 0 10px}
 .zopa-bar{position:absolute;top:22px;left:0;right:0;height:8px;border-radius:4px;background:#e2e6e8}
 .zopa-zone{position:absolute;top:22px;height:8px;border-radius:4px;background:var(--accent)}
 .zopa-mark{position:absolute;top:12px;width:2px;height:28px;background:var(--ink)}
 .zopa-lab{position:absolute;font-size:10.5px;color:var(--ink2);white-space:nowrap;transform:translateX(-50%)}
 .zopa-lab.top{top:-2px}.zopa-lab.bot{top:38px}
+.zopa-target{position:absolute;top:9px;height:34px;border-radius:4px;background:rgba(227,160,80,.16);border:1px dashed rgba(176,122,46,.75);box-sizing:border-box}
+.zopa-contrib{position:absolute;top:9px;height:34px;border-radius:4px;background:rgba(120,130,138,.10);box-sizing:border-box}
 .rank{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line2)}
 .rank .bar{height:7px;border-radius:3px;background:var(--accent)}
 .rank .nm{font-size:13px;flex:none;width:170px}
@@ -171,6 +185,15 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 .atable input{width:96px;padding:5px 7px;font-size:12.5px;border:1px solid var(--line);border-radius:4px;font-family:inherit;text-align:right}
 .atable input.alow,.atable input.ahigh{background:#fdfbe9}
 .atable input.ov{background:#eef4fb;border-color:#a9c4dd}
+.assumptable{table-layout:fixed}
+.assumptable td,.assumptable th{overflow:hidden}
+.assumptable td.anote{white-space:normal;word-break:break-word}
+.assumptable input.alow,.assumptable input.ahigh,.assumptable input.ov{width:100%;box-sizing:border-box}
+.assumptable input.asrc{width:100%;box-sizing:border-box;text-align:left;font-size:12px}
+.histtable{table-layout:fixed}
+.histtable td{white-space:normal;word-break:break-word;vertical-align:top}
+.histtable input,.histtable select{width:100%;box-sizing:border-box}
+.histtable input.hnum{text-align:right}
 .aapplied{font-variant-numeric:tabular-nums;font-weight:600}
 .anote{color:var(--ink3);font-size:11.5px}
 .atable input.htext{text-align:left;width:100%;min-width:120px}
@@ -247,6 +270,12 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 #printsheet .ps-sec{font-size:10px;text-transform:uppercase;letter-spacing:.04em;font-weight:700;color:#444;margin:10px 0 2px}
 #printsheet .ps-robo{font-size:10px;font-style:italic;color:#333;margin:8px 0;line-height:1.45}
 #printsheet .ps-foot{font-size:9px;color:#666;border-top:1px solid #ccc;margin-top:10px;padding-top:6px;line-height:1.45}
+#printsheet *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+#printsheet .ps-exec{display:flex;align-items:center;gap:13px;margin:12px 0 4px}
+#printsheet .ps-light{width:24px;height:24px;border-radius:50%;flex:none;box-shadow:0 0 0 2px #fff,0 0 0 3px rgba(0,0,0,.12)}
+#printsheet .ps-status{font-size:16px;font-weight:700;line-height:1.1}
+#printsheet .ps-ask{font-size:12px;color:#333;margin-top:1px}
+#printsheet .ps-assets{margin:3px 0 8px;padding-left:18px;font-size:10.5px;line-height:1.55}
 @media print{
   header.top,footer.nav,nav.steps,.actbar,.skip-link,.auxback{display:none!important}
   body{background:#fff;color:#000;font-size:11px}
@@ -432,7 +461,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
       </div>
       <div class="card">
         <h3>Zone of Possible Agreement (ZOPA)</h3>
-        <div class="sub">Range of developer spending on benefits: from the minimum that satisfies the city up to the value to developer.</div>
+        <div class="sub">Range of developer spending on benefits: from the minimum that satisfies the city up to the value to developer. The shaded band is the framework’s <b>target capture zone</b> — a fair-share guideline that keeps the deal off the absolute floor and ceiling.</div>
         <div class="zopa-track" id="zopa"></div>
         <div class="hint" id="zopa-note"></div>
       </div>
@@ -469,7 +498,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
     <section class="panel" data-aux="explainCityMin">
       <button class="btn auxback" style="margin-bottom:14px">← Back</button>
       <div class="eyebrow">Calculation</div>
-      <h2 class="step-h">How the City Minimum Is Calculated</h2>
+      <h2 class="step-h">How the Lawful Mitigation Baseline Is Calculated</h2>
       <div id="aux-CM"></div>
     </section>
     <section class="panel" data-aux="explainB">
@@ -509,20 +538,20 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
         <p class="lede" style="margin:0 0 8px"><b>Value to developer</b> — the most the bonus units are worth to the developer (their residual profit, slightly discounted): the walk-away ceiling.</p>
         <p class="lede" style="margin:0 0 8px"><b>Pool opportunity cost</b> — the value of giving up scarce pool units. Near zero when the pool is plentiful; rises as it nears depletion. Applies only on the pool-allocation pathway.</p>
         <p class="lede" style="margin:0 0 8px"><b>Impact mitigation floor</b> — the development's impact that can lawfully be required as a condition; the most the city can compel. Benefit beyond it is voluntary incentive.</p>
-        <p class="lede" style="margin:0 0 8px"><b>City minimum</b> — opportunity cost plus impact mitigation: the least public value the deal should return.</p>
+        <p class="lede" style="margin:0 0 8px"><b>Lawful mitigation baseline</b> — opportunity cost plus impact mitigation: the least public value the deal should return.</p>
         <p class="lede" style="margin:0 0 8px"><b>Developer cost</b> — what the offered package costs the developer to provide.</p>
-        <p class="lede" style="margin:0 0 8px"><b>Public value offered</b> — the city's valuation of the offered package, after the category weightings.</p>
+        <p class="lede" style="margin:0 0 8px"><b>Public value offered</b> — the city's <b>plain-dollar</b> cost to provide the offered package (qty × city $/unit × % above code). This is what the verdict compares to the baseline. Category multipliers do not enter this figure — they only rank benefits within a package.</p>
         <p class="lede" style="margin:0"><b>Value ratio</b> — public value per developer dollar. The amount above 1 is the gain from trade.</p>
       </div>
 
       <div class="card">
         <h3>How the Recommendation Is Reached</h3>
-        <p class="lede" style="margin:0">The deal is <b>worthwhile</b> when the public value offered meets the city minimum, and <b>feasible</b> when the developer cost stays under the value to developer. The zone of possible agreement runs from the least developer spending that satisfies the city up to the value to developer; the gap is the negotiating room. Fill that room with the highest value-ratio benefits first.</p>
+        <p class="lede" style="margin:0">The deal is <b>worthwhile</b> when the public value offered meets the lawful mitigation baseline, and <b>feasible</b> when the developer cost stays under the value to developer. The zone of possible agreement runs from the least developer spending that satisfies the city up to the value to developer; the gap is the negotiating room. Fill that room with the highest value-ratio benefits first.</p>
       </div>
 
       <div class="card">
         <h3>Known Limits — Read Before Relying on It</h3>
-        <p class="lede" style="margin:0 0 8px"><b>Weighting vs. plain dollars.</b> The worthwhile test compares weighted public value against a plain-dollar floor — deliberate (the city's weighted valuation should at least cover its plain costs), not a dollar-for-dollar test. It makes the floor easier to clear; be prepared to explain it.</p>
+        <p class="lede" style="margin:0 0 8px"><b>Plain-dollar verdict.</b> The pass/fail test is apples-to-apples in plain dollars: the package's plain public value (city cost to provide) against the plain-dollar baseline. The <b>category multipliers</b> (resilience 2.5×, etc.) are a <i>ranking</i> tool only — they steer which benefits to prefer within a package, and never inflate the offer on the verdict scale. <span class="anote">(Earlier versions weighted the offer before the test; that was removed in v1.1 — see the changelog below.)</span> If a deal now reads tighter than it used to, the tool didn't get stricter — it stopped grading the developer's offer on a curve.</p>
         <p class="lede" style="margin:0 0 8px"><b>Invented curve shapes.</b> The scarcity exponent and the value-decline factor are reasonable judgment shapes, not empirically derived. Both are editable under Assumptions.</p>
         <p class="lede" style="margin:0 0 8px"><b>Margin is not a return.</b> The developer margin is applied as a flat percentage of total cost — a sketch proxy for a real 12–15% target IRR. It does not model financing, hold period, or the time value of money, so a developer's analyst will compute feasibility on a different basis. Treat the value to developer as an order-of-magnitude ceiling, not a pro-forma result.</p>
         <p class="lede" style="margin:0 0 8px"><b>Land is held constant.</b> The value to developer prices only the marginal bonus units; it does not subtract land cost (land is a by-right sunk cost that does not scale with the bonus). Correct for valuing the increment, but it is not a whole-project residual land value and understates the developer's all-in cost.</p>
@@ -537,6 +566,8 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
         <p class="lede" style="margin:0 0 8px"><b>Codified backing.</b> The bonus mechanism itself is in the SPB code: added units come only from a finite density pool — the General Residential Unit "RU" pool of <b>195 units</b> (Land Development Code §39.18) and the <b>325</b>-unit transient-lodging pool for the Town Center-2 / Activity Center / Bayou Residential districts (Future Land Use element), both created by the 2007 down-zoning of the Large Resort district across 65.16 acres (−3 du/ac → 195; −5 lodging units/ac → 325). Each allocation is by City Commission ordinance plus conditional use on a discretionary "merit basis" (LDC §4.12(d)), with the units-remaining balance recited in the ordinance (§39.18(c)). The qualifying public benefits are enumerated in §4.12(d)(1)–(9): public parking / multimodal, public beach access, public art, public boat slips, workforce housing, green-building / wellness, Gulf-front access easements, and landscaping above code.</p>
         <p class="lede" style="margin:0 0 8px"><b>What the code does <i>not</i> set.</b> The SPB code contains no contribution rate, no benefit-valuation formula, and no floor or ceiling on what a developer must offer — the only statutory weighting is Chapter 163 proportionate-share ("in proportion to the impacts caused"), which is the basis for the impact-mitigation floor. The ZOPA bounds in this tool, and the 15–25% contribution / 25–50% capture guardrails cited below, are therefore <b>analytic overlays from the supporting framework, not adopted code</b>; the value-ratio math is a staff sketch over the code's discretionary merit-basis review.</p>
         <p class="lede" style="margin:0"><b>Supporting framework.</b> This tool operationalizes the approach in <i>A Framework for Density Bonus Valuation in St. Pete Beach</i> (Tampa Bay Regional Planning Council, April 2026): density here is an <b>allocation</b> of a finite, non-renewable pool, not a growth incentive, so each bonus unit carries scarcity value, and the negotiation is bounded by a Zone of Possible Agreement between a scarcity-adjusted city floor and a developer walk-away ceiling. That framework documents the legal basis for the floor (Florida proportionate-share statute F.S. §163.3180; the Nollan–Dolan–Koontz nexus and rough-proportionality standards) and the value-capture rationale for the ceiling (Lincoln Institute / ULI), and it frames public benefits across five value layers — construction cost, city replacement-cost premium, lifecycle O&amp;M, resilience / avoided damage, and regional economic impact. This tool intentionally uses a simpler single-value-per-benefit model; the framework’s layered valuation and its 15–25% contribution / 25–50% capture guardrails are documented there for staff who want the fuller rationale.</p>
+        <p class="lede" style="margin:8px 0 0"><b>Sources &amp; benchmarks.</b> The benchmark figures behind this tool trace to published sources, carried on the Assumptions and Benefit-library pages (Source column): construction cost <b>RSMeans</b> and <b>ICC Building Valuation Data</b>; lodging <b>STR / HVS</b>; soft costs and developer margin <b>ULI / CBRE</b>; condo comps <b>Redfin</b>; benefit unit costs from <b>SFRPC</b> (Resilient BCA Database / REBECCA), <b>FEMA</b> (Ecosystem Service Values; BCA Sustainment v13), <b>FDEP</b>, <b>FHWA</b>, <b>WGI</b>, <b>Forward Pinellas</b>, <b>UF Shimberg</b>, and <b>HUD</b>. The framework’s fuller valuation method draws on residual-land-value practice (<b>Keyser Marston</b>; <b>BAE Urban Economics</b>) and value-layer multipliers (<b>NIBS</b> <i>Natural Hazard Mitigation Saves</i> 2019 for resilience; <b>GASB 34 / FHWA</b> lifecycle; <b>FL Statute 255.20</b> public-procurement premium; <b>BEA / RIMS II</b> economic impact) — those layers inform the benchmarks but are not recomputed here.</p>
+        <p class="lede" style="margin:10px 0 0;font-size:12px;color:var(--ink3)"><b>Version &amp; changelog.</b> Tool <b>v1.1</b> · methodology dated <b>2026-06-10</b> (stamped on every printout). <b>v1.1</b> — verdict moved to plain dollars; category multipliers demoted to ranking only; "city minimum" renamed "lawful mitigation baseline." <b>v1.0</b> — initial sketch model. A scenario or PDF produced under an earlier version is identifiable by its stamp; a changed verdict between versions reflects a deliberate methodology fix, not a contradiction.</p>
       </div>
     </section>
 
@@ -552,8 +583,15 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
       <button class="btn auxback" style="margin-bottom:14px">← Back</button>
       <div class="eyebrow">Compare</div>
       <h2 class="step-h">Saved Scenarios</h2>
-      <p class="lede">Snapshot the current inputs and results, then compare alternatives side by side. Figures are frozen at the moment you save. Loading a snapshot replaces the current inputs.</p>
+      <p class="lede">Snapshot the current inputs and results, then compare alternatives side by side. The figures in this table are <b>frozen</b> at save time under the methodology version shown on each row. <b>Loading</b> a snapshot replaces the current inputs and <b>re-evaluates the verdict under the current methodology</b> — so a scenario saved under an older version may read differently once loaded. That's intentional: the live verdict always reflects today's methodology.</p>
       <div id="aux-scenarios"></div>
+    </section>
+
+    <section class="panel" data-aux="cases">
+      <button class="btn auxback" style="margin-bottom:14px">← Back</button>
+      <div class="eyebrow">Worked Examples</div>
+      <h2 class="step-h">Case Studies</h2>
+      <div id="aux-cases"></div>
     </section>
 
   </main>
@@ -568,6 +606,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 
 <script>
 "use strict";
+const VERSION="1.1", VERSION_DATE="2026-06-10";   // bump + add a changelog line when the model logic changes
 const K={hardCondo:237500,hardHotel:170000,soft:0.24,margin:0.15,decline:0.80,impact:28000};
 const CATMULT={"Workforce Housing":1.4,"Community Development":1.5,"Transportation":1.7,"Environmental":2.0,"Resilience":2.5,"Monetary / Cash":1.0};
 const BMULT={"Low-rise (1-3)":1.0,"Mid-rise (4-7)":1.15,"High-rise (8+)":1.35};
@@ -576,6 +615,10 @@ const FMULT={AE:1.0,VE:1.08,X:0.97};
 const IMPACT_BY_USE={"Condominium":28000,"Multifamily Rental":24000,"Temporary Lodging":18000};
 /* Optional Results cross-check: Tampa 10:1 (Code 27-140) + ICC bonus-unit construction cost. Not in the verdict. */
 const XCHK={iccPSF:234.59,tampaRatio:10};
+/* Value-capture "guardrails" from the TBRPC framework (ANALYTIC OVERLAY, not adopted code):
+   a 15–25% contribution-rate floor (Koontz / FS 163.3180 basis) and a 25–50% value-capture ceiling.
+   Expressed as fractions of the value to developer; drawn as a "target capture zone" on the ZOPA bar. */
+const CAPTURE={contribLo:0.15,contribHi:0.25,capLo:0.25,capHi:0.50};
 const POOL_DEFAULTS={RU:{rem:170,dem:8,hor:15},TLU:{rem:311,dem:14,hor:15}};
 const POOL_TOTAL={RU:195,TLU:325};
 /* Allocation ledger. Only rows whose decision matches /approv/ count against the pool,
@@ -598,11 +641,14 @@ function refreshRemaining(){const unit=(S.use==="Temporary Lodging")?"TLU":"RU";
 function afterHistoryChange(){refreshRemaining();const ps=document.getElementById("pool-summary");if(ps)ps.innerHTML=poolSummaryText();render();}
 function hfld(i,fld,val,type,cls){const r=HISTORY[i]||{};const who=(r.project&&(""+r.project).trim())?r.project:("row "+(i+1));const al=(who+" \u2014 "+fld).replace(/"/g,"");const safe=(val==null?"":(""+val).replace(/"/g,"&quot;"));const ttl=(safe!=="")?' title="'+safe+'"':"";return '<input type="'+type+'" aria-label="'+al+'"'+ttl+' data-i="'+i+'" data-fld="'+fld+'" value="'+safe+'" class="'+cls+'">';}
 function hsel(i,fld,val,opts){const r=HISTORY[i]||{};const who=(r.project&&(""+r.project).trim())?r.project:("row "+(i+1));const al=(who+" \u2014 "+fld).replace(/"/g,"");return '<select aria-label="'+al+'" data-i="'+i+'" data-fld="'+fld+'" class="hsel">'+opts.map(x=>'<option'+(x===val?' selected':'')+'>'+x+'</option>').join('')+'</select>';}
+/* free-text ledger cell: wrapping plain text when locked (legible, no cut-off), editable input when unlocked */
+function htxt(i,fld,val){return advUnlocked?hfld(i,fld,val,"text","htext"):esc(val||"");}
 function buildHistory(){
-  let h='<div class="card"><h3>Density pool</h3><div class="sub">Remaining = pool total minus approved allocations below. This drives the scarcity cost on the Pool step.</div><div class="agrid" style="grid-template-columns:repeat(2,1fr)"><div><label>RU pool total</label><input type="number" id="poolRU" value="'+POOL_TOTAL.RU+'"></div><div><label>TLU pool total</label><input type="number" id="poolTLU" value="'+POOL_TOTAL.TLU+'"></div></div><div class="hint" id="pool-summary" style="margin-top:10px">'+poolSummaryText()+'</div><div class="hint" style="margin-top:6px">The modeled TLU pool (325) is the Town Center-2 / Activity Center / Bayou Residential pool. SPB also has separate transient-lodging pools the tool does not total — Boutique Hotel/Condo 125, Town Center Core (TC-1) 50, Upham Beach Village 175. Lodging deals outside the TC-2/AC/Bayou districts draw from those instead.</div></div>';
-  h+='<div class="atable-wrap"><table class="atable"><thead><tr><th scope="col">Date</th><th scope="col">Project / Applicant</th><th scope="col">Pool</th><th scope="col" class="r">Approved</th><th scope="col" class="r">Requested</th><th scope="col">Decision</th><th scope="col">Source / Ordinance</th><th scope="col">Notes</th><th scope="col"><span class="sr-only">Delete</span></th></tr></thead><tbody>';
-  HISTORY.forEach((r,i)=>{h+='<tr><td>'+hfld(i,"date",r.date,"text","hdate")+'</td><td>'+hfld(i,"project",r.project,"text","htext")+'</td><td>'+hsel(i,"pool",r.pool,["RU","TLU"])+'</td><td class="r">'+hfld(i,"approved",r.approved,"number","hnum")+'</td><td class="r">'+hfld(i,"requested",r.requested,"number","hnum")+'</td><td>'+hsel(i,"decision",r.decision,["Approved","Denied","Pending","Withdrawn","Superseded","Other pool"])+'</td><td>'+hfld(i,"source",r.source,"text","htext")+'</td><td>'+hfld(i,"notes",r.notes,"text","htext")+'</td><td><button class="x" data-del="'+i+'">\u00d7</button></td></tr>';});
-  h+='</tbody></table></div><button class="addbtn" id="histadd" style="margin-top:12px">+ Add row</button>';
+  let h=lockBar("Allocation ledger","The institutional record of pool draws that drives the scarcity calculation.")+'<fieldset class="lockfs"'+(advUnlocked?'':' disabled')+'>';
+  h+='<div class="card"><h3>Density pool</h3><div class="sub">Remaining = pool total minus approved allocations below. This drives the scarcity cost on the Pool step.</div><div class="agrid" style="grid-template-columns:repeat(2,1fr)"><div><label>RU pool total</label><input type="number" id="poolRU" value="'+POOL_TOTAL.RU+'"></div><div><label>TLU pool total</label><input type="number" id="poolTLU" value="'+POOL_TOTAL.TLU+'"></div></div><div class="hint" id="pool-summary" style="margin-top:10px">'+poolSummaryText()+'</div><div class="hint" style="margin-top:6px">The modeled TLU pool (325) is the Town Center-2 / Activity Center / Bayou Residential pool. SPB also has separate transient-lodging pools the tool does not total — Boutique Hotel/Condo 125, Town Center Core (TC-1) 50, Upham Beach Village 175. Lodging deals outside the TC-2/AC/Bayou districts draw from those instead.</div></div>';
+  h+='<div class="atable-wrap"><table class="atable histtable"><colgroup><col style="width:8%"><col style="width:17%"><col style="width:7%"><col style="width:7%"><col style="width:7%"><col style="width:11%"><col style="width:18%"><col style="width:21%"><col style="width:4%"></colgroup><thead><tr><th scope="col">Date</th><th scope="col">Project / Applicant</th><th scope="col">Pool</th><th scope="col" class="r">Approved</th><th scope="col" class="r">Requested</th><th scope="col">Decision</th><th scope="col">Source / Ordinance</th><th scope="col">Notes</th><th scope="col"><span class="sr-only">Delete</span></th></tr></thead><tbody>';
+  HISTORY.forEach((r,i)=>{h+='<tr><td>'+hfld(i,"date",r.date,"text","hdate")+'</td><td>'+htxt(i,"project",r.project)+'</td><td>'+hsel(i,"pool",r.pool,["RU","TLU"])+'</td><td class="r">'+hfld(i,"approved",r.approved,"number","hnum")+'</td><td class="r">'+hfld(i,"requested",r.requested,"number","hnum")+'</td><td>'+hsel(i,"decision",r.decision,["Approved","Denied","Pending","Withdrawn","Superseded","Other pool"])+'</td><td>'+htxt(i,"source",r.source)+'</td><td>'+htxt(i,"notes",r.notes)+'</td><td><button class="x" data-del="'+i+'">\u00d7</button></td></tr>';});
+  h+='</tbody></table></div><button class="addbtn" id="histadd" style="margin-top:12px">+ Add row</button></fieldset>';
   h+='<p class="lede" style="margin-top:14px">The remaining pool flows into the Pool step and the scarcity cost automatically. Set a decision to anything other than Approved to exclude a row from the allocated total — use <b>Superseded</b> for a returned/divested approval and <b>Other pool</b> for a real allocation that draws from a different pool than the RU 195 / TLU 325 modeled here.</p>';
   return h;
 }
@@ -672,6 +718,34 @@ const LIBSEED={
 Object.keys(LIBSEED).forEach(function(nm){const i=libIndexOf(nm);if(i<0)return;const s=LIBSEED[nm],c=LIBCAL[i];
  if(s.note!=null)c.note=s.note; if(s.source!=null)c.source=s.source;
  if(s.cityLow!=null)c.cityLow=s.cityLow; if(s.cityHigh!=null)c.cityHigh=s.cityHigh; if(s.cityOv!=null)c.cityOv=s.cityOv;});
+/* General benchmark Source/Notes from the TBRPC valuation template (sourced benchmark library).
+   Non-destructive: fills a Note only if empty (keeps Corey-specific notes), and appends the benchmark
+   source where a project-specific source already exists. */
+const LIBSRC={
+ "Workforce unit @120% AMI":{note:"Affordability gap/subsidy per unit, not construction cost.",source:"UF Shimberg Center"},
+ "Workforce unit @100% AMI":{note:"Deeper subsidy at 100% AMI.",source:"HUD FY2025 Income Limits"},
+ "Workforce unit @80% AMI":{note:"Approaching LIHTC-level subsidy.",source:"FL HFC LIHTC Cost Data"},
+ "Seawall / bulkhead":{source:"SFRPC Resilient BCA Database, 2024"},
+ "Living shoreline (hybrid)":{note:"Hybrid green-gray shoreline (marsh sills, oyster reefs, living breakwaters) — alternative to a vertical seawall where conditions allow.",source:"SFRPC REBECCA line 6"},
+ "Stormwater retention / treatment":{note:"Enhanced treatment beyond code.",source:"FL DEP Stormwater Rule 2024"},
+ "Dune restoration":{note:"Planted dune system with native vegetation; highest ecosystem-service value per acre of any FEMA category.",source:"SFRPC line 14; FEMA Ecosystem Service Values 2022"},
+ "Mangrove / wetland restoration":{note:"On-site restoration ≈ $38K–$85K/acre (SFRPC REBECCA line 5); a wetland mitigation-credit purchase via an FDEP-approved bank differs.",source:"FDEP Mitigation Banking; SFRPC REBECCA line 5"},
+ "Public boat slip (Class A)":{source:"FDEP Clean Vessel Act awards; FBIP annual award list"},
+ "Waterfront boardwalk / promenade":{source:"PermaTrak estimates"},
+ "Public plaza / park":{source:"RSMeans Site Work 2025"},
+ "Community / civic facility space":{note:"Finished interior, ADA, HVAC.",source:"Tri-Town Construction FL Cost Guide"},
+ "Streetscape / hardscape (above code)":{source:"FHWA Complete Streets"},
+ "Structured public parking":{note:"Structured parking; WGI 2025 median.",source:"WGI 2025 Parking Structure Cost Outlook (publications.wginc.com)"},
+ "Complete street (sidewalk+)":{note:"Road diet + bike lanes + sidewalks + street trees.",source:"FHWA Complete Streets"},
+ "Multi-use trail / bike lane":{note:"10–12 ft paved trail with drainage.",source:"American Trails / FHWA"},
+ "PM peak trip mitigation":{source:"Forward Pinellas MIFO"},
+ "Cash (general fund)":{note:"Direct cash above impact fees; no category multipliers apply."},
+ "Cash (resilience fund)":{note:"Direct cash above impact fees; no category multipliers apply."},
+ "Cash (housing trust)":{note:"Direct cash above impact fees; no category multipliers apply."}
+};
+Object.keys(LIBSRC).forEach(function(nm){const i=libIndexOf(nm);if(i<0)return;const t=LIBSRC[nm],c=LIBCAL[i];
+ if(t.note&&!c.note)c.note=t.note;
+ if(t.source){ if(!c.source)c.source=t.source; else if(c.source.indexOf(t.source)<0)c.source=c.source+"; benchmark: "+t.source; }});
 function libApplied(c,which){
   if(which==="dev")return (c.devOv!=null&&c.devOv!=="")?+c.devOv:(c.devLow+c.devHigh)/2;
   return (c.cityOv!=null&&c.cityOv!=="")?+c.cityOv:(c.cityLow+c.cityHigh)/2;
@@ -728,7 +802,11 @@ const ASSUMP=[
  {sec:"E. Impact mitigation ($/unit by use)",label:"Multifamily rental",unit:"$/unit",low:18000,high:30000,override:null,notes:"",fmt:"$",apply:v=>IMPACT_BY_USE["Multifamily Rental"]=v},
  {sec:"E. Impact mitigation ($/unit by use)",label:"Temporary lodging",unit:"$/key",low:12000,high:24000,override:null,notes:"lower trip / school generation",fmt:"$",apply:v=>IMPACT_BY_USE["Temporary Lodging"]=v},
  {sec:"F. Optional cross-check (Tampa 10:1 / ICC)",label:"ICC building valuation — R-2 Type IA",unit:"$/SF",low:234.59,high:234.59,override:null,notes:"ICC Aug-2025 Building Valuation Data, R-2 Group / Type IA — the rate SPB staff used for bonus-unit construction cost. Times the Step-1 average unit size × bonus units. Edit for a different occupancy / type / year",fmt:"$",apply:v=>XCHK.iccPSF=v},
- {sec:"F. Optional cross-check (Tampa 10:1 / ICC)",label:"Benefit return ratio (Tampa basis)",unit:"× dev $ : benefit $",low:10,high:10,override:null,notes:"Tampa Code of Ordinances 27-140: ten development dollars per one benefit dollar outside the Channel District (10:1). Implied benefit floor = bonus construction cost ÷ this ratio",fmt:"x",apply:v=>XCHK.tampaRatio=v}
+ {sec:"F. Optional cross-check (Tampa 10:1 / ICC)",label:"Benefit return ratio (Tampa basis)",unit:"× dev $ : benefit $",low:10,high:10,override:null,notes:"Tampa Code of Ordinances 27-140: ten development dollars per one benefit dollar outside the Channel District (10:1). Implied benefit floor = bonus construction cost ÷ this ratio",fmt:"x",apply:v=>XCHK.tampaRatio=v},
+ {sec:"F. Optional cross-check (Tampa 10:1 / ICC)",label:"Contribution floor — lower bound",unit:"% of value to dev",low:15,high:15,override:null,notes:"TBRPC framework guardrail (ANALYTIC OVERLAY, not adopted code). Lower edge of the lighter 'contribution floor' band on the ZOPA bar — Koontz / FS 163.3180 proportionate-share basis. Set Low and High the same, or use Override.",fmt:"%",apply:v=>CAPTURE.contribLo=v/100},
+ {sec:"F. Optional cross-check (Tampa 10:1 / ICC)",label:"Contribution floor — upper bound",unit:"% of value to dev",low:25,high:25,override:null,notes:"Upper edge of the contribution-floor band (where it meets the value-capture zone).",fmt:"%",apply:v=>CAPTURE.contribHi=v/100},
+ {sec:"F. Optional cross-check (Tampa 10:1 / ICC)",label:"Value-capture target — lower bound",unit:"% of value to dev",low:25,high:25,override:null,notes:"Lower edge of the shaded 'target capture zone' (the developer-side value-capture range). Analytic overlay, not adopted code.",fmt:"%",apply:v=>CAPTURE.capLo=v/100},
+ {sec:"F. Optional cross-check (Tampa 10:1 / ICC)",label:"Value-capture target — upper bound",unit:"% of value to dev",low:50,high:50,override:null,notes:"Upper edge of the target capture zone — the developer walk-away ceiling rate. Analytic overlay, not adopted code.",fmt:"%",apply:v=>CAPTURE.capHi=v/100}
 ];
 /* aApplied always returns the NATIVE model unit ($/unit or $/key). The cost basis
    only changes how a row is entered and displayed, never what feeds the model. */
@@ -746,6 +824,17 @@ function fmtAssump(r){const v=aApplied(r);
 function aImplied(r){if(r.basis===undefined||!r.sf)return ""; const v=aApplied(r);
   return aInSF(r)?("= $"+Math.round(v).toLocaleString()+" "+r.unit):("= $"+(Math.round(v/r.sf*100)/100).toLocaleString()+" /SF");}
 function fld(i,col,val,cls,fmt){const disp=(fmt==="$"&&val!=null&&val!=="")?(+val).toLocaleString():(val==null?"":val);const r=ASSUMP[i];const al=((r&&r.label?r.label:"value")+" \u2014 "+col).replace(/"/g,"");return '<input type="text" inputmode="decimal" aria-label="'+al+'" data-i="'+i+'" data-col="'+col+'" value="'+disp+'" class="'+cls+'">';}
+ASSUMP.forEach(r=>{if(r.source===undefined)r.source="";});
+(function(){const seed={
+  "ICC building valuation — R-2 Type IA":"ICC Building Safety Journal — Building Valuation Data (Aug 2025)",
+  "Benefit return ratio (Tampa basis)":"City of Tampa Code of Ordinances §27-140",
+  "Hard cost — condo / multifamily":"RSMeans 2025 multifamily / ICC R-2 IA (national — apply Pinellas City Cost Index)",
+  "Hard cost — temporary lodging":"STR Global / HVS (full-service resort key)",
+  "Soft costs":"ULI Developer Handbook (A&E, permits, legal, financing)",
+  "Developer margin":"ULI / CBRE underwriting surveys (risk-adjusted return for feasibility)",
+  "Condo sale price — inland / non-front":"Redfin Q2 2026 comps",
+  "Condo sale price — gulf / waterfront":"Redfin Q2 2026 comps"};
+  ASSUMP.forEach(r=>{if(seed[r.label])r.source=seed[r.label];});})();
 const DEF_ASSUMP=ASSUMP.map(r=>({low:r.low,high:r.high,override:r.override}));
 const DEFAULTS=JSON.parse(JSON.stringify(S));
 const DEF_K=JSON.parse(JSON.stringify(K)),DEF_CAT=JSON.parse(JSON.stringify(CATMULT)),DEF_B=JSON.parse(JSON.stringify(BMULT)),DEF_P=JSON.parse(JSON.stringify(PMULT)),DEF_F=JSON.parse(JSON.stringify(FMULT)),DEF_IMP=JSON.parse(JSON.stringify(IMPACT_BY_USE));
@@ -799,20 +888,22 @@ function compute(){
     const cityU=(b.city!=null)?b.city:L.city;
     const mult=CATMULT[L.cat]||1;
     const devCost=b.qty*devU*b.pct;
-    const cityVal=b.qty*cityU*b.pct*mult;
-    return {...b,cat:L.cat,unit:L.unit,dev:devU,city:cityU,mult,devCost,cityVal,gain:devCost?cityVal/devCost:0};
+    const cityPlain=b.qty*cityU*b.pct;          // plain-dollar city cost-to-provide → the verdict basis
+    const cityVal=cityPlain*mult;                // priority-weighted value → ranking only, never pass/fail
+    return {...b,cat:L.cat,unit:L.unit,dev:devU,city:cityU,mult,devCost,cityPlain,cityVal,gain:devCost?cityVal/devCost:0};
   });
   const A=rows.reduce((s,x)=>s+x.devCost,0);
-  const B=rows.reduce((s,x)=>s+x.cityVal,0);
-  const g=A?B/A:0;
-  const zFloor=g?cityMin/g:0, zCeil=V, room=V-A;
-  const worth=B>=cityMin, feas=A<=V;
+  const Bplain=rows.reduce((s,x)=>s+x.cityPlain,0);   // PLAIN public value — compared to the baseline
+  const B=rows.reduce((s,x)=>s+x.cityVal,0);          // WEIGHTED — for ranking / priority view only
+  const gPlain=A?Bplain/A:0, g=A?B/A:0;
+  const zFloor=gPlain?cityMin/gPlain:0, zCeil=V, room=V-A;
+  const worth=Bplain>=cityMin, feas=A<=V;
   const total=S.byright+S.bonus;
   const maxUnits=(S.cap||0)*(S.acres||0);
   const byrightDerived=(S.base||0)*(S.acres||0);
   const overCap=(S.cap>0&&S.acres>0)?(total>maxUnits+1e-9):false;
   const headroom=maxUnits-total;
-  return {r,V,scar,D,I,cityMin,rows,A,B,g,zFloor,zCeil,room,worth,feas,poolPath,total,maxUnits,byrightDerived,overCap,headroom,tc,impMargin};
+  return {r,V,scar,D,I,cityMin,rows,A,B,Bplain,g,gPlain,zFloor,zCeil,room,worth,feas,poolPath,total,maxUnits,byrightDerived,overCap,headroom,tc,impMargin};
 }
 
 const fmt=n=>{const s=n<0?"-":"";return s+"$"+Math.round(Math.abs(n)).toLocaleString();};
@@ -825,7 +916,7 @@ const stepnav=document.getElementById("stepnav");
 STEPS.forEach((t,i)=>{const b=document.createElement("button");b.className="step-btn";
   b.innerHTML='<span class="num">'+(i+1)+'</span>'+t;b.onclick=()=>goto(i);stepnav.appendChild(b);});
 const navfoot=document.createElement("div");navfoot.className="navfoot";
-navfoot.innerHTML='<button id="openmethod">Method</button><button id="openassume">Assumptions</button><button id="openlibrary">Benefit library</button><button id="openhistory">History</button><button id="openscenarios">Scenarios</button><button id="resetall" class="rst">Reset all</button>';
+navfoot.innerHTML='<button id="openmethod">Method</button><button id="openassume">Assumptions</button><button id="openlibrary">Benefit library</button><button id="opencases">Case studies</button><button id="openhistory">History</button><button id="openscenarios">Scenarios</button><button id="resetall" class="rst">Reset all</button>';
 stepnav.appendChild(navfoot);
 function goto(i){cur=Math.max(0,Math.min(STEPS.length-1,i));
   document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("show",+p.dataset.step===cur));
@@ -876,8 +967,8 @@ document.getElementById("addbtn").onclick=()=>{if(!addsel.value)return;S.benefit
 function readoutHTML(m,v){
   return '<span class="pill" title="'+(v.tip||"")+'" style="background:'+v.bg+';color:'+v.fg+'">'+v.tag+'</span>'+
     '<div class="rd clk" role="button" tabindex="0" data-aux="explainV" title="how this is calculated"><div class="k">Value to developer</div><div class="v mono">'+fmt(m.V)+'</div></div>'+
-    '<div class="rd clk" role="button" tabindex="0" data-aux="explainCityMin" title="how this is calculated"><div class="k">City minimum</div><div class="v mono">'+fmt(m.cityMin)+'</div></div>'+
-    '<div class="rd clk" role="button" tabindex="0" data-aux="explainB" title="how this is calculated"><div class="k">Public value offered</div><div class="v mono">'+fmt(m.B)+'</div></div>';
+    '<div class="rd clk" role="button" tabindex="0" data-aux="explainCityMin" title="how this is calculated"><div class="k">Lawful mitigation baseline</div><div class="v mono">'+fmt(m.cityMin)+'</div></div>'+
+    '<div class="rd clk" role="button" tabindex="0" data-aux="explainB" title="how this is calculated"><div class="k">Public value offered</div><div class="v mono">'+fmt(m.Bplain)+'</div></div>';
 }
 function numgridHTML(m){
   const mp=Math.round(m.impMargin*100);
@@ -886,7 +977,7 @@ function numgridHTML(m){
     ["Value to developer",m.V,"implied "+mp+"% return on cost"+flag],
     ["Pool opportunity cost",m.D,m.D<5000?"pool not scarce":"scarcity binding"],
     ["Impact mitigation floor",m.I,"the most the city can require"],
-    ["City minimum",m.cityMin,"opportunity cost + impact mitigation"]
+    ["Lawful mitigation baseline",m.cityMin,"opportunity cost + impact mitigation"]
   ].map(c=>'<div class="num"><div class="k">'+c[0]+'</div><div class="v">'+fmt(c[1])+'</div><div class="d">'+c[2]+'</div></div>').join("");}
 
 function render(){
@@ -941,7 +1032,7 @@ function render(){
         '<div><div class="inp-lab">Dev $/unit</div><input type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.dev))+'" data-i="'+i+'" data-f="dev"></div>'+
         '<div><div class="inp-lab">City $/unit</div><input type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.city))+'" data-i="'+i+'" data-f="city"></div>'+
       '</div>'+
-      '<div class="browcalc hint">cost '+fmt(x.devCost)+' → city value '+fmt(x.cityVal)+'  ('+x.cat+' ×'+x.mult+' multiplier)</div>';
+      '<div class="browcalc hint">cost '+fmt(x.devCost)+' → city value '+fmt(x.cityPlain)+'  ('+x.cat+'; ×'+x.mult+' priority weight → ranking only)</div>';
     bl.appendChild(row);
   });
     bl.querySelectorAll("input").forEach(inp=>{
@@ -951,24 +1042,24 @@ function render(){
     inp.addEventListener("change",e=>{if(e.target.dataset.f!=="pct")e.target.value=fmtNum(parseNum(e.target.value));});});
   bl.querySelectorAll("[data-x]").forEach(b=>b.onclick=()=>{S.benefits.splice(+b.dataset.x,1);render();});
   document.getElementById("tot-a").textContent=fmt(m.A);
-  document.getElementById("tot-b").textContent=fmt(m.B);
+  document.getElementById("tot-b").textContent=fmt(m.Bplain);
 
   document.getElementById("numgrid").innerHTML=numgridHTML(m);
-  const vb=document.getElementById("verdict");vb.style.borderLeftColor=v.fg;
-  vb.innerHTML='<span class="vh">'+v.head+'</span>'+v.body;
+  const vb=document.getElementById("verdict");vb.style.borderLeftColor=v.fg;vb.style.background=v.bg;
+  vb.innerHTML='<span class="vh"><span class="tlight" style="background:'+v.light+'"></span>'+v.head+' <span class="vstatus" style="color:'+v.fg+'">'+v.status+'</span></span>'+v.body;
   drawZopa(m);drawRanks(m);drawSpark(m);drawRobo(m);drawDensity(m);drawXCheck(m);drawValueStack(m);
 }
 function softRender(){
   const m=compute();
   document.getElementById("tot-a").textContent=fmt(m.A);
-  document.getElementById("tot-b").textContent=fmt(m.B);
+  document.getElementById("tot-b").textContent=fmt(m.Bplain);
   const v=verdictObj(m);
   document.getElementById("readout").innerHTML=readoutHTML(m,v);
   document.querySelectorAll("#blist .brow").forEach((row,i)=>{const x=m.rows[i];
     if(x){const gv=row.querySelector(".gain"); if(gv)gv.textContent=x.gain?x.gain.toFixed(1)+"×":"-";
-      const bc=row.querySelector(".browcalc"); if(bc)bc.innerHTML='cost '+fmt(x.devCost)+' → city value '+fmt(x.cityVal)+'  ('+x.cat+' ×'+x.mult+' multiplier)';}});
-    if(cur===3){const vb=document.getElementById("verdict");vb.style.borderLeftColor=v.fg;
-    vb.innerHTML='<span class="vh">'+v.head+'</span>'+v.body;
+      const bc=row.querySelector(".browcalc"); if(bc)bc.innerHTML='cost '+fmt(x.devCost)+' → city value '+fmt(x.cityPlain)+'  ('+x.cat+'; ×'+x.mult+' priority weight → ranking only)';}});
+    if(cur===3){const vb=document.getElementById("verdict");vb.style.borderLeftColor=v.fg;vb.style.background=v.bg;
+    vb.innerHTML='<span class="vh"><span class="tlight" style="background:'+v.light+'"></span>'+v.head+' <span class="vstatus" style="color:'+v.fg+'">'+v.status+'</span></span>'+v.body;
     document.getElementById("numgrid").innerHTML=numgridHTML(m);
     drawZopa(m);drawRanks(m);drawSpark(m);drawRobo(m);drawDensity(m);drawXCheck(m);drawValueStack(m);}
 }
@@ -977,9 +1068,9 @@ function perOf(val,den){return (den>0)?val/den:null;}
 function vdHTML(m){
   const ac=S.acres,bu=S.bonus;
   const cards=[
-    ["Public value / acre",perOf(m.B,ac),"value per acre of site"],
-    ["Net public benefit / acre",perOf(m.B-m.cityMin,ac),"public value above the city minimum"],
-    ["Public value / bonus unit",perOf(m.B,bu),"per scarce unit drawn"],
+    ["Public value / acre",perOf(m.Bplain,ac),"value per acre of site"],
+    ["Net public benefit / acre",perOf(m.Bplain-m.cityMin,ac),"public value above the lawful mitigation baseline"],
+    ["Public value / bonus unit",perOf(m.Bplain,bu),"per scarce unit drawn"],
     ["Value to developer / bonus unit",perOf(m.V,bu),"the per-unit ceiling"]
   ];
   return cards.map(function(c){const has=c[1]!=null;
@@ -990,17 +1081,17 @@ function updateExplore(m){
   const sl=document.getElementById("explore"); if(!sl)return;
   const pct=+sl.value;
   const spend=(m.V>0)?(pct/100)*m.V:0;
-  const pubVal=(m.g>0)?spend*m.g:0;
+  const pubVal=(m.gPlain>0)?spend*m.gPlain:0;
   const vv=document.getElementById("explore-v"); if(vv)vv.textContent=fmt(spend)+" ("+pct+"% of ceiling)";
   const note=document.getElementById("explore-note"); if(!note)return;
-  if(m.g<=0){note.innerHTML="Add benefits first to set the value ratio (public value per developer dollar). The explorer then projects how a larger or smaller package of the same composition would land.";return;}
+  if(m.gPlain<=0){note.innerHTML="Add benefits first to set the value ratio (public value per developer dollar). The explorer then projects how a larger or smaller package of the same composition would land.";return;}
   const fav=(spend>=m.zFloor-1e-6)&&(spend<=m.V+1e-6)&&(pubVal>=m.cityMin-1e-6);
   const pa=(S.acres>0)?(" Public value would be "+fmt(pubVal/S.acres)+"/acre."):"";
   let tag;
-  if(fav)tag='<b style="color:var(--pass)">Favorable</b> — clears the city minimum and stays within the value to developer.';
+  if(fav)tag='<b style="color:var(--pass)">Favorable</b> — clears the lawful mitigation baseline and stays within the value to developer.';
   else if(spend<m.zFloor)tag='<b style="color:var(--warn)">Below minimum</b> — raise spend to about '+fmt(m.zFloor)+' to clear the city floor.';
   else tag='<b style="color:var(--fail)">Over the ceiling</b> — exceeds the value to developer ('+fmt(m.V)+'); the applicant would build by-right.';
-  note.innerHTML="At <b>"+fmt(spend)+"</b> of developer spend, a package of this composition (ratio "+m.g.toFixed(2)+"×) delivers <b>"+fmt(pubVal)+"</b> in public value."+pa+" "+tag+' <span class="anote">What-if only — your entered package is unchanged.</span>';
+  note.innerHTML="At <b>"+fmt(spend)+"</b> of developer spend, a package of this composition (ratio "+m.gPlain.toFixed(2)+"×) delivers <b>"+fmt(pubVal)+"</b> in public value."+pa+" "+tag+' <span class="anote">What-if only — your entered package is unchanged.</span>';
 }
 function drawDensity(m){
   const vd=document.getElementById("valuedensity"); if(vd)vd.innerHTML=vdHTML(m);
@@ -1031,15 +1122,15 @@ function drawXCheck(m){
 function verdictObj(m){
   const C={ok:["#e7f1ea","#1f5c3c"],warn:["#f6efde","#7a5a12"],bad:["#f6e2e4","#8a2832"],neu:["#eef0f2","#54616c"]};
   const capPre=m.overCap?"The requested total exceeds the district density cap; as bonus density it would require a comprehensive plan amendment. On the economics: ":"";
-  if(m.A===0 && m.B===0) return {tag:"No offer yet",bg:C.neu[0],fg:C.neu[1],tip:"Add public benefits on the Benefits step to evaluate the request.",head:"No offer entered yet",
-    body:capPre+"No public benefits have been entered, so there is nothing to evaluate against the city minimum. For this request the city minimum is "+fmt(m.cityMin)+" ("+(m.D>0?("pool opportunity cost "+fmt(m.D)+" + "):"")+"impact mitigation "+fmt(m.I)+"), and the bonus is worth up to "+fmt(m.V)+" to the developer. Add benefits on the Benefits step to test an offer against that minimum."};
-  if(m.worth && m.feas) return {tag:"Favorable",bg:C.ok[0],fg:C.ok[1],tip:"Meets the city minimum and fits within the developer’s budget — approvable, with room to ask for more.",head:"Favorable",
-    body:capPre+"Offered public value ("+fmt(m.B)+") meets the city minimum ("+fmt(m.cityMin)+"). Package cost ("+fmt(m.A)+") is within the value to the developer ("+fmt(m.V)+"). Unspent developer budget is "+fmt(Math.max(0,m.room))+". The city may require only the impact-proportional amount ("+fmt(m.I)+") as a condition; benefit above that is voluntary incentive for the discretionary density."};
-  if(!m.worth && m.room>0) return {tag:"Below minimum",bg:C.warn[0],fg:C.warn[1],tip:"Public value is below the city minimum, but the developer still has budget room — add higher-ratio benefits to close the gap.",head:"Below city minimum — renegotiate",
-    body:capPre+"Offered public value is short of the city minimum by "+fmt(m.cityMin-m.B)+". Developer budget room of "+fmt(m.room)+" remains, so the shortfall can be closed by adding higher value-to-cost benefits."};
-  if(!m.feas) return {tag:"Over budget",bg:C.warn[0],fg:C.warn[1],tip:"The package costs more than the bonus is worth to the developer; they would build by-right. Trim the package or grant more units.",head:"Package exceeds developer budget",
+  if(m.A===0 && m.Bplain===0) return {tag:"No offer yet",bg:C.neu[0],fg:C.neu[1],light:"#9aa3a8",status:"No offer yet",tip:"Add public benefits on the Benefits step to evaluate the request.",head:"No offer entered yet",
+    body:capPre+"No public benefits have been entered, so there is nothing to evaluate against the lawful mitigation baseline. For this request the lawful mitigation baseline is "+fmt(m.cityMin)+" ("+(m.D>0?("pool opportunity cost "+fmt(m.D)+" + "):"")+"impact mitigation "+fmt(m.I)+"), and the bonus is worth up to "+fmt(m.V)+" to the developer. Add benefits on the Benefits step to test an offer against that minimum."};
+  if(m.worth && m.feas) return {tag:"Favorable",bg:C.ok[0],fg:C.ok[1],light:"#1f9d57",status:"Viable",tip:"Meets the lawful mitigation baseline and fits within the developer’s budget — approvable, with room to ask for more.",head:"Favorable",
+    body:capPre+"Offered public value ("+fmt(m.Bplain)+") meets the lawful mitigation baseline ("+fmt(m.cityMin)+"). Package cost ("+fmt(m.A)+") is within the value to the developer ("+fmt(m.V)+"). Unspent developer budget is "+fmt(Math.max(0,m.room))+". The city may require only the impact-proportional amount ("+fmt(m.I)+") as a condition; benefit above that is voluntary incentive for the discretionary density."};
+  if(!m.worth && m.room>0) return {tag:"Below minimum",bg:C.warn[0],fg:C.warn[1],light:"#d9a400",status:"Keep negotiating",tip:"Public value is below the lawful mitigation baseline, but the developer still has budget room — add higher-ratio benefits to close the gap.",head:"Below lawful mitigation baseline — renegotiate",
+    body:capPre+"Offered public value is short of the lawful mitigation baseline by "+fmt(m.cityMin-m.Bplain)+". Developer budget room of "+fmt(m.room)+" remains, so the shortfall can be closed by adding higher value-to-cost benefits."};
+  if(!m.feas) return {tag:"Over budget",bg:C.bad[0],fg:C.bad[1],light:"#c0392b",status:"Stalled",tip:"The package costs more than the bonus is worth to the developer; they would build by-right. Trim the package or grant more units.",head:"Package exceeds developer budget",
     body:"Package cost ("+fmt(m.A)+") exceeds the value to the developer ("+fmt(m.V)+"). The applicant would build by-right instead. Reduce the package or increase the unit allocation."};
-  return {tag:"No zone",bg:C.bad[0],fg:C.bad[1],tip:"Even a minimal acceptable package costs more than the bonus is worth — deny or restructure.",head:"No agreement zone",
+  return {tag:"No zone",bg:C.bad[0],fg:C.bad[1],light:"#c0392b",status:"No agreement zone",tip:"Even a minimal acceptable package costs more than the bonus is worth — deny or restructure.",head:"No agreement zone",
     body:"The minimum acceptable package costs more than the bonus is worth to the developer. Deny or restructure the request."};
 }
 
@@ -1138,20 +1229,35 @@ function drawValueStack(m){
 }
 function drawZopa(m){
   const t=document.getElementById("zopa");
-  t.setAttribute("role","img");t.setAttribute("aria-label","Deal zone from city minimum "+fmt(m.zFloor)+" to developer ceiling "+fmt(m.zCeil)+"; current public value offered "+fmt(m.A)+".");
+  t.setAttribute("role","img");t.setAttribute("aria-label","Deal zone from lawful mitigation baseline "+fmt(m.zFloor)+" to developer ceiling "+fmt(m.zCeil)+"; current public value offered "+fmt(m.A)+".");
   const max=Math.max(m.zCeil,m.A,m.zFloor)*1.08||1;
   const pct=x=>Math.max(0,Math.min(100,x/max*100));
   const fl=pct(m.zFloor),ce=pct(m.zCeil),of=pct(m.A);
-  t.innerHTML='<div class="zopa-bar"></div>'+
+  const V=m.zCeil;
+  const band=(lo,hi,cls)=>{if(!(V>0))return"";const a=pct(lo*V),b=pct(hi*V);return '<div class="'+cls+'" style="left:'+a+'%;width:'+Math.max(0,b-a)+'%"></div>';};
+  t.innerHTML=band(CAPTURE.contribLo,CAPTURE.contribHi,"zopa-contrib")+band(CAPTURE.capLo,CAPTURE.capHi,"zopa-target")+
+    '<div class="zopa-bar"></div>'+
     '<div class="zopa-zone" style="left:'+fl+'%;width:'+Math.max(0,ce-fl)+'%"></div>'+
     '<div class="zopa-mark" style="left:'+of+'%"></div>'+
     '<div class="zopa-lab top" style="left:'+fl+'%">floor '+fmt(m.zFloor)+'</div>'+
     '<div class="zopa-lab top" style="left:'+ce+'%">ceiling '+fmt(m.zCeil)+'</div>'+
     '<div class="zopa-lab bot" style="left:'+of+'%">offer '+fmt(m.A)+'</div>';
-  document.getElementById("zopa-note").innerHTML = m.A>m.zCeil
+  const baseNote = m.A>m.zCeil
     ? "Offer exceeds the ceiling; the package is infeasible for the developer."
-    : (m.A<m.zFloor ? "Offer is below the floor; increase the package to meet the city minimum."
+    : (m.A<m.zFloor ? "Offer is below the floor; increase the package to meet the lawful mitigation baseline."
     : "Offer is within the agreement zone. Unspent developer budget between the offer and the ceiling: "+fmt(m.room)+".");
+  let capNote="";
+  if(V>0){
+    const tLo=CAPTURE.capLo*V, tHi=CAPTURE.capHi*V, rate=Math.round(m.A/V*100);
+    const where=m.A<tLo-1?"below":(m.A>tHi+1?"above":"within");
+    const wc=where==="within"?"var(--pass)":"var(--warn)";
+    capNote='<div style="margin-top:8px"><span style="display:inline-block;width:11px;height:11px;background:rgba(227,160,80,.5);border:1px dashed rgba(176,122,46,.85);border-radius:2px;vertical-align:-1px;margin-right:6px"></span>'+
+      '<b>Target capture zone</b> — the framework’s fair-share band: capturing <b>'+Math.round(CAPTURE.capLo*100)+'–'+Math.round(CAPTURE.capHi*100)+'%</b> of the value to developer ('+fmt(tLo)+'–'+fmt(tHi)+'). '+
+      'This offer captures <b style="color:'+wc+'">'+rate+'%</b> — <b style="color:'+wc+'">'+where+'</b> the zone. '+
+      'The lighter band is the '+Math.round(CAPTURE.contribLo*100)+'–'+Math.round(CAPTURE.contribHi*100)+'% contribution floor (Koontz). '+
+      '<span class="anote">Analytic overlay from the TBRPC framework — not adopted code.</span></div>';
+  }
+  document.getElementById("zopa-note").innerHTML = baseNote + capNote;
 }
 function drawRanks(m){
   const rows=[...m.rows].filter(x=>x.devCost>0).sort((a,b)=>b.gain-a.gain);
@@ -1161,7 +1267,7 @@ function drawRanks(m){
   ).join("")||'<div class="hint">Add benefits to populate the ranking.</div>';
 }
 function drawSpark(m){
-  const g=m.g||1, step=5, N=11, pts=[];
+  const g=m.gPlain||1, step=5, N=11, pts=[];
   for(let i=0;i<N;i++){
     const u=Math.max(1,Math.round(S.bonus+(i-5)*step));
     const V=m.r*u*S.decline;
@@ -1498,29 +1604,31 @@ function derivCM(m){
   } else { d+='<div class="step">pathway "'+S.pathway+'" does not draw from the pool → D = <b>$0</b></div>'; }
   d+='<div class="step"><b>Impact mitigation floor</b></div>';
   d+='<div class="step">impact '+fmtFull(S.impact)+'/unit × '+S.bonus+' bonus units = <b>'+fmtFull(m.I)+'</b></div>';
-  d+='<div class="step"><b>City minimum = opportunity cost + impact mitigation</b></div>';
+  d+='<div class="step"><b>Lawful mitigation baseline = opportunity cost + impact mitigation</b></div>';
   d+='<div class="step">'+fmtFull(m.D)+' + '+fmtFull(m.I)+' = <span class="res">'+fmtFull(m.cityMin)+'</span></div></div>';
   d+='<p class="lede" style="margin-top:14px">The least public value the deal must return: the opportunity cost of giving up scarce pool units plus the development\u2019s impact that can be lawfully required. Impact is editable under Assumptions; pool figures on the Pool step.</p>';
   return d;
 }
 function derivB(m){
-  let d='<div class="deriv"><div class="step"><b>Public value offered = sum of: (qty × city $/unit × % above code × category multiplier)</b></div>';
-  m.rows.forEach(x=>{ d+='<div class="step">'+x.name+': '+x.qty+' × '+fmtFull(x.city)+' × '+Math.round(x.pct*100)+'% × '+x.mult+' = <b>'+fmtFull(x.cityVal)+'</b></div>'; });
-  d+='<div class="step">Offered public value = <span class="res">'+fmtFull(m.B)+'</span></div>';
-  d+='<div class="step" style="margin-top:8px">Developer cost (qty × dev $/unit × % above) = <b>'+fmtFull(m.A)+'</b>; value ratio = '+(m.g?m.g.toFixed(2):"0")+'×</div></div>';
-  d+='<p class="lede" style="margin-top:14px">B is the public value the package delivers, after the multipliers. The deal is worthwhile when the public value meets the city minimum, and feasible when the developer cost stays under the value to developer. Per-unit costs and values are editable on the Benefits step; multipliers under Assumptions.</p>';
+  let d='<div class="deriv"><div class="step"><b>Public value offered (plain $) = sum of: qty × city $/unit × % above code</b> — the city’s plain-dollar cost to provide the package. This is the figure the verdict compares to the baseline.</div>';
+  m.rows.forEach(x=>{ d+='<div class="step">'+x.name+': '+x.qty+' × '+fmtFull(x.city)+' × '+Math.round(x.pct*100)+'% = <b>'+fmtFull(x.cityPlain)+'</b>'+(x.mult!==1?(' <span class="anote">(×'+x.mult+' priority weight → '+fmtFull(x.cityVal)+' for ranking)</span>'):'')+'</div>'; });
+  d+='<div class="step">Offered public value (plain $) = <span class="res">'+fmtFull(m.Bplain)+'</span></div>';
+  d+='<div class="step" style="margin-top:8px">Developer cost (qty × dev $/unit × % above) = <b>'+fmtFull(m.A)+'</b>; value ratio = '+(m.gPlain?m.gPlain.toFixed(2):"0")+'× (plain) · '+(m.g?m.g.toFixed(2):"0")+'× (priority-weighted)</div></div>';
+  d+='<p class="lede" style="margin-top:14px">The pass/fail test is in <b>plain dollars</b> — the deal is worthwhile when the package’s plain public value meets the lawful mitigation baseline, and feasible when developer cost stays under the value to developer. The <b>category multipliers</b> (resilience 2.5×, etc.) do <i>not</i> move the verdict; they only rank which benefits to prefer within a package. Per-unit costs and values are editable on the Benefits step; multipliers under Assumptions.</p>';
   return d;
 }
 /* ---------- benefit library (editable) ---------- */
 function libfld(i,col,val,cls){const disp=(val==null||val==="")?"":(+val).toLocaleString();
   return '<input type="text" inputmode="decimal" aria-label="'+(LIB[i]?LIB[i][0]:"benefit")+' — '+col+'" data-lib="'+i+'" data-col="'+col+'" value="'+disp+'" class="'+cls+'">';}
 function libtxt(i,col,val,label){
+  if(!advUnlocked) return esc(val||"");   // locked: plain text, blank when empty (no placeholder box)
   return '<input type="text" class="libtext" data-lib="'+i+'" data-col="'+col+'" value="'+esc(val||"")+'" placeholder="'+label+'…" aria-label="'+(LIB[i]?LIB[i][0]:"benefit")+' — '+label+'">';}
 function libRatio(i){const r=LIB[i],c=LIBCAL[i];const dev=libApplied(c,"dev"),city=libApplied(c,"city");const mult=CATMULT[r[1]]||1;return dev>0?((city*mult)/dev):0;}
 function libApplDisp(i,which){return "$"+Math.round(libApplied(LIBCAL[i],which)).toLocaleString();}
 function buildLibrary(){
   let h='<div class="libsearch"><input type="text" id="lib-search" placeholder="Search benefits…" aria-label="Search benefits" value="'+esc(libSearchQ)+'">'+
     '<button class="alink" id="lib-expand">Expand all</button><button class="alink" id="lib-collapse">Collapse all</button></div>';
+  h+=lockBar("Benefit-library values","The city’s valuation of each public benefit, shared across all projects.")+'<fieldset class="lockfs"'+(advUnlocked?'':' disabled')+'>';
   h+='<div class="atable-wrap"><table class="atable libtable">'+
     '<colgroup><col style="width:17%"><col style="width:7%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:24%"><col style="width:20%"></colgroup>'+
     '<thead><tr>'+
@@ -1549,7 +1657,7 @@ function buildLibrary(){
     });
     h+='<tr class="libaddrow" data-cat="'+esc(cat)+'"><td colspan="8"><button class="alink" data-libadd="'+esc(cat)+'">+ Add custom benefit to '+cat+'</button></td></tr>';
   });
-  h+='</tbody></table></div>';
+  h+='</tbody></table></div></fieldset>';
   h+='<p class="lede" style="margin-top:14px">These are the <b>city’s value</b> of each benefit (Low / High / Applied / Override) — the developer’s cost is entered per project on the Benefits step. <b>Notes</b> and <b>Source</b> are free-text: record the basis for a figure and where it came from (a few rows are pre-seeded from the Corey Landings staff report as worked examples). Search matches names, notes, and sources. Click a category header to collapse it; edit Low/High to set a range, or enter an Override (blue) for a firm figure (Applied is the midpoint unless an Override is given). Use <b>+ Add custom benefit</b> to create your own item — give it a name, unit, and city value; once named it appears in the Benefits-step menu. The library (including custom benefits, notes, and sources) is kept on Reset all and saved with scenarios.</p>';
   return h;
 }
@@ -1605,17 +1713,24 @@ function renderAux(name){const m=compute();
   else if(name==="library"){document.getElementById("aux-library").innerHTML=buildLibrary();applyLibFilter();}
   else if(name==="history")document.getElementById("aux-history").innerHTML=buildHistory();
   else if(name==="scenarios")document.getElementById("aux-scenarios").innerHTML=buildScenarios();
+  else if(name==="cases"){document.getElementById("aux-cases").innerHTML=buildCases();initCaseMaps();}
 }
 function showAux(name){returnStep=cur;
   document.querySelectorAll(".panel").forEach(p=>p.classList.remove("show"));
   const el=document.querySelector('.panel[data-aux="'+name+'"]'); if(el)el.classList.add("show");
   renderAux(name); window.scrollTo({top:0,behavior:"smooth"});
 }
+let advUnlocked=false;
+function lockBar(title,note){
+  return '<div class="lockbar">'+(advUnlocked
+    ? '<span>🔓 <b>Editing enabled.</b> '+note+' Changes apply across all projects — lock when done.</span><button class="btn" data-lock="1">🔒 Lock</button>'
+    : '<span>🔒 <b>'+title+'</b> — '+note+' Staff don’t normally change these.</span><button class="btn" data-lock="1">Enable editing</button>')+'</div>';
+}
 function buildAssumptions(){
-  let h='<div class="atable-wrap"><table class="atable"><thead><tr><th scope="col">Benchmark</th><th scope="col">Units</th><th scope="col" class="r">Low</th><th scope="col" class="r">High</th><th scope="col" class="r">Applied</th><th scope="col" class="r">Override</th><th scope="col">Notes</th></tr></thead><tbody>';
+  let h=lockBar("Calibrated model defaults","Construction costs, multipliers, scarcity shape, market comps, and policy guardrails.")+'<fieldset class="lockfs"'+(advUnlocked?'':' disabled')+'><div class="atable-wrap"><table class="atable assumptable"><colgroup><col style="width:17%"><col style="width:11%"><col style="width:7%"><col style="width:7%"><col style="width:8%"><col style="width:8%"><col style="width:27%"><col style="width:15%"></colgroup><thead><tr><th scope="col">Benchmark</th><th scope="col">Units</th><th scope="col" class="r">Low</th><th scope="col" class="r">High</th><th scope="col" class="r">Applied</th><th scope="col" class="r">Override</th><th scope="col">Notes</th><th scope="col">Source</th></tr></thead><tbody>';
   let sec="";
   ASSUMP.forEach((r,i)=>{
-    if(r.sec!==sec){sec=r.sec;h+='<tr class="asecrow"><td colspan="7">'+sec+'</td></tr>';}
+    if(r.sec!==sec){sec=r.sec;h+='<tr class="asecrow"><td colspan="8">'+sec+'</td></tr>';}
     const hasBasis=r.basis!==undefined;
     let unitCell=r.unit;
     if(hasBasis){
@@ -1624,32 +1739,39 @@ function buildAssumptions(){
         '<option value="sf"'+(r.basis==="sf"?" selected":"")+'>$/SF</option></select>'+
         '<div class="anote" style="margin-top:4px;white-space:nowrap">avg <input type="text" inputmode="decimal" class="hnum basis-sf" data-i="'+i+'" value="'+(r.sf||"").toLocaleString()+'" aria-label="'+r.label+' — average size in square feet"> '+(r.unit==="$/key"?"SF/key":"SF/unit")+'</div>';
     }
-    const noteHtml=(r.notes||"")+(hasBasis?' <span class="anote" id="aimpl-'+i+'" style="white-space:nowrap;color:var(--accent)">'+aImplied(r)+'</span>':"");
+    const implied=hasBasis?' <span class="anote" id="aimpl-'+i+'" style="white-space:nowrap;color:var(--accent)">'+aImplied(r)+'</span>':"";
+    const noteCell=advUnlocked
+      ? '<input type="text" class="asrc" data-i="'+i+'" data-col="notes" value="'+esc(r.notes||"")+'" placeholder="notes…" aria-label="'+esc(r.label)+' — notes">'+implied
+      : (esc(r.notes||"")+implied);
+    const srcCell=advUnlocked
+      ? '<input type="text" class="asrc" data-i="'+i+'" data-col="source" value="'+esc(r.source||"")+'" placeholder="source…" aria-label="'+esc(r.label)+' — source">'
+      : esc(r.source||"");
     h+='<tr><td>'+r.label+'</td><td class="anote">'+unitCell+'</td>'+
        '<td class="r">'+fld(i,"low",aToDisp(r,r.low),"alow",r.fmt)+'</td>'+
        '<td class="r">'+fld(i,"high",aToDisp(r,r.high),"ahigh",r.fmt)+'</td>'+
        '<td class="r"><span class="aapplied" data-i="'+i+'">'+fmtAssump(r)+'</span></td>'+
        '<td class="r">'+fld(i,"override",aToDisp(r,r.override),"ov",r.fmt)+'</td>'+
-       '<td class="anote">'+noteHtml+'</td></tr>';
+       '<td class="anote">'+noteCell+'</td>'+
+       '<td class="anote">'+srcCell+'</td></tr>';
   });
-  h+='</tbody></table></div>';
+  h+='</tbody></table></div></fieldset>';
   h+='<p class="lede" style="margin-top:14px">Applied is the midpoint of Low and High unless an Override is entered. Edit Low/High to reset the range, or enter an Override (blue) when a project-specific analysis gives a firm number. For hard costs, switch the basis to <b>$/SF</b> and set the average unit size if your cost data is per square foot — the model always stores the result per unit. Every Applied value flows into the model.</p>';
   return h;
 }
 /* ---------- robustness band ---------- */
 function roboNote(m){
-  if(m.A===0&&m.B===0) return "<b>No offer yet.</b> Add benefits to stress-test a package — with nothing offered there is no verdict to test.";
+  if(m.A===0&&m.Bplain===0) return "<b>No offer yet.</b> Add benefits to stress-test a package — with nothing offered there is no verdict to test.";
   const baseFav=m.worth&&m.feas;
-  const worthWorst=(m.B*0.8)>=(m.cityMin*1.2);
+  const worthWorst=(m.Bplain*0.8)>=(m.cityMin*1.2);
   const feasWorst=(m.A*1.2)<=(m.V*0.8);
   if(baseFav){
-    if(worthWorst&&feasWorst) return "<b>Robust.</b> The Favorable verdict holds even when offered public value and value to developer run 20% low while the city minimum and package cost run 20% high — all at once. The recommendation survives sketch-grade error.";
+    if(worthWorst&&feasWorst) return "<b>Robust.</b> The Favorable verdict holds even when offered public value and value to developer run 20% low while the lawful mitigation baseline and package cost run 20% high — all at once. The recommendation survives sketch-grade error.";
     const c=[];
-    if(!worthWorst) c.push("offered public value is ~20% low while the city minimum is ~20% high");
+    if(!worthWorst) c.push("offered public value is ~20% low while the lawful mitigation baseline is ~20% high");
     if(!feasWorst) c.push("package cost is ~20% high while value to developer is ~20% low");
     return "<b>Sensitive.</b> Favorable at the applied figures, but the verdict could flip if "+c.join(", or if ")+". Tighten these inputs before relying on the margin.";
   }
-  const worthBest=(m.B*1.2)>=(m.cityMin*0.8);
+  const worthBest=(m.Bplain*1.2)>=(m.cityMin*0.8);
   const feasBest=(m.A*0.8)<=(m.V*1.2);
   if(worthBest&&feasBest) return "<b>Near the line.</b> Not Favorable at the applied figures, but a favorable corner exists within ±20% — the result is within sketch error of clearing. Refine the inputs before deciding.";
   return "<b>Clear.</b> Not Favorable, and it stays that way across the full ±20% band — the gap is larger than sketch-grade error.";
@@ -1659,34 +1781,56 @@ function drawRobo(m){
   const band=x=>'<td class="r mono">'+fmt(x*0.8)+'</td><td class="r mono">'+fmt(x)+'</td><td class="r mono">'+fmt(x*1.2)+'</td>';
   el.innerHTML='<div class="atable-wrap"><table class="atable"><thead><tr><th scope="col">Figure</th><th scope="col" class="r">−20%</th><th scope="col" class="r">Applied</th><th scope="col" class="r">+20%</th></tr></thead><tbody>'+
     '<tr><td>Value to developer</td>'+band(m.V)+'</tr>'+
-    '<tr><td>City minimum</td>'+band(m.cityMin)+'</tr>'+
-    '<tr><td>Public value offered</td>'+band(m.B)+'</tr>'+
+    '<tr><td>Lawful mitigation baseline</td>'+band(m.cityMin)+'</tr>'+
+    '<tr><td>Public value offered</td>'+band(m.Bplain)+'</tr>'+
     '<tr><td>Package cost (developer)</td>'+band(m.A)+'</tr>'+
     '</tbody></table></div><div class="hint" style="margin-top:10px;line-height:1.5">'+roboNote(m)+'</div>';
 }
 
 /* ---------- one-page printable export ---------- */
 function esc(s){return (s==null?"":(""+s)).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});}
+function psZopaSVG(m){
+  const W=600,H=66,x0=8,x1=W-8,bw=x1-x0,y=28,h=11;
+  const max=Math.max(m.zCeil,m.A,m.zFloor)*1.08||1, V=m.zCeil;
+  const X=v=>x0+Math.max(0,Math.min(1,v/max))*bw;
+  let s="";
+  if(V>0){const ca=X(CAPTURE.capLo*V),cb=X(CAPTURE.capHi*V);s+='<rect x="'+ca.toFixed(1)+'" y="13" width="'+Math.max(0,cb-ca).toFixed(1)+'" height="33" fill="#f0d9b3" stroke="#b07a2e" stroke-dasharray="3 2"/>';}
+  s+='<rect x="'+x0+'" y="'+y+'" width="'+bw+'" height="'+h+'" fill="#dfe3e6"/>';
+  s+='<rect x="'+X(m.zFloor).toFixed(1)+'" y="'+y+'" width="'+Math.max(0,X(m.zCeil)-X(m.zFloor)).toFixed(1)+'" height="'+h+'" fill="#2a6f6a"/>';
+  const om=X(m.A);
+  s+='<line x1="'+om.toFixed(1)+'" y1="11" x2="'+om.toFixed(1)+'" y2="47" stroke="#1b1f23" stroke-width="2"/>';
+  s+='<text x="'+X(m.zFloor).toFixed(1)+'" y="59" font-size="9" text-anchor="middle" fill="#555">floor '+fmt(m.zFloor)+'</text>';
+  s+='<text x="'+X(m.zCeil).toFixed(1)+'" y="59" font-size="9" text-anchor="middle" fill="#555">ceiling '+fmt(m.zCeil)+'</text>';
+  s+='<text x="'+om.toFixed(1)+'" y="9" font-size="9" text-anchor="middle" font-weight="700" fill="#1b1f23">offer '+fmt(m.A)+'</text>';
+  return '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="max-width:600px;display:block">'+s+'</svg>';
+}
 function buildPrintSheet(){
   const m=compute(); const v=verdictObj(m);
   const d=DISTRICTS[S.district]||DISTRICTS.UNK;
+  const assetList=m.rows.length?m.rows.map(function(x){return '<li><b>'+esc(x.name)+'</b> — '+x.qty+(x.pct<1?(' ('+Math.round(x.pct*100)+'% above code)'):'')+' · city value '+fmt(x.cityPlain)+'</li>';}).join(""):'<li>No public benefits entered yet.</li>';
+  const execTop='<div class="ps-exec"><div class="ps-light" style="background:'+v.light+'"></div>'+
+    '<div><div class="ps-status">'+v.status+'</div><div class="ps-ask">Requesting <b>'+S.bonus+'</b> bonus '+d.unit+(S.byright?(' of '+(S.byright+S.bonus)+' total units'):'')+(S.acres>0?(' on '+S.acres+' acres'):'')+'</div></div></div>'+
+    '<div class="ps-sec">Deal zone — offer vs. city floor and developer ceiling</div>'+psZopaSVG(m)+
+    '<div class="ps-sec">Community assets secured</div><ul class="ps-assets">'+assetList+'</ul>';
   let dt=""; try{dt=new Date().toISOString().slice(0,10);}catch(e){dt="";}
   const capCell=(S.cap>0&&S.acres>0)?(Math.round(m.maxUnits).toLocaleString()+(m.overCap?" (over cap)":"")):"n/a";
-  const rows=m.rows.map(function(x){return '<tr><td>'+esc(x.name)+'</td><td>'+esc(x.cat)+'</td><td class="r">'+x.qty+'</td><td class="r">'+Math.round(x.pct*100)+'%</td><td class="r">'+fmt(x.devCost)+'</td><td class="r">'+fmt(x.cityVal)+'</td><td class="r">'+(x.gain?x.gain.toFixed(1)+'×':'-')+'</td></tr>';}).join("")||'<tr><td colspan="7">No benefits entered.</td></tr>';
+  const rows=m.rows.map(function(x){return '<tr><td>'+esc(x.name)+'</td><td>'+esc(x.cat)+'</td><td class="r">'+x.qty+'</td><td class="r">'+Math.round(x.pct*100)+'%</td><td class="r">'+fmt(x.devCost)+'</td><td class="r">'+fmt(x.cityPlain)+'</td><td class="r">'+(x.gain?x.gain.toFixed(1)+'×':'-')+'</td></tr>';}).join("")||'<tr><td colspan="7">No benefits entered.</td></tr>';
   document.getElementById("printsheet").innerHTML=
    '<div class="ps-h"><div><div class="ps-title">St. Pete Beach — Bonus Density Scenario</div><div class="ps-sub">Staff sketch tool — order-of-magnitude figures to frame a negotiation, not an appraisal, pro forma, or legal determination.</div></div><div class="ps-date">'+dt+'</div></div>'+
+   execTop+
+   '<div class="ps-sec">Detail</div>'+
    '<table class="ps-meta"><tr><td><b>Project</b><br>'+esc(S.pname)+'</td><td><b>Applicant</b><br>'+esc(S.papp)+'</td><td><b>Location</b><br>'+esc(S.paddr)+'</td></tr>'+
    '<tr><td><b>District</b><br>'+esc(d.label)+'</td><td><b>Pathway</b><br>'+esc(S.pathway)+'</td><td><b>Use type</b><br>'+esc(S.use)+'</td></tr>'+
    '<tr><td><b>By-right</b><br>'+S.byright+' '+d.unit+'</td><td><b>Bonus requested</b><br>'+S.bonus+' '+d.unit+'</td><td><b>Total / district max</b><br>'+m.total+' / '+capCell+'</td></tr></table>'+
    '<div class="ps-verdict" style="border-left:4px solid '+v.fg+'"><b>'+v.head+'</b><br>'+v.body+'</div>'+
-   '<table class="ps-fig"><tr><th>Value to developer</th><th>Pool opportunity cost</th><th>Impact mitigation floor</th><th>City minimum</th></tr>'+
+   '<table class="ps-fig"><tr><th>Value to developer</th><th>Pool opportunity cost</th><th>Impact mitigation floor</th><th>Lawful mitigation baseline</th></tr>'+
    '<tr><td>'+fmt(m.V)+'</td><td>'+fmt(m.D)+'</td><td>'+fmt(m.I)+'</td><td>'+fmt(m.cityMin)+'</td></tr></table>'+
    '<div class="ps-sec">Public benefit package</div>'+
    '<table class="ps-ben"><thead><tr><th>Benefit</th><th>Category</th><th class="r">Qty</th><th class="r">% above</th><th class="r">Dev cost</th><th class="r">City value</th><th class="r">Ratio</th></tr></thead><tbody>'+rows+'</tbody>'+
-   '<tfoot><tr><td colspan="4">Totals</td><td class="r">'+fmt(m.A)+'</td><td class="r">'+fmt(m.B)+'</td><td class="r">'+(m.g?m.g.toFixed(2)+'×':'-')+'</td></tr></tfoot></table>'+
+   '<tfoot><tr><td colspan="4">Totals</td><td class="r">'+fmt(m.A)+'</td><td class="r">'+fmt(m.Bplain)+'</td><td class="r">'+(m.gPlain?m.gPlain.toFixed(2)+'×':'-')+'</td></tr></tfoot></table>'+
    '<table class="ps-meta"><tr><td><b>ZOPA floor</b><br>'+fmt(m.zFloor)+'</td><td><b>Ceiling (value to developer)</b><br>'+fmt(m.zCeil)+'</td><td><b>Unspent budget room</b><br>'+fmt(Math.max(0,m.room))+'</td></tr></table>'+
    '<div class="ps-robo"><b>Robustness (±20%):</b> '+roboNote(m).replace(/<\/?b>/g,"")+'</div>'+
-   '<div class="ps-foot">All dollar figures are sketch-grade placeholders pending calibration to local data (RSMeans coastal construction, Redfin comps, SPB / Pinellas impact-fee schedules, and the adopted CUP ledger). Generated by the SPB Bonus Density Tool.</div>';
+   '<div class="ps-foot">All dollar figures are sketch-grade placeholders pending calibration to local data (RSMeans coastal construction, Redfin comps, SPB / Pinellas impact-fee schedules, and the adopted CUP ledger). Generated by the SPB Bonus Density Tool v'+VERSION+' · methodology '+VERSION_DATE+'.</div>';
 }
 function printSummary(){buildPrintSheet();window.print();}
 
@@ -1734,7 +1878,7 @@ function importScenarios(file){
 }
 function snapshotState(){
   return {S:JSON.parse(JSON.stringify(S)),
-    ASSUMP:ASSUMP.map(function(r){return {low:r.low,high:r.high,override:r.override};}),
+    ASSUMP:ASSUMP.map(function(r){return {low:r.low,high:r.high,override:r.override,source:r.source,notes:r.notes};}),
     LIB:LIB.map(function(r,i){return {name:r[0],cat:r[1],unit:r[2],custom:!!r[5],cal:Object.assign({},LIBCAL[i])};}),
     HISTORY:HISTORY.map(function(r){return Object.assign({},r);}),
     POOL_TOTAL:Object.assign({},POOL_TOTAL)};
@@ -1743,14 +1887,14 @@ function saveScenario(){
   const m=compute(),v=verdictObj(m);
   const nm=(S.pname&&(""+S.pname).trim())?(""+S.pname).trim():("Scenario "+(scenarios.length+1));
   let dt=""; try{dt=new Date().toISOString().slice(0,10);}catch(e){dt="";}
-  scenarios.push({name:nm,ts:dt,state:snapshotState(),
-    sum:{V:m.V,cityMin:m.cityMin,A:m.A,B:m.B,g:m.g,verdict:v.tag,use:S.use,district:S.district,bonus:S.bonus,acres:S.acres}});
+  scenarios.push({name:nm,ts:dt,version:VERSION,state:snapshotState(),
+    sum:{V:m.V,cityMin:m.cityMin,A:m.A,B:m.Bplain,g:m.gPlain,verdict:v.tag,use:S.use,district:S.district,bonus:S.bonus,acres:S.acres}});
   persistScenarios();
 }
 function loadScenario(idx){
   const sc=scenarios[idx]; if(!sc)return; const st=sc.state;
   Object.assign(S,JSON.parse(JSON.stringify(st.S)));
-  ASSUMP.forEach(function(r,k){if(st.ASSUMP&&st.ASSUMP[k]){r.low=st.ASSUMP[k].low;r.high=st.ASSUMP[k].high;r.override=st.ASSUMP[k].override;}});
+  ASSUMP.forEach(function(r,k){if(st.ASSUMP&&st.ASSUMP[k]){r.low=st.ASSUMP[k].low;r.high=st.ASSUMP[k].high;r.override=st.ASSUMP[k].override;if("source" in st.ASSUMP[k])r.source=st.ASSUMP[k].source;if("notes" in st.ASSUMP[k])r.notes=st.ASSUMP[k].notes;}});
   if(st.LIB&&Array.isArray(st.LIB)){           // name-keyed library (restores custom benefits too)
     st.LIB.forEach(function(e){ let idx=libIndexOf(e.name);
       if(idx<0&&e.custom){LIB.push([e.name,e.cat||"Monetary / Cash",e.unit||"$/unit",0,0,true]);LIBCAL.push({devLow:0,devHigh:0,devOv:null,cityLow:0,cityHigh:0,cityOv:null,note:"",source:""});idx=LIB.length-1;}
@@ -1769,6 +1913,71 @@ function loadScenario(idx){
   syncInputsFromState();
   goto(0);
 }
+/* ---------- worked case studies ---------- */
+const CASES=[{
+  name:"Corey Landings",
+  sub:"KT Corey Ave LLC / Kolter · CUP 25069 · Ord. 2025-20 / Res. 2025-23 (City Commission, Oct 14 & 28 2025)",
+  image:"images/corey-landings-kolter.png",
+  imgcap:"Corey Landings — rendering (Kolter Urban)",
+  lat:27.74454, lon:-82.74593, zoom:16,
+  blurb:"A 133-unit luxury condominium redevelopment on Corey Avenue — 108 units by-right plus a 25-unit bonus drawn from St. Pete Beach's 195-unit residential (RU) density pool. Three towers at 86 ft on 4.51 buildable acres in the TC-2 Town Center Corey Circle district (AE flood zone). It is the project this tool's worked example is calibrated to, so the verified figures make a clean teaching case.",
+  facts:[
+    ["Use","Condominium — 133 units"],
+    ["By-right / bonus","108 by-right + 25 bonus (RU pool)"],
+    ["District","TC-2 Corey Circle — 24 du/ac base"],
+    ["Site","4.51 acres · AE coastal"],
+    ["Market","≈ $2.6M/unit (~$1,100–1,250/SF × 2,269 SF)"],
+    ["Public benefits (applicant est.)","≈ $3.0M — seawall, public park, roundabout plaza, promenade, streetscape / 53 public parking spaces, boat slips"],
+    ["Pool effect","Allocates 25 RU; divests the 150 vested under Ord. 2022-03 (net 125 returned) → 170 of 195 remaining"],
+    ["Outcome","Approved with conditions"]
+  ],
+  notes:"One-time City impact fees on this project were ≈ $5,300/unit (transportation $1,248 + parks $843 + sewer $3,216); the tool's default impact floor of $28,000/unit is a broader Koontz-nexus placeholder, editable under Assumptions. The benefit package loaded here is representative of the staff-report items that map cleanly to the library — refine quantities on the Benefits step.",
+  state:{pname:"Corey Landings",papp:"KT Corey Ave LLC / Kolter (CUP 25069)",use:"Condominium",btype:"High-rise (8+)",subtype:"Gulf-front",parking:"structured",coastal:"AE",district:"TC2",acres:4.51,byright:108,bonus:25,market:2600000,mktSF:2269,impact:28000},
+  benefits:[{name:"Seawall / bulkhead",qty:103,pct:1},{name:"Public plaza / park",qty:24500,pct:1},{name:"Waterfront boardwalk / promenade",qty:600,pct:1},{name:"Public boat slip (Class A)",qty:4,pct:1}]
+}];
+function buildCases(){
+  let h='<p class="lede">Real, verified projects worked end-to-end. Load one to populate every input, then review the full breakdown — the four numbers, the ZOPA with its target-capture zone, and the value charts — and adjust it to explore alternatives. Loading replaces the current project inputs; the Assumptions and the allocation ledger are kept.</p>';
+  CASES.forEach((c,i)=>{
+    const textCol='<p class="lede" style="margin:10px 0">'+esc(c.blurb)+'</p>'+
+       '<div class="atable-wrap"><table class="atable"><tbody>'+
+       c.facts.map(f=>'<tr><td style="width:1%;white-space:nowrap"><b>'+esc(f[0])+'</b></td><td class="anote" style="max-width:none;white-space:normal">'+esc(f[1])+'</td></tr>').join("")+
+       '</tbody></table></div>'+
+       '<p class="hint" style="margin-top:10px">'+esc(c.notes)+'</p>'+
+       '<button class="addbtn" data-loadcase="'+i+'" style="margin-top:10px">Load this case →</button>';
+    const imgPart=c.image?('<div class="case-img"><img src="'+esc(c.image)+'" alt="'+esc(c.name)+' rendering" loading="lazy"></div>'+(c.imgcap?'<div class="anote" style="margin-top:6px;font-size:11px">'+esc(c.imgcap)+'</div>':'')):'';
+    const mapPart=(c.lat!=null)?('<div class="case-map" id="case-map-'+i+'" role="img" aria-label="'+esc(c.name)+' location map"></div><div class="anote" style="margin-top:6px;font-size:11px">Corey Circle, St. Pete Beach</div>'):'';
+    const mediaCol=imgPart+mapPart;
+    h+='<div class="card"><h3>'+esc(c.name)+'</h3><div class="sub">'+esc(c.sub)+'</div>'+
+       (mediaCol?('<div class="case-grid"><div>'+textCol+'</div><div class="case-media">'+mediaCol+'</div></div>'):textCol)+
+       '</div>';
+  });
+  return h;
+}
+let caseMaps={};
+function initCaseMaps(){
+  if(typeof L==="undefined")return;
+  CASES.forEach(function(c,i){
+    if(c.lat==null)return;
+    const el=document.getElementById("case-map-"+i); if(!el)return;
+    if(caseMaps[i]){try{caseMaps[i].remove();}catch(e){}}
+    const mp=L.map(el,{scrollWheelZoom:false}).setView([c.lat,c.lon],c.zoom||15);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap contributors"}).addTo(mp);
+    L.marker([c.lat,c.lon]).addTo(mp);
+    caseMaps[i]=mp;
+    setTimeout(function(){mp.invalidateSize();},150);
+  });
+}
+function loadCase(idx){
+  const c=CASES[idx]; if(!c)return;
+  Object.assign(S,JSON.parse(JSON.stringify(c.state)));
+  S.benefits=(c.benefits||[]).map(b=>Object.assign({},b));
+  applyDistrict(S.district);     // sets base / cap / pathway / use + dist-rules; honors the case district
+  S.impact=c.state.impact;       // applyDistrict→syncUseDerived leaves impact alone, but be explicit
+  buildAddSel();
+  syncInputsFromState();
+  render();
+  goto(STEPS.length-1);          // jump to Results to show the worked outcome
+}
 function buildScenarios(){
   let h='<div class="card"><div class="sub">'+(scenHosted?"Saved to this browser (localStorage). Browser data can be cleared at any time — use Export to keep a copy as a file you can re-import later.":"Held in memory only — this is not a hosted page, so saved scenarios clear on reload. Use Export to save them to a file and Import to restore them.")+'</div>'+
     '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:stretch">'+
@@ -1780,10 +1989,10 @@ function buildScenarios(){
     h+='<p class="lede">No saved scenarios yet. Save snapshots the current inputs and results so you can compare alternatives — for example, the same project at different bonus counts or benefit packages.</p>';
     return h;
   }
-  h+='<div class="atable-wrap"><table class="atable"><thead><tr><th scope="col">Scenario</th><th scope="col">Saved</th><th scope="col">Use / district</th><th scope="col" class="r">Bonus</th><th scope="col" class="r">Acres</th><th scope="col" class="r">Value to dev</th><th scope="col" class="r">City min</th><th scope="col" class="r">Dev cost</th><th scope="col" class="r">Public value</th><th scope="col" class="r">Pub val / acre</th><th scope="col" class="r">Ratio</th><th scope="col" class="r" title="Public value as a multiple of the city minimum">× over min</th><th scope="col">Verdict</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead><tbody>';
+  h+='<div class="atable-wrap"><table class="atable"><thead><tr><th scope="col">Scenario</th><th scope="col">Saved</th><th scope="col">Use / district</th><th scope="col" class="r">Bonus</th><th scope="col" class="r">Acres</th><th scope="col" class="r">Value to dev</th><th scope="col" class="r">City min</th><th scope="col" class="r">Dev cost</th><th scope="col" class="r">Public value</th><th scope="col" class="r">Pub val / acre</th><th scope="col" class="r">Ratio</th><th scope="col" class="r" title="Public value as a multiple of the lawful mitigation baseline">× over min</th><th scope="col">Verdict</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead><tbody>';
   scenarios.forEach(function(s,i){const u=s.sum||{};
     const ac=u.acres, pva=(ac>0&&u.B!=null)?u.B/ac:null, overMin=(u.cityMin>0&&u.B!=null)?u.B/u.cityMin:null;
-    h+='<tr><td>'+esc(s.name)+'</td><td class="anote">'+esc(s.ts)+'</td><td class="anote">'+esc(u.use)+' / '+esc(u.district)+'</td>'+
+    h+='<tr><td>'+esc(s.name)+'</td><td class="anote">'+esc(s.ts)+(s.version?(' · v'+esc(s.version)):' · v1.0')+'</td><td class="anote">'+esc(u.use)+' / '+esc(u.district)+'</td>'+
        '<td class="r">'+(u.bonus==null?"-":u.bonus)+'</td><td class="r">'+(ac==null?"-":ac)+'</td><td class="r mono">'+fmt(u.V||0)+'</td><td class="r mono">'+fmt(u.cityMin||0)+'</td>'+
        '<td class="r mono">'+fmt(u.A||0)+'</td><td class="r mono">'+fmt(u.B||0)+'</td><td class="r mono">'+(pva==null?"-":fmt(pva))+'</td><td class="r">'+(u.g?u.g.toFixed(2)+'×':'-')+'</td><td class="r">'+(overMin==null?"-":overMin.toFixed(2)+'×')+'</td>'+
        '<td>'+esc(u.verdict||"")+'</td>'+
@@ -1815,6 +2024,8 @@ document.getElementById("openlibrary").addEventListener("click",()=>showAux("lib
 document.getElementById("openmethod").addEventListener("click",()=>showAux("method"));
 document.getElementById("openhistory").addEventListener("click",()=>showAux("history"));
 document.getElementById("openscenarios").addEventListener("click",()=>showAux("scenarios"));
+document.getElementById("opencases").addEventListener("click",()=>showAux("cases"));
+document.getElementById("aux-cases").addEventListener("click",e=>{const b=e.target.closest("[data-loadcase]"); if(b)loadCase(+b.dataset.loadcase);});
 document.getElementById("explore").addEventListener("input",function(){updateExplore();});
 document.getElementById("btn-print").addEventListener("click",printSummary);
 document.getElementById("btn-savescen").addEventListener("click",()=>{saveScenario();showAux("scenarios");});
@@ -1859,6 +2070,8 @@ function assumpEdit(e){
   if(t.tagName==="SELECT"&&t.classList.contains("basis-sel")){if(e.type==="change")basisSelEdit(+t.dataset.i,t.value);return;}
   if(t.tagName!=="INPUT"||t.dataset.i===undefined)return;
   const i=+t.dataset.i, r=ASSUMP[i];
+  if(t.dataset.col==="source"){r.source=t.value;return;}
+  if(t.dataset.col==="notes"){r.notes=t.value;return;}
   if(t.classList.contains("basis-sf")){if(e.type==="change")basisSfEdit(i,parseNum(t.value));return;}
   if(t.dataset.col===undefined)return;
   const col=t.dataset.col, raw=t.value.replace(/,/g,""), n=parseFloat(raw);
@@ -1875,6 +2088,9 @@ function assumpEdit(e){
   if(e.type==="change"&&r.fmt==="$"){const disp=aToDisp(r,r[col]);t.value=(disp==null||disp==="")?"":(+disp).toLocaleString();}
 }
 ["input","change"].forEach(ev=>document.getElementById("aux-assume").addEventListener(ev,assumpEdit));
+document.getElementById("aux-assume").addEventListener("click",e=>{const b=e.target.closest("[data-lock]"); if(b){advUnlocked=!advUnlocked;renderAux("assumptions");}});
+document.getElementById("aux-library").addEventListener("click",e=>{const b=e.target.closest("[data-lock]"); if(b){advUnlocked=!advUnlocked;renderAux("library");}});
+document.getElementById("aux-history").addEventListener("click",e=>{const b=e.target.closest("[data-lock]"); if(b){advUnlocked=!advUnlocked;renderAux("history");}});
 ["input","change"].forEach(ev=>document.getElementById("aux-library").addEventListener(ev,libEdit));
 document.getElementById("aux-library").addEventListener("click",function(e){
   const t=e.target;
