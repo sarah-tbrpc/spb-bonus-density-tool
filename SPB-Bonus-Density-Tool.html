@@ -190,12 +190,30 @@ select:focus,input[type=number]:focus,input[type=text]:focus{outline:none;border
 .verdict{margin-bottom:16px}
 .vpill{display:flex;align-items:center;gap:10px;font-size:17px;font-weight:700;line-height:1.3;padding:14px 20px;border-radius:var(--r) var(--r) 0 0}
 .vbody{font-size:14px;line-height:1.6;padding:14px 20px;background:var(--card);border:1px solid var(--line);border-top:none;border-radius:0 0 var(--r) var(--r);box-shadow:var(--sh-sm)}
+.vbadge{display:inline-flex;align-items:center;font-size:12.5px;font-weight:700;padding:4px 11px;border-radius:999px;margin:0 0 10px}
+.vbadge-ok{color:var(--pass);background:#e7f1ea}
+.vbadge-warn{color:var(--warn);background:var(--warn-bg)}
+.vbadge-neu{color:var(--ink2);background:#eef0f2}
+.vdchips{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.vdchip{font-size:12.5px;color:var(--ink2);background:var(--brand-soft);border-radius:8px;padding:7px 12px}
+.vdchip b{font-size:14px;color:var(--accent-d)}
 .verdict .vh{font-size:15px;font-weight:700;display:block;margin-bottom:5px}
 .tlight{display:inline-block;width:13px;height:13px;border-radius:50%;margin-right:9px;vertical-align:-1px;box-shadow:0 0 0 2px rgba(255,255,255,.75),0 0 0 3px rgba(0,0,0,.07)}
 .vpill .tlight{margin-right:0;flex:none}
 .vpill .vstatus{margin-left:auto;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
 .verdict .vstatus{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-left:4px}
 .diag-h{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);font-weight:700;margin:26px 0 12px;padding-top:12px;border-top:1px solid var(--line)}
+.diagcard{padding:0}
+.diagcard>summary{cursor:pointer;font-size:15px;font-weight:700;letter-spacing:-.01em;padding:15px 20px;list-style:none;display:flex;align-items:center;gap:9px}
+.diagcard>summary::-webkit-details-marker{display:none}
+.diagcard>summary::before{content:"\25B8";font-size:11px;color:var(--ink3)}
+.diagcard[open]>summary::before{content:"\25BE"}
+.diagcard>summary:hover{color:var(--accent)}
+.diagcard>summary~*{padding:0 20px}
+.diagcard>summary~*:last-child{padding-bottom:18px}
+.diagcard[open]>summary{border-bottom:1px solid var(--line2)}
+.diagcard .sub{margin-top:12px}
+@media print{details>*{display:block!important}}
 .lockbar{display:flex;align-items:center;gap:14px;justify-content:space-between;flex-wrap:wrap;background:#f3f5f6;border:1px solid var(--line);border-radius:var(--r-sm);padding:10px 14px;margin-bottom:12px;font-size:12.5px;line-height:1.45}
 .lockbar button{flex:none}
 .lockfs{border:0;margin:0;padding:0;min-width:0}
@@ -500,12 +518,17 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
         <button class="btn" id="btn-savescen">Save scenario</button>
         <button class="btn" id="btn-compare">Compare scenarios</button>
       </div>
-      <p class="lede" style="margin:6px 0 18px">Review the verdict, then use the ranked benefits and the deal explorer to shape a counter-package.</p>
+      <p class="lede" style="margin:6px 0 18px">Review the verdict, then use the suggested counter-package and the ranked benefits to shape the ask.</p>
       <div class="card">
         <h3>Zone of Possible Agreement (ZOPA)</h3>
         <div class="sub">Range of developer spending on benefits: from the minimum that satisfies the city up to the value to developer. The shaded band is the framework’s <b>target capture zone</b>, a fair-share guideline that keeps the deal off the absolute floor and ceiling.</div>
         <div class="zopa-track" id="zopa"></div>
         <div class="hint" id="zopa-note"></div>
+      </div>
+      <div class="card" id="solver-card">
+        <h3>Suggested Counter-Package</h3>
+        <div class="sub">A starting offer the city could propose: the most plain-value-efficient benefits from the library, sized to clear the break-even floor within the developer's budget. A negotiation aid, not a recommendation; load it onto the Benefits step and adjust.</div>
+        <div id="solver"></div>
       </div>
       <div class="card" id="vstack-card">
         <h3>Where the Bonus Value Goes</h3>
@@ -524,15 +547,9 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
           <input type="range" id="explore" min="0" max="100" step="1" value="0"></div>
         <div class="hint" id="explore-note"></div>
       </div>
-      <div class="card" id="solver-card">
-        <h3>Suggested Counter-Package</h3>
-        <div class="sub">A starting offer the city could propose: the most plain-value-efficient benefits from the library, sized to clear the break-even floor within the developer's budget. A negotiation aid, not a recommendation; load it onto the Benefits step and adjust.</div>
-        <div id="solver"></div>
-      </div>
 
       <h3 class="diag-h">Diagnostics</h3>
-      <div class="card" id="pool-card">
-        <h3>Density Pool and Scarcity</h3>
+      <details class="card diagcard" id="pool-card"><summary>Density Pool and Scarcity</summary>
         <div class="sub">Bonus units draw from a finite pool. Units remaining come from the Allocation history ledger; demand and planning horizon are set under Assumptions. The scarcer the pool, the higher the pool value used in the break-even floor.</div>
         <div class="poolhead">
           <svg id="poolpie" viewBox="0 0 120 120" width="124" height="124" role="img" aria-label="Pool allocation chart"></svg>
@@ -543,29 +560,21 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
         </div>
         <div class="vchart" style="margin-top:10px"><div id="scarcurve"></div></div>
         <div class="hint" id="scar-note" style="margin-top:8px"></div>
-      </div>
-      <div class="card" id="vd-card">
-        <h3>Value Density</h3>
-        <div class="sub">Headline figures ÷ acres and ÷ bonus unit, so different-sized deals compare fairly, the tool’s own value density, not an assessed-value / tax-base "value per acre."</div>
-        <div class="numgrid" id="valuedensity"></div>
-      </div>
-      <div class="card">
-        <h3>Unit-Count Sensitivity</h3>
+      </details>
+      <details class="card diagcard"><summary>Unit-Count Sensitivity</summary>
         <div class="sub">Net public value as the bonus allocation varies (requested allocation marked). Net public value is gross public value less the city's scarcity and impact costs.</div>
         <svg class="spark" id="spark" viewBox="0 0 600 150" preserveAspectRatio="none"></svg>
         <div class="hint" id="spark-note"></div>
-      </div>
-      <div class="card" id="xcheck-card">
-        <h3>Cross-Check, Tampa 10:1 / ICC Construction-Cost Basis</h3>
+      </details>
+      <details class="card diagcard" id="xcheck-card"><summary>Cross-Check: Tampa 10:1 / ICC Construction-Cost Basis</summary>
         <div class="sub">An optional sanity check against the basis SPB Planning actually cited (Tampa Code 27-140 and ICC Building Valuation Data). It compares the developer’s benefit spend to the construction cost of the bonus units only. <b>Reference only, not part of the verdict</b>, which uses the ZOPA / break-even-floor model above. Inputs are editable under Assumptions § F.</div>
         <div class="numgrid" id="xcheck"></div>
         <div class="hint" id="xcheck-note"></div>
-      </div>
-      <div class="card">
-        <h3>Robustness (±20% Sketch Sensitivity)</h3>
+      </details>
+      <details class="card diagcard"><summary>Robustness (±20% Sketch Sensitivity)</summary>
         <div class="sub">Stress-tests the recommendation by moving each headline figure 20% in the least-favorable direction, all at once, and reports whether the verdict survives. The ±20% is applied around the <b>central (midpoint)</b> estimates, deliberately <i>not</i> stacked on the conservative low end the verdict already uses, so the two cautions don't compound.</div>
         <div id="robo"></div>
-      </div>
+      </details>
     </section>
 
     <section class="panel" data-aux="explainV">
@@ -646,7 +655,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
         <p class="lede" style="margin:0 0 8px"><b>What the code does <i>not</i> set.</b> The SPB code contains no contribution rate, no benefit-valuation formula, and no floor or ceiling on what a developer must offer, the only statutory weighting is Chapter 163 proportionate-share ("in proportion to the impacts caused"), which is the basis for the impact-mitigation floor. The ZOPA bounds in this tool, and the 15–25% contribution / 25–50% capture guardrails cited below, are therefore <b>analytic overlays from the supporting framework, not adopted code</b>; the value-ratio math is a staff sketch over the code's discretionary merit-basis review.</p>
         <p class="lede" style="margin:0"><b>Supporting framework.</b> <i>Coming soon.</i> A fuller write-up of the supporting framework (<i>A Framework for Density Bonus Valuation in St. Pete Beach</i>, Tampa Bay Regional Planning Council, April 2026) will appear here.</p>
         <p class="lede" style="margin:8px 0 0"><b>Sources &amp; benchmarks.</b> The benchmark figures behind this tool trace to published sources, carried on the Assumptions and Benefit-library pages (Source column): construction cost <b>RSMeans</b> and <b>ICC Building Valuation Data</b>; lodging <b>STR / HVS</b>; soft costs and developer margin <b>ULI / CBRE</b>; condo comps <b>Redfin</b>; benefit unit costs from <b>SFRPC</b> (Resilient BCA Database / REBECCA), <b>FEMA</b> (Ecosystem Service Values; BCA Sustainment v13), <b>FDEP</b>, <b>FHWA</b>, <b>WGI</b>, <b>Forward Pinellas</b>, <b>UF Shimberg</b>, and <b>HUD</b>. The framework’s fuller valuation method draws on residual-land-value practice (<b>Keyser Marston</b>; <b>BAE Urban Economics</b>) and value-layer multipliers (<b>NIBS</b> <i>Natural Hazard Mitigation Saves</i> 2019 for resilience; <b>GASB 34 / FHWA</b> lifecycle; <b>FL Statute 255.20</b> public-procurement premium; <b>BEA / RIMS II</b> economic impact). Those layers inform the benchmarks but are not recomputed here.</p>
-        <p class="lede" style="margin:10px 0 0;font-size:12px;color:var(--ink3)"><b>Version &amp; changelog.</b> Tool <b>v1.10.0</b> · methodology dated <b>2026-06-11</b> (stamped on every printout). <b>v1.10.0</b>: Step 1 simplified. Construction cost per unit is now a <b>direct field</b> (default from the specs), with parking, coastal, and market sub-type tucked into an "estimate cost and value from project specs" expander, and the $/SF cross-check behind an "enter as $/SF instead" toggle. Entering a cost overrides the multiplier estimate; the value-to-developer range then brackets that figure ±15%. With no cost entered the model is unchanged. <b>v1.9.0</b>: the wizard is now <b>three steps</b> (Project, Public benefits, Results). The separate Pool step is gone: <b>units remaining are read directly from the Allocation history ledger</b> rather than entered, and projected demand and planning horizon moved to Assumptions § J (a single islandwide pair, so the temporary-lodging demand default shifts from 14 to 11 per year, slightly changing the lodging pool value used). The pool pie, scarcity curve, and ledger readout now sit in a Density Pool and Scarcity card under Results diagnostics. <b>v1.8.1</b>: nav credit simplified to "TBRPC Civic Tech" with a small mark; no model change. <b>v1.8.0</b> (methodology): a benefit line with <b>no enforceability instrument named is now treated as unsecured</b> and credited at the §I unsecured factor (default 40%) rather than 100%, so full credit requires affirmatively naming an instrument (this lowers offered value on older scenarios that left it blank, by design). The 100%-above-code chip now fires only on benefits flagged with a <b>code minimum</b> (a per-benefit, editable flag on the Benefit library; seeded on for landscaping, parking, streetscape, and seawall pending coastal-code review, off for workforce housing, easements, art, slips, and cash). A package <b>open-questions summary</b> (unsecured, 100%-above-a-code-minimum, escalation violations) sits above the totals, mirrors near the verdict and on the printout, and each item jumps to its line. The verdict gained two guards: an <b>incomplete</b> state when no use or market is set, and a <b>fair-share capture gate</b> that flags a floor-clearing, feasible offer that still captures below the target band; the verdict also cautions when a material share of value is unsecured. <b>v1.7.2</b>: Benefits step redesigned, each benefit is now a bordered card with one input row, a single meta row (recurring, secured-by, derivation), and the warnings as compact pills (full text on hover) instead of full-width banners; Notes/Source shrink to one line and expand on focus; the value ratio is a labeled pill and delete is an explicit icon button; the intro prose folded into a "How lines are counted" disclosure. Added a third brand tone #c4dcde (table section headers, text selection); remaining black buttons recolored to the brand. Copy-only chip wording (no model change). <b>v1.7.1</b>: palette refresh, brand color #27576a (buttons, the context bar, the public / city charts) and accent #df9b49 (the developer charts and highlights); no model change. <b>v1.7.0</b>: added a <b>counter-package solver</b> on Results, it proposes the most plain-value-efficient library benefits sized to clear the break-even floor within the developer budget (enforceability assumed at condition-of-approval) and can load the package onto the Benefits step; the ZOPA chart now shows an empty state instead of stacked $0 labels before a deal is entered; the Step 1 map is layered below the sticky header so it no longer paints over it; Workspace menu group ordered above Reference. <b>v1.6.1</b>: header and deal-context strip combined into one sticky block (no overlap on scroll); the current step is remembered across a page refresh when served as a hosted page; the readout info glyph removed in favor of a dotted underline; menu caret enlarged. <b>v1.6.0</b>: "lawful mitigation baseline" renamed "break-even floor" (legal term retained in the derivation and methods note); component labels renamed (Pool value used, Impact offset) and plain-terms definitions rewritten; the % above code guard disambiguated from the floor; Results page reworked (verdict shown as a color pill folding in the robustness one-liner, action bar moved below the numbers, cards reordered to ZOPA then value-split then ranked benefits and explorer, with diagnostics grouped below); a persistent deal-context strip (district, use, bonus, pool remaining) on every step; aux toolbar grouped into collapsible Reference and Workspace umbrellas (default collapsed); a two-color semantic palette (teal public, warm developer); Step 1 reordered to lead with location; the Pool step now shows the allocation ledger; supporting-framework section set to coming soon; body and small-text sizes bumped. <b>v1.5.0</b>: each benefit can name the instrument that secures it (recorded covenant, development agreement, bond, condition of approval, letter of intent, none), applying an enforceability credit to its public value in both the verdict and the ranking; an unspecified instrument credits at 100% but is flagged; factors are editable in new Assumptions § I. <b>v1.4.0</b>: benefits can be marked recurring (annual), valued as the present value of a growing annuity over a term (new Assumptions § H: discount rate, escalation rate, default term); the escalation-below-discount rule is enforced with a flag on the line; recurring lines are marked on the printout. <b>v1.3.0</b>: lodging value now varies by Market Sub-Type, the income approach uses a Gulf-front resort ADR or an inland / mid-market ADR (blended when no sub-type is chosen) instead of one islandwide rate; §G splits ADR into two sourced rows. <b>v1.2.2</b>: editorial pass, removed em-dashes from the interface copy (replaced with commas, colons, or rephrasing); no model or methodology change. <b>v1.2.1</b>: value-to-developer described as a cost-driven range in the Methods card (feasibility on the conservative low end, high end the negotiation target); robustness card states the ±20% stresses the midpoint, not the conservative verdict basis; loading an older-version scenario now warns that figures recompute under current methodology; un-sourced Assumptions/Library rows flagged as uncalibrated placeholders (carried onto the PDF); a warning chip when a benefit line sits at 100% above code; lodging ADR annotated as a blended islandwide rate; lock/enable-editing banners moved to the bottom of the editable tables. <b>v1.2</b>: lodging income approach (value per key = ADR × occ × ancillary × EBITDA ÷ cap); cost-driven value-to-developer range with the feasibility verdict run on the conservative (low) end and the high end shown as the negotiation target. <b>v1.1</b>: verdict moved to plain dollars; category multipliers demoted to ranking only; "city minimum" renamed "lawful mitigation baseline." <b>v1.0</b>: initial sketch model. A scenario or PDF produced under an earlier version is identifiable by its stamp; a changed verdict between versions reflects a deliberate methodology fix, not a contradiction.</p>
+        <p class="lede" style="margin:10px 0 0;font-size:12px;color:var(--ink3)"><b>Version &amp; changelog.</b> Tool <b>v1.10.1</b> · methodology dated <b>2026-06-11</b> (stamped on every printout). <b>v1.10.1</b>: Results page tightened. The diagnostics (Density Pool and Scarcity, Unit-Count Sensitivity, Cross-Check, Robustness) are now collapsed disclosures; robustness shows as a one-line badge in the verdict box ("Survives ±20% adverse stress") with the table on expand. Value Density is reduced to two stat chips under the verdict. The Suggested Counter-Package moved up to sit right after the ZOPA, as the most actionable element. No model change. <b>v1.10.0</b>: Step 1 simplified. Construction cost per unit is now a <b>direct field</b> (default from the specs), with parking, coastal, and market sub-type tucked into an "estimate cost and value from project specs" expander, and the $/SF cross-check behind an "enter as $/SF instead" toggle. Entering a cost overrides the multiplier estimate; the value-to-developer range then brackets that figure ±15%. With no cost entered the model is unchanged. <b>v1.9.0</b>: the wizard is now <b>three steps</b> (Project, Public benefits, Results). The separate Pool step is gone: <b>units remaining are read directly from the Allocation history ledger</b> rather than entered, and projected demand and planning horizon moved to Assumptions § J (a single islandwide pair, so the temporary-lodging demand default shifts from 14 to 11 per year, slightly changing the lodging pool value used). The pool pie, scarcity curve, and ledger readout now sit in a Density Pool and Scarcity card under Results diagnostics. <b>v1.8.1</b>: nav credit simplified to "TBRPC Civic Tech" with a small mark; no model change. <b>v1.8.0</b> (methodology): a benefit line with <b>no enforceability instrument named is now treated as unsecured</b> and credited at the §I unsecured factor (default 40%) rather than 100%, so full credit requires affirmatively naming an instrument (this lowers offered value on older scenarios that left it blank, by design). The 100%-above-code chip now fires only on benefits flagged with a <b>code minimum</b> (a per-benefit, editable flag on the Benefit library; seeded on for landscaping, parking, streetscape, and seawall pending coastal-code review, off for workforce housing, easements, art, slips, and cash). A package <b>open-questions summary</b> (unsecured, 100%-above-a-code-minimum, escalation violations) sits above the totals, mirrors near the verdict and on the printout, and each item jumps to its line. The verdict gained two guards: an <b>incomplete</b> state when no use or market is set, and a <b>fair-share capture gate</b> that flags a floor-clearing, feasible offer that still captures below the target band; the verdict also cautions when a material share of value is unsecured. <b>v1.7.2</b>: Benefits step redesigned, each benefit is now a bordered card with one input row, a single meta row (recurring, secured-by, derivation), and the warnings as compact pills (full text on hover) instead of full-width banners; Notes/Source shrink to one line and expand on focus; the value ratio is a labeled pill and delete is an explicit icon button; the intro prose folded into a "How lines are counted" disclosure. Added a third brand tone #c4dcde (table section headers, text selection); remaining black buttons recolored to the brand. Copy-only chip wording (no model change). <b>v1.7.1</b>: palette refresh, brand color #27576a (buttons, the context bar, the public / city charts) and accent #df9b49 (the developer charts and highlights); no model change. <b>v1.7.0</b>: added a <b>counter-package solver</b> on Results, it proposes the most plain-value-efficient library benefits sized to clear the break-even floor within the developer budget (enforceability assumed at condition-of-approval) and can load the package onto the Benefits step; the ZOPA chart now shows an empty state instead of stacked $0 labels before a deal is entered; the Step 1 map is layered below the sticky header so it no longer paints over it; Workspace menu group ordered above Reference. <b>v1.6.1</b>: header and deal-context strip combined into one sticky block (no overlap on scroll); the current step is remembered across a page refresh when served as a hosted page; the readout info glyph removed in favor of a dotted underline; menu caret enlarged. <b>v1.6.0</b>: "lawful mitigation baseline" renamed "break-even floor" (legal term retained in the derivation and methods note); component labels renamed (Pool value used, Impact offset) and plain-terms definitions rewritten; the % above code guard disambiguated from the floor; Results page reworked (verdict shown as a color pill folding in the robustness one-liner, action bar moved below the numbers, cards reordered to ZOPA then value-split then ranked benefits and explorer, with diagnostics grouped below); a persistent deal-context strip (district, use, bonus, pool remaining) on every step; aux toolbar grouped into collapsible Reference and Workspace umbrellas (default collapsed); a two-color semantic palette (teal public, warm developer); Step 1 reordered to lead with location; the Pool step now shows the allocation ledger; supporting-framework section set to coming soon; body and small-text sizes bumped. <b>v1.5.0</b>: each benefit can name the instrument that secures it (recorded covenant, development agreement, bond, condition of approval, letter of intent, none), applying an enforceability credit to its public value in both the verdict and the ranking; an unspecified instrument credits at 100% but is flagged; factors are editable in new Assumptions § I. <b>v1.4.0</b>: benefits can be marked recurring (annual), valued as the present value of a growing annuity over a term (new Assumptions § H: discount rate, escalation rate, default term); the escalation-below-discount rule is enforced with a flag on the line; recurring lines are marked on the printout. <b>v1.3.0</b>: lodging value now varies by Market Sub-Type, the income approach uses a Gulf-front resort ADR or an inland / mid-market ADR (blended when no sub-type is chosen) instead of one islandwide rate; §G splits ADR into two sourced rows. <b>v1.2.2</b>: editorial pass, removed em-dashes from the interface copy (replaced with commas, colons, or rephrasing); no model or methodology change. <b>v1.2.1</b>: value-to-developer described as a cost-driven range in the Methods card (feasibility on the conservative low end, high end the negotiation target); robustness card states the ±20% stresses the midpoint, not the conservative verdict basis; loading an older-version scenario now warns that figures recompute under current methodology; un-sourced Assumptions/Library rows flagged as uncalibrated placeholders (carried onto the PDF); a warning chip when a benefit line sits at 100% above code; lodging ADR annotated as a blended islandwide rate; lock/enable-editing banners moved to the bottom of the editable tables. <b>v1.2</b>: lodging income approach (value per key = ADR × occ × ancillary × EBITDA ÷ cap); cost-driven value-to-developer range with the feasibility verdict run on the conservative (low) end and the high end shown as the negotiation target. <b>v1.1</b>: verdict moved to plain dollars; category multipliers demoted to ranking only; "city minimum" renamed "lawful mitigation baseline." <b>v1.0</b>: initial sketch model. A scenario or PDF produced under an earlier version is identifiable by its stamp; a changed verdict between versions reflects a deliberate methodology fix, not a contradiction.</p>
       </div>
     </section>
 
@@ -685,7 +694,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 
 <script>
 "use strict";
-const VERSION="1.10.0", VERSION_DATE="2026-06-11";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
+const VERSION="1.10.1", VERSION_DATE="2026-06-11";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
 const K={hardCondo:237500,hardHotel:170000,soft:0.24,margin:0.15,decline:0.80,impact:28000};
 const CATMULT={"Workforce Housing":1.4,"Community Development":1.5,"Transportation":1.7,"Environmental":2.0,"Resilience":2.5,"Monetary / Cash":1.0};
 const BMULT={"Low-rise (1-3)":1.0,"Mid-rise (4-7)":1.15,"High-rise (8+)":1.35};
@@ -2144,11 +2153,24 @@ function roboShort(m){
   const feasBest=(m.A*0.8)<=(m.V*1.2);
   return (worthBest&&feasBest)?"It is within ±20% of clearing.":"It stays short across the full ±20% band.";
 }
+/* one-line durability badge for the verdict box */
+function roboBadge(m){
+  if(m.A===0&&m.Bplain===0) return null;
+  const baseFav=m.worth&&m.feas;
+  const worthWorst=(m.Bplain*0.8)>=(m.cityMin*1.2);
+  const feasWorst=(m.A*1.2)<=(m.V*0.8);
+  if(baseFav) return (worthWorst&&feasWorst)?{t:"Survives ±20% adverse stress",tone:"ok"}:{t:"Fragile: a ±20% swing could flip it",tone:"warn"};
+  const worthBest=(m.Bplain*1.2)>=(m.cityMin*0.8);
+  const feasBest=(m.A*0.8)<=(m.V*1.2);
+  return (worthBest&&feasBest)?{t:"Within ±20% of clearing",tone:"warn"}:{t:"Stays short across the full ±20% band",tone:"neu"};
+}
 function verdictHTML(m,v){
   const empty=(m.A===0&&m.Bplain===0);
-  const rs=(empty||v.tag==="Incomplete")?"":roboShort(m);
+  const rb=(empty||v.tag==="Incomplete")?null:roboBadge(m);
+  const badge=rb?'<div class="vbadge vbadge-'+rb.tone+'">'+(rb.tone==="ok"?"✓ ":rb.tone==="warn"?"⚠ ":"")+rb.t+' <span class="anote" style="font-weight:400">(details under Diagnostics)</span></div>':'';
+  const vd=(S.acres>0&&S.bonus>0&&m.Bplain>0)?'<div class="vdchips"><span class="vdchip"><b>'+fmt(m.Bplain/S.acres)+'</b> public value / acre</span><span class="vdchip"><b>'+fmt(m.Bplain/S.bonus)+'</b> public value / bonus unit</span></div>':'';
   return '<div class="vpill" style="background:'+v.bg+';color:'+v.fg+'"><span class="tlight" style="background:'+v.light+'"></span><span>'+v.head+'</span><span class="vstatus" style="color:'+v.fg+';opacity:.8">'+v.status+'</span></div>'+
-    '<div class="vbody">'+v.body+(rs?' <b>'+rs+'</b>':'')+(empty?' <button class="alink" id="v-goto-benefits">Go to the Benefits step →</button>':'')+packageSummaryHTML(m,true)+'</div>';
+    '<div class="vbody">'+badge+v.body+(empty?' <button class="alink" id="v-goto-benefits">Go to the Benefits step →</button>':'')+packageSummaryHTML(m,true)+vd+'</div>';
 }
 function paintVerdict(m,v){const vb=document.getElementById("verdict");if(!vb)return;vb.style.cssText="";vb.innerHTML=verdictHTML(m,v);const gb=document.getElementById("v-goto-benefits");if(gb)gb.onclick=()=>goto(1);wirePkgLinks(vb);}
 function drawRobo(m){
@@ -2407,6 +2429,7 @@ document.getElementById("openscenarios").addEventListener("click",()=>showAux("s
 document.getElementById("opencases").addEventListener("click",()=>showAux("cases"));
 document.getElementById("aux-cases").addEventListener("click",e=>{const b=e.target.closest("[data-loadcase]"); if(b)loadCase(+b.dataset.loadcase);});
 document.getElementById("explore").addEventListener("input",function(){updateExplore();});
+document.querySelectorAll(".diagcard").forEach(function(d){d.addEventListener("toggle",function(){if(d.open)setTimeout(render,0);});});  // re-draw charts at the right width when a diagnostic opens
 document.getElementById("btn-print").addEventListener("click",printSummary);
 document.getElementById("btn-savescen").addEventListener("click",()=>{saveScenario();showAux("scenarios");});
 document.getElementById("btn-compare").addEventListener("click",()=>showAux("scenarios"));
