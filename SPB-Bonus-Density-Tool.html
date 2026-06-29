@@ -56,6 +56,9 @@ header.top{background:rgba(255,255,255,.92);backdrop-filter:saturate(1.15) blur(
 
 /* large screens: left sidebar (steps stacked, aux below) */
 .layout{display:grid;grid-template-columns:180px 1fr;gap:26px;padding:24px 0 96px}
+/* let the main column shrink to the available space so a wide table (e.g. the 14-column scenario
+   compare) scrolls inside its .atable-wrap instead of stretching the grid and the whole page */
+.layout>main{min-width:0}
 nav.steps{position:sticky;top:108px;align-self:start;display:flex;flex-direction:column;gap:2px;min-height:calc(100vh - 200px)}
 .stepbtns{display:flex;flex-direction:column;gap:2px}
 .navfoot{margin-top:24px;display:flex;flex-direction:column;gap:2px;padding-top:14px;border-top:1px solid var(--line);flex:1}
