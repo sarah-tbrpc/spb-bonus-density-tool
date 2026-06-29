@@ -56,9 +56,9 @@ header.top{background:rgba(255,255,255,.92);backdrop-filter:saturate(1.15) blur(
 
 /* large screens: left sidebar (steps stacked, aux below) */
 .layout{display:grid;grid-template-columns:210px 1fr;gap:26px;padding:24px 0 96px}
-nav.steps{position:sticky;top:108px;align-self:start;display:flex;flex-direction:column;gap:2px}
+nav.steps{position:sticky;top:108px;align-self:start;display:flex;flex-direction:column;gap:2px;min-height:calc(100vh - 200px)}
 .stepbtns{display:flex;flex-direction:column;gap:2px}
-.navfoot{margin-top:24px;display:flex;flex-direction:column;gap:2px;padding-top:14px;border-top:1px solid var(--line)}
+.navfoot{margin-top:24px;display:flex;flex-direction:column;gap:2px;padding-top:14px;border-top:1px solid var(--line);flex:1}
 .navgrp{display:flex;flex-direction:column;gap:2px;margin-bottom:4px}
 .navgrp-h{display:flex;align-items:center;gap:7px;width:100%;white-space:nowrap;background:none;border:none;cursor:pointer;font-family:inherit;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);font-weight:700;padding:7px 13px;border-radius:var(--r-sm);transition:background .14s,color .14s}
 .navgrp-h:hover{background:#e9ecee;color:var(--ink2)}
@@ -68,7 +68,7 @@ nav.steps{position:sticky;top:108px;align-self:start;display:flex;flex-direction
 .navgrp.open .navgrp-body{display:flex}
 .navfoot .rst{color:var(--fail);padding-left:13px;margin-top:6px;border-top:1px solid var(--line);border-radius:0;padding-top:11px}
 .navfoot .rst:hover{background:#f6e2e4;color:var(--fail)}
-.navcredit{margin-top:10px;padding:10px 13px 0;border-top:1px solid var(--line);display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink3)}
+.navcredit{margin-top:auto;padding:14px 13px 18px;border-top:1px solid var(--line);display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink3)}
 .ct-mark{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:10px;font-weight:700;color:var(--accent);background:var(--brand-soft);border-radius:4px;padding:1px 5px;letter-spacing:-.02em}
 .navcredit a{color:var(--accent);font-weight:600;text-decoration:none}
 .navcredit a:hover{text-decoration:underline}
@@ -84,10 +84,10 @@ nav.steps{position:sticky;top:108px;align-self:start;display:flex;flex-direction
 /* small screens: horizontal top bar (steps in one equal-width row, aux in a row beneath) */
 @media(max-width:820px){
   .layout{display:flex;flex-direction:column;gap:16px;padding:18px 0 96px}
-  nav.steps{position:static;top:auto;align-self:stretch;flex-direction:column;gap:12px}
+  nav.steps{position:static;top:auto;align-self:stretch;flex-direction:column;gap:12px;min-height:auto}
   .stepbtns{flex-direction:row;gap:8px;width:100%}
   .step-btn{flex:1 1 0;min-width:0;width:auto;justify-content:center;border-color:var(--line);background:var(--card)}
-  .navfoot{margin-top:0;flex-direction:row;flex-wrap:wrap;align-items:flex-start;gap:14px;width:100%;padding-top:12px;border-top:1px solid var(--line)}
+  .navfoot{margin-top:0;flex-direction:row;flex-wrap:wrap;align-items:flex-start;gap:14px;width:100%;padding-top:12px;border-top:1px solid var(--line);flex:none}
   .navgrp-h{width:auto;font-size:9.5px;gap:5px;letter-spacing:.04em;padding:7px 9px}
   .navgrp-h .navcaret{font-size:10px}
   .navgrp-body{padding-left:0}
@@ -105,6 +105,7 @@ h2.step-h{font-size:23px;font-weight:700;margin:4px 0 7px;letter-spacing:-.02em}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;margin-bottom:16px;box-shadow:var(--sh-sm)}
 .card h3{font-size:15px;font-weight:700;margin-bottom:3px;letter-spacing:-.01em}
 .card .sub{font-size:14px;color:var(--ink3);margin-bottom:14px;line-height:1.5}
+.subsec{border-top:1px solid var(--line);margin-top:22px;padding-top:20px}
 
 .field{margin:18px 0}
 .lab{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:13px;margin-bottom:6px;color:var(--ink2)}
@@ -177,6 +178,7 @@ select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-i
 .specest summary::-webkit-details-marker{display:none}
 .specest summary::before{content:"▸ ";font-size:10px}
 .specest[open] summary::before{content:"▾ "}
+.specest[open]>div{border:1px solid var(--line);border-radius:var(--r-sm);background:#f3f7f7;padding:11px 13px 13px}
 .stephelp{font-size:12.5px;color:var(--ink3);margin:0 0 16px}
 .stephelp summary{cursor:pointer;color:var(--ink2);font-weight:600}
 .stephelp[open] summary{margin-bottom:6px}
@@ -446,18 +448,17 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
   <main id="main">
 
     <section class="panel" data-step="0">
-      <div class="eyebrow">Step 1 of 3</div>
-      <h2 class="step-h">Project</h2>
-      <p class="lede">Start by placing the property on the map, location sets the district and whether the density pool applies. Then set the classification and the density request.</p>
+      <div class="card">
+      <div class="eyebrow">Step 1 of 3 · Project</div>
+      <h2 class="step-h">Project Details</h2>
+      <p class="lede" style="margin-bottom:18px">Name the project, place it on the map to set the district and density pool, classify the use and construction cost, then enter the density request.</p>
 
-      <div class="card projid">
-        <div class="projid-row">
-          <div><label class="lab"><span>Project Name</span></label><input type="text" id="pname" value="" placeholder="e.g. project or application name"></div>
-          <div><label class="lab"><span>Applicant / Developer</span></label><input type="text" id="papp" value="" placeholder="e.g. applicant / developer"></div>
-        </div>
+      <div class="projid-row">
+        <div><label class="lab"><span>Project Name</span></label><input type="text" id="pname" value=""></div>
+        <div><label class="lab"><span>Applicant / Developer</span></label><input type="text" id="papp" value=""></div>
       </div>
 
-      <div class="card">
+      <div class="subsec">
         <h3>Location and Zoning</h3>
         <div class="locgrid">
           <div class="locinfo">
@@ -479,15 +480,14 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
             </div>
             <div id="map" style="border:1px solid var(--line);border-radius:6px;background:#e9ecee"></div>
             <div class="hint" id="pin-coords" style="margin-top:8px"></div>
-            <div class="hint" style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px 14px;align-items:center"><span><span style="display:inline-block;width:11px;height:11px;border-radius:2px;background:#27576a;vertical-align:-1px;margin-right:5px"></span>Pool districts (in scope)</span><span><span style="display:inline-block;width:11px;height:11px;border-radius:2px;background:#9a9a9a;vertical-align:-1px;margin-right:5px"></span>Outside the pool program</span></div>
-            <div class="hint" style="margin-top:4px">Unshaded areas are outside the CRA; density increases there require a comprehensive plan amendment.</div>
+            <div class="hint" style="margin-top:8px">Density increases outside the CRA boundary require a comprehensive plan amendment.</div>
           </div>
         </div>
       </div>
 
-      <div class="card">
+      <div class="subsec">
         <h3>Development Classification and Cost</h3>
-        <div class="sub">Use and building type classify the project. Enter the construction cost and market value directly, or open the estimators to derive them from project specs.</div>
+        <div class="sub">Enter construction cost and market value directly, or use the estimators to derive them from specs.</div>
         <div class="row2">
           <div><label class="lab"><span>Use Type</span><span class="val anote" id="utype" title="Residential draws from the RU pool; temporary lodging from the TLU pool"></span></label>
             <select id="use"><option value="">Select…</option><option>Condominium</option><option>Multifamily Rental</option><option>Temporary Lodging</option></select></div>
@@ -511,9 +511,9 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
             <div><label class="lab"><span>Avg Unit / Key Size (SF)</span></label><input type="text" inputmode="numeric" id="mkt-sf" value="2,269"></div>
             <div><label class="lab"><span>$ / SF (optional)</span></label><input type="text" inputmode="numeric" id="mkt-psf" placeholder="$ per SF"></div>
           </div>
-          <div class="hint" style="margin-top:6px">Average unit size converts $/unit to $/SF and seeds from the use type (calibratable under Assumptions, section B). Optionally enter a $/SF figure to set the market value below (price per SF times unit size); edit the unit size for your project.</div>
+          <div class="hint" style="margin-top:6px">Converts $/unit to $/SF, seeded from the use type. Enter a $/SF to set the market value below.</div>
           <div class="hint" id="progarea" style="margin-top:6px;display:none"></div>
-          <label class="lab"><span>Market Value per unit/key</span><span class="val" id="mv-v"></span></label>
+          <label class="lab" style="margin-top:18px"><span>Market Value per unit/key</span><span class="val" id="mv-v"></span></label>
           <input type="range" id="mv" min="150000" max="3500000" step="25000" value="1800000">
           <div class="hint" id="mkt-income" style="margin-top:6px"></div>
           <details class="specest" id="mktest"><summary>Estimate market value from market sub-type</summary>
@@ -523,10 +523,11 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
         </div>
       </div>
 
-      <div class="card">
+      <div class="subsec">
         <h3>Density Request and Value</h3>
         <div class="row2">
-          <div><label class="lab"><span>Site Area (acres)</span></label><input type="number" id="acres" value="0" step="0.1"></div>
+          <div><label class="lab"><span>Site Area (acres)</span></label><input type="number" id="acres" value="0" step="0.1">
+            <div class="hint" style="margin-top:6px">Auto-summed from your map parcel selection; type to override.</div></div>
           <div><label class="lab"><span>By-Right Entitlement (units/keys)</span></label><input type="text" inputmode="numeric" id="byright" value="0">
             <div class="hint" id="byright-hint" style="margin-top:6px"></div></div>
         </div>
@@ -541,15 +542,15 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
           <div><label class="lab"><span>Impact Mitigation $ / Unit</span></label><input type="text" inputmode="numeric" id="impact" value="" placeholder="$ per bonus unit"></div>
         </div>
       </div>
+      </div>
     </section>
 
     <section class="panel" data-step="1">
-      <div class="eyebrow">Step 2 of 3</div>
-      <h2 class="step-h">Public Benefit Package</h2>
-      <p class="lede">Select benefits from the library, set the quantity and the share above code, and the tool ranks each by public value per developer dollar.</p>
       <div class="card">
-        <h3>Offered Benefits</h3>
-        <details class="stephelp"><summary>How lines are counted</summary>Per line, set the quantity, the percent above code (only that share counts), and, if you have them, the developer's submitted cost and the city's value per unit; defaults come from the library. The pill at the top-right of each line is its value ratio (public value per developer dollar, after the category multiplier; higher is better, cash is 1×). The "% above code" field is a different guard from the break-even floor: the floor offsets the project's impacts, while percent above code prevents crediting work the code already requires. The percent above code scales both sides of a line: the city credits only the above-code share, and the developer cost counted here is likewise only the above-code share of their spend (the code-required share is owed with or without the deal), so a line's value ratio is unaffected. Multipliers and cost factors are editable under Assumptions.</details>
+      <div class="eyebrow">Step 2 of 3 · Benefits</div>
+      <h2 class="step-h">Public Benefit Package</h2>
+      <p class="lede" style="margin-bottom:18px">Add benefits, set quantity and share above code; each is ranked by public value per developer dollar.</p>
+        <details class="stephelp"><summary>How lines are counted</summary>Per line: quantity, percent above code (only that share counts), and optionally the developer's cost and city's value per unit (library defaults). The top-right pill is the value ratio: public value per developer dollar, after the category multiplier (cash 1×). Percent above code scales both sides, so it doesn't change the ratio; it stops crediting code-required work, distinct from the break-even floor (which offsets impacts). Multipliers and cost factors are editable under Assumptions.</details>
         <div id="blist"></div>
         <div id="pkg-summary"></div>
         <div class="btot"><span>Developer cost</span><span class="mono" id="tot-a"></span></div>
@@ -558,12 +559,13 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
           <select id="addsel"></select>
           <button class="addbtn" id="addbtn">Add</button>
         </div>
-        <div class="hint">Benefit values are drawn from the library. To add an item not listed, extend the library and update the values to local data.</div>
+        <div class="hint">Benefit values come from the library. Add unlisted items by extending the library.</div>
       </div>
     </section>
 
     <section class="panel" data-step="2">
-      <div class="eyebrow">Step 3 of 3</div>
+      <div class="card">
+      <div class="eyebrow">Step 3 of 3 · Results</div>
       <h2 class="step-h">Results</h2>
       <div class="verdict" id="verdict"></div>
       <div class="numgrid" id="numgrid"></div>
@@ -572,31 +574,32 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
         <button class="btn" id="btn-savescen">Save scenario</button>
         <button class="btn" id="btn-compare">Compare scenarios</button>
       </div>
-      <p class="lede" style="margin:6px 0 18px">Review the decision, then use the suggested counter-package and the ranked benefits to shape the ask.</p>
+      <p class="lede" style="margin:6px 0 0">Review the decision, then use the suggested counter-package and the ranked benefits to shape the ask.</p>
+      </div>
       <div class="card">
         <h3>Zone of Possible Agreement (ZOPA)</h3>
-        <div class="sub">Range of developer spending on benefits: from the minimum that satisfies the city up to the value to developer. The shaded band is the framework’s <b>target capture zone</b>, a fair-share guideline that keeps the deal off the absolute floor and ceiling.</div>
+        <div class="sub">Developer benefit spending, from the minimum that satisfies the city up to the value to developer. The shaded band is the <b>target capture zone</b>, a fair-share guideline off the absolute floor and ceiling.</div>
         <div class="zopa-track" id="zopa"></div>
         <div class="hint" id="zopa-note"></div>
       </div>
       <div class="card" id="solver-card">
         <h3>Suggested Counter-Package</h3>
-        <div class="sub">A starting offer the city could propose: the most plain-value-efficient benefits from the library, sized to clear the break-even floor within the developer's budget. A negotiation aid, not a recommendation; load it onto the Benefits step and adjust.</div>
+        <div class="sub">A starting offer: the most plain-value-efficient library benefits, sized to clear the break-even floor within the developer's budget. A negotiation aid, not a recommendation; load it onto the Benefits step and adjust.</div>
         <div id="solver"></div>
       </div>
       <div class="card" id="vstack-card">
         <h3>Where the Bonus Value Goes</h3>
-        <div class="sub">The sale value of the bonus units, split into what it costs to build and sell, the developer’s profit, the public benefits the city secures, and the value the developer keeps. A bigger teal slice means more value captured for the public.</div>
+        <div class="sub">The sale value of the bonus units, split into build-and-sell cost, developer profit, public benefits secured, and value kept by the developer. A bigger teal slice means more captured for the public.</div>
         <div id="valuestack"></div>
       </div>
       <div class="card">
         <h3>Benefits Ranked by Value-to-Cost Ratio</h3>
-        <div class="sub">City value per dollar of developer cost. Use it to decide what to ask for; pair it with the explorer below to size the ask.</div>
+        <div class="sub">City value per dollar of developer cost. Use it to decide what to ask for; size the ask with the explorer below.</div>
         <div id="ranks"></div>
       </div>
       <div class="card" id="explore-card">
         <h3>Deal Explorer, What-If Package Size</h3>
-        <div class="sub">Drag to test how much benefit spending the deal needs, holding the package’s value ratio fixed. It doesn’t change your entered package.</div>
+        <div class="sub">Drag to test how much benefit spending the deal needs, at a fixed value ratio. It doesn’t change your entered package.</div>
         <div class="field"><label class="lab"><span>What-If Developer Spend on Benefits</span><span class="val" id="explore-v"></span></label>
           <input type="range" id="explore" min="0" max="100" step="1" value="0"></div>
         <div class="hint" id="explore-note"></div>
@@ -604,7 +607,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 
       <h3 class="diag-h">Diagnostics</h3>
       <details class="card diagcard" id="pool-card"><summary>Density Pool and Scarcity</summary>
-        <div class="sub">Bonus units draw from a finite pool. Units remaining come from the Allocation history ledger; demand and planning horizon are set under Assumptions. The scarcer the pool, the higher the pool value used in the break-even floor.</div>
+        <div class="sub">Bonus units draw from a finite pool. Units remaining come from the Allocation ledger; demand and horizon from Assumptions. The scarcer the pool, the higher the pool value in the break-even floor.</div>
         <div class="poolhead">
           <svg id="poolpie" viewBox="0 0 120 120" width="124" height="124" role="img" aria-label="Pool allocation chart"></svg>
           <div class="poolhead-info">
@@ -616,23 +619,23 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
         <div class="hint" id="scar-note" style="margin-top:8px"></div>
       </details>
       <details class="card diagcard" id="fiscal-card"><summary>Fiscal Snapshot (Value per Acre)</summary>
-        <div class="sub">Urban3-style taxable value and property-tax yield per acre, context only, not part of the decision.</div>
+        <div class="sub">Urban3-style taxable value and tax yield per acre. Context only, not part of the decision.</div>
         <div class="field" style="margin:6px 0 12px"><label class="lab"><span>Current parcel taxable value</span></label>
           <input type="text" inputmode="numeric" id="fiscal-tax" placeholder="from county autofill or enter manually" value=""></div>
         <div id="fiscal-figs"></div>
       </details>
       <details class="card diagcard"><summary>Unit-Count Sensitivity</summary>
-        <div class="sub">Net public value as the bonus allocation varies (requested allocation marked). Net public value is gross public value less the city's scarcity and impact costs.</div>
+        <div class="sub">Net public value as the bonus allocation varies (requested allocation marked). Net = gross public value less the city's scarcity and impact costs.</div>
         <svg class="spark" id="spark" viewBox="0 0 600 150" preserveAspectRatio="none"></svg>
         <div class="hint" id="spark-note"></div>
       </details>
       <details class="card diagcard" id="xcheck-card"><summary>Cross-Check: Tampa 10:1 / ICC Construction-Cost Basis</summary>
-        <div class="sub">An optional sanity check against the basis SPB Planning actually cited (Tampa Code 27-140 and ICC Building Valuation Data). It compares the developer’s benefit spend to the construction cost of the bonus units only. <b>Reference only, not part of the decision</b>, which uses the ZOPA / break-even-floor model above. Inputs are editable under Assumptions § F.</div>
+        <div class="sub">An optional sanity check against the basis SPB Planning cited (Tampa Code 27-140 and ICC). It compares the developer’s benefit spend to the bonus units' construction cost. <b>Reference only, not part of the decision.</b> Inputs editable under Assumptions § F.</div>
         <div class="numgrid" id="xcheck"></div>
         <div class="hint" id="xcheck-note"></div>
       </details>
       <details class="card diagcard"><summary>Robustness (±20% Sketch Sensitivity)</summary>
-        <div class="sub">Stress-tests the recommendation by moving each headline figure 20% in the least-favorable direction, all at once, and reports whether the decision survives. The ±20% is applied around the <b>central (midpoint)</b> estimates, deliberately <i>not</i> stacked on the conservative low end the decision already uses, so the two cautions don't compound.</div>
+        <div class="sub">Moves each headline figure 20% the wrong way at once and reports whether the decision survives. Applied around the <b>midpoint</b> estimates, not stacked on the conservative low end the decision already uses, so the two cautions don't compound.</div>
         <div id="robo"></div>
       </details>
     </section>
@@ -659,7 +662,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
       <button class="btn auxback" style="margin-bottom:14px">← Back</button>
       <div class="eyebrow">Settings</div>
       <h2 class="step-h">Assumptions</h2>
-      <p class="lede">Sketch-grade defaults, not calibrated to local data, edit to your figures and every number flows through the model. The category multipliers express how much more the city values a dollar spent in each category than plain cash.</p>
+      <p class="lede">Sketch-grade defaults, mostly uncalibrated to local data; edit any value and it flows through the model. Category multipliers set how much more the city values a dollar in each category than plain cash.</p>
       <div id="aux-assume"></div>
     </section>
 
@@ -667,64 +670,65 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
       <button class="btn auxback" style="margin-bottom:14px">← Back</button>
       <div class="eyebrow">Settings</div>
       <h2 class="step-h">Benefit Library</h2>
-      <p class="lede">The <b>city’s value</b> of each public benefit, as Low/High/Applied/Override (same format as Assumptions); Applied is the midpoint unless overridden, and seeds the city value when you add the benefit. The <b>developer’s cost</b> is not set here, it’s their per-project proposal on the Benefits step. Placeholders, calibrate to local bids and adopted valuations.</p>
+      <p class="lede">The <b>city’s value</b> of each benefit (Low/High/Applied/Override; Applied is the midpoint unless overridden), seeding the city value when you add it. The <b>developer’s cost</b> is not set here, it’s their per-project proposal on the Benefits step. Placeholders, calibrate to local bids.</p>
       <div id="aux-library"></div>
     </section>
 
     <section class="panel" data-aux="method">
       <button class="btn auxback" style="margin-bottom:14px">← Back</button>
       <div class="eyebrow">Reference</div>
-      <h2 class="step-h">Method and Caveats</h2>
+      <h2 class="step-h">User Guide (placeholder)</h2>
 
+      <div hidden>
       <div class="card">
         <h3>What This Is</h3>
-        <p class="lede" style="margin:0">A staff sketch tool for structuring bonus-density negotiations, order-of-magnitude figures to frame a decision, not a certified appraisal, developer pro forma, or legal determination. It evaluates allocations from the city's two finite density pools (the 195-unit RU pool and the TLU pools) only; Large Resort district-cap lodging and comprehensive-plan amendments are outside its scope. Treat the outputs as directional and calibrate the inputs to local data before relying on any single number. For any allocation that is large relative to the remaining pool, or where the decision is marginal, the city should commission an independent feasibility review by a qualified urban economist before relying on these figures.</p>
+        <p class="lede" style="margin:0">A staff sketch tool for bonus-density negotiations: order-of-magnitude figures, not a certified appraisal, pro forma, or legal determination. It covers allocations from the city's two finite density pools (195-unit RU and the TLU pools); Large Resort district-cap lodging and comp-plan amendments are out of scope. Calibrate inputs to local data before relying on any number, and commission an independent feasibility review for any allocation large relative to the pool or marginal in its decision.</p>
       </div>
 
       <div class="card">
         <h3>The Numbers, in Plain Terms</h3>
-        <p class="lede" style="margin:0 0 8px"><b>Value to developer</b>, the most the bonus units are worth to the developer (their residual profit, slightly discounted): the walk-away ceiling. Shown as a <b>cost-driven range</b>, the <b>conservative low end</b> (high build cost) is what the feasibility decision tests against; the <b>high end</b> (marginal units build cheaper than average) is the negotiation target.</p>
-        <p class="lede" style="margin:0 0 8px"><b>Pool value used</b>, the value of the finite, non-renewable pool units this bonus consumes. Near zero when the pool is plentiful; rises as it nears depletion. Applies only on the pool-allocation pathway. It is priced on the conservative (declined, high-cost) per-unit value, the same basis as the developer ceiling, so the floor and ceiling share one footing. Scarcity pricing stays at zero until the remaining balance falls below projected demand times the planning horizon, then ramps. At full depletion the floor equals the units' full conservative value plus impact mitigation, so the model deliberately reports no agreement zone for the last pool units and recommends holding them (the Hold decision) rather than allocating.</p>
-        <p class="lede" style="margin:0 0 8px"><b>Impact offset (required by law)</b>, new units bring new traffic, utility, and service demands. State law lets the city require the developer to cover their fair share of those costs, deal or no deal.</p>
-        <p class="lede" style="margin:0 0 8px"><b>Break-even floor</b>, the impact offset plus the value of the finite pool units consumed. Below this line, the public is subsidizing the project. <span class="anote">(Formally, the lawful mitigation baseline under F.S. §163.3180 proportionate share and Nollan/Dolan/Koontz.)</span></p>
+        <p class="lede" style="margin:0 0 8px"><b>Value to developer</b>, the most the bonus units are worth to the developer (discounted residual profit): the walk-away ceiling. A cost-driven range; the decision tests the conservative low end, the high end is the negotiation target.</p>
+        <p class="lede" style="margin:0 0 8px"><b>Pool value used</b>, the value of the finite pool units this bonus consumes (pool pathway only). Near zero when the pool is plentiful, rising toward depletion. Priced on the same conservative per-unit value as the ceiling. Stays zero until the balance falls below projected demand times horizon, then ramps; at full depletion it reaches the units' full value and the tool recommends holding them (Hold).</p>
+        <p class="lede" style="margin:0 0 8px"><b>Impact offset (required by law)</b>, new units add traffic, utility, and service demand; state law lets the city require the developer's fair share, deal or no deal.</p>
+        <p class="lede" style="margin:0 0 8px"><b>Break-even floor</b>, the impact offset plus the pool value consumed. Below it, the public subsidizes the project. <span class="anote">(The lawful mitigation baseline under F.S. §163.3180 and Nollan/Dolan/Koontz.)</span></p>
         <p class="lede" style="margin:0 0 8px"><b>Developer cost</b>, what the offered package costs the developer to provide.</p>
-        <p class="lede" style="margin:0 0 8px"><b>Public value offered</b>, the city's <b>plain-dollar</b> cost to provide the offered package (qty × city $/unit × % above code), present-valued when a benefit is recurring and reduced by an <b>enforceability credit</b> set by the instrument that secures each promise (a recorded covenant credits at 100%, an unsecured letter of intent far less). This is what the decision compares to the baseline. Category multipliers do not enter this figure; they only rank benefits within a package.</p>
+        <p class="lede" style="margin:0 0 8px"><b>Public value offered</b>, the city's <b>plain-dollar</b> cost to provide the package (qty × city $/unit × % above code), present-valued for recurring benefits and cut by an <b>enforceability credit</b> for the securing instrument (recorded covenant 100%, unsecured far less). This is what the decision tests against the baseline; category multipliers only rank benefits, they don't enter it.</p>
         <p class="lede" style="margin:0"><b>Value ratio</b>, public value per developer dollar. The amount above 1 is the gain from trade.</p>
       </div>
 
       <div class="card">
         <h3>The Three Inputs That Matter Most</h3>
-        <p class="lede" style="margin:0">Three inputs drive nearly every output: market value per unit (sets the developer ceiling), construction cost per unit (sets the developer floor), and the developer margin (splits the difference). Calibrate these three before trusting any decision; most other assumptions move results far less. The scarcity exponent matters only when the pool nears depletion.</p>
+        <p class="lede" style="margin:0">Three inputs drive nearly every output: market value (the ceiling), construction cost (the floor), and developer margin (the split). Calibrate these first; other assumptions move results far less. The scarcity exponent matters only near depletion.</p>
       </div>
 
       <div class="card">
         <h3>How the Recommendation Is Reached</h3>
-        <p class="lede" style="margin:0">The deal is <b>worthwhile</b> when the public value offered meets the break-even floor, and <b>feasible</b> when the developer cost stays under the value to developer, tested on the <b>conservative (low) end</b> of that range, so the city is never accused of demanding an infeasible deal. The zone of possible agreement runs from the least developer spending that satisfies the city up to that conservative ceiling; the high end of the range is the private negotiation target. Fill the room with the highest value-ratio benefits first.</p>
+        <p class="lede" style="margin:0"><b>Worthwhile</b> when public value offered meets the break-even floor; <b>feasible</b> when developer cost stays under the value to developer, tested on its conservative low end. The agreement zone runs from the least satisfying spend up to that ceiling. Fill it with the highest value-ratio benefits first.</p>
       </div>
 
       <div class="card">
         <h3>Known Limits, Read Before Relying on It</h3>
-        <p class="lede" style="margin:0 0 8px"><b>Plain-dollar decision.</b> The pass/fail test is apples-to-apples in plain dollars: the package's plain public value (city cost to provide) against the plain-dollar break-even floor. The <b>category multipliers</b> (resilience 2.5×, etc.) are a <i>ranking</i> tool only, they steer which benefits to prefer within a package, and never inflate the offer on the decision scale. <span class="anote">(Earlier versions weighted the offer before the test; that was removed in v1.1, see the changelog below.)</span> If a deal now reads tighter than it used to, the tool didn't get stricter, it stopped grading the developer's offer on a curve. Differential weighting of benefit categories has regulatory precedent: Chicago's zoning bonus worksheet assigns each amenity type its own premium factor and cap (Chicago Zoning Ordinance §17-4-1000 et seq.).</p>
-        <p class="lede" style="margin:0 0 8px"><b>Invented curve shapes.</b> The scarcity exponent and the value-decline factor are reasonable judgment shapes, not empirically derived. Both are editable under Assumptions. Pool opportunity cost is priced on the conservative (declined, high-cost) per-unit value so the floor and ceiling share one basis; at full depletion the floor reaches the units' full conservative value plus impact mitigation, and the model reports no agreement zone for the last pool units rather than implying a package could close the gap.</p>
-        <p class="lede" style="margin:0 0 8px"><b>Margin is not a return.</b> The developer margin is applied as a flat percentage of total cost, a sketch proxy for a real 12–15% target IRR. It does not model financing, hold period, or the time value of money, so a developer's analyst will compute feasibility on a different basis. Treat the value to developer as an order-of-magnitude ceiling, not a pro-forma result.</p>
-        <p class="lede" style="margin:0 0 8px"><b>Land is held constant.</b> The value to developer prices only the marginal bonus units; it does not subtract land cost (land is a by-right sunk cost that does not scale with the bonus). Correct for valuing the increment, but it is not a whole-project residual land value and understates the developer's all-in cost.</p>
-        <p class="lede" style="margin:0 0 8px"><b>Double-counting trap.</b> If required mitigation is also entered as a voluntary benefit, it is counted both in the impact offset and in the offered value. Use the "% above code" field to count only the genuinely above-code share. This mirrors standard practice: Chicago's bonus rules bar developers from counting contributions already required by other ordinances toward a zoning bonus.</p>
-        <p class="lede" style="margin:0 0 8px"><b>Valuations assume delivery.</b> Allocations should be conditioned on security instruments (letter of credit or bond), delivery timing, and recalculation upon any increase in approved density, per standard administrative practice (e.g., Chicago §17-4-1004).</p>
-        <p class="lede" style="margin:0 0 8px"><b>Single TLU pool.</b> The model prices all lodging scarcity against the 325-unit pool; the separate TC-1 (50-unit) and Boutique Hotel-Condo (125-unit) lodging pools are not modeled, and a warning appears on Step 1 when they apply.</p>
-        <p class="lede" style="margin:0 0 8px"><b>Residential and lodging increment only.</b> The model prices the bonus residential / lodging increment; commercial components of a mixed-use project (ground-floor retail and similar) do not draw pool units and are not modeled, their costs, fees, and revenues are outside this tool.</p>
-        <p class="lede" style="margin:0 0 8px"><b>Calibration.</b> Hard costs, category multipliers, impact figures, and district base/cap densities are placeholders. They need local construction-cost data, a current concurrency/impact study, and the city's adopted priorities before any output is load-bearing.</p>
-        <p class="lede" style="margin:0 0 8px"><b>Tax revenue is excluded from the decision.</b> The Fiscal Snapshot on Results shows the project's projected taxable value and annual property-tax yield per acre as context, but that revenue is deliberately kept out of the public-value decision. New property taxes fund the services the new residents and visitors consume, so they are not a windfall the city can trade for density; the proportionate-share impact offset already captures the development's impacts on the lawful side. Counting recurring tax yield toward the bonus ask would be fiscalization of land use, approving density for the tax base rather than for proportionate public benefit, which is exactly the reasoning the break-even-floor framework avoids.</p>
-        <p class="lede" style="margin:0"><b>Auto-zoning is best-effort.</b> Always confirm the district and verify against the official Future Land Use map.</p>
+        <p class="lede" style="margin:0 0 8px"><b>Plain-dollar decision.</b> The pass/fail compares the package's plain public value (city cost to provide) to the plain-dollar break-even floor. <b>Category multipliers</b> (resilience 2.5×, etc.) only <i>rank</i> benefits within a package, never inflating the offer on the decision scale. <span class="anote">(Earlier versions weighted the offer first; removed in v1.1.)</span> Category weighting has precedent (Chicago Zoning Ordinance §17-4-1000 et seq.).</p>
+        <p class="lede" style="margin:0 0 8px"><b>Invented curve shapes.</b> The scarcity exponent and value-decline factor are judgment shapes, not empirical (both editable under Assumptions). At full depletion the floor reaches the units' full value, so the tool reports no agreement zone rather than implying a package could close the gap.</p>
+        <p class="lede" style="margin:0 0 8px"><b>Margin is not a return.</b> Developer margin is a flat percentage of cost, a proxy for a 12–15% target IRR. It ignores financing, hold period, and time value, so a developer's analyst will test feasibility differently. Treat value to developer as an order-of-magnitude ceiling.</p>
+        <p class="lede" style="margin:0 0 8px"><b>Land is held constant.</b> Value to developer prices only the marginal bonus units and does not subtract land (a by-right sunk cost). Right for the increment, but it understates all-in cost and is not a residual land value.</p>
+        <p class="lede" style="margin:0 0 8px"><b>Double-counting trap.</b> Required mitigation also entered as a voluntary benefit gets counted twice. Use "% above code" to count only the above-code share, as Chicago's bonus rules require.</p>
+        <p class="lede" style="margin:0 0 8px"><b>Valuations assume delivery.</b> Condition allocations on security (letter of credit or bond), delivery timing, and recalculation if approved density rises (cf. Chicago §17-4-1004).</p>
+        <p class="lede" style="margin:0 0 8px"><b>Single TLU pool.</b> All lodging scarcity is priced against the 325-unit pool; the separate TC-1 (50) and Boutique Hotel-Condo (125) pools are not modeled (Step 1 flags when they apply).</p>
+        <p class="lede" style="margin:0 0 8px"><b>Residential and lodging only.</b> The model prices the bonus residential / lodging increment; commercial components of mixed-use projects do not draw pool units and are out of scope.</p>
+        <p class="lede" style="margin:0 0 8px"><b>Calibration.</b> Hard costs, category multipliers, impact figures, and district densities are placeholders, pending local cost data, a current concurrency study, and the city's adopted priorities before any output is load-bearing.</p>
+        <p class="lede" style="margin:0 0 8px"><b>Tax revenue is excluded.</b> The Fiscal Snapshot shows projected taxable value and tax yield per acre as context only. New taxes fund the services new residents consume, and the impact offset already covers impacts; counting tax yield toward the ask would be fiscalization of land use, which this framework avoids.</p>
+        <p class="lede" style="margin:0"><b>Auto-zoning is best-effort.</b> Confirm the district against the official Future Land Use map.</p>
       </div>
 
       <div class="card">
         <h3>Basis</h3>
-        <p class="lede" style="margin:0 0 8px">Impact figures are anchored to the actual adopted fees that apply in St. Pete Beach (v1.14.0): the Pinellas County <b>Multimodal Impact Fee</b> (Code §150-40, Ord. 19-15), about <b>$1,248</b> per condo unit, <b>$1,420</b> per multifamily unit, and <b>$1,604</b> per hotel room, plus the St. Pete Beach <b>parks/recreation impact fee</b> (~$843 per residential unit, lodging exempt; Ord. 2022-04). Pinellas levies no school, parks, fire, or library impact fee (schools are funded by millage and referendum), so the adopted burden is far lower than in typical multi-fee Florida counties; the Assumptions § E <b>High</b> end carries a flagged proportionate-share estimate above that adopted floor, which a concurrency / impact study should replace. The resilience weighting is a stand-in for a project-specific benefit-cost ratio (for example, from a FEMA-style avoided-loss analysis), which should replace it where one exists. District categories and densities follow the comprehensive plan; the Large Resort and Town Center categories are under city review through 2026 and should be checked against the current code.</p>
-        <p class="lede" style="margin:0 0 8px"><b>Codified backing.</b> The bonus mechanism itself is in the SPB code: added units come only from a finite density pool, the General Residential Unit "RU" pool of <b>195 units</b> (Land Development Code §39.18) and the <b>325</b>-unit transient-lodging pool for the Town Center-2 / Activity Center / Bayou Residential districts (Future Land Use element), both created by the 2007 down-zoning of the Large Resort district across 65.16 acres (−3 du/ac → 195; −5 lodging units/ac → 325). Each allocation is by City Commission ordinance plus conditional use on a discretionary "merit basis" (LDC §4.12(d)), with the units-remaining balance recited in the ordinance (§39.18(c)). The qualifying public benefits are enumerated in §4.12(d)(1)–(9): public parking / multimodal, public beach access, public art, public boat slips, workforce housing, green-building / wellness, Gulf-front access easements, and landscaping above code.</p>
-        <p class="lede" style="margin:0 0 8px"><b>What the code does <i>not</i> set.</b> The SPB code contains no contribution rate, no benefit-valuation formula, and no floor or ceiling on what a developer must offer, the only statutory weighting is Chapter 163 proportionate-share ("in proportion to the impacts caused"), which is the basis for the impact-mitigation floor. The ZOPA bounds in this tool, and the 15–25% contribution / 25–50% capture guardrails cited below, are therefore <b>analytic overlays from the supporting framework, not adopted code</b>; the value-ratio math is a staff sketch over the code's discretionary merit-basis review.</p>
+        <p class="lede" style="margin:0 0 8px">Impact figures use St. Pete Beach's actual adopted fees (v1.14.0): the Pinellas <b>Multimodal Impact Fee</b> (Code §150-40), ~<b>$1,248</b>/condo, <b>$1,420</b>/MF, <b>$1,604</b>/hotel room, plus the SPB <b>parks/rec fee</b> (~$843/residential unit, lodging exempt; Ord. 2022-04). Pinellas has no school, parks, fire, or library impact fee, so the § E <b>High</b> end carries a flagged proportionate-share estimate a concurrency study should replace. The resilience weighting stands in for a project benefit-cost ratio. District densities follow the comp plan; Large Resort and Town Center are under city review through 2026.</p>
+        <p class="lede" style="margin:0 0 8px"><b>Codified backing.</b> Added units come only from a finite pool: the 195-unit RU pool (LDC §39.18) and the 325-unit transient-lodging pool for TC-2 / Activity Center / Bayou Residential (Future Land Use element), both from the 2007 down-zoning of Large Resort over 65.16 acres. Each allocation is by Commission ordinance plus conditional use on a "merit basis" (LDC §4.12(d)), with the remaining balance recited per §39.18(c). Qualifying benefits are listed in §4.12(d)(1)–(9): public parking / multimodal, beach access, art, boat slips, workforce housing, green building, Gulf-front easements, and landscaping above code.</p>
+        <p class="lede" style="margin:0 0 8px"><b>What the code does <i>not</i> set.</b> No contribution rate, no benefit-valuation formula, no floor or ceiling; the only statutory weighting is Chapter 163 proportionate-share, the basis for the impact floor. The ZOPA bounds and the 15–25% / 25–50% guardrails are <b>analytic overlays, not adopted code</b>.</p>
         <p class="lede" style="margin:0"><b>Supporting framework.</b> <i>Coming soon.</i> A fuller write-up of the supporting framework (<i>A Framework for Density Bonus Valuation in St. Pete Beach</i>, Tampa Bay Regional Planning Council, April 2026) will appear here.</p>
-        <p class="lede" style="margin:8px 0 0"><b>Sources &amp; benchmarks.</b> The benchmark figures behind this tool trace to published sources, carried on the Assumptions and Benefit-library pages (Source column): construction cost <b>RSMeans</b> and <b>ICC Building Valuation Data</b>; lodging <b>STR / HVS</b>; soft costs and developer margin <b>ULI / CBRE</b>; condo comps <b>Redfin</b>; benefit unit costs from <b>SFRPC</b> (Resilient BCA Database / REBECCA), <b>FEMA</b> (Ecosystem Service Values; BCA Sustainment v13), <b>FDEP</b>, <b>FHWA</b>, <b>WGI</b>, <b>Forward Pinellas</b>, <b>UF Shimberg</b>, and <b>HUD</b>. The framework’s fuller valuation method draws on residual-land-value practice (<b>Keyser Marston</b>; <b>BAE Urban Economics</b>) and value-layer multipliers (<b>NIBS</b> <i>Natural Hazard Mitigation Saves</i> 2019 for resilience; <b>GASB 34 / FHWA</b> lifecycle; <b>FL Statute 255.20</b> public-procurement premium; <b>BEA / RIMS II</b> economic impact). Those layers inform the benchmarks but are not recomputed here.</p>
-        <p class="lede" style="margin:10px 0 0;font-size:12px;color:var(--ink3)"><b>Version &amp; changelog.</b> Tool <b>v1.14.0</b> · methodology dated <b>2026-06-29</b> (stamped on every printout). <b>v1.14.0</b> (data calibration): the impact-mitigation floor was recalibrated to St. Pete Beach's actual adopted fees, replacing placeholder figures that were roughly an order of magnitude too high and assumed fee types Pinellas does not levy. Pinellas County's only development impact fee is the Multimodal (transportation) fee (Code §150-40, Ord. 19-15: $1,248/condo, $1,420/multifamily, $1,604/hotel room), confirmed against the adopted ordinance; St. Pete Beach adds a residential-only parks/recreation impact fee (Ord. 2022-04, ~$843/unit, lodging exempt); there is no county or city school, fire, or library impact fee (Pinellas funds schools by millage and referendum). Section E now re-anchors each impact row to the verified adopted fee as the Low (a hard floor) with a flagged proportionate-share estimate as the High (replace with a concurrency study), so the central impact figure falls from $28k/$24k/$18k to about $3.1k/$3.4k/$2.4k per condo unit / multifamily unit / hotel key. Market values were recalibrated down to documented closed barrier-island sales ($525–740/SF; the $1,000+/SF tier exists only off-island or as pre-construction asking). Construction costs (condo and lodging) were validated against the height multiplier and re-sourced (St. Petersburg RSMeans City Cost Index ~0.85, ICC Aug-2025 concrete types, RLB Q3 2025), with the Assumptions Source column now citing the primary source for every recalibrated row. The model formulas are unchanged; these are calibration and sourcing changes, so a decision saved under an earlier version will read more conservatively now, by design. <b>v1.13.10</b>: increased the contrast between the in-scope (teal) and out-of-scope (neutral gray) eligibility shading on the map, and gave each parcel a thin white outline so adjacent eligible parcels read as separate parcels rather than one blob. Renamed the site-data "Property Use" row to "Current Use" to clarify it is the parcel's existing use from the county appraiser, distinct from the modeled redevelopment use and pool the district implies. No model change. <b>v1.13.9</b> (scope + diagnostics): the tool is now explicitly scoped to the RU and TLU density pools. Large Resort requests resolve to a labeled Out of scope decision (LR adds lodging within its own district cap by conditional use, not a pool draw), the district hint and deal strip say so, and the map FLU overlay is now two colors, pool districts in teal and everything else in gray, derived from the districts table so the map can never disagree with the model. A Step 1 note discloses the unmodeled TC-1 (50-unit) and Boutique Hotel-Condo (125-unit) lodging sub-pools when they apply, with a matching Known Limits entry. Diagnostics (methodology, diagnostics only): the Unit-Count Sensitivity curve now prices the pool cost on the decision's conservative basis (v1.13.0) so its break-even crossing matches where the decision flips; a fourth hardcoded scarcity exponent in the scarcity curve now follows the §J row; the verdict gained a structural no-agreement-zone state where the impact offset alone exceeds the developer ceiling off the pool pathway; the sensitivity chart's accessibility label names the quantity it plots. The decision, ZOPA, floor, and pool math for in-scope pool requests are unchanged. Step 1 polish: parcel stated-area parsing is now comma-safe and rejects square-foot-labeled strings instead of misreading them as acreage; the district auto-detect source (city FLU layer, countywide layer, or not detected) is named again on the pin line (restoring the v1.13.1 attribution removed in v1.13.7); the by-right hint notes that recognized existing units may lawfully exceed base × acres; a read-only total program area line (units × average size) appears under the size row; the §B average-size rows document that editing them re-seeds the live field; and Known Limits states that commercial components of mixed-use projects are outside the model. <b>v1.13.8</b>: the average unit / key size is now use-aware, seeding from the selected use type, condominium about 2,250 SF, multifamily rental about 900 SF, temporary lodging about 750 SF gross per key, with three new editable Assumptions rows (section B) so each is calibratable. Sizes draw on St. Pete Beach and St. Petersburg comps (resort keys 300 to 500 SF net plus circulation; apartment blend studio 498, 1-BR 716, 2-BR 1,050 SF). It feeds the $/unit to $/SF readout and the construction cross-check only, never the decision. Step 1 now pairs Avg Unit Size and $/SF in a two-column row above Market Value. No change to the verdict math. <b>v1.13.7</b>: added the St. Pete Beach municipal boundary to the map, a solid navy outline (embedded from Census TIGER) shown alongside the dashed-red CRA boundary, both in the legend. Split the Step 1 project-specs estimator into two: a construction-cost estimator (parking and coastal) under the Construction Cost field, and a market-value estimator (market sub-type) under the Market Value field; removed the combined helper line. Padded the site-data placeholder and hid the empty parcel-list box so it no longer shows a stray line under the Multi-parcel toggle. The dropdown caret is now a consistent custom chevron across every select, inset slightly from the right edge instead of the browser default. No model change. <b>v1.13.6</b>: parcel stated area now parses correctly. The county returns the area as a string with a unit suffix (for example "0.1722 a"), so the per-parcel summary read "area n/a" and the project total stayed at 0; parsing with parseFloat reads the number, so each parcel shows its acreage and the total sums properly (the single-parcel Site Area auto-fill benefits too). The expandable parcel detail now has a more distinct background and a left accent so it no longer blends into its summary row. The map legend now includes the CRA boundary (the dashed red line). The District and Property &amp; Site Data labels dropped their status captions (address-search feedback moved to the pin line under the map), a failed auto-detect now selects "Unknown, confirm manually" in the district dropdown, and the Multi-parcel project label dropped its parenthetical. No model change. <b>v1.13.5</b>: the multi-parcel picker now collects the full property and site data (CRA, Future Land Use, parcel ID, stated area, property use, flood risk) for every parcel in the project, each as an expandable row, not just the primary pin; the multi-parcel checkbox and parcel list moved into the Property &amp; Site Data column on the left, leaving the map alone on the right; in multi-parcel mode the single-parcel Property &amp; Site Data panel is hidden so parcel 1 is not shown twice. No model change. <b>v1.13.4</b>: the tool version now appears in small text next to the TBRPC Civic Tech credit in the nav footer. No model change. <b>v1.13.3</b>: the scarcity exponent moved from a hardcoded 1.6 to an editable Assumptions §J row (Low 1.4, High 1.8, Applied midpoint 1.6, so defaults are unchanged), making the Method claim that both invented curve shapes are editable true; the unit-count sensitivity diagnostic and the break-even derivation now respond to and display the live value. The enforceability comment and helper were corrected to match the v1.8.0 unsecured rule (no behavior change). The Benefits step help text now states that percent above code scales the developer cost as well as the city credit, so the Developer cost total is the above-code share of spend, not the full submitted bid (documentation of existing behavior, no model change). Multi-parcel polish: removing parcel 1 now re-resolves district, flood, and address from the new first parcel, and clicking the same parcel twice no longer double-counts its area. <b>v1.13.2</b>: moved the Market Value per Unit field up into the Development Classification and Cost card, directly under Construction Cost per Unit / Key and above the estimator, so the two dollar inputs sit together. Added a multi-parcel project picker: check Multi-parcel project, then click each parcel on the map to add it (numbered markers); the parcels' stated areas are summed into Site Area, with parcel 1 setting the district and flood data. Dropped the "(leverage)" qualifier from the Pool remaining label in the deal strip. No model change. <b>v1.13.1</b>: district auto-detect now resolves from the embedded city FLU layer when the pin is inside the CRA (exact TC-1 / TC-2 / LR codes; corridor and residential character districts mapped best-effort, marked for confirmation), falling back to the countywide layer outside it; the source is named next to the district field. An override on the § A hard-cost row now brackets the value-to-developer range ±15%, the same treatment as a cost typed on Step 1 (methodology: the range no longer collapses to a point). The 6% condominium sales-and-marketing cost moved from a hardcoded figure to an editable § A row (default midpoint 6%, no change to outputs until edited). The bonus slider ceiling is now use-aware, up to 150 for temporary lodging per the TC-2 project cap and capped at the remaining pool on the pool pathway. Flood-zone auto-fill no longer maps non-zone NFHL strings (for example "Area Not Included") to AE. <b>v1.13.0</b> (methodology): <b>Pool value used</b> (pool opportunity cost) is now priced on the same basis as the developer ceiling, the conservative declined high-cost per-unit value, rather than the gross mid-cost residual; previously, at high scarcity, the floor could exceed the ceiling by construction (the model implied a pool unit was worth more than any developer could pay under its own assumptions). A new <b>Hold</b> decision fires when the scarcity-adjusted break-even floor exceeds the developer ceiling: the option value of the remaining pool units beats what this request can return, so the tool recommends deferring the allocation rather than the misleading "renegotiate," and the counter-package solver reports that no package can clear the floor. The Density Pool and Scarcity card now states the scarcity activation threshold (projected demand times planning horizon) and whether pricing is active. Regression-safe: at a healthy pool (scarcity = 0) every figure is unchanged. Also corrected leftover navigation copy from the three-step restructure (references to the removed Pool step, stale step numbers) and a dead Results-refresh branch in softRender. <b>v1.12.0</b>: the term "verdict" is now "decision" throughout the interface (the decision logic is unchanged); the tool generalized to "Public Benefit &amp; Density Bonus Valuation Tool"; the deal strip shows "Pool not set" until a use type is chosen; the ZOPA graphic collapses (no empty band) until a deal exists. Plus documentation/tooling: calibration-source guidance on each Assumptions row, a "Three Inputs That Matter Most" section and an independent-feasibility-review note in Method, Chicago bonus-worksheet precedents (category weighting, no double-counting, delivery security), a Workforce Housing affordability-gap method note, a delivery-lifecycle <b>Status</b> column (Approved / Secured / Delivered) on the allocation ledger with a summary line (pool math unchanged), and a sign-off footer (date, prepared/reviewed signature lines, sketch-grade disclaimer) on the printed report. No change to the decision, ZOPA, or pool math. <b>v1.11.0</b>: replaced the Value Density diagnostic with a <b>Fiscal Snapshot (Value per Acre)</b> card, Urban3-style projected taxable value and annual property-tax yield per acre, the per-bonus-unit tax increment, and a current-to-projected per-acre comparison. Revenue context only, it never feeds the decision, ZOPA, or break-even floor; gross of service costs and deliberately excluded from the decision (see Method, Known Limits). New Assumptions § K holds the assessment ratio (0.88) and city millage (3.15 placeholder). <b>v1.10.9</b>: renamed the tool to "St. Pete Beach Density Bonus Valuation Tool" (browser title) and the top-bar brand to "Bonus Density Valuation Tool." <b>v1.10.8</b>: on small screens the step buttons and the aux row now span the full width, the nav was sizing to its content because <code>align-self:start</code> carried over from the sidebar; overriding it to stretch lets the steps spread evenly. <b>v1.10.7</b>: field labels (Use Type, Building Type, and the rest) now share one consistent size and spacing; the label styling moved from <code>.field .lab</code> onto the base <code>.lab</code>, so labels outside a <code>.field</code> no longer inherit the larger body font or lose the gap below. <b>v1.10.6</b>: the nav is responsive again, a left sidebar on large screens and the horizontal steps-in-a-row layout only on small screens; on small screens the map and address search now sit above the District / Land-Use dropdown. <b>v1.10.5</b>: removed the redundant "Place the pin" sub; the address box now reads "Search an address or click to drop the pin." <b>v1.10.4</b>: the navigation moved from a left sidebar to a horizontal top bar, the three steps sit in one equal-width row, with Workspace, Reference, Reset all, and the credit in a row beneath. Trimmed Step 1 copy (location sub, district-confirm hint, site-data prompt). <b>v1.10.3</b>: the site-intelligence Flood Risk row no longer wraps (label kept on one line, value and link text shortened); the Workspace / Reference menu carets stay on one line with their label and shrink at small screen sizes. <b>v1.10.2</b>: dropping or dragging the map pin now reverse-geocodes the spot and fills the Property address field (best-effort, needs internet). <b>v1.10.1</b>: Results page tightened. The diagnostics (Density Pool and Scarcity, Unit-Count Sensitivity, Cross-Check, Robustness) are now collapsed disclosures; robustness shows as a one-line badge in the decision box ("Survives ±20% adverse stress") with the table on expand. Value Density is reduced to two stat chips under the decision. The Suggested Counter-Package moved up to sit right after the ZOPA, as the most actionable element. No model change. <b>v1.10.0</b>: Step 1 simplified. Construction cost per unit is now a <b>direct field</b> (default from the specs), with parking, coastal, and market sub-type tucked into an "estimate cost and value from project specs" expander, and the $/SF cross-check behind an "enter as $/SF instead" toggle. Entering a cost overrides the multiplier estimate; the value-to-developer range then brackets that figure ±15%. With no cost entered the model is unchanged. <b>v1.9.0</b>: the wizard is now <b>three steps</b> (Project, Public benefits, Results). The separate Pool step is gone: <b>units remaining are read directly from the Allocation history ledger</b> rather than entered, and projected demand and planning horizon moved to Assumptions § J (a single islandwide pair, so the temporary-lodging demand default shifts from 14 to 11 per year, slightly changing the lodging pool value used). The pool pie, scarcity curve, and ledger readout now sit in a Density Pool and Scarcity card under Results diagnostics. <b>v1.8.1</b>: nav credit simplified to "TBRPC Civic Tech" with a small mark; no model change. <b>v1.8.0</b> (methodology): a benefit line with <b>no enforceability instrument named is now treated as unsecured</b> and credited at the §I unsecured factor (default 40%) rather than 100%, so full credit requires affirmatively naming an instrument (this lowers offered value on older scenarios that left it blank, by design). The 100%-above-code chip now fires only on benefits flagged with a <b>code minimum</b> (a per-benefit, editable flag on the Benefit library; seeded on for landscaping, parking, streetscape, and seawall pending coastal-code review, off for workforce housing, easements, art, slips, and cash). A package <b>open-questions summary</b> (unsecured, 100%-above-a-code-minimum, escalation violations) sits above the totals, mirrors near the decision and on the printout, and each item jumps to its line. The decision gained two guards: an <b>incomplete</b> state when no use or market is set, and a <b>fair-share capture gate</b> that flags a floor-clearing, feasible offer that still captures below the target band; the decision also cautions when a material share of value is unsecured. <b>v1.7.2</b>: Benefits step redesigned, each benefit is now a bordered card with one input row, a single meta row (recurring, secured-by, derivation), and the warnings as compact pills (full text on hover) instead of full-width banners; Notes/Source shrink to one line and expand on focus; the value ratio is a labeled pill and delete is an explicit icon button; the intro prose folded into a "How lines are counted" disclosure. Added a third brand tone #c4dcde (table section headers, text selection); remaining black buttons recolored to the brand. Copy-only chip wording (no model change). <b>v1.7.1</b>: palette refresh, brand color #27576a (buttons, the context bar, the public / city charts) and accent #df9b49 (the developer charts and highlights); no model change. <b>v1.7.0</b>: added a <b>counter-package solver</b> on Results, it proposes the most plain-value-efficient library benefits sized to clear the break-even floor within the developer budget (enforceability assumed at condition-of-approval) and can load the package onto the Benefits step; the ZOPA chart now shows an empty state instead of stacked $0 labels before a deal is entered; the Step 1 map is layered below the sticky header so it no longer paints over it; Workspace menu group ordered above Reference. <b>v1.6.1</b>: header and deal-context strip combined into one sticky block (no overlap on scroll); the current step is remembered across a page refresh when served as a hosted page; the readout info glyph removed in favor of a dotted underline; menu caret enlarged. <b>v1.6.0</b>: "lawful mitigation baseline" renamed "break-even floor" (legal term retained in the derivation and methods note); component labels renamed (Pool value used, Impact offset) and plain-terms definitions rewritten; the % above code guard disambiguated from the floor; Results page reworked (decision shown as a color pill folding in the robustness one-liner, action bar moved below the numbers, cards reordered to ZOPA then value-split then ranked benefits and explorer, with diagnostics grouped below); a persistent deal-context strip (district, use, bonus, pool remaining) on every step; aux toolbar grouped into collapsible Reference and Workspace umbrellas (default collapsed); a two-color semantic palette (teal public, warm developer); Step 1 reordered to lead with location; the Pool step now shows the allocation ledger; supporting-framework section set to coming soon; body and small-text sizes bumped. <b>v1.5.0</b>: each benefit can name the instrument that secures it (recorded covenant, development agreement, bond, condition of approval, letter of intent, none), applying an enforceability credit to its public value in both the decision and the ranking; an unspecified instrument credits at 100% but is flagged; factors are editable in new Assumptions § I. <b>v1.4.0</b>: benefits can be marked recurring (annual), valued as the present value of a growing annuity over a term (new Assumptions § H: discount rate, escalation rate, default term); the escalation-below-discount rule is enforced with a flag on the line; recurring lines are marked on the printout. <b>v1.3.0</b>: lodging value now varies by Market Sub-Type, the income approach uses a Gulf-front resort ADR or an inland / mid-market ADR (blended when no sub-type is chosen) instead of one islandwide rate; §G splits ADR into two sourced rows. <b>v1.2.2</b>: editorial pass, removed em-dashes from the interface copy (replaced with commas, colons, or rephrasing); no model or methodology change. <b>v1.2.1</b>: value-to-developer described as a cost-driven range in the Methods card (feasibility on the conservative low end, high end the negotiation target); robustness card states the ±20% stresses the midpoint, not the conservative decision basis; loading an older-version scenario now warns that figures recompute under current methodology; un-sourced Assumptions/Library rows flagged as uncalibrated placeholders (carried onto the PDF); a warning chip when a benefit line sits at 100% above code; lodging ADR annotated as a blended islandwide rate; lock/enable-editing banners moved to the bottom of the editable tables. <b>v1.2</b>: lodging income approach (value per key = ADR × occ × ancillary × EBITDA ÷ cap); cost-driven value-to-developer range with the feasibility decision run on the conservative (low) end and the high end shown as the negotiation target. <b>v1.1</b>: decision moved to plain dollars; category multipliers demoted to ranking only; "city minimum" renamed "lawful mitigation baseline." <b>v1.0</b>: initial sketch model. A scenario or PDF produced under an earlier version is identifiable by its stamp; a changed decision between versions reflects a deliberate methodology fix, not a contradiction.</p>
+        <p class="lede" style="margin:8px 0 0"><b>Sources &amp; benchmarks.</b> Benchmark figures trace to published sources, cited per row on the Assumptions and Benefit-library pages: construction cost <b>RSMeans</b> / <b>ICC</b>; lodging <b>STR / HVS</b>; soft costs and margin <b>ULI / CBRE</b>; condo comps <b>Redfin</b>; benefit unit costs from <b>SFRPC</b>, <b>FEMA</b>, <b>FDEP</b>, <b>FHWA</b>, <b>WGI</b>, <b>Forward Pinellas</b>, <b>UF Shimberg</b>, and <b>HUD</b>. Value-layer multipliers draw on <b>NIBS</b> (resilience), <b>GASB 34 / FHWA</b> (lifecycle), <b>FL Stat. 255.20</b>, and <b>BEA / RIMS II</b>.</p>
+      </div>
       </div>
     </section>
 
@@ -732,7 +736,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
       <button class="btn auxback" style="margin-bottom:14px">← Back</button>
       <div class="eyebrow">Ledger</div>
       <h2 class="step-h">Allocation History</h2>
-      <p class="lede">Every conditional-use permit that drew from the density pool. Approved allocations reduce the remaining pool, which drives the scarcity cost shown on the Results page. Add a row per decision and keep it current.</p>
+      <p class="lede">Every conditional-use permit that drew from the pool. Approved allocations reduce the remaining pool and drive the scarcity cost on Results. Add a row per decision.</p>
       <div id="aux-history"></div>
     </section>
 
@@ -740,7 +744,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
       <button class="btn auxback" style="margin-bottom:14px">← Back</button>
       <div class="eyebrow">Compare</div>
       <h2 class="step-h">Saved Scenarios</h2>
-      <p class="lede">Snapshot the current inputs and results, then compare alternatives side by side. The figures in this table are <b>frozen</b> at save time under the methodology version shown on each row. <b>Loading</b> a snapshot replaces the current inputs and <b>re-evaluates the decision under the current methodology</b>, so a scenario saved under an older version may read differently once loaded. That's intentional: the live decision always reflects today's methodology.</p>
+      <p class="lede">Snapshot inputs and results and compare side by side. Figures are <b>frozen</b> at save time under the version shown per row. <b>Loading</b> replaces the current inputs and re-evaluates under today's methodology, so an older snapshot may read differently, by design.</p>
       <div id="aux-scenarios"></div>
     </section>
 
@@ -763,7 +767,12 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 
 <script>
 "use strict";
-const VERSION="1.14.0", VERSION_DATE="2026-06-29";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
+const VERSION="1.15.0", VERSION_DATE="2026-06-29";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
+/* Staff-review holds (restorable: flip to false). SIMPLE_BENEFITS hides the recurring + enforceability
+   controls on the Benefits step and counts every benefit at full credit (no haircut). HIDE_NOTES_SOURCE
+   blanks the Notes/Source columns on the Assumptions + Benefit-library pages at runtime; the underlying
+   text stays in the code so it can be confirmed and restored later. */
+const SIMPLE_BENEFITS=true, HIDE_NOTES_SOURCE=true;
 const K={hardCondo:237500,hardHotel:170000,soft:0.24,margin:0.15,decline:0.80,impact:3146,sales:0.06,scarExp:1.6};
 const CATMULT={"Workforce Housing":1.4,"Community Development":1.5,"Transportation":1.7,"Environmental":2.0,"Resilience":2.5,"Monetary / Cash":1.0};
 const BMULT={"Low-rise (1-3)":1.0,"Mid-rise (4-7)":1.15,"High-rise (8+)":1.35};
@@ -868,7 +877,11 @@ const CATS_ORDER=["Resilience","Community Development","Transportation","Workfor
    Workforce housing is OFF (no SPB inclusionary requirement; it is a voluntary §4.12(d) benefit).
    Seawall is ON pending verification against the SPB LDC coastal provisions (bulkhead upkeep may be code-required). */
 const CODEMIN_ON=["Seawall / bulkhead","Tree canopy planting (above code)","Streetscape / hardscape (above code)","Structured public parking","Surface public parking"];
-const LIBCAL=LIB.map(r=>({devLow:r[3],devHigh:r[3],devOv:null,cityLow:r[4],cityHigh:r[4],cityOv:null,note:"",source:"",codeMin:CODEMIN_ON.indexOf(r[0])>-1}));
+/* Seed a ±25% sketch range around each catalog point value so Low and High differ; the midpoint
+   equals the prior single default (so the model/worked figures are unchanged), and LIBSEED rows below
+   override with calibrated ranges where they exist. Uniform band pending per-benefit local cost data. */
+const LIB_BAND=0.25;
+const LIBCAL=LIB.map(r=>({devLow:Math.round(r[3]*(1-LIB_BAND)),devHigh:Math.round(r[3]*(1+LIB_BAND)),devOv:null,cityLow:Math.round(r[4]*(1-LIB_BAND)),cityHigh:Math.round(r[4]*(1+LIB_BAND)),cityOv:null,note:"",source:"",codeMin:CODEMIN_ON.indexOf(r[0])>-1}));
 function libCodeMin(name){const i=libIndexOf(name);return (i>=0&&LIBCAL[i])?!!LIBCAL[i].codeMin:false;}
 /* dynamic lookup, LIB grows when users add custom benefits, so don't freeze an index map */
 function libIndexOf(name){for(let i=0;i<LIB.length;i++){if(LIB[i][0]===name)return i;}return -1;}
@@ -995,15 +1008,15 @@ const ASSUMP=[
  {sec:"C. Construction cost multipliers",label:"Parking, surface / included",unit:"×",low:1.00,high:1.00,override:null,notes:"",fmt:"x",apply:v=>PMULT.surface=v},
  {sec:"C. Construction cost multipliers",label:"Parking, podium",unit:"×",low:1.08,high:1.16,override:null,notes:"",fmt:"x",apply:v=>PMULT.podium=v},
  {sec:"C. Construction cost multipliers",label:"Parking, structured deck",unit:"×",low:1.14,high:1.22,override:null,notes:"",fmt:"x",apply:v=>PMULT.structured=v},
- {sec:"C. Construction cost multipliers",label:"Coastal, standard (AE)",unit:"×",low:1.00,high:1.00,override:null,notes:"base coastal construction",fmt:"x",apply:v=>FMULT.AE=v},
- {sec:"C. Construction cost multipliers",label:"Coastal, velocity / elevated (VE)",unit:"×",low:1.04,high:1.12,override:null,notes:"elevation / floodproofing premium",fmt:"x",apply:v=>FMULT.VE=v},
+ {sec:"C. Construction cost multipliers",label:"Coastal, standard (AE)",unit:"×",low:1.00,high:1.00,override:null,notes:"Base coastal construction",fmt:"x",apply:v=>FMULT.AE=v},
+ {sec:"C. Construction cost multipliers",label:"Coastal, velocity / elevated (VE)",unit:"×",low:1.04,high:1.12,override:null,notes:"Elevation / floodproofing premium",fmt:"x",apply:v=>FMULT.VE=v},
  {sec:"C. Construction cost multipliers",label:"Coastal, minimal (X)",unit:"×",low:0.95,high:0.99,override:null,notes:"",fmt:"x",apply:v=>FMULT.X=v},
- {sec:"D. Public-value multipliers (by category)",label:"Workforce housing",unit:"×",low:1.2,high:1.6,override:null,notes:"adopted housing priority Calibrate from: City Commission adopted priorities; resilience multiplier should be replaced by a project-specific FEMA-style benefit-cost ratio where one exists.",fmt:"x",apply:v=>CATMULT["Workforce Housing"]=v},
- {sec:"D. Public-value multipliers (by category)",label:"Community development",unit:"×",low:1.3,high:1.7,override:null,notes:"placemaking / public access Calibrate from: City Commission adopted priorities; resilience multiplier should be replaced by a project-specific FEMA-style benefit-cost ratio where one exists.",fmt:"x",apply:v=>CATMULT["Community Development"]=v},
- {sec:"D. Public-value multipliers (by category)",label:"Transportation",unit:"×",low:1.5,high:1.9,override:null,notes:"mobility / concurrency relief Calibrate from: City Commission adopted priorities; resilience multiplier should be replaced by a project-specific FEMA-style benefit-cost ratio where one exists.",fmt:"x",apply:v=>CATMULT["Transportation"]=v},
- {sec:"D. Public-value multipliers (by category)",label:"Environmental",unit:"×",low:1.7,high:2.3,override:null,notes:"ecosystem / stormwater services Calibrate from: City Commission adopted priorities; resilience multiplier should be replaced by a project-specific FEMA-style benefit-cost ratio where one exists.",fmt:"x",apply:v=>CATMULT["Environmental"]=v},
+ {sec:"D. Public-value multipliers (by category)",label:"Workforce housing",unit:"×",low:1.2,high:1.6,override:null,notes:"Adopted housing priority Calibrate from: City Commission adopted priorities; resilience multiplier should be replaced by a project-specific FEMA-style benefit-cost ratio where one exists.",fmt:"x",apply:v=>CATMULT["Workforce Housing"]=v},
+ {sec:"D. Public-value multipliers (by category)",label:"Community development",unit:"×",low:1.3,high:1.7,override:null,notes:"Placemaking / public access Calibrate from: City Commission adopted priorities; resilience multiplier should be replaced by a project-specific FEMA-style benefit-cost ratio where one exists.",fmt:"x",apply:v=>CATMULT["Community Development"]=v},
+ {sec:"D. Public-value multipliers (by category)",label:"Transportation",unit:"×",low:1.5,high:1.9,override:null,notes:"Mobility / concurrency relief Calibrate from: City Commission adopted priorities; resilience multiplier should be replaced by a project-specific FEMA-style benefit-cost ratio where one exists.",fmt:"x",apply:v=>CATMULT["Transportation"]=v},
+ {sec:"D. Public-value multipliers (by category)",label:"Environmental",unit:"×",low:1.7,high:2.3,override:null,notes:"Ecosystem / stormwater services Calibrate from: City Commission adopted priorities; resilience multiplier should be replaced by a project-specific FEMA-style benefit-cost ratio where one exists.",fmt:"x",apply:v=>CATMULT["Environmental"]=v},
  {sec:"D. Public-value multipliers (by category)",label:"Resilience",unit:"×",low:2.0,high:3.0,override:null,notes:"NIBS avoided-loss BCR; replace with a project BCA Calibrate from: City Commission adopted priorities; resilience multiplier should be replaced by a project-specific FEMA-style benefit-cost ratio where one exists.",fmt:"x",apply:v=>CATMULT["Resilience"]=v},
- {sec:"D. Public-value multipliers (by category)",label:"Monetary / cash",unit:"×",low:1.0,high:1.0,override:null,notes:"a dollar is a dollar Calibrate from: City Commission adopted priorities; resilience multiplier should be replaced by a project-specific FEMA-style benefit-cost ratio where one exists.",fmt:"x",apply:v=>CATMULT["Monetary / Cash"]=v},
+ {sec:"D. Public-value multipliers (by category)",label:"Monetary / cash",unit:"×",low:1.0,high:1.0,override:null,notes:"A dollar is a dollar Calibrate from: City Commission adopted priorities; resilience multiplier should be replaced by a project-specific FEMA-style benefit-cost ratio where one exists.",fmt:"x",apply:v=>CATMULT["Monetary / Cash"]=v},
  {sec:"E. Impact mitigation ($/unit by use)",label:"Condominium",unit:"$/unit",low:2091,high:4200,override:null,notes:"Re-anchored to VERIFIED adopted fees (v1.14.0). LOW = the actual adopted impact-fee burden on a new condo: Pinellas County Multimodal Impact Fee $1,248/unit (Code §150-40 Sch. A, Ord. 19-15) + St. Pete Beach parks/rec impact fee $843/unit (Ord. 2022-04) = $2,091. Pinellas levies NO school/parks/fire/library impact fee (schools funded by millage). HIGH = a flagged placeholder for the units' full proportionate-share impact cost (analyst overlay, set above the adopted floor since FL adopted fees recover only part of calculated cost); replace with a Pinellas concurrency/impact study. Applied midpoint drives the model.",fmt:"$",apply:v=>IMPACT_BY_USE["Condominium"]=v},
  {sec:"E. Impact mitigation ($/unit by use)",label:"Multifamily rental",unit:"$/unit",low:2263,high:4500,override:null,notes:"Re-anchored to VERIFIED adopted fees (v1.14.0). LOW = Pinellas Multimodal $1,420/unit (Code §150-40 Sch. A) + St. Pete Beach parks/rec $843/unit (Ord. 2022-04) = $2,263. No county school/parks/fire impact fee. HIGH = flagged proportionate-share full-cost placeholder (analyst overlay; replace with a concurrency study). Applied midpoint drives the model.",fmt:"$",apply:v=>IMPACT_BY_USE["Multifamily Rental"]=v},
  {sec:"E. Impact mitigation ($/unit by use)",label:"Temporary lodging",unit:"$/key",low:1604,high:3200,override:null,notes:"Re-anchored to VERIFIED adopted fees (v1.14.0). LOW = Pinellas Multimodal Impact Fee $1,604/room (Code §150-40 Sch. A, Hotel use). The SPB parks/rec fee is residential-only and exempts lodging; Pinellas has no other lodging impact fee. HIGH = flagged proportionate-share placeholder (analyst overlay; lodging generates fewer trips and no school demand). Applied midpoint drives the model.",fmt:"$",apply:v=>IMPACT_BY_USE["Temporary Lodging"]=v},
@@ -1082,6 +1095,7 @@ ASSUMP.forEach(r=>{if(r.source===undefined)r.source="";});
   "Letter of intent / unsecured promise":"Analyst judgment (instrument enforceability)",
   "No instrument / unspecified":"Analyst judgment (instrument enforceability)"};
   ASSUMP.forEach(r=>{if(seed[r.label])r.source=seed[r.label];});})();
+if(HIDE_NOTES_SOURCE){ASSUMP.forEach(r=>{r.notes="";r.source="";});LIBCAL.forEach(c=>{c.note="";c.source="";});}
 const DEF_ASSUMP=ASSUMP.map(r=>({low:r.low,high:r.high,override:r.override}));
 const DEFAULTS=JSON.parse(JSON.stringify(S));
 const DEF_K=JSON.parse(JSON.stringify(K)),DEF_CAT=JSON.parse(JSON.stringify(CATMULT)),DEF_B=JSON.parse(JSON.stringify(BMULT)),DEF_P=JSON.parse(JSON.stringify(PMULT)),DEF_F=JSON.parse(JSON.stringify(FMULT)),DEF_IMP=JSON.parse(JSON.stringify(IMPACT_BY_USE));
@@ -1165,11 +1179,11 @@ function compute(){
     const pvf=recurring?pvFactor(PVD.esc,PVD.disc,term):1;   // one-time benefits use a factor of 1
     const annualDev=b.qty*devU*b.pct, annualCity=b.qty*cityU*b.pct;  // for recurring, these are per-year amounts
     const instr=b.instr||"";
-    const unsecured=!instr;                      // no instrument named -> treated as unsecured
-    const hc=unsecured?ENFORCE.none:enforceFactor(instr);   // unspecified defaults to the unsecured (§I) factor, not 100%
+    const unsecured=SIMPLE_BENEFITS?false:!instr;                      // no instrument named -> treated as unsecured
+    const hc=SIMPLE_BENEFITS?1:(unsecured?ENFORCE.none:enforceFactor(instr));   // SIMPLE_BENEFITS: full credit, enforceability haircut disabled
     const codeMin=libCodeMin(b.name);            // does code set a baseline for this benefit?
-    const aboveCodeFlag=(b.pct>=1)&&codeMin;     // 100% above code only flags where a code minimum exists
-    const escViol=recurring&&!recurringGuardOK();
+    const aboveCodeFlag=SIMPLE_BENEFITS?false:((b.pct>=1)&&codeMin);     // 100% above code only flags where a code minimum exists
+    const escViol=SIMPLE_BENEFITS?false:(recurring&&!recurringGuardOK());
     const devCost=annualDev*pvf;                // developer cost is never haircut
     const cityPlain=annualCity*pvf*hc;          // plain-dollar city value the city can count on → the decision basis
     const cityVal=cityPlain*mult;                // priority-weighted value → ranking only, never pass/fail (also haircut)
@@ -1212,9 +1226,9 @@ STEPS.forEach((t,i)=>{const b=document.createElement("button");b.className="step
 stepnav.appendChild(stepbtns);
 const navfoot=document.createElement("div");navfoot.className="navfoot";
 navfoot.innerHTML='<div class="navgrp" data-grp="work"><button class="navgrp-h" data-navtoggle="1"><span class="navcaret">▸</span> Workspace</button><div class="navgrp-body">'+
-  '<button id="openassume">Assumptions</button><button id="openhistory">Allocation history</button><button id="openscenarios">Saved scenarios</button></div></div>'+
+  '<button id="openassume">Assumptions</button><button id="openhistory">Allocation history</button><button id="openlibrary">Benefit library</button><button id="openscenarios">Saved scenarios</button></div></div>'+
   '<div class="navgrp" data-grp="ref"><button class="navgrp-h" data-navtoggle="1"><span class="navcaret">▸</span> Reference</button><div class="navgrp-body">'+
-  '<button id="openmethod">Method</button><button id="opencases">Case studies</button><button id="openlibrary">Benefit library</button></div></div>'+
+  '<button id="openmethod">User Guide</button><button id="opencases">Case studies</button></div></div>'+
   '<button id="resetall" class="rst">Reset all</button>'+
   '<div class="navcredit"><span class="ct-mark" aria-hidden="true">&lt;/&gt;</span> <a href="https://www.tbrpc.org" target="_blank" rel="noopener">TBRPC Civic Tech</a> <span class="navver">v'+VERSION+'</span></div>';
 stepnav.appendChild(navfoot);
@@ -1413,6 +1427,7 @@ function render(){
         '<div><div class="inp-lab">Notes</div><textarea data-i="'+i+'" data-f="note" placeholder="(library default)" aria-label="'+esc(x.name)+', notes">'+esc(nVal)+'</textarea></div>'+
         '<div><div class="inp-lab">Source</div><textarea data-i="'+i+'" data-f="source" placeholder="(library default)" aria-label="'+esc(x.name)+', source">'+esc(sVal)+'</textarea></div>'+
       '</div>'+
+      (SIMPLE_BENEFITS?'':(
       '<div class="bmeta">'+
         '<label class="brecur-lab"><input type="checkbox" data-i="'+i+'" data-f="recurring"'+(x.recurring?" checked":"")+'> Recurring</label>'+
         '<span class="bsec"><label for="binstr'+i+'">Secured by</label> <select id="binstr'+i+'" class="binstr" data-i="'+i+'" data-f="instr"><option value=""'+(x.instr?"":" selected")+'>Not specified (unsecured, '+Math.round(ENFORCE.none*100)+'% credit)</option>'+
@@ -1421,7 +1436,7 @@ function render(){
         '<span class="deriv">'+derivTxt+'</span>'+
       '</div>'+
       (x.recurring?'<div class="bmeta-sub">$/unit treated as <b>per-year</b> · term <input type="number" class="bterm" min="1" data-i="'+i+'" data-f="term" value="'+(x.term||PVD.term)+'"> yrs · PV factor '+x.pvf.toFixed(1)+'× (disc '+(PVD.disc*100).toFixed(1)+'%, esc '+(PVD.esc*100).toFixed(1)+'%)</div>':"")+
-      '<div class="bchips">'+chips+'</div>';
+      '<div class="bchips">'+chips+'</div>'));
     bl.appendChild(row);
   });
     bl.querySelectorAll("input,textarea").forEach(inp=>{
@@ -1528,7 +1543,7 @@ function drawXCheck(m){
   if(constCost<=0){note.innerHTML="Enter bonus units and an average unit size on Step 1 to compute the bonus-unit construction cost.";return;}
   const meets=m.A>=tampaFloor-1e-6;
   const tag=meets?'<b style="color:var(--pass)">at or above</b>':'<b style="color:var(--warn)">below</b>';
-  note.innerHTML="The package is "+tag+" the Tampa "+ratio+":1 floor of <b>"+fmt(tampaFloor)+"</b>, and returns <b>"+(Math.round(pct*10)/10)+"%</b> of the bonus units’ construction cost in public benefit. For scale, SPB staff tabulated this from 10% (~"+fmt(constCost*0.10)+") to 40% (~"+fmt(constCost*0.40)+"); on Corey Landings the applicant’s ~$3.0M package was ≈ 21–22%. "+'<span class="anote">Reference only, the decision above uses the ZOPA / city-minimum model, not this ratio.</span>';
+  note.innerHTML="The package is "+tag+" the Tampa "+ratio+":1 floor of <b>"+fmt(tampaFloor)+"</b>, returning <b>"+(Math.round(pct*10)/10)+"%</b> of the bonus units’ construction cost in public benefit. SPB staff tabulated 10% (~"+fmt(constCost*0.10)+") to 40% (~"+fmt(constCost*0.40)+"); Corey Landings’ ~$3.0M package was ≈21–22%. "+'<span class="anote">Reference only; the decision above uses the ZOPA / city-minimum model, not this ratio.</span>';
 }
 
 function verdictObj(m){
@@ -1539,28 +1554,28 @@ function verdictObj(m){
      lodging within its own district cap by conditional use (no pool draw, different legal posture),
      so the pool framework (floor, scarcity, ZOPA) does not apply. */
   if(S.pathway==="LR District Ramp") return {tag:"Out of scope",bg:C.neu[0],fg:C.neu[1],light:"#9aa3a8",status:"Out of scope (LR district cap)",tip:"Large Resort density additions are within the district's own cap, not a pool draw; this tool evaluates pool allocations only.",head:"Large Resort, outside this tool's scope",
-    body:"This parcel is in the Large Resort district. Added lodging density here is allowed by conditional use within the district's own cap (LDC Div. 35), not as a draw from the RU or TLU density pools, so the pool valuation framework in this tool (break-even floor, scarcity cost, agreement zone) does not apply. Evaluate the request under the LR district standards directly."};
+    body:"Large Resort lodging is allowed by conditional use within the district's own cap (LDC Div. 35), not a draw from the RU or TLU pools, so this tool's pool framework does not apply. Evaluate it under the LR district standards directly."};
   /* Deep scarcity: when the scarcity-adjusted floor exceeds the developer ceiling, no realistic
      package can close the gap. Report it as Hold (the pool's option value beats this request)
      rather than the misleading "renegotiate" path. Fires before everything else so it is robust to
      whether a package is entered; guarded to the pool pathway with a defined ceiling. */
   if(m.poolPath && m.zCeil>0 && m.cityMin>m.zCeil) return {tag:"Hold",bg:C.bad[0],fg:C.bad[1],light:"#c0392b",status:"Recommend deferring allocation",tip:"At this level of pool depletion the option value of the remaining units exceeds what this project can pay. No realistic package clears the floor.",head:"Pool too depleted, recommend holding the units",
-    body:capPre+"With "+S.rem+" units remaining, the scarcity-adjusted break-even floor ("+fmt(m.cityMin)+") exceeds even a full-budget package against the conservative value to the developer ("+fmt(m.zCeil)+"). The model's reading: the option value of holding the remaining pool units for a future, higher-value use exceeds anything this request can return. Deny or defer, or treat any allocation as an explicitly extraordinary decision outside this model."+unsecuredNote};
+    body:capPre+"With "+S.rem+" units remaining, the scarcity-adjusted break-even floor ("+fmt(m.cityMin)+") exceeds a full-budget package against the conservative value to the developer ("+fmt(m.zCeil)+"). Holding the remaining pool units for a future, higher-value use is worth more than this request can return. Deny or defer, or treat any allocation as an extraordinary decision outside this model."+unsecuredNote};
   /* Structural no-zone off the pool pathway: the impact offset alone exceeds the developer ceiling,
      so even an all-cash (1x) package cannot clear the floor within the developer's budget. */
   if(!m.poolPath && m.zCeil>0 && m.cityMin>m.zCeil) return {tag:"No zone",bg:C.bad[0],fg:C.bad[1],light:"#c0392b",status:"No agreement zone",tip:"The lawful impact offset alone exceeds what the bonus is worth to the developer; no package closes the gap.",head:"No agreement zone, floor exceeds the developer ceiling",
-    body:capPre+"The break-even floor ("+fmt(m.cityMin)+", here the impact offset alone since no pool draw applies) exceeds the conservative value of the bonus to the developer ("+fmt(m.zCeil)+"). Even an all-cash package within the developer's budget cannot clear it. Deny, restructure the request, or revisit the impact figure if it is miscalibrated."+unsecuredNote};
+    body:capPre+"The break-even floor ("+fmt(m.cityMin)+", the impact offset alone since no pool draw applies) exceeds the conservative value of the bonus to the developer ("+fmt(m.zCeil)+"). Even an all-cash package can't clear it. Deny, restructure, or revisit the impact figure if miscalibrated."+unsecuredNote};
   if(m.A===0 && m.Bplain===0) return {tag:"No offer yet",bg:C.neu[0],fg:C.neu[1],light:"#9aa3a8",status:"No offer yet",tip:"Add public benefits on the Benefits step to evaluate the request.",head:"No offer entered yet",
-    body:capPre+"No public benefits have been entered, so there is nothing to evaluate against the break-even floor. For this request the break-even floor is "+fmt(m.cityMin)+" ("+(m.D>0?("pool value used "+fmt(m.D)+" + "):"")+"impact mitigation "+fmt(m.I)+"), and the bonus is worth up to "+fmt(m.V)+" to the developer. Add benefits on the Benefits step to test an offer against that minimum."};
+    body:capPre+"No benefits entered yet. The break-even floor is "+fmt(m.cityMin)+" ("+(m.D>0?("pool value used "+fmt(m.D)+" + "):"")+"impact mitigation "+fmt(m.I)+"), and the bonus is worth up to "+fmt(m.V)+" to the developer. Add benefits on the Benefits step to test an offer against that floor."};
   if(!(m.zCeil>0)) return {tag:"Incomplete",bg:C.neu[0],fg:C.neu[1],light:"#9aa3a8",status:"Incomplete inputs",tip:"Set a use type and market value on Step 1 so the value to developer and the break-even floor are defined.",head:"Incomplete, set the project basics first",
-    body:capPre+"A benefit package is entered, but without a use type and market value the value to the developer (the ceiling) and the break-even floor are not yet defined, so feasibility cannot be judged. Set them on Step 1."+unsecuredNote};
+    body:capPre+"A package is entered, but without a use type and market value the ceiling and break-even floor are not yet defined, so feasibility can't be judged. Set them on Step 1."+unsecuredNote};
   if(m.worth && m.feas){const gated=m.belowCapture;
     return {tag:"Favorable",bg:C.ok[0],fg:C.ok[1],light:gated?"#d9a400":"#1f9d57",status:gated?"Favorable, below fair-share":"Viable",tip:"Meets the break-even floor and fits within the developer’s budget.",head:gated?"Favorable, but below the fair-share target":"Favorable",
-    body:capPre+"Offered public value ("+fmt(m.Bplain)+") meets the break-even floor ("+fmt(m.cityMin)+"). Package cost ("+fmt(m.A)+") is within the conservative value to the developer ("+fmt(m.Vlow)+"; the negotiation target runs up to "+fmt(m.Vhigh)+" if bonus units build cheaper than average). Unspent developer budget is "+fmt(Math.max(0,m.room))+". "+(gated?("This offer captures only "+Math.round(m.captureRate*100)+"% of the value to developer, below the fair-share target of "+Math.round(CAPTURE.capLo*100)+" to "+Math.round(CAPTURE.capHi*100)+"%; there is room to ask for more."):("The city may require only the impact-proportional amount ("+fmt(m.I)+") as a condition; benefit above that is voluntary incentive for the discretionary density."))+unsecuredNote};}
+    body:capPre+"Offered public value ("+fmt(m.Bplain)+") meets the break-even floor ("+fmt(m.cityMin)+"). Package cost ("+fmt(m.A)+") fits within the conservative value to the developer ("+fmt(m.Vlow)+"; negotiation target up to "+fmt(m.Vhigh)+"). Unspent budget "+fmt(Math.max(0,m.room))+". "+(gated?("This offer captures only "+Math.round(m.captureRate*100)+"% of the value to developer, below the "+Math.round(CAPTURE.capLo*100)+" to "+Math.round(CAPTURE.capHi*100)+"% fair-share target; there is room to ask for more."):("The city may require only the impact-proportional amount ("+fmt(m.I)+") as a condition; benefit above that is voluntary incentive for the discretionary density."))+unsecuredNote};}
   if(!m.worth && m.room>0) return {tag:"Below minimum",bg:C.warn[0],fg:C.warn[1],light:"#d9a400",status:"Keep negotiating",tip:"Public value is below the break-even floor, but the developer still has budget room, add higher-ratio benefits to close the gap.",head:"Below break-even floor, renegotiate",
-    body:capPre+"Offered public value is short of the break-even floor by "+fmt(m.cityMin-m.Bplain)+", so as it stands the public is subsidizing the project. Developer budget room of "+fmt(m.room)+" remains, so the shortfall can be closed by adding higher value-to-cost benefits."+unsecuredNote};
+    body:capPre+"Offered public value is short of the break-even floor by "+fmt(m.cityMin-m.Bplain)+", so the public is subsidizing the project. "+fmt(m.room)+" of developer budget remains, so adding higher value-to-cost benefits can close it."+unsecuredNote};
   if(!m.feas) return {tag:"Over budget",bg:C.bad[0],fg:C.bad[1],light:"#c0392b",status:"Stalled",tip:"The package costs more than the bonus is worth to the developer; they would build by-right. Trim the package or grant more units.",head:"Package exceeds developer budget",
-    body:"Package cost ("+fmt(m.A)+") exceeds the conservative value to the developer ("+fmt(m.Vlow)+"; even the high-end estimate is "+fmt(m.Vhigh)+"). The applicant would build by-right instead. Reduce the package or increase the unit allocation."};
+    body:"Package cost ("+fmt(m.A)+") exceeds the conservative value to the developer ("+fmt(m.Vlow)+"; even the high end is "+fmt(m.Vhigh)+"). The applicant would build by-right. Reduce the package or grant more units."};
   /* reachable only at A exactly = Vlow; retained as a safe fallback */
   return {tag:"No zone",bg:C.bad[0],fg:C.bad[1],light:"#c0392b",status:"No agreement zone",tip:"Even a minimal acceptable package costs more than the bonus is worth, deny or restructure.",head:"No agreement zone",
     body:"The minimum acceptable package costs more than the bonus is worth to the developer. Deny or restructure the request."};
@@ -2019,7 +2034,7 @@ function applyDistrict(key){
     const poolMsg=(d.pathway==="Pool Allocation")
       ?"Bonus units draw from the density pool, so a pool scarcity cost applies (shown on the Results page)."
       :((d.pathway==="LR District Ramp")
-        ?"Added density is within the district cap, not a pool draw. Out of scope for this tool, which evaluates RU and TLU pool allocations only."
+        ?""
         :"Increases require a comprehensive plan amendment; no density pool here.");
     drEl.innerHTML="<b>"+esc(d.label)+"</b>, "+esc(d.pathway)+". "+baseTxt+poolMsg+" "+ldcLink;
   }
@@ -2080,14 +2095,8 @@ function inCRA(lat,lon){return (typeof CRA_GEO!=="undefined"&&CRA_GEO)?CRA_GEO.f
 function fluAt(lat,lon){if(typeof FLU_GEO==="undefined"||!FLU_GEO)return null;const f=FLU_GEO.features.find(f=>pointInGeom(lon,lat,f.geometry));return f?f.properties.c:null;}
 function addCraLayers(map){
   try{
-    if(typeof FLU_GEO!=="undefined"&&FLU_GEO){
-      /* eligibility shading derived from the model: teal where the code's district draws from a pool, gray otherwise (so the map can never disagree with DISTRICTS) */
-      const fluInScope=c=>{const k=FLU_TO_DISTRICT[c],dd=k&&DISTRICTS[k];return !!(dd&&dd.pathway==="Pool Allocation");};
-      const flu=L.geoJSON(FLU_GEO,{renderer:L.canvas(),style:f=>fluInScope(f.properties.c)?{color:"#ffffff",weight:0.7,fillColor:"#27576a",fillOpacity:0.45}:{color:"#ffffff",weight:0.7,fillColor:"#b8b8b8",fillOpacity:0.32}});   // white parcel outlines so adjacent parcels stay distinct; teal vs neutral gray fill for eligibility
-      flu.addTo(map);
-      const lc=L.control({position:"topright"}); lc.onAdd=()=>{const d=L.DomUtil.create("div","flu-toggle");d.innerHTML='<label><input type="checkbox" checked id="flu-vis"> Parcels in CRA</label>';L.DomEvent.disableClickPropagation(d);d.querySelector("input").addEventListener("change",e=>{e.target.checked?flu.addTo(map):map.removeLayer(flu);});return d;}; lc.addTo(map);
-      const leg=L.control({position:"bottomright"}); leg.onAdd=()=>{const d=L.DomUtil.create("div","flu-legend");d.innerHTML='<div class="flu-lg"><span class="sw-city"></span>City boundary</div><div class="flu-lg"><span class="sw-cra"></span>CRA boundary</div><div class="flu-lg"><span class="sw" style="background:#27576a"></span>Pool district (in scope)</div><div class="flu-lg"><span class="sw" style="background:#9a9a9a"></span>Outside pool program</div>';L.DomEvent.disableScrollPropagation(d);return d;}; leg.addTo(map);
-    }
+    /* map legend: CRA + city boundaries only (per-parcel pool-eligibility shading removed) */
+    const leg=L.control({position:"bottomright"}); leg.onAdd=()=>{const d=L.DomUtil.create("div","flu-legend");d.innerHTML='<div class="flu-lg"><span class="sw-city"></span>City boundary</div><div class="flu-lg"><span class="sw-cra"></span>CRA boundary</div>';L.DomEvent.disableScrollPropagation(d);return d;}; leg.addTo(map);
     if(typeof SPB_GEO!=="undefined"&&SPB_GEO){
       L.geoJSON(SPB_GEO,{style:{color:"#14366e",weight:2,fill:false}}).addTo(map);
     }
@@ -2249,7 +2258,7 @@ function buildLibrary(){
         '<td class="r"><span class="aapplied" id="libcity-'+i+'">'+libApplDisp(i,"city")+'</span></td>'+
         '<td class="r">'+libfld(i,"cityOv",c.cityOv,"ov")+'</td>'+
         '<td class="tnote">'+libtxt(i,"note",c.note,"Notes")+'</td>'+
-        '<td class="tnote">'+libtxt(i,"source",c.source,"Source")+((c.source&&String(c.source).trim())?"":'<div class="nosrc">⚠ Uncalibrated, no cited source</div>')+'</td></tr>';
+        '<td class="tnote">'+libtxt(i,"source",c.source,"Source")+((HIDE_NOTES_SOURCE||(c.source&&String(c.source).trim()))?"":'<div class="nosrc">⚠ Uncalibrated, no cited source</div>')+'</td></tr>';
     });
     if(advUnlocked)h+='<tr class="libaddrow" data-cat="'+esc(cat)+'"><td colspan="8"><button class="alink" data-libadd="'+esc(cat)+'">+ Add custom benefit to '+cat+'</button></td></tr>';
   });
@@ -2344,7 +2353,7 @@ function buildAssumptions(){
       ? '<input type="text" class="asrc" data-i="'+i+'" data-col="notes" value="'+esc(r.notes||"")+'" placeholder="notes…" aria-label="'+esc(r.label)+', notes">'+implied
       : (esc(r.notes||"")+implied);
     const noSrc=!(r.source&&String(r.source).trim());
-    const srcFlag=noSrc?'<div class="nosrc">⚠ Uncalibrated, no cited source</div>':"";
+    const srcFlag=(noSrc&&!HIDE_NOTES_SOURCE)?'<div class="nosrc">⚠ Uncalibrated, no cited source</div>':"";
     const srcCell=(advUnlocked
       ? '<input type="text" class="asrc" data-i="'+i+'" data-col="source" value="'+esc(r.source||"")+'" placeholder="source…" aria-label="'+esc(r.label)+', source">'
       : esc(r.source||""))+srcFlag;
@@ -2466,9 +2475,9 @@ function buildPrintSheet(){
    '<table class="ps-meta"><tr><td><b>ZOPA floor</b><br>'+fmt(m.zFloor)+'</td><td><b>Ceiling (value to developer)</b><br>'+fmt(m.zCeil)+'</td><td><b>Unspent budget room</b><br>'+fmt(Math.max(0,m.room))+'</td></tr></table>'+
    '<div class="ps-robo"><b>Robustness (±20%):</b> '+roboNote(m).replace(/<\/?b>/g,"")+'</div>'+
    (function(){const f=fiscalFigures();return f.projTaxable>0?('<div class="ps-robo"><b>Fiscal snapshot (context only):</b> projected taxable value '+fmt(f.projTaxable)+(f.projPerAcre!=null?(' ('+fmt(f.projPerAcre)+' / acre)'):'')+', annual city tax '+fmt(f.annualTax)+' at '+(Math.round(f.mills*1000)/1000)+' mills; bonus-unit increment '+fmt(f.bonusIncrement)+'. Gross revenue, not net of service costs, and excluded from the decision.</div>'):'';})()+
-   (function(){const aN=ASSUMP.filter(r=>!(r.source&&String(r.source).trim())).length,lN=LIBCAL.filter(c=>c&&!(c.source&&String(c.source).trim())).length;return (aN||lN)?'<div class="ps-robo"><b>Calibration:</b> '+aN+' of '+ASSUMP.length+' model benchmarks and '+lN+' of '+LIBCAL.length+' benefit-library values carry no cited source and remain sketch-grade placeholders.</div>':'<div class="ps-robo"><b>Calibration:</b> all model benchmarks and benefit-library values carry a cited source.</div>';})()+
+   (function(){if(HIDE_NOTES_SOURCE)return"";const aN=ASSUMP.filter(r=>!(r.source&&String(r.source).trim())).length,lN=LIBCAL.filter(c=>c&&!(c.source&&String(c.source).trim())).length;return (aN||lN)?'<div class="ps-robo"><b>Calibration:</b> '+aN+' of '+ASSUMP.length+' model benchmarks and '+lN+' of '+LIBCAL.length+' benefit-library values carry no cited source and remain sketch-grade placeholders.</div>':'<div class="ps-robo"><b>Calibration:</b> all model benchmarks and benefit-library values carry a cited source.</div>';})()+
    '<div class="ps-signoff">'+
-     '<div>Assumptions as of '+(function(){try{return new Date().toLocaleDateString();}catch(e){return VERSION_DATE;}})()+'; scenario values frozen at save time. Sketch-grade analysis. See Method and Caveats. Not an appraisal, pro forma, or legal determination.</div>'+
+     '<div>Assumptions as of '+(function(){try{return new Date().toLocaleDateString();}catch(e){return VERSION_DATE;}})()+'; scenario values frozen at save time. Sketch-grade analysis. Not an appraisal, pro forma, or legal determination.</div>'+
      '<div class="ps-sign-rows"><div class="ps-sign">Prepared by (staff)<span class="ps-sign-line"></span>/ date<span class="ps-sign-dline"></span></div>'+
        '<div class="ps-sign">Reviewed by (planning director or designee)<span class="ps-sign-line"></span>/ date<span class="ps-sign-dline"></span></div></div>'+
    '</div>'+
@@ -2577,7 +2586,16 @@ const CASES=[{
   ],
   notes:"One-time City impact fees on this project were ≈ $5,300/unit (transportation $1,248 + parks $843 + sewer $3,216); the tool's default impact floor of $28,000/unit is a broader Koontz-nexus placeholder, editable under Assumptions. The benefit package loaded here is representative of the staff-report items that map cleanly to the library, refine quantities on the Benefits step.",
   state:{pname:"Corey Landings",papp:"KT Corey Ave LLC / Kolter (CUP 25069)",use:"Condominium",btype:"High-rise (8+)",subtype:"Gulf-front",parking:"structured",coastal:"AE",district:"TC2",acres:4.51,byright:108,bonus:25,market:2600000,mktSF:2269,impact:28000},
-  benefits:[{name:"Seawall / bulkhead",qty:103,pct:1},{name:"Public plaza / park",qty:24500,pct:1},{name:"Waterfront boardwalk / promenade",qty:600,pct:1},{name:"Public boat slip (Class A)",qty:4,pct:1}]
+  benefits:[{name:"Seawall / bulkhead",qty:103,pct:1},{name:"Public plaza / park",qty:24500,pct:1},{name:"Waterfront boardwalk / promenade",qty:600,pct:1},{name:"Public boat slip (Class A)",qty:4,pct:1}],
+  address:"64 Corey Avenue, Saint Pete Beach",
+  /* the real 5-parcel assembly (PINs in raw 18-digit form so dashPin renders the public number); areas sum to 3.49 ac. Marker lat/lon are approximate within the Corey Circle site. */
+  parcels:[
+    {pin:"153136000001400400",area:1.61,lat:27.74410,lon:-82.74575},
+    {pin:"153136000001400100",area:1.07,lat:27.74465,lon:-82.74540},
+    {pin:"153125780840000141",area:0.20,lat:27.74445,lon:-82.74560},
+    {pin:"153136306720630230",area:0.37,lat:27.74425,lon:-82.74585},
+    {pin:"153125780840000143",area:0.24,lat:27.74480,lon:-82.74545}
+  ]
 }];
 function buildCases(){
   let h='<p class="lede">Real, verified projects worked end-to-end. Load one to populate every input, then review the full breakdown, the four numbers, the ZOPA with its target-capture zone, and the value charts, and adjust it to explore alternatives. Loading replaces the current project inputs; the Assumptions and the allocation ledger are kept.</p>';
@@ -2620,9 +2638,27 @@ function loadCase(idx){
   applyDistrict(S.district);     // sets base / cap / pathway / use + dist-rules; honors the case district
   S.impact=c.state.impact;       // applyDistrict→syncUseDerived leaves impact alone, but be explicit
   buildAddSel();
+  loadCaseParcels(c);            // restore the project's parcels (multi-parcel) and the summed Site Area
   syncInputsFromState();
   render();
   goto(STEPS.length-1);          // jump to Results to show the worked outcome
+}
+function loadCaseParcels(c){
+  if(typeof clearParcels==="function")clearParcels();
+  multiMode=false;
+  const mpc=document.getElementById("multiparcel"), sif=document.getElementById("siteintel-field");
+  if(c.parcels&&c.parcels.length){
+    multiMode=true; if(mpc)mpc.checked=true; if(sif)sif.style.display="none";
+    c.parcels.forEach(function(p,k){
+      var mk=null;
+      if(map&&typeof L!=="undefined"){mk=L.circleMarker([p.lat,p.lon],{radius:10,color:"#27576a",weight:2,fillColor:"#86bcb6",fillOpacity:.85}).addTo(map).bindTooltip(String(k+1),{permanent:true,direction:"center",className:"parcel-num"});}
+      PARCELS.push({lat:p.lat,lon:p.lon,pin:p.pin,area:p.area,data:{parcelNo:dashPin(p.pin)},marker:mk});
+    });
+    applyParcelArea();
+    if(c.parcels[0])setPin(c.parcels[0].lat,c.parcels[0].lon);
+    var pa=document.getElementById("paddr"); if(pa)pa.value=c.address||"";
+    renderParcelList();
+  } else { if(mpc)mpc.checked=false; if(sif)sif.style.display=""; }
 }
 function buildScenarios(){
   let h='<div class="card"><div class="sub">'+(scenHosted?"Saved to this browser (localStorage). Browser storage can be cleared at any time and is not shared between machines, <b>the exported .json file is the durable copy</b>. Use Export to keep a file you can re-import later or share.":"Held in memory only, this is not a hosted page, so saved scenarios clear on reload. <b>The exported .json file is the durable copy</b>, use Export to save them to a file and Import to restore them.")+'</div>'+
