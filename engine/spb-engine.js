@@ -346,6 +346,60 @@
     };
   }
 
+  /**
+   * @typedef {Object} IncomeApproachParams
+   * @property {number} sizeSf      avg sellable/rentable area per unit (or gross per key)
+   * @property {number} condoPSF    for-sale price per sellable sf (condo)
+   * @property {number} rentPSFmo   monthly rent per rentable sf (rental)
+   * @property {number} vacancy     stabilized vacancy share of potential gross income (rental)
+   * @property {number} opex        operating-expense share of effective gross income (rental)
+   * @property {number} rentalCap   cap rate applied to rental NOI
+   * @property {number} adr         average daily rate per key (lodging)
+   * @property {number} occ         stabilized occupancy share (lodging)
+   * @property {number} ancillary   ancillary-revenue multiplier on room revenue (lodging)
+   * @property {number} ebitda      EBITDA / NOI margin (lodging)
+   * @property {number} hotelCap    cap rate applied to lodging NOI
+   */
+
+  /**
+   * Income / fundamentals approach to the VALUE PER UNIT — ported from Codebase A's
+   * pro forma (computeScenario GDV), expressed per unit so it can serve as an
+   * alternative anchor or cross-check to B's single entered market comparable.
+   *
+   *   condo  : sales comparison       value = sizeSf × condoPSF
+   *   rental : income capitalization  NOI = sizeSf × rent × 12 × (1−vacancy) × (1−opex); value = NOI ÷ cap
+   *   hotel  : income capitalization  NOI = ADR × 365 × occ × ancillary × EBITDA; value = NOI ÷ cap
+   *            (matches the tool's existing lodgeValuePerKey, a superset of A's ADR×occ×margin form)
+   *
+   * Pure: all inputs come from `p`. Returns the per-unit value, the per-unit NOI
+   * (0 for for-sale), a human label, and an itemized breakdown for display.
+   *
+   * @param {string} use  "Condominium" | "Multifamily Rental" | "Temporary Lodging" | ""
+   * @param {IncomeApproachParams} p
+   * @returns {{use:string, method:string, label:string, valuePerUnit:number, noiPerUnit:number, detail:Object}}
+   */
+  function incomeApproach(use, p) {
+    if (use === "Temporary Lodging") {
+      var roomRev = p.adr * 365 * p.occ;          // potential room revenue per key/yr
+      var hotelNoi = roomRev * p.ancillary * p.ebitda;
+      var keyValue = p.hotelCap > 0 ? hotelNoi / p.hotelCap : 0;
+      return { use: use, method: "income", label: "Income capitalization (lodging)", valuePerUnit: keyValue, noiPerUnit: hotelNoi,
+        detail: { roomRev: roomRev, ancillary: p.ancillary, ebitda: p.ebitda, cap: p.hotelCap, adr: p.adr, occ: p.occ } };
+    }
+    if (use === "Multifamily Rental") {
+      var pgi = p.sizeSf * p.rentPSFmo * 12;       // potential gross income per unit/yr
+      var egi = pgi * (1 - p.vacancy);             // effective gross income
+      var noi = egi * (1 - p.opex);                // net operating income
+      var unitValue = p.rentalCap > 0 ? noi / p.rentalCap : 0;
+      return { use: use, method: "income", label: "Income capitalization (rental)", valuePerUnit: unitValue, noiPerUnit: noi,
+        detail: { pgi: pgi, egi: egi, noi: noi, vacancy: p.vacancy, opex: p.opex, cap: p.rentalCap, rentPSFmo: p.rentPSFmo, sizeSf: p.sizeSf } };
+    }
+    // Condominium / any for-sale: sales comparison (A's condo GDV = sellable sf × $/sf).
+    var saleValue = p.sizeSf * p.condoPSF;
+    return { use: use, method: "sales", label: "Sales comparison (SF × $/SF)", valuePerUnit: saleValue, noiPerUnit: 0,
+      detail: { sizeSf: p.sizeSf, psf: p.condoPSF } };
+  }
+
   return {
     residualUnit: residualUnit,
     estHardUnit: estHardUnit,
@@ -355,6 +409,7 @@
     recurringGuardOK: recurringGuardOK,
     enforceFactor: enforceFactor,
     benefitRow: benefitRow,
-    computeModel: computeModel
+    computeModel: computeModel,
+    incomeApproach: incomeApproach
   };
 });

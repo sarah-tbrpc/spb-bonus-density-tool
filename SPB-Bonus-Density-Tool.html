@@ -728,6 +728,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
         <p class="lede" style="margin:0 0 8px"><b>What the code does <i>not</i> set.</b> No contribution rate, no benefit-valuation formula, no floor or ceiling; the only statutory weighting is Chapter 163 proportionate-share, the basis for the impact floor. The ZOPA bounds and the 15–25% / 25–50% guardrails are <b>analytic overlays, not adopted code</b>.</p>
         <p class="lede" style="margin:0"><b>Supporting framework.</b> <i>Coming soon.</i> A fuller write-up of the supporting framework (<i>A Framework for Density Bonus Valuation in St. Pete Beach</i>, Tampa Bay Regional Planning Council, April 2026) will appear here.</p>
         <p class="lede" style="margin:8px 0 0"><b>Sources &amp; benchmarks.</b> Benchmark figures trace to published sources, cited per row on the Assumptions and Benefit-library pages: construction cost <b>RSMeans</b> / <b>ICC</b>; lodging <b>STR / HVS</b>; soft costs and margin <b>ULI / CBRE</b>; condo comps <b>Redfin</b>; benefit unit costs from <b>SFRPC</b>, <b>FEMA</b>, <b>FDEP</b>, <b>FHWA</b>, <b>WGI</b>, <b>Forward Pinellas</b>, <b>UF Shimberg</b>, and <b>HUD</b>. Value-layer multipliers draw on <b>NIBS</b> (resilience), <b>GASB 34 / FHWA</b> (lifecycle), <b>FL Stat. 255.20</b>, and <b>BEA / RIMS II</b>.</p>
+        <p class="lede" style="margin:8px 0 0"><b>Value to developer (v1.16.0).</b> The bonus is valued from a per-unit market value run through a residual cost build-up. That market value can be entered directly as a sale comparable, or derived on Step 1 from an <b>income / fundamentals approach</b> shown as a cross-check with a one-click "use this": condominium = sellable SF × $/SF; multifamily rental = NOI ÷ cap rate (rent, vacancy, operating expense); lodging = ADR × occupancy × ancillary × EBITDA ÷ cap rate. (Rental previously borrowed the condo sale comp; the income approach now anchors it on its own operating economics.) Inputs are editable in Assumptions § B and § G. The core calculation now runs through a unit-tested engine module.</p>
       </div>
       </div>
     </section>
@@ -767,7 +768,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 
 <script>
 "use strict";
-const VERSION="1.15.0", VERSION_DATE="2026-06-29";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
+const VERSION="1.16.0", VERSION_DATE="2026-06-29";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
 /* Staff-review holds (restorable: flip to false). SIMPLE_BENEFITS hides the recurring + enforceability
    controls on the Benefits step and counts every benefit at full credit (no haircut). HIDE_NOTES_SOURCE
    blanks the Notes/Source columns on the Assumptions + Benefit-library pages at runtime; the underlying
@@ -971,9 +972,16 @@ const UNITSF={"Condominium":2250,"Multifamily Rental":900,"Temporary Lodging":75
 /* Lodging income approach (value per key), ADR × 365 × occupancy × ancillary × EBITDA margin ÷ cap rate.
    Pinellas barrier-island defaults; editable in Assumptions § G. Used to seed market value when use = Temporary Lodging. */
 const LODGE={adrGulf:410,adrInland:220,occ:0.70,ancillary:1.25,ebitda:0.30,cap:0.075};
+/* Income / sales approach to VALUE PER UNIT for condo & rental (ported from the A pro forma; lodging
+   already has its own income approach via LODGE above). Condo = avg SF × $/SF; rental = SF × rent ×
+   12 × (1−vacancy) × (1−opex) ÷ cap. Editable in Assumptions § B; surfaced on Step 1 as a cross-check
+   beside the entered market comp. National/sketch placeholders pending local calibration. */
+const INCOME={condoPSF:633,rentPSFmo:3.0,vacancy:0.07,opex:0.38,rentalCap:0.055};
 /* ADR is split by sub-type: Gulf-front resort vs inland / mid-market. With no sub-type chosen yet, use the blend of the two. */
 function lodgeADR(subtype){return (subtype==="Gulf-front")?LODGE.adrGulf:(subtype==="Inland/Non-front")?LODGE.adrInland:(LODGE.adrGulf+LODGE.adrInland)/2;}
-function lodgeValuePerKey(subtype){const adr=lodgeADR(subtype);return LODGE.cap>0?(adr*365*LODGE.occ*LODGE.ancillary*LODGE.ebitda)/LODGE.cap:0;}
+function lodgeValuePerKey(subtype){return SPBEngine.incomeApproach("Temporary Lodging",{adr:lodgeADR(subtype),occ:LODGE.occ,ancillary:LODGE.ancillary,ebitda:LODGE.ebitda,hotelCap:LODGE.cap}).valuePerUnit;}
+/* per-unit value from the income/sales approach for the CURRENT use (condo & rental); lodging uses lodgeValuePerKey */
+function incomeValueLive(){return SPBEngine.incomeApproach(S.use,{sizeSf:S.mktSF,condoPSF:INCOME.condoPSF,rentPSFmo:INCOME.rentPSFmo,vacancy:INCOME.vacancy,opex:INCOME.opex,rentalCap:INCOME.rentalCap,adr:lodgeADR(S.subtype),occ:LODGE.occ,ancillary:LODGE.ancillary,ebitda:LODGE.ebitda,hotelCap:LODGE.cap});}
 /* present value of a recurring (annual) benefit: growing annuity, payments at year-end, over n years.
    Guard: escalation should stay below the discount rate; if it does not, the model still returns a finite
    value over the finite term but flags it (recurringGuardOK), since a stream that grows faster than it is
@@ -1002,6 +1010,11 @@ const ASSUMP=[
  {sec:"B. Market valuations",label:"Avg unit size, condominium",unit:"SF",low:1900,high:2600,override:null,notes:"Average sellable unit size, used for the $/unit to $/SF bridge and the construction cross-check (not the decision). Luxury barrier-island for-sale; Corey Landings about 2,269 SF. Calibrate from: project plans; recent SPB condo comps. Editing this row re-seeds the live Step 1 size field when this use is selected.",fmt:"",apply:v=>UNITSF["Condominium"]=v},
  {sec:"B. Market valuations",label:"Avg unit size, multifamily rental",unit:"SF",low:700,high:1100,override:null,notes:"Average rentable unit size. St. Petersburg market blend (studio 498, 1-BR 716, 2-BR 1,050 SF). Townhomes run larger, about 1,400 to 1,800 SF, so override for a townhome project. Calibrate from: project plans; RentCafe / appraiser. Editing this row re-seeds the live Step 1 size field when this use is selected.",fmt:"",apply:v=>UNITSF["Multifamily Rental"]=v},
  {sec:"B. Market valuations",label:"Avg key size, temporary lodging",unit:"SF",low:600,high:900,override:null,notes:"Average gross size per key (net room 300 to 500 SF plus corridors, lobby, back-of-house and amenities). Midpoint 750 matches the lodging construction-cost basis. Calibrate from: project plans; STR / HVS. Editing this row re-seeds the live Step 1 size field when this use is selected.",fmt:"",apply:v=>UNITSF["Temporary Lodging"]=v},
+ {sec:"B. Market valuations",label:"Condo sale price per SF (income/sales approach)",unit:"$/SF",low:525,high:740,override:null,notes:"Sales-comparison $/SF for the Step-1 income-approach CROSS-CHECK (value/unit = avg SF × $/SF), an alternative anchor to the entered $/unit comp. Range = documented CLOSED barrier-island upscale condo sales ($525–720/SF inland, $675–740/SF gulf; Boca Sands, Envoy Point, Mandalay Beach Club, 2024–25). Below the $1,000+/SF new-construction asking tier. Calibrate from PCPAO/MLS closings.",fmt:"$",apply:v=>INCOME.condoPSF=v},
+ {sec:"B. Market valuations",label:"Apartment rent per SF / month (rental income approach)",unit:"$/SF/mo",low:2.50,high:3.50,override:null,notes:"Rental income approach (value/unit = SF × rent × 12 × (1−vacancy) × (1−opex) ÷ cap), ported from the A pro forma. Fixes the prior gap where multifamily-rental value was seeded from CONDO sale comps. NATIONAL/sketch placeholder, luxury barrier-island blend; calibrate from RentCafe / CoStar / appraiser.",fmt:"$",apply:v=>INCOME.rentPSFmo=v},
+ {sec:"B. Market valuations",label:"Rental vacancy allowance",unit:"%",low:5,high:10,override:null,notes:"Stabilized vacancy as a share of potential gross income (rental income approach only).",fmt:"%",apply:v=>INCOME.vacancy=v/100},
+ {sec:"B. Market valuations",label:"Rental operating-expense ratio",unit:"% of EGI",low:30,high:45,override:null,notes:"Operating expenses as a share of effective gross income (rental income approach only).",fmt:"%",apply:v=>INCOME.opex=v/100},
+ {sec:"B. Market valuations",label:"Rental cap rate",unit:"%",low:5.0,high:6.5,override:null,notes:"Capitalization rate applied to stabilized rental NOI (rental income approach only). FL multifamily; calibrate to recent local trades.",fmt:"%",apply:v=>INCOME.rentalCap=v/100},
  {sec:"C. Construction cost multipliers",label:"Building, low-rise (1–3)",unit:"×",low:0.95,high:1.05,override:null,notes:"",fmt:"x",apply:v=>BMULT["Low-rise (1-3)"]=v},
  {sec:"C. Construction cost multipliers",label:"Building, mid-rise (4–7)",unit:"×",low:1.10,high:1.20,override:null,notes:"",fmt:"x",apply:v=>BMULT["Mid-rise (4-7)"]=v},
  {sec:"C. Construction cost multipliers",label:"Building, high-rise (8+)",unit:"×",low:1.30,high:1.40,override:null,notes:"",fmt:"x",apply:v=>BMULT["High-rise (8+)"]=v},
@@ -1471,6 +1484,60 @@ function resetAll(){
     };
   }
 
+  /**
+   * @typedef {Object} IncomeApproachParams
+   * @property {number} sizeSf      avg sellable/rentable area per unit (or gross per key)
+   * @property {number} condoPSF    for-sale price per sellable sf (condo)
+   * @property {number} rentPSFmo   monthly rent per rentable sf (rental)
+   * @property {number} vacancy     stabilized vacancy share of potential gross income (rental)
+   * @property {number} opex        operating-expense share of effective gross income (rental)
+   * @property {number} rentalCap   cap rate applied to rental NOI
+   * @property {number} adr         average daily rate per key (lodging)
+   * @property {number} occ         stabilized occupancy share (lodging)
+   * @property {number} ancillary   ancillary-revenue multiplier on room revenue (lodging)
+   * @property {number} ebitda      EBITDA / NOI margin (lodging)
+   * @property {number} hotelCap    cap rate applied to lodging NOI
+   */
+
+  /**
+   * Income / fundamentals approach to the VALUE PER UNIT — ported from Codebase A's
+   * pro forma (computeScenario GDV), expressed per unit so it can serve as an
+   * alternative anchor or cross-check to B's single entered market comparable.
+   *
+   *   condo  : sales comparison       value = sizeSf × condoPSF
+   *   rental : income capitalization  NOI = sizeSf × rent × 12 × (1−vacancy) × (1−opex); value = NOI ÷ cap
+   *   hotel  : income capitalization  NOI = ADR × 365 × occ × ancillary × EBITDA; value = NOI ÷ cap
+   *            (matches the tool's existing lodgeValuePerKey, a superset of A's ADR×occ×margin form)
+   *
+   * Pure: all inputs come from `p`. Returns the per-unit value, the per-unit NOI
+   * (0 for for-sale), a human label, and an itemized breakdown for display.
+   *
+   * @param {string} use  "Condominium" | "Multifamily Rental" | "Temporary Lodging" | ""
+   * @param {IncomeApproachParams} p
+   * @returns {{use:string, method:string, label:string, valuePerUnit:number, noiPerUnit:number, detail:Object}}
+   */
+  function incomeApproach(use, p) {
+    if (use === "Temporary Lodging") {
+      var roomRev = p.adr * 365 * p.occ;          // potential room revenue per key/yr
+      var hotelNoi = roomRev * p.ancillary * p.ebitda;
+      var keyValue = p.hotelCap > 0 ? hotelNoi / p.hotelCap : 0;
+      return { use: use, method: "income", label: "Income capitalization (lodging)", valuePerUnit: keyValue, noiPerUnit: hotelNoi,
+        detail: { roomRev: roomRev, ancillary: p.ancillary, ebitda: p.ebitda, cap: p.hotelCap, adr: p.adr, occ: p.occ } };
+    }
+    if (use === "Multifamily Rental") {
+      var pgi = p.sizeSf * p.rentPSFmo * 12;       // potential gross income per unit/yr
+      var egi = pgi * (1 - p.vacancy);             // effective gross income
+      var noi = egi * (1 - p.opex);                // net operating income
+      var unitValue = p.rentalCap > 0 ? noi / p.rentalCap : 0;
+      return { use: use, method: "income", label: "Income capitalization (rental)", valuePerUnit: unitValue, noiPerUnit: noi,
+        detail: { pgi: pgi, egi: egi, noi: noi, vacancy: p.vacancy, opex: p.opex, cap: p.rentalCap, rentPSFmo: p.rentPSFmo, sizeSf: p.sizeSf } };
+    }
+    // Condominium / any for-sale: sales comparison (A's condo GDV = sellable sf × $/sf).
+    var saleValue = p.sizeSf * p.condoPSF;
+    return { use: use, method: "sales", label: "Sales comparison (SF × $/SF)", valuePerUnit: saleValue, noiPerUnit: 0,
+      detail: { sizeSf: p.sizeSf, psf: p.condoPSF } };
+  }
+
   return {
     residualUnit: residualUnit,
     estHardUnit: estHardUnit,
@@ -1480,7 +1547,8 @@ function resetAll(){
     recurringGuardOK: recurringGuardOK,
     enforceFactor: enforceFactor,
     benefitRow: benefitRow,
-    computeModel: computeModel
+    computeModel: computeModel,
+    incomeApproach: incomeApproach
   };
 });
 /* ===== SPB-ENGINE END ===== */
@@ -1556,14 +1624,19 @@ function autoGrowTA(ta){ta.style.height="auto";ta.style.height=(ta.scrollHeight+
 function bindRange(id,key){const el=document.getElementById(id);
   el.addEventListener("input",()=>{S[key]=+el.value;setP(el);render();});setP(el);}
 bindRange("mv","market");bindRange("bonus","bonus");
-/* seed the market value: lodging → income approach (value per key); condo/MF → comp by sub-type */
+/* seed the market value: lodging → income approach (value per key); multifamily rental → income
+   approach (NOI ÷ cap); condominium → sale comp by sub-type. (Rental previously, and incorrectly,
+   used the condo sale comp — the income approach ported from Codebase A fixes that.) */
 function seedMarket(){
-  S.market=(S.use==="Temporary Lodging")?Math.round(lodgeValuePerKey(S.subtype)):(S.subtype==="Gulf-front"?MKT.gulf:MKT.inland);
+  if(S.use==="Temporary Lodging"){S.market=Math.round(lodgeValuePerKey(S.subtype));}
+  else if(S.use==="Multifamily Rental"){const v=incomeValueLive().valuePerUnit;S.market=v>0?Math.round(v):(S.subtype==="Gulf-front"?MKT.gulf:MKT.inland);}
+  else {S.market=(S.subtype==="Gulf-front"?MKT.gulf:MKT.inland);}   // condominium / for-sale: sale comp
   const el=document.getElementById("mv"); if(el){el.value=clampMv(S.market);setP(el);}
 }
-function applyLodgeValue(){S.market=Math.round(lodgeValuePerKey(S.subtype));const e=document.getElementById("mv");if(e){e.value=clampMv(S.market);setP(e);}render();}
+/* apply the income/sales-approach value (for the current use) to the market input */
+function applyIncomeValue(){const v=incomeValueLive().valuePerUnit;if(v>0){S.market=Math.round(v);const e=document.getElementById("mv");if(e){e.value=clampMv(S.market);setP(e);}render();}}
 function clearHardOv(){S.hardOv=null;render();}
-document.getElementById("use").addEventListener("change",e=>{S.use=e.target.value;seedMarket();seedUnitSF();syncUseDerived();render();});
+document.getElementById("use").addEventListener("change",e=>{S.use=e.target.value;seedUnitSF();seedMarket();syncUseDerived();render();});
 document.getElementById("btype").addEventListener("change",e=>{S.btype=e.target.value;render();});
 document.getElementById("subtype").addEventListener("change",e=>{S.subtype=e.target.value;seedMarket();render();});
 function clampMv(v){const el=document.getElementById("mv");if(!el)return v;return Math.max(+el.min,Math.min(+el.max,v));}
@@ -1657,7 +1730,21 @@ function render(){
   const pa=document.getElementById("progarea");   // informational total program area (sellable / rentable, gross for lodging keys; not GFA)
   if(pa){const totU=(S.byright||0)+(S.bonus||0); if(S.mktSF>0&&totU>0){const Nsf=Math.round(totU*S.mktSF/1000)*1000; pa.innerHTML="≈ "+Nsf.toLocaleString()+" SF total program area ("+totU.toLocaleString()+" units × "+S.mktSF.toLocaleString()+" SF)"; pa.style.display="";} else pa.style.display="none";}
   const mi=document.getElementById("mkt-income");
-  if(mi){if(isLodge){const lv=lodgeValuePerKey(S.subtype);const adr=lodgeADR(S.subtype);const tier=(S.subtype==="Gulf-front")?"Gulf-front resort":(S.subtype==="Inland/Non-front")?"inland / mid-market":"blended (no sub-type chosen)";mi.innerHTML="Income approach ("+tier+"): $"+Math.round(adr)+"/night × 365 × "+Math.round(LODGE.occ*100)+"% occ × "+LODGE.ancillary+" ancillary × "+Math.round(LODGE.ebitda*100)+"% EBITDA ÷ "+(LODGE.cap*100).toFixed(1)+"% cap = <b>"+fmt(lv)+" / key</b>"+(Math.abs(S.market-lv)>1000?' · <a href="#" style="color:var(--accent);font-weight:600;text-decoration:none" onclick="applyLodgeValue();return false;">use this</a>':' ✓');}else mi.innerHTML="";}
+  if(mi){
+    if(!S.use){mi.innerHTML="";}
+    else{
+      const v=incomeValueLive().valuePerUnit, unitWord=isLodge?" / key":" / unit";
+      let desc;
+      if(isLodge){const adr=lodgeADR(S.subtype);const tier=(S.subtype==="Gulf-front")?"Gulf-front resort":(S.subtype==="Inland/Non-front")?"inland / mid-market":"blended (no sub-type chosen)";
+        desc="Income approach ("+tier+"): $"+Math.round(adr)+"/night × 365 × "+Math.round(LODGE.occ*100)+"% occ × "+LODGE.ancillary+" ancillary × "+Math.round(LODGE.ebitda*100)+"% EBITDA ÷ "+(LODGE.cap*100).toFixed(1)+"% cap";}
+      else if(S.use==="Multifamily Rental"){
+        desc="Income approach: "+fmtNum(S.mktSF)+" SF × $"+INCOME.rentPSFmo.toFixed(2)+"/SF rent × 12 mo × "+Math.round((1-INCOME.vacancy)*100)+"% occ × "+Math.round((1-INCOME.opex)*100)+"% NOI ÷ "+(INCOME.rentalCap*100).toFixed(1)+"% cap";}
+      else{
+        desc="Sales comparison: "+fmtNum(S.mktSF)+" SF × $"+Math.round(INCOME.condoPSF).toLocaleString()+"/SF (closed-comp benchmark)";}
+      const link=(v>0&&Math.abs(S.market-v)>1000)?' · <a href="#" style="color:var(--accent);font-weight:600;text-decoration:none" onclick="applyIncomeValue();return false;">use this</a>':((v>0)?' ✓':'');
+      mi.innerHTML=desc+" = <b>"+fmt(v)+unitWord+"</b>"+link;
+    }
+  }
   const hu=document.getElementById("hardunit"); if(hu&&document.activeElement!==hu){hu.value=S.use?fmtNum(Math.round(effHardUnit())):"";}
   const hh=document.getElementById("hardunit-hint");
   if(hh){ if(!S.use){hh.textContent="Select a use type to estimate construction cost.";}

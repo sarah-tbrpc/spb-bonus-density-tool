@@ -290,3 +290,45 @@ test("computeModel — non-pool pathway zeroes the pool opportunity cost", () =>
   assert.strictEqual(m.D, 0);
   dollar(m.cityMin, 30_000);   // impact floor only
 });
+
+// ---------------------------------------------------------------------------
+// Income approach (ported from Codebase A). Expected per-unit values are A's own
+// pro-forma test numbers (engine.test.ts, assumption set A: size 1000 sf, $500/sf,
+// rent $2/sf/mo, vac 0.05, opex 0.30, ADR 300, occ 0.70, NOI margin 0.30, cap 0.05)
+// — proving the port reproduces A's pro forma exactly at the per-unit level.
+test("incomeApproach — condo = sf × $/sf (matches A's per-unit GDV)", () => {
+  const v = E.incomeApproach("Condominium", { sizeSf: 1000, condoPSF: 500 });
+  assert.strictEqual(v.method, "sales");
+  dollar(v.valuePerUnit, 500_000);     // A: 5,000,000 / 10 units
+  assert.strictEqual(v.noiPerUnit, 0);
+});
+
+test("incomeApproach — rental NOI ÷ cap (matches A's per-unit GDV)", () => {
+  const v = E.incomeApproach("Multifamily Rental", { sizeSf: 1000, rentPSFmo: 2, vacancy: 0.05, opex: 0.30, rentalCap: 0.05 });
+  assert.strictEqual(v.method, "income");
+  // PGI 24,000 → EGI 22,800 → NOI 15,960 → value 319,200
+  dollar(v.noiPerUnit, 15_960);
+  dollar(v.valuePerUnit, 319_200);     // A: 3,192,000 / 10 units
+});
+
+test("incomeApproach — hotel ADR×occ → NOI ÷ cap (matches A's per-key GDV)", () => {
+  // ancillary 1.0 + ebitda 0.30 reduces the tool's lodging formula to A's ADR×occ×margin form
+  const v = E.incomeApproach("Temporary Lodging", { adr: 300, occ: 0.70, ancillary: 1.0, ebitda: 0.30, hotelCap: 0.05 });
+  assert.strictEqual(v.method, "income");
+  dollar(v.noiPerUnit, 22_995);        // 300×365×0.7×1×0.3
+  dollar(v.valuePerUnit, 459_900);     // A: 4,599,000 / 10 keys
+});
+
+test("incomeApproach — lodging matches the tool's lodgeValuePerKey formula (ancillary + EBITDA)", () => {
+  // ADR 410, occ 0.70, ancillary 1.25, EBITDA 0.30, cap 0.075 (the tool's Gulf-front defaults)
+  const v = E.incomeApproach("Temporary Lodging", { adr: 410, occ: 0.70, ancillary: 1.25, ebitda: 0.30, hotelCap: 0.075 });
+  const expected = (410 * 365 * 0.70 * 1.25 * 0.30) / 0.075;
+  near(v.valuePerUnit, expected, 1e-6);
+});
+
+test("incomeApproach — zero cap rate guards against divide-by-zero", () => {
+  const r = E.incomeApproach("Multifamily Rental", { sizeSf: 1000, rentPSFmo: 2, vacancy: 0.05, opex: 0.30, rentalCap: 0 });
+  assert.strictEqual(r.valuePerUnit, 0);
+  const h = E.incomeApproach("Temporary Lodging", { adr: 300, occ: 0.70, ancillary: 1.0, ebitda: 0.30, hotelCap: 0 });
+  assert.strictEqual(h.valuePerUnit, 0);
+});
