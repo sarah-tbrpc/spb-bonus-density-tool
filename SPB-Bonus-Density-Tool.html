@@ -729,6 +729,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
         <p class="lede" style="margin:0"><b>Supporting framework.</b> <i>Coming soon.</i> A fuller write-up of the supporting framework (<i>A Framework for Density Bonus Valuation in St. Pete Beach</i>, Tampa Bay Regional Planning Council, April 2026) will appear here.</p>
         <p class="lede" style="margin:8px 0 0"><b>Sources &amp; benchmarks.</b> Benchmark figures trace to published sources, cited per row on the Assumptions and Benefit-library pages: construction cost <b>RSMeans</b> / <b>ICC</b>; lodging <b>STR / HVS</b>; soft costs and margin <b>ULI / CBRE</b>; condo comps <b>Redfin</b>; benefit unit costs from <b>SFRPC</b>, <b>FEMA</b>, <b>FDEP</b>, <b>FHWA</b>, <b>WGI</b>, <b>Forward Pinellas</b>, <b>UF Shimberg</b>, and <b>HUD</b>. Value-layer multipliers draw on <b>NIBS</b> (resilience), <b>GASB 34 / FHWA</b> (lifecycle), <b>FL Stat. 255.20</b>, and <b>BEA / RIMS II</b>.</p>
         <p class="lede" style="margin:8px 0 0"><b>Value to developer (v1.16.0).</b> The bonus is valued from a per-unit market value run through a residual cost build-up. That market value can be entered directly as a sale comparable, or derived on Step 1 from an <b>income / fundamentals approach</b> shown as a cross-check with a one-click "use this": condominium = sellable SF × $/SF; multifamily rental = NOI ÷ cap rate (rent, vacancy, operating expense); lodging = ADR × occupancy × ancillary × EBITDA ÷ cap rate. (Rental previously borrowed the condo sale comp; the income approach now anchors it on its own operating economics.) Inputs are editable in Assumptions § B and § G. The core calculation now runs through a unit-tested engine module.</p>
+        <p class="lede" style="margin:8px 0 0"><b>Two-tier marginal cost (v1.17.0).</b> Optionally charge a construction <b>step-up</b> only to the marginal bonus units (Assumptions § A, "Bonus-unit construction step-up"), reflecting that the added density is what pushes a project into a costlier construction type and structured parking. Default 1.00× leaves the calibrated figures unchanged; set it (e.g. 1.10–1.15×) to apply the two-tier residual-land-value treatment from the supporting analysis. This is a cost-side premium on the bonus units, separate from the value-side decline factor.</p>
       </div>
       </div>
     </section>
@@ -768,7 +769,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 
 <script>
 "use strict";
-const VERSION="1.16.0", VERSION_DATE="2026-06-29";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
+const VERSION="1.17.0", VERSION_DATE="2026-06-29";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
 /* Staff-review holds (restorable: flip to false). SIMPLE_BENEFITS hides the recurring + enforceability
    controls on the Benefits step and counts every benefit at full credit (no haircut). HIDE_NOTES_SOURCE
    blanks the Notes/Source columns on the Assumptions + Benefit-library pages at runtime; the underlying
@@ -964,7 +965,7 @@ const S={
   use:"", btype:"", subtype:"", pathway:"Pool Allocation", district:"UNK",
   parking:"", coastal:"", acres:0, base:0, cap:0,
   market:1800000, mktSF:2269, bonus:0, byright:0, hardOv:null, taxValue:null,
-  rem:170, dem:8, hor:15, impact:0, margin:0.15, decline:0.80,
+  rem:170, dem:8, hor:15, impact:0, margin:0.15, decline:0.80, bonusStep:1,
   benefits:[]
 };
 const MKT={inland:1600000,gulf:2200000};
@@ -1005,6 +1006,7 @@ const ASSUMP=[
  {sec:"A. Marginal cost assumptions",label:"Condo sales and marketing cost",unit:"% of sale price",low:5,high:7,override:null,notes:"Brokerage commission plus marketing on for-sale condo product; applies to Condominium only. Midpoint 6% preserves prior behavior.",fmt:"%",apply:v=>K.sales=v/100},
  {sec:"A. Marginal cost assumptions",label:"Developer margin",unit:"% of value",low:10,high:20,override:null,notes:"Margin on total cost, a sketch proxy for a 12–15% target IRR, not a true time-based return",fmt:"%",apply:v=>S.margin=v/100},
  {sec:"A. Marginal cost assumptions",label:"Value decline factor",unit:"× later units",low:0.70,high:0.90,override:null,notes:"Discount on marginal bonus units",fmt:"x",apply:v=>S.decline=v},
+ {sec:"A. Marginal cost assumptions",label:"Bonus-unit construction step-up",unit:"× hard cost",low:1.00,high:1.00,override:null,notes:"Two-tier marginal-cost treatment (after the residual-land-value method in Codebase A): the bonus units cost MORE to build than the by-right baseline because the added density is what pushes the project into a costlier construction type and structured parking — so the step-up is charged ONLY to the marginal bonus units. Because this tool already values just the bonus units, this is a multiplier on their hard cost. DEFAULT 1.00 = no step-up (preserves the calibrated outputs and worked reconciliation). Set an Override to activate, e.g. 1.10–1.15 (Codebase A used baseline $350 vs bonus $400/SF ≈ 1.14) when the bonus forces low-rise→mid/high-rise or surface→structured parking. This is a COST premium, distinct from the value-side decline factor above.",fmt:"x",apply:v=>S.bonusStep=v},
  {sec:"B. Market valuations",label:"Condo sale price, inland / non-front",unit:"$/unit",low:1200000,high:2000000,override:null,notes:"Seeds market slider. Recalibrated down (v1.14.0): documented CLOSED barrier-island upscale condo sales run $525–720/SF (Boca Sands 5301 Gulf Blvd, Envoy Point, St. Pete Beach, 2024–25) ≈ $1.2–1.6M on a 2,269-SF unit, well below earlier $1,000+/SF assumptions (which hold only off-island in downtown St. Pete towers, or as pre-construction asking). HIGH carries a new-construction premium — new product has sold well above resale, but NO barrier-island new-construction has closed yet (flagged; verify on the first Corey Landings closings). Calibrate from PCPAO sales records / MLS.",fmt:"$",apply:v=>MKT.inland=v},
  {sec:"B. Market valuations",label:"Condo sale price, gulf / waterfront",unit:"$/unit",low:1600000,high:2800000,override:null,notes:"Seeds market slider. Recalibrated down (v1.14.0): closed gulf/bay-front barrier-island condos ≈ $675–740/SF (Boca Sands; Mandalay Beach Club, Clearwater Beach). The $1,000–1,250/SF tier appears only as new-construction ASKING (Viceroy Clearwater Beach ~$1,200/SF) or off-island. LOW ≈ closed gulf-front; HIGH = new gulf-front asking + new-construction premium (flagged, unproven on-island). Calibrate from PCPAO / MLS closings.",fmt:"$",apply:v=>MKT.gulf=v},
  {sec:"B. Market valuations",label:"Avg unit size, condominium",unit:"SF",low:1900,high:2600,override:null,notes:"Average sellable unit size, used for the $/unit to $/SF bridge and the construction cross-check (not the decision). Luxury barrier-island for-sale; Corey Landings about 2,269 SF. Calibrate from: project plans; recent SPB condo comps. Editing this row re-seeds the live Step 1 size field when this use is selected.",fmt:"",apply:v=>UNITSF["Condominium"]=v},
@@ -1213,10 +1215,15 @@ function resetAll(){
    * @param {MultiplierMap} BMULT
    * @param {MultiplierMap} PMULT
    * @param {MultiplierMap} FMULT
+   * @param {number} [bonusStep=1]  marginal-bonus-unit construction step-up (Codebase A's two-tier
+   *   treatment): because B values only the bonus units here, multiplying their hard cost by this
+   *   factor charges the construction step-up (taller type / structured parking the bonus forces) to
+   *   the marginal units only. 1 = no step-up (preserves prior behavior).
    * @returns {number} residual value per unit ($), floored at 0
    */
-  function residualUnit(market, use, margin, btype, parking, coastal, baseOverride, hardFinal, K, BMULT, PMULT, FMULT) {
+  function residualUnit(market, use, margin, btype, parking, coastal, baseOverride, hardFinal, K, BMULT, PMULT, FMULT, bonusStep) {
     if (!use) return 0; // no use type selected yet, nothing to value
+    var step = (bonusStep == null) ? 1 : bonusStep;
     var hard;
     if (hardFinal != null) {
       hard = hardFinal; // direct per-unit construction cost (override)
@@ -1224,6 +1231,7 @@ function resetAll(){
       var base = (baseOverride != null) ? baseOverride : (use === "Temporary Lodging" ? K.hardHotel : K.hardCondo);
       hard = base * (BMULT[btype] || 1) * (PMULT[parking] || 1) * (FMULT[coastal] || 1);
     }
+    hard = hard * step; // two-tier: charge the step-up to these (marginal bonus) units only
     var sales = use === "Condominium" ? market * K.sales : 0;
     var cost = hard * (1 + K.soft) * (1 + margin) + sales;
     return Math.max(0, market - cost);
@@ -1411,28 +1419,30 @@ function resetAll(){
     var rem = input.rem, dem = input.dem, hor = input.hor, impact = input.impact, pathway = input.pathway;
     var K = input.K, CATMULT = input.CATMULT, BMULT = input.BMULT, PMULT = input.PMULT, FMULT = input.FMULT;
     var CAPTURE = input.CAPTURE, PVD = input.PVD, ENFORCE = input.ENFORCE, SIMPLE_BENEFITS = input.SIMPLE_BENEFITS;
+    var bonusStep = (input.bonusStep == null) ? 1 : input.bonusStep; // two-tier: marginal-bonus-unit cost step-up (A)
 
     var hardF = (input.hardOv != null && input.hardOv !== "") ? +input.hardOv : null; // direct construction-cost override
-    var r = residualUnit(market, use, margin, btype, parking, coastal, null, hardF, K, BMULT, PMULT, FMULT);
+    var r = residualUnit(market, use, margin, btype, parking, coastal, null, hardF, K, BMULT, PMULT, FMULT, bonusStep);
     var V = r * bonus * decline;
 
     /* cost-driven value-to-developer range. With an entered construction cost, bracket it ±15% for
        cost uncertainty. Otherwise use the Assumptions Low/High hard-cost bracket × the project's
-       multipliers. High cost → conservative low value; low cost → high (target). */
+       multipliers. High cost → conservative low value; low cost → high (target). The bonus-unit
+       step-up applies to every branch (these are all the marginal bonus units' value). */
     var Vlow = V, Vhigh = V;
     if (use && hardF != null) {
-      Vlow = residualUnit(market, use, margin, btype, parking, coastal, null, hardF * 1.15, K, BMULT, PMULT, FMULT) * bonus * decline;
-      Vhigh = residualUnit(market, use, margin, btype, parking, coastal, null, hardF * 0.85, K, BMULT, PMULT, FMULT) * bonus * decline;
+      Vlow = residualUnit(market, use, margin, btype, parking, coastal, null, hardF * 1.15, K, BMULT, PMULT, FMULT, bonusStep) * bonus * decline;
+      Vhigh = residualUnit(market, use, margin, btype, parking, coastal, null, hardF * 0.85, K, BMULT, PMULT, FMULT, bonusStep) * bonus * decline;
     } else if (use && (input.hcLow != null || input.hcHigh != null || (input.hcOverride != null && input.hcOverride !== ""))) {
       var ov = (input.hcOverride != null && input.hcOverride !== "");
       var hcHi = ov ? +input.hcOverride * 1.15 : input.hcHigh, hcLo = ov ? +input.hcOverride * 0.85 : input.hcLow;
-      Vlow = residualUnit(market, use, margin, btype, parking, coastal, hcHi, undefined, K, BMULT, PMULT, FMULT) * bonus * decline;
-      Vhigh = residualUnit(market, use, margin, btype, parking, coastal, hcLo, undefined, K, BMULT, PMULT, FMULT) * bonus * decline;
+      Vlow = residualUnit(market, use, margin, btype, parking, coastal, hcHi, undefined, K, BMULT, PMULT, FMULT, bonusStep) * bonus * decline;
+      Vhigh = residualUnit(market, use, margin, btype, parking, coastal, hcLo, undefined, K, BMULT, PMULT, FMULT, bonusStep) * bonus * decline;
     }
 
     /* implied return-on-cost the bonus units actually carry at this market price — a sanity check,
-       not a model input. tc = delivered cost with no profit. */
-    var hardC = effHardUnit(input.hardOv, use, btype, parking, coastal, K, BMULT, PMULT, FMULT);
+       not a model input. tc = delivered cost with no profit; the bonus units carry the step-up. */
+    var hardC = effHardUnit(input.hardOv, use, btype, parking, coastal, K, BMULT, PMULT, FMULT) * bonusStep;
     var salesC = use === "Condominium" ? market * K.sales : 0;
     var tc = hardC * (1 + K.soft) + salesC;
     var impMargin = (use && tc > 0) ? (market - tc) / tc : 0;
@@ -1576,7 +1586,7 @@ function compute(){
   return SPBEngine.computeModel({
     use:S.use,btype:S.btype,parking:S.parking,coastal:S.coastal,
     market:S.market,margin:S.margin,decline:S.decline,bonus:S.bonus,byright:S.byright,
-    hardOv:S.hardOv,pathway:S.pathway,acres:S.acres,base:S.base,cap:S.cap,
+    hardOv:S.hardOv,pathway:S.pathway,acres:S.acres,base:S.base,cap:S.cap,bonusStep:S.bonusStep,
     rem:S.rem,dem:S.dem,hor:S.hor,impact:S.impact,
     hcLow:hcRow?hcRow.low:null,hcHigh:hcRow?hcRow.high:null,hcOverride:hcRow?hcRow.override:null,
     benefits,
@@ -1749,7 +1759,8 @@ function render(){
   const hh=document.getElementById("hardunit-hint");
   if(hh){ if(!S.use){hh.textContent="Select a use type to estimate construction cost.";}
     else if(S.hardOv!=null&&S.hardOv!==""){hh.innerHTML="Your figure. Estimate from specs: "+fmt(estHardUnit())+'. <a href="#" style="color:var(--accent);font-weight:600;text-decoration:none" onclick="clearHardOv();return false;">use the estimate</a>';}
-    else {hh.innerHTML="Estimated "+fmt(estHardUnit())+" from use and/or building type. Edit to enter your own.";} }
+    else {hh.innerHTML="Estimated "+fmt(estHardUnit())+" from use and/or building type. Edit to enter your own.";}
+    if(S.use&&S.bonusStep>1){hh.innerHTML+=' <span style="color:var(--accent)">Two-tier: bonus units carry a +'+Math.round((S.bonusStep-1)*100)+'% construction step-up (≈ '+fmt(Math.round(effHardUnit()*S.bonusStep))+'/unit), charged to the marginal bonus units only.</span>';} }
   document.getElementById("bonus-v").textContent=S.bonus+" units";
   document.getElementById("utype").textContent=S.use?((S.use==="Temporary Lodging")?"TLU":"RU"):"-";
   const usp=document.getElementById("use-subpool");

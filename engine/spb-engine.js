@@ -75,10 +75,15 @@
    * @param {MultiplierMap} BMULT
    * @param {MultiplierMap} PMULT
    * @param {MultiplierMap} FMULT
+   * @param {number} [bonusStep=1]  marginal-bonus-unit construction step-up (Codebase A's two-tier
+   *   treatment): because B values only the bonus units here, multiplying their hard cost by this
+   *   factor charges the construction step-up (taller type / structured parking the bonus forces) to
+   *   the marginal units only. 1 = no step-up (preserves prior behavior).
    * @returns {number} residual value per unit ($), floored at 0
    */
-  function residualUnit(market, use, margin, btype, parking, coastal, baseOverride, hardFinal, K, BMULT, PMULT, FMULT) {
+  function residualUnit(market, use, margin, btype, parking, coastal, baseOverride, hardFinal, K, BMULT, PMULT, FMULT, bonusStep) {
     if (!use) return 0; // no use type selected yet, nothing to value
+    var step = (bonusStep == null) ? 1 : bonusStep;
     var hard;
     if (hardFinal != null) {
       hard = hardFinal; // direct per-unit construction cost (override)
@@ -86,6 +91,7 @@
       var base = (baseOverride != null) ? baseOverride : (use === "Temporary Lodging" ? K.hardHotel : K.hardCondo);
       hard = base * (BMULT[btype] || 1) * (PMULT[parking] || 1) * (FMULT[coastal] || 1);
     }
+    hard = hard * step; // two-tier: charge the step-up to these (marginal bonus) units only
     var sales = use === "Condominium" ? market * K.sales : 0;
     var cost = hard * (1 + K.soft) * (1 + margin) + sales;
     return Math.max(0, market - cost);
@@ -273,28 +279,30 @@
     var rem = input.rem, dem = input.dem, hor = input.hor, impact = input.impact, pathway = input.pathway;
     var K = input.K, CATMULT = input.CATMULT, BMULT = input.BMULT, PMULT = input.PMULT, FMULT = input.FMULT;
     var CAPTURE = input.CAPTURE, PVD = input.PVD, ENFORCE = input.ENFORCE, SIMPLE_BENEFITS = input.SIMPLE_BENEFITS;
+    var bonusStep = (input.bonusStep == null) ? 1 : input.bonusStep; // two-tier: marginal-bonus-unit cost step-up (A)
 
     var hardF = (input.hardOv != null && input.hardOv !== "") ? +input.hardOv : null; // direct construction-cost override
-    var r = residualUnit(market, use, margin, btype, parking, coastal, null, hardF, K, BMULT, PMULT, FMULT);
+    var r = residualUnit(market, use, margin, btype, parking, coastal, null, hardF, K, BMULT, PMULT, FMULT, bonusStep);
     var V = r * bonus * decline;
 
     /* cost-driven value-to-developer range. With an entered construction cost, bracket it ±15% for
        cost uncertainty. Otherwise use the Assumptions Low/High hard-cost bracket × the project's
-       multipliers. High cost → conservative low value; low cost → high (target). */
+       multipliers. High cost → conservative low value; low cost → high (target). The bonus-unit
+       step-up applies to every branch (these are all the marginal bonus units' value). */
     var Vlow = V, Vhigh = V;
     if (use && hardF != null) {
-      Vlow = residualUnit(market, use, margin, btype, parking, coastal, null, hardF * 1.15, K, BMULT, PMULT, FMULT) * bonus * decline;
-      Vhigh = residualUnit(market, use, margin, btype, parking, coastal, null, hardF * 0.85, K, BMULT, PMULT, FMULT) * bonus * decline;
+      Vlow = residualUnit(market, use, margin, btype, parking, coastal, null, hardF * 1.15, K, BMULT, PMULT, FMULT, bonusStep) * bonus * decline;
+      Vhigh = residualUnit(market, use, margin, btype, parking, coastal, null, hardF * 0.85, K, BMULT, PMULT, FMULT, bonusStep) * bonus * decline;
     } else if (use && (input.hcLow != null || input.hcHigh != null || (input.hcOverride != null && input.hcOverride !== ""))) {
       var ov = (input.hcOverride != null && input.hcOverride !== "");
       var hcHi = ov ? +input.hcOverride * 1.15 : input.hcHigh, hcLo = ov ? +input.hcOverride * 0.85 : input.hcLow;
-      Vlow = residualUnit(market, use, margin, btype, parking, coastal, hcHi, undefined, K, BMULT, PMULT, FMULT) * bonus * decline;
-      Vhigh = residualUnit(market, use, margin, btype, parking, coastal, hcLo, undefined, K, BMULT, PMULT, FMULT) * bonus * decline;
+      Vlow = residualUnit(market, use, margin, btype, parking, coastal, hcHi, undefined, K, BMULT, PMULT, FMULT, bonusStep) * bonus * decline;
+      Vhigh = residualUnit(market, use, margin, btype, parking, coastal, hcLo, undefined, K, BMULT, PMULT, FMULT, bonusStep) * bonus * decline;
     }
 
     /* implied return-on-cost the bonus units actually carry at this market price — a sanity check,
-       not a model input. tc = delivered cost with no profit. */
-    var hardC = effHardUnit(input.hardOv, use, btype, parking, coastal, K, BMULT, PMULT, FMULT);
+       not a model input. tc = delivered cost with no profit; the bonus units carry the step-up. */
+    var hardC = effHardUnit(input.hardOv, use, btype, parking, coastal, K, BMULT, PMULT, FMULT) * bonusStep;
     var salesC = use === "Condominium" ? market * K.sales : 0;
     var tc = hardC * (1 + K.soft) + salesC;
     var impMargin = (use && tc > 0) ? (market - tc) / tc : 0;

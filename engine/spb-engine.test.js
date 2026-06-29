@@ -332,3 +332,46 @@ test("incomeApproach — zero cap rate guards against divide-by-zero", () => {
   const h = E.incomeApproach("Temporary Lodging", { adr: 300, occ: 0.70, ancillary: 1.0, ebitda: 0.30, hotelCap: 0 });
   assert.strictEqual(h.valuePerUnit, 0);
 });
+
+// ---------------------------------------------------------------------------
+// Two-tier marginal cost (ported from Codebase A): the construction step-up is
+// charged only to the marginal bonus units. In B's per-bonus-unit model that is a
+// multiplier on the bonus units' hard cost; default 1 leaves prior behavior intact.
+test("residualUnit — bonusStep raises the marginal units' cost and lowers residual", () => {
+  const K = { hardCondo: 200000, hardHotel: 400000, soft: 0.25, sales: 0.10 };
+  // step 1.0 → 600,000 (baseline clean case); step 1.5 → hard 300,000 → cost 550,000 → residual 450,000
+  const base = E.residualUnit(1_000_000, "Condominium", 0.20, "Low-rise (1-3)", "surface", "AE", null, null, K, ID_B, ID_P, ID_F, 1);
+  const stepped = E.residualUnit(1_000_000, "Condominium", 0.20, "Low-rise (1-3)", "surface", "AE", null, null, K, ID_B, ID_P, ID_F, 1.5);
+  dollar(base, 600_000);
+  dollar(stepped, 450_000);
+  assert.ok(stepped < base, "step-up should reduce residual value");
+});
+
+test("residualUnit — omitting bonusStep equals bonusStep 1 (backward compatible)", () => {
+  const K = { hardCondo: 200000, hardHotel: 400000, soft: 0.25, sales: 0.10 };
+  const omitted = E.residualUnit(1_000_000, "Condominium", 0.20, "Mid-rise (4-7)", "podium", "VE", null, null, K, ID_B, ID_P, ID_F);
+  const one = E.residualUnit(1_000_000, "Condominium", 0.20, "Mid-rise (4-7)", "podium", "VE", null, null, K, ID_B, ID_P, ID_F, 1);
+  assert.strictEqual(omitted, one);
+});
+
+test("computeModel — bonusStep charges the step-up to bonus units (V and impMargin)", () => {
+  const K = { hardCondo: 200000, hardHotel: 400000, soft: 0.25, margin: 0.20, decline: 0.80, sales: 0.10, scarExp: 1.6 };
+  const inp = {
+    use: "Condominium", btype: "Low-rise (1-3)", parking: "surface", coastal: "AE",
+    market: 1_000_000, margin: 0.20, decline: 0.80, bonus: 10, byright: 100,
+    hardOv: null, pathway: "Pool Allocation", acres: 0, base: 0, cap: 0,
+    rem: 200, dem: 10, hor: 15, impact: 3000, hcLow: null, hcHigh: null, hcOverride: null,
+    benefits: [],
+    K, CATMULT, BMULT: ID_B, PMULT: ID_P, FMULT: ID_F,
+    CAPTURE: { capLo: 0.25 }, PVD: { disc: 0.03, esc: 0.02, term: 30 }, ENFORCE, SIMPLE_BENEFITS: true
+  };
+  const plain = E.computeModel(inp);
+  const stepped = E.computeModel(Object.assign({}, inp, { bonusStep: 1.2 }));
+  dollar(plain.V, 4_800_000);
+  // step 1.2 → hard 240,000 → cost 460,000 → residual 540,000 → V 540,000×10×0.8
+  dollar(stepped.V, 4_320_000);
+  // impMargin reflects the stepped cost: tc = 240,000×1.25 + 100,000 = 400,000
+  near(stepped.impMargin, (1_000_000 - 400_000) / 400_000, 1e-9);
+  // omitting bonusStep matches bonusStep 1
+  dollar(E.computeModel(Object.assign({}, inp, { bonusStep: 1 })).V, 4_800_000);
+});
