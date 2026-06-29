@@ -7,3 +7,8 @@
 !/SPB-Bonus-Density-Tool.html
 !/images/
 !/images/corey-landings-kolter.png
+# Engine: pure core-math source + characterization tests. The deployed tool embeds
+# this inline (build-engine.js), so it is NOT served as a separate file — tracked
+# here only for auditability and version control of the calculation.
+!/engine/
+/engine/node_modules/
