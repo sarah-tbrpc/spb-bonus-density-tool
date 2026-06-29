@@ -247,6 +247,7 @@ select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-i
 .zopa-mark{position:absolute;top:12px;width:2px;height:28px;background:var(--ink)}
 .zopa-lab{position:absolute;font-size:10.5px;color:var(--ink2);white-space:nowrap;transform:translateX(-50%)}
 .zopa-lab.top{top:-2px}.zopa-lab.bot{top:38px}
+@media(max-width:560px){.zopa-lab{font-size:9px}}
 .zopa-target{position:absolute;top:9px;height:34px;border-radius:4px;background:rgba(227,160,80,.16);border:1px dashed rgba(176,122,46,.75);box-sizing:border-box}
 .zopa-contrib{position:absolute;top:9px;height:34px;border-radius:4px;background:rgba(120,130,138,.10);box-sizing:border-box}
 .zopa-tmark{position:absolute;top:14px;height:24px;border-left:2px dashed var(--accent)}
@@ -2120,14 +2121,21 @@ function drawZopa(m){
   const tg=(m.Vhigh>m.zCeil+1)?pct(m.Vhigh):-1;   // negotiation-target tick (high end of the value range)
   const V=m.zCeil;
   const band=(lo,hi,cls)=>{if(!(V>0))return"";const a=pct(lo*V),b=pct(hi*V);return '<div class="'+cls+'" style="left:'+a+'%;width:'+Math.max(0,b-a)+'%"></div>';};
+  /* edge-aware label: left-align near 0%, right-align near 100%, else centered, so the dollar
+     labels stay within the track instead of bleeding into the card padding */
+  const zlab=(p,cls,txt,xtra)=>{p=Math.max(0,Math.min(100,p));const tx=p<12?'0':p>88?'-100%':'-50%';return '<div class="zopa-lab '+cls+'" style="left:'+p+'%;transform:translateX('+tx+');'+(xtra||'')+'">'+txt+'</div>';};
+  /* on narrow screens the track is too short for full dollar amounts (ceiling/target labels collide);
+     use a compact $M/$k form there. Full precision stays in the numbers grid + note above. */
+  const narrow=window.innerWidth<560;
+  const zf=v=>narrow?("$"+(Math.abs(v)>=1e6?(v/1e6).toFixed(Math.abs(v)>=1e7?0:1)+"M":Math.round(Math.abs(v)/1e3)+"k")):fmt(v);
   t.innerHTML=band(CAPTURE.contribLo,CAPTURE.contribHi,"zopa-contrib")+band(CAPTURE.capLo,CAPTURE.capHi,"zopa-target")+
     '<div class="zopa-bar"></div>'+
     '<div class="zopa-zone" style="left:'+fl+'%;width:'+Math.max(0,ce-fl)+'%"></div>'+
     '<div class="zopa-mark" style="left:'+of+'%"></div>'+
-    '<div class="zopa-lab top" style="left:'+fl+'%">floor '+fmt(m.zFloor)+'</div>'+
-    '<div class="zopa-lab top" style="left:'+ce+'%">ceiling '+fmt(m.zCeil)+'</div>'+
-    (tg>=0?'<div class="zopa-tmark" style="left:'+tg+'%"></div><div class="zopa-lab top" style="left:'+tg+'%;color:var(--accent)">target '+fmt(m.Vhigh)+'</div>':'')+
-    '<div class="zopa-lab bot" style="left:'+of+'%">offer '+fmt(m.A)+'</div>';
+    zlab(fl,'top','floor '+zf(m.zFloor))+
+    zlab(ce,'top','ceiling '+zf(m.zCeil))+
+    (tg>=0?'<div class="zopa-tmark" style="left:'+tg+'%"></div>'+zlab(tg,'top','target '+zf(m.Vhigh),'color:var(--accent)'):'')+
+    zlab(of,'bot','offer '+zf(m.A));
   const baseNote = m.A>m.zCeil
     ? "Offer exceeds the ceiling; the package is infeasible for the developer."
     : (m.A<m.zFloor ? "Offer is below the floor; increase the package to meet the break-even floor."
