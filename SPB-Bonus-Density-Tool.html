@@ -249,8 +249,10 @@ select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-i
 .zopa-contrib{position:absolute;top:9px;height:34px;border-radius:4px;background:rgba(120,130,138,.10);box-sizing:border-box}
 .zopa-tmark{position:absolute;top:14px;height:24px;border-left:2px dashed var(--accent)}
 .rank{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line2)}
-.rank .bar{height:7px;border-radius:3px;background:var(--public)}
-.rank .nm{font-size:13px;flex:none;width:170px}
+.rank .bar{height:7px;border-radius:3px;background:var(--public);min-width:0}
+/* name column shrinks (equally across rows, so bars stay aligned) and truncates rather than
+   forcing the row past the viewport on narrow screens */
+.rank .nm{font-size:13px;flex:0 1 170px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rank .g{font-variant-numeric:tabular-nums;font-size:13px;flex:none;width:44px;text-align:right}
 svg.spark{width:100%;height:150px;display:block}
 
@@ -290,14 +292,14 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 .atable input{width:96px;padding:5px 7px;font-size:12.5px;border:1px solid var(--line);border-radius:4px;font-family:inherit;text-align:right}
 .atable input.alow,.atable input.ahigh{background:#fdfbe9}
 .atable input.ov{background:#eef4fb;border-color:#a9c4dd}
-.assumptable{table-layout:fixed}
+.assumptable{table-layout:fixed;min-width:600px}
 .assumptable td,.assumptable th{overflow:hidden}
 .assumptable td.anote{white-space:normal;word-break:break-word}
 .assumptable input.alow,.assumptable input.ahigh,.assumptable input.ov{width:100%;box-sizing:border-box}
 .assumptable input.asrc{width:100%;box-sizing:border-box;text-align:left;font-size:12px}
 .atable td.tnote{font-size:13px;color:var(--ink);line-height:1.45;white-space:normal;word-break:break-word;vertical-align:top}
 .atable td.tnote .anote{color:var(--ink3)}
-.histtable{table-layout:fixed}
+.histtable{table-layout:fixed;min-width:1000px}
 .histtable td{white-space:normal;word-break:break-word;vertical-align:top}
 .histtable input,.histtable select{width:100%;box-sizing:border-box}
 .histtable input.hnum{text-align:right}
@@ -311,9 +313,12 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 .atable input.hdate{text-align:left;width:104px;min-width:0}
 .atable input.hnum{text-align:right;width:72px}
 .atable select.hsel{padding:5px 6px;font-size:12.5px;border:1px solid var(--line);border-radius:4px;font-family:inherit;width:96px}
+/* inside the fixed-layout history ledger, inputs/selects fill their cell (the columns are sized by
+   the colgroup + a table min-width); fixed pixel widths would overflow narrow cells and overlap. */
+.histtable input.htext,.histtable input.hdate,.histtable input.hnum,.histtable select.hsel{width:100%;min-width:0}
 /* library table: fixed layout + colgroup so column widths are identical whether a
    category is expanded or collapsed, and always fill the panel width */
-.libtable{width:100%;table-layout:fixed}
+.libtable{width:100%;table-layout:fixed;min-width:600px}
 .libtable input{width:100%;box-sizing:border-box}
 .libtable input.libname{width:100%;min-width:0;text-align:left}
 .libtable input.libunit{width:100%;text-align:left}
@@ -830,7 +835,7 @@ function buildHistory(){
     const tot=counted.reduce((s,r)=>s+(+r.approved||0),0);
     const by=st=>counted.filter(r=>(r.status||"Approved")===st).reduce((s,r)=>s+(+r.approved||0),0);
     h+='<div class="hint" style="margin:0 0 8px;font-weight:600;color:var(--ink2)">'+tot+' units allocated: '+by("Delivered")+' delivered, '+by("Secured")+' secured, '+by("Approved")+' approved only.</div>';})();
-  h+='<div class="atable-wrap"><table class="atable histtable"><colgroup><col style="width:8%"><col style="width:16%"><col style="width:6%"><col style="width:6%"><col style="width:6%"><col style="width:10%"><col style="width:9%"><col style="width:15%"><col style="width:20%"><col style="width:4%"></colgroup><thead><tr><th scope="col">Date</th><th scope="col">Project / Applicant</th><th scope="col">Pool</th><th scope="col" class="r">Approved</th><th scope="col" class="r">Requested</th><th scope="col">Decision</th><th scope="col">Status</th><th scope="col">Source / Ordinance</th><th scope="col">Notes</th><th scope="col"><span class="sr-only">Delete</span></th></tr></thead><tbody>';
+  h+='<div class="atable-wrap"><table class="atable histtable"><colgroup><col style="width:8%"><col style="width:15%"><col style="width:6%"><col style="width:7%"><col style="width:8%"><col style="width:11%"><col style="width:9%"><col style="width:14%"><col style="width:18%"><col style="width:4%"></colgroup><thead><tr><th scope="col">Date</th><th scope="col">Project / Applicant</th><th scope="col">Pool</th><th scope="col" class="r">Approved</th><th scope="col" class="r">Requested</th><th scope="col">Decision</th><th scope="col">Status</th><th scope="col">Source / Ordinance</th><th scope="col">Notes</th><th scope="col"><span class="sr-only">Delete</span></th></tr></thead><tbody>';
   HISTORY.forEach((r,i)=>{const st=r.status||"Approved";
     const statusCell=advUnlocked?hsel(i,"status",st,["Approved","Secured","Delivered"]):'<span class="hstatus hstatus-'+st.toLowerCase()+'">'+st+'</span>';
     h+='<tr><td>'+hfld(i,"date",r.date,"text","hdate")+'</td><td>'+htxt(i,"project",r.project)+'</td><td>'+hsel(i,"pool",r.pool,["RU","TLU"])+'</td><td class="r">'+hfld(i,"approved",r.approved,"number","hnum")+'</td><td class="r">'+hfld(i,"requested",r.requested,"number","hnum")+'</td><td>'+hsel(i,"decision",r.decision,["Approved","Denied","Pending","Withdrawn","Superseded","Other pool"])+'</td><td>'+statusCell+'</td><td>'+htxt(i,"source",r.source)+'</td><td>'+htxt(i,"notes",r.notes)+'</td><td>'+(advUnlocked?'<button class="x" data-del="'+i+'">\u00d7</button>':'')+'</td></tr>';});
@@ -2636,21 +2641,24 @@ function libRatio(i){const r=LIB[i],c=LIBCAL[i];const dev=libApplied(c,"dev"),ci
 function libApplDisp(i,which){return "$"+Math.round(libApplied(LIBCAL[i],which)).toLocaleString();}
 function buildLibrary(){
   let h="";
+  const NS=!HIDE_NOTES_SOURCE, ncols=NS?8:6;   // Notes/Source columns hidden under the staff-review hold → drop them, don't leave them empty
   const nLibNoSrc=LIBCAL.filter(c=>c&&!(c.source&&String(c.source).trim())).length;
-  if(nLibNoSrc)h+='<div class="calflag"><b>'+nLibNoSrc+' of '+LIBCAL.length+' library values lack a cited source.</b> Those are sketch-grade placeholders until calibrated to local data; each is flagged below and counted on the printed summary.</div>';
+  if(nLibNoSrc&&NS)h+='<div class="calflag"><b>'+nLibNoSrc+' of '+LIBCAL.length+' library values lack a cited source.</b> Those are sketch-grade placeholders until calibrated to local data; each is flagged below and counted on the printed summary.</div>';
   h+='<div class="libsearch"><input type="text" id="lib-search" placeholder="Search benefits…" aria-label="Search benefits" value="'+esc(libSearchQ)+'">'+
     '<button class="alink" id="lib-expand">Expand all</button><button class="alink" id="lib-collapse">Collapse all</button></div>';
   h+='<fieldset class="lockfs"'+(advUnlocked?'':' disabled')+'>';
+  const cgLib=NS?'<col style="width:17%"><col style="width:10%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:24%"><col style="width:17%">'
+                :'<col style="width:30%"><col style="width:16%"><col style="width:13%"><col style="width:13%"><col style="width:14%"><col style="width:14%">';
   h+='<div class="atable-wrap"><table class="atable libtable">'+
-    '<colgroup><col style="width:17%"><col style="width:10%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:24%"><col style="width:17%"></colgroup>'+
+    '<colgroup>'+cgLib+'</colgroup>'+
     '<thead><tr>'+
     '<th scope="col">Benefit</th><th scope="col">Unit</th>'+
     '<th scope="col" class="r">Low</th><th scope="col" class="r">High</th><th scope="col" class="r">Applied</th><th scope="col" class="r">Override</th>'+
-    '<th scope="col">Notes</th><th scope="col">Source</th>'+
+    (NS?'<th scope="col">Notes</th><th scope="col">Source</th>':'')+
     '</tr></thead><tbody>';
   CATS_ORDER.forEach(cat=>{
     const n=LIB.filter(r=>r[1]===cat).length;
-    h+='<tr class="asecrow libsec" data-section="'+esc(cat)+'" role="button" tabindex="0" aria-label="Toggle '+esc(cat)+'"><td colspan="8"><span class="lib-caret">▾</span> '+cat+' · ×'+(CATMULT[cat]||1)+' multiplier <span class="anote">('+n+')</span></td></tr>';
+    h+='<tr class="asecrow libsec" data-section="'+esc(cat)+'" role="button" tabindex="0" aria-label="Toggle '+esc(cat)+'"><td colspan="'+ncols+'"><span class="lib-caret">▾</span> '+cat+' · ×'+(CATMULT[cat]||1)+' multiplier <span class="anote">('+n+')</span></td></tr>';
     LIB.forEach((r,i)=>{ if(r[1]!==cat)return; const c=LIBCAL[i]; const custom=!!r[5];
       const hay=esc((""+r[0]+" "+r[2]+" "+(c.note||"")+" "+(c.source||"")).toLowerCase());
       const nameInner=custom
@@ -2670,10 +2678,10 @@ function buildLibrary(){
         '<td class="r">'+libfld(i,"cityHigh",c.cityHigh,"ahigh")+'</td>'+
         '<td class="r"><span class="aapplied" id="libcity-'+i+'">'+libApplDisp(i,"city")+'</span></td>'+
         '<td class="r">'+libfld(i,"cityOv",c.cityOv,"ov")+'</td>'+
-        '<td class="tnote">'+libtxt(i,"note",c.note,"Notes")+'</td>'+
-        '<td class="tnote">'+libtxt(i,"source",c.source,"Source")+((HIDE_NOTES_SOURCE||(c.source&&String(c.source).trim()))?"":'<div class="nosrc">⚠ Uncalibrated, no cited source</div>')+'</td></tr>';
+        (NS?('<td class="tnote">'+libtxt(i,"note",c.note,"Notes")+'</td>'+
+        '<td class="tnote">'+libtxt(i,"source",c.source,"Source")+((c.source&&String(c.source).trim())?"":'<div class="nosrc">⚠ Uncalibrated, no cited source</div>')+'</td>'):'')+'</tr>';
     });
-    if(advUnlocked)h+='<tr class="libaddrow" data-cat="'+esc(cat)+'"><td colspan="8"><button class="alink" data-libadd="'+esc(cat)+'">+ Add custom benefit to '+cat+'</button></td></tr>';
+    if(advUnlocked)h+='<tr class="libaddrow" data-cat="'+esc(cat)+'"><td colspan="'+ncols+'"><button class="alink" data-libadd="'+esc(cat)+'">+ Add custom benefit to '+cat+'</button></td></tr>';
   });
   h+='</tbody></table></div></fieldset>';
   h+=lockBar("Benefit-library values","The city’s valuation of each public benefit, shared across all projects.");
@@ -2749,12 +2757,15 @@ function lockBar(title,note){
     : '<span>🔒 <b>'+title+'</b>, '+note+'</span><button class="btn" data-lock="1">Enable editing</button>')+'</div>';
 }
 function buildAssumptions(){
+  const NS=!HIDE_NOTES_SOURCE, ncols=NS?8:6;   // Notes/Source hidden under the staff-review hold → drop the columns rather than leave them empty
   const nNoSrc=ASSUMP.filter(r=>!(r.source&&String(r.source).trim())).length;
-  const srcBanner=nNoSrc?'<div class="calflag"><b>'+nNoSrc+' of '+ASSUMP.length+' benchmarks lack a cited source.</b> Treat those rows as sketch-grade placeholders until calibrated to local SPB / Pinellas data; each is flagged below and counted on the printed summary.</div>':'';
-  let h=srcBanner+'<fieldset class="lockfs"'+(advUnlocked?'':' disabled')+'><div class="atable-wrap"><table class="atable assumptable"><colgroup><col style="width:17%"><col style="width:10%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:24%"><col style="width:17%"></colgroup><thead><tr><th scope="col">Benchmark</th><th scope="col">Units</th><th scope="col" class="r">Low</th><th scope="col" class="r">High</th><th scope="col" class="r">Applied</th><th scope="col" class="r">Override</th><th scope="col">Notes</th><th scope="col">Source</th></tr></thead><tbody>';
+  const srcBanner=(nNoSrc&&NS)?'<div class="calflag"><b>'+nNoSrc+' of '+ASSUMP.length+' benchmarks lack a cited source.</b> Treat those rows as sketch-grade placeholders until calibrated to local SPB / Pinellas data; each is flagged below and counted on the printed summary.</div>':'';
+  const cgA=NS?'<col style="width:17%"><col style="width:10%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:24%"><col style="width:17%">'
+              :'<col style="width:30%"><col style="width:18%"><col style="width:12%"><col style="width:12%"><col style="width:14%"><col style="width:14%">';
+  let h=srcBanner+'<fieldset class="lockfs"'+(advUnlocked?'':' disabled')+'><div class="atable-wrap"><table class="atable assumptable"><colgroup>'+cgA+'</colgroup><thead><tr><th scope="col">Benchmark</th><th scope="col">Units</th><th scope="col" class="r">Low</th><th scope="col" class="r">High</th><th scope="col" class="r">Applied</th><th scope="col" class="r">Override</th>'+(NS?'<th scope="col">Notes</th><th scope="col">Source</th>':'')+'</tr></thead><tbody>';
   let sec="";
   ASSUMP.forEach((r,i)=>{
-    if(r.sec!==sec){sec=r.sec;h+='<tr class="asecrow"><td colspan="8">'+sec+'</td></tr>';}
+    if(r.sec!==sec){sec=r.sec;h+='<tr class="asecrow"><td colspan="'+ncols+'">'+sec+'</td></tr>';}
     const hasBasis=r.basis!==undefined;
     let unitCell=r.unit;
     if(hasBasis){
@@ -2763,22 +2774,28 @@ function buildAssumptions(){
         '<option value="sf"'+(r.basis==="sf"?" selected":"")+'>$/SF</option></select>'+
         '<div class="anote" style="margin-top:4px;white-space:nowrap">avg <input type="text" inputmode="decimal" class="hnum basis-sf" data-i="'+i+'" value="'+(r.sf||"").toLocaleString()+'" aria-label="'+r.label+', average size in square feet"> '+(r.unit==="$/key"?"SF/key":"SF/unit")+'</div>';
     }
-    const implied=hasBasis?' <span class="anote" id="aimpl-'+i+'" style="white-space:nowrap;color:var(--accent)">'+aImplied(r)+'</span>':"";
-    const noteCell=advUnlocked
-      ? '<input type="text" class="asrc" data-i="'+i+'" data-col="notes" value="'+esc(r.notes||"")+'" placeholder="notes…" aria-label="'+esc(r.label)+', notes">'+implied
-      : (esc(r.notes||"")+implied);
-    const noSrc=!(r.source&&String(r.source).trim());
-    const srcFlag=(noSrc&&!HIDE_NOTES_SOURCE)?'<div class="nosrc">⚠ Uncalibrated, no cited source</div>':"";
-    const srcCell=(advUnlocked
-      ? '<input type="text" class="asrc" data-i="'+i+'" data-col="source" value="'+esc(r.source||"")+'" placeholder="source…" aria-label="'+esc(r.label)+', source">'
-      : esc(r.source||""))+srcFlag;
+    /* the live "= $X/SF" implied readout (id aimpl-i, updated on edit). It normally lives in the Notes
+       cell; when Notes/Source are hidden it moves under the Applied value so it is never lost. */
+    const impliedSpan=hasBasis?'<span class="anote" id="aimpl-'+i+'" style="white-space:nowrap;color:var(--accent)">'+aImplied(r)+'</span>':"";
+    let tail="";
+    if(NS){
+      const noteCell=advUnlocked
+        ? '<input type="text" class="asrc" data-i="'+i+'" data-col="notes" value="'+esc(r.notes||"")+'" placeholder="notes…" aria-label="'+esc(r.label)+', notes">'+(impliedSpan?(' '+impliedSpan):"")
+        : (esc(r.notes||"")+(impliedSpan?(' '+impliedSpan):""));
+      const noSrc=!(r.source&&String(r.source).trim());
+      const srcFlag=noSrc?'<div class="nosrc">⚠ Uncalibrated, no cited source</div>':"";
+      const srcCell=(advUnlocked
+        ? '<input type="text" class="asrc" data-i="'+i+'" data-col="source" value="'+esc(r.source||"")+'" placeholder="source…" aria-label="'+esc(r.label)+', source">'
+        : esc(r.source||""))+srcFlag;
+      tail='<td class="tnote">'+noteCell+'</td><td class="tnote">'+srcCell+'</td>';
+    }
+    const appliedExtra=(!NS&&impliedSpan)?('<div style="margin-top:2px">'+impliedSpan+'</div>'):"";
     h+='<tr><td>'+r.label+'</td><td class="anote">'+unitCell+'</td>'+
        '<td class="r">'+fld(i,"low",aToDisp(r,r.low),"alow",r.fmt)+'</td>'+
        '<td class="r">'+fld(i,"high",aToDisp(r,r.high),"ahigh",r.fmt)+'</td>'+
-       '<td class="r"><span class="aapplied" data-i="'+i+'">'+fmtAssump(r)+'</span></td>'+
+       '<td class="r"><span class="aapplied" data-i="'+i+'">'+fmtAssump(r)+'</span>'+appliedExtra+'</td>'+
        '<td class="r">'+fld(i,"override",aToDisp(r,r.override),"ov",r.fmt)+'</td>'+
-       '<td class="tnote">'+noteCell+'</td>'+
-       '<td class="tnote">'+srcCell+'</td></tr>';
+       tail+'</tr>';
   });
   h+='</tbody></table></div></fieldset>';
   h+=lockBar("Calibrated model defaults","Construction costs, multipliers, scarcity shape, market comps, and policy guardrails.");
