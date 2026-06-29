@@ -576,6 +576,9 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
       </div>
       <p class="lede" style="margin:6px 0 0">Review the decision, then use the suggested counter-package and the ranked benefits to shape the ask.</p>
       </div>
+      <div class="card" id="results-legal" style="border-left:3px solid var(--accent)">
+        <p class="lede" style="margin:0"><b>Before acting on this number,</b> check the legal &amp; political guardrails: the St. Pete Beach <b>charter referendum</b> requirement, the <b>Live Local Act</b> as the developer's outside option, and the <b>Nollan / Dolan / Koontz / Sheetz</b> exactions limits (size the compellable ask on public impacts, not land-value uplift). <a href="#" style="color:var(--accent);font-weight:600;text-decoration:none" onclick="openLegal();return false;">Read the guardrails →</a> Decision support, not legal advice.</p>
+      </div>
       <div class="card">
         <h3>Zone of Possible Agreement (ZOPA)</h3>
         <div class="sub">Developer benefit spending, from the minimum that satisfies the city up to the value to developer. The shaded band is the <b>target capture zone</b>, a fair-share guideline off the absolute floor and ceiling.</div>
@@ -731,6 +734,16 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
         <p class="lede" style="margin:8px 0 0"><b>Value to developer (v1.16.0).</b> The bonus is valued from a per-unit market value run through a residual cost build-up. That market value can be entered directly as a sale comparable, or derived on Step 1 from an <b>income / fundamentals approach</b> shown as a cross-check with a one-click "use this": condominium = sellable SF × $/SF; multifamily rental = NOI ÷ cap rate (rent, vacancy, operating expense); lodging = ADR × occupancy × ancillary × EBITDA ÷ cap rate. (Rental previously borrowed the condo sale comp; the income approach now anchors it on its own operating economics.) Inputs are editable in Assumptions § B and § G. The core calculation now runs through a unit-tested engine module.</p>
         <p class="lede" style="margin:8px 0 0"><b>Two-tier marginal cost (v1.17.0).</b> Optionally charge a construction <b>step-up</b> only to the marginal bonus units (Assumptions § A, "Bonus-unit construction step-up"), reflecting that the added density is what pushes a project into a costlier construction type and structured parking. Default 1.00× leaves the calibrated figures unchanged; set it (e.g. 1.10–1.15×) to apply the two-tier residual-land-value treatment from the supporting analysis. This is a cost-side premium on the bonus units, separate from the value-side decline factor.</p>
       </div>
+
+      <div class="card" id="legal-card">
+        <h3>Legal &amp; Political Guardrails</h3>
+        <p class="lede" style="margin:0 0 8px">Read before relying on any number. The Basis card above covers the local code; these are the state-law and charter constraints that sit on top of it. They are surfaced as caveats, not enforced in the math, this tool is decision support, not a legal determination.</p>
+        <p class="lede" style="margin:0 0 8px"><b>Charter referendum.</b> The St. Pete Beach charter requires a <b>voter referendum</b> before the Commission can increase height, density, or intensity, or change a land-use category. A recommended bonus may not be grantable by staff or Commission action alone, confirm the charter threshold and process with the City Attorney before treating any number as actionable.</p>
+        <p class="lede" style="margin:0 0 8px"><b>Live Local Act.</b> Florida's Live Local Act (2023, amended 2024) can override local density and height limits for qualifying affordable projects (broadly, 40%+ of units at or below 120% AMI for 30+ years). It is the developer's <b>outside option</b>, and a credible one effectively caps how much public benefit the city can extract for density the developer may be able to obtain by right under state law.</p>
+        <p class="lede" style="margin:0 0 8px"><b>Exactions doctrine, Nollan / Dolan / Koontz / Sheetz.</b> Any required public benefit must satisfy <i>Nollan</i> essential nexus and <i>Dolan</i> rough proportionality, extended to monetary exactions by <i>Koontz</i> (2013) and to legislatively adopted fee schedules by <i>Sheetz v. County of El Dorado</i> (2024). Legal exposure is highest when a benefit is priced off land-value <b>uplift</b> (value capture) rather than the <b>public impacts</b> the added density creates, which is exactly why this tool sizes the compellable floor on the impact-mitigation basis and uses uplift only as a negotiation ceiling. The framing is the City Attorney's call.</p>
+        <p class="lede" style="margin:0 0 8px"><b>State offset rule, §166.04151.</b> If the city ever <b>mandates</b> affordable units, Florida law requires offsetting incentives that <b>fully offset</b> the developer's cost. Voluntary bonus density offered in exchange for public benefit is a different legal posture, but a mandate would change the math.</p>
+        <p class="lede" style="margin:0"><b>Not legal advice.</b> This is a sketch-planning estimate and decision-support aid only, not an appraisal, not adopted policy, and not a legal determination. Confirm density / FAR figures and pool balances against the adopted Comprehensive Plan and the live Municode LDC, and route the exaction framing through the City Attorney.</p>
+      </div>
       </div>
     </section>
 
@@ -769,7 +782,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 
 <script>
 "use strict";
-const VERSION="1.17.0", VERSION_DATE="2026-06-29";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
+const VERSION="1.18.0", VERSION_DATE="2026-06-29";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
 /* Staff-review holds (restorable: flip to false). SIMPLE_BENEFITS hides the recurring + enforceability
    controls on the Benefits step and counts every benefit at full credit (no haircut). HIDE_NOTES_SOURCE
    blanks the Notes/Source columns on the Assumptions + Benefit-library pages at runtime; the underlying
@@ -2728,6 +2741,8 @@ function showAux(name){returnStep=cur;
   const el=document.querySelector('.panel[data-aux="'+name+'"]'); if(el)el.classList.add("show");
   renderAux(name); window.scrollTo({top:0,behavior:"smooth"});
 }
+/* open the User Guide and jump to the Legal & political guardrails card (from the Results pointer) */
+function openLegal(){showAux("method");setTimeout(()=>{const el=document.getElementById("legal-card");if(el)el.scrollIntoView({behavior:"smooth",block:"start"});},140);}
 let advUnlocked=false;
 function lockBar(title,note){
   return '<div class="lockbar">'+(advUnlocked
