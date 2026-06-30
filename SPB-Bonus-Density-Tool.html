@@ -2670,7 +2670,7 @@ function setPin(lat,lon){
   const setSrc=t=>{const s=document.getElementById("pin-src"); if(s)s.textContent=t;};
   LAST_FLU=fluAt(lat,lon);   // remember the embedded FLU code for the TC-1 / BHC small-pool note
   const fluKey=FLU_TO_DISTRICT[LAST_FLU];
-  if(fluKey){applyDistrict(fluKey);setSrc("· district from city FLU layer, verify");}
+  if(fluKey){applyDistrict(fluKey);setSrc("");}
   else lookupZoning(lat,lon).then(r=>{
     if(r.ok){applyDistrict(r.key);setSrc("· district from countywide layer, verify");}
     else{applyDistrict("UNK");setSrc("· district not auto-detected");}
