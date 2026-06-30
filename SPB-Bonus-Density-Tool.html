@@ -674,7 +674,7 @@ th.notecol{font-size:12px;font-weight:400}
         <button class="btn" id="btn-savescen">Save scenario</button>
         <button class="btn" id="btn-compare">Compare scenarios</button>
       </div>
-      <p class="lede" style="margin:6px 0 0">Review the decision, then use the suggested counter-package and the ranked benefits to shape the ask.</p>
+      <p class="lede" style="margin:6px 0 0">Use the suggested counter-package and the benefit ranking below to size the request.</p>
       <div class="subsec">
         <h3>Zone of Possible Agreement (ZOPA)</h3>
         <div class="sub">Developer benefit spending, from the minimum that satisfies the city up to the value to developer. The shaded band is the <b>target capture zone</b>, a fair-share <b>guideline, not adopted code</b> (analyst overlay), off the absolute floor and ceiling.</div>
@@ -688,12 +688,12 @@ th.notecol{font-size:12px;font-weight:400}
       </div>
       <div class="subsec" id="vstack-card">
         <h3>Where the Bonus Value Goes</h3>
-        <div class="sub">The sale value of the bonus units, split into build-and-sell cost, developer profit, public benefits secured, and value kept by the developer. A bigger teal slice means more captured for the public.</div>
+        <div class="sub">The sale value of the bonus units, split into build-and-sell cost, developer profit, public benefits secured, and value kept by the developer.</div>
         <div id="valuestack"></div>
       </div>
       <div class="subsec">
         <h3>Benefits Ranked by Value-to-Cost Ratio</h3>
-        <div class="sub">City value per dollar of developer cost. Use it to decide what to ask for; size the ask with the explorer below.</div>
+        <div class="sub">City value per dollar of developer contribution; ranks which benefits to request first. Size the package with the explorer below.</div>
         <div id="ranks"></div>
       </div>
       <div class="subsec" id="explore-card">
@@ -847,7 +847,7 @@ th.notecol{font-size:12px;font-weight:400}
       <button class="btn auxback" style="margin-bottom:14px">← Back</button>
       <div class="eyebrow">Compare</div>
       <h2 class="step-h">Saved Scenarios</h2>
-      <p class="lede">Snapshot inputs and results and compare side by side. Figures are <b>frozen</b> at save time under the version shown per row. <b>Loading</b> replaces the current inputs and re-evaluates under today's methodology, so an older snapshot may read differently, by design.</p>
+      <p class="lede">Save snapshots of inputs and results to compare side by side. Figures are <b>frozen</b> at save time under the version shown per row. <b>Loading</b> replaces the current inputs and re-evaluates under today's methodology, so an older snapshot may read differently.</p>
       <div id="aux-scenarios"></div>
     </section>
 
@@ -899,7 +899,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.25.4", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.25.5", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -2987,7 +2987,7 @@ function waterfallV(){
     '<div class="wbar" role="img" aria-label="Sale price '+kf(S.market)+' split into hard cost '+kf(hard)+', soft cost '+kf(soft)+', margin '+kf(margin)+(sales>0?', sales '+kf(sales):'')+' and residual '+kf(residual)+'">'+bar+'</div>'+
     '<div class="wlg">'+legend+'</div>'+
     (residual>0
-      ? '<p class="lede" style="margin:12px 0 0">The teal <b>residual ('+kf(resPos)+' per unit)</b> is the value the bonus density actually creates for the developer, the sale price left after cost and profit. The bigger that slice, the more the city can ask for in return.</p>'
+      ? '<p class="lede" style="margin:12px 0 0">The teal <b>residual ('+kf(resPos)+' per unit)</b> is the sale price left after cost and profit, the value the bonus density adds for the developer. It sets the ceiling on what they could return to the city.</p>'
       : '<p class="lede" style="margin:12px 0 0"><b style="color:#b4453c">Cost and profit exceed the sale price</b>, so there is no residual, the bonus has little standalone value at these inputs (check the market price and the hard cost).</p>');
 }
 function derivV(m){
@@ -3476,7 +3476,7 @@ const CASES=[{
   image:"images/corey-landings-kolter.png",
   imgcap:"Corey Landings, rendering (Kolter Urban)",
   lat:27.74454, lon:-82.74593, zoom:16,
-  blurb:"A 133-unit luxury condominium redevelopment on Corey Avenue, 108 units by-right plus a 25-unit bonus drawn from St. Pete Beach's 195-unit residential (RU) density pool. Three towers at 86 ft on 4.51 buildable acres in the TC-2 Town Center Corey Circle district (AE flood zone). It is the project this tool's worked example is calibrated to, so the verified figures make a clean teaching case.",
+  blurb:"A 133-unit luxury condominium redevelopment on Corey Avenue, 108 units by-right plus a 25-unit bonus drawn from St. Pete Beach's 195-unit residential (RU) density pool. Three towers at 86 ft on 4.51 buildable acres in the TC-2 Town Center Corey Circle district (AE flood zone). The tool's worked example is calibrated to this project, so its inputs are verified rather than illustrative.",
   facts:[
     ["Use","Condominium, 133 units"],
     ["By-right / bonus","108 by-right + 25 bonus (RU pool)"],
@@ -3506,7 +3506,7 @@ const CASES=[{
   ]
 }];
 function buildCases(){
-  let h='<p class="lede">Real, verified projects worked end-to-end. Load one to populate every input, then review the full breakdown, the four numbers, the ZOPA with its target-capture zone, and the value charts, and adjust it to explore alternatives. Loading replaces the current project inputs; the '+secLink('Assumptions',"showAux('assumptions')")+' and the '+secLink('allocation ledger',"showAux('history')")+' are kept.</p>';
+  let h='<p class="lede">A verified project, pre-filled for reference. Loading populates every input and replaces the current Project and Benefits; the '+secLink('Assumptions',"showAux('assumptions')")+' and the '+secLink('allocation ledger',"showAux('history')")+' are kept. Adjust any input to test alternatives.</p>';
   CASES.forEach((c,i)=>{
     const textCol='<p class="lede" style="margin:10px 0">'+esc(c.blurb)+'</p>'+
        '<div class="atable-wrap"><table class="atable" style="table-layout:fixed"><colgroup><col style="width:30%"><col style="width:70%"></colgroup><tbody>'+
@@ -3629,7 +3629,7 @@ function buildScenarios(){
     '<button class="btn" id="scen-import">Import…</button>'+
     '<input type="file" id="scen-import-file" accept="application/json,.json" style="display:none" aria-hidden="true" tabindex="-1"></div></div>';
   if(!scenarios.length){
-    h+='<p class="lede">No saved scenarios yet. Save snapshots the current inputs and results so you can compare alternatives, for example, the same project at different bonus counts or benefit packages.</p>';
+    h+='<p class="lede">No saved scenarios yet. Save snapshots of the current inputs and results to compare alternatives, for example the same project at different bonus counts or benefit packages.</p>';
     return h;
   }
   h+='<div class="atable-wrap"><table class="atable"><thead><tr><th scope="col">Scenario</th><th scope="col">Saved</th><th scope="col">Use / district</th><th scope="col" class="r">Bonus</th><th scope="col" class="r">Acres</th><th scope="col" class="r">Value to dev</th><th scope="col" class="r">Baseline</th><th scope="col" class="r">Dev cost</th><th scope="col" class="r">Public value</th><th scope="col" class="r">Pub val / acre</th><th scope="col" class="r">Ratio</th><th scope="col" class="r" title="Public value as a multiple of the break-even floor">× over baseline</th><th scope="col">Decision</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead><tbody>';
