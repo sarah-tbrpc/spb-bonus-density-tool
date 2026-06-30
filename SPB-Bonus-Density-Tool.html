@@ -121,7 +121,9 @@ select,input[type=number],input[type=text]{font-family:inherit;font-size:14px;pa
 select:hover,input[type=number]:hover,input[type=text]:hover{border-color:#cdd3d8}
 select:focus,input[type=number]:focus,input[type=text]:focus{outline:none;border-color:var(--accent);box-shadow:var(--ring)}
 @media(max-width:560px){select,input[type=number],input[type=text]{font-size:16px}}
-select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2354616c' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:11px;padding-right:34px}
+select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2335424c' stroke-width='2.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;background-size:15px;padding-right:38px}
+/* compact selects in dense tables / benefit meta keep a smaller caret so it doesn't crowd narrow cells */
+.atable select,.bmeta select{background-size:11px;background-position:right 9px center}
 .atable input,.atable select,.inputs input,.brow input,.agrid input{min-height:0}
 .seg{display:flex;gap:6px;flex-wrap:wrap}
 .seg button{flex:1;min-width:78px;border:1px solid var(--line);background:#fff;color:var(--ink2);border-radius:5px;padding:8px;font-family:inherit;font-size:13px;cursor:pointer}
@@ -177,9 +179,9 @@ select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-i
 .specest{margin-top:12px;border-top:1px dashed var(--line);padding-top:10px}
 .specest summary{cursor:pointer;color:var(--accent);font-weight:600;font-size:12.5px;list-style:none}
 .specest summary::-webkit-details-marker{display:none}
-.specest summary::before{content:"▸ ";font-size:10px}
+.specest summary::before{content:"▸ ";font-size:12px}
 .specest[open] summary::before{content:"▾ "}
-.specest[open]>div{border:1px solid var(--line);border-radius:var(--r-sm);background:#f3f7f7;padding:11px 13px 13px}
+.specest[open]>div{border:1px solid var(--line);border-radius:var(--r-sm);background:#f3f4f5;padding:11px 13px 13px}
 .stephelp{font-size:12.5px;color:var(--ink3);margin:0 0 16px}
 .stephelp summary{cursor:pointer;color:var(--ink2);font-weight:600}
 .stephelp[open] summary{margin-bottom:6px}
@@ -350,7 +352,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 .parcel-item:last-of-type{border-bottom:none}
 .parcel-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:7px 11px;font-size:12.5px;cursor:pointer;list-style:none}
 .parcel-head::-webkit-details-marker{display:none}
-.parcel-head::before{content:"\25B8";color:var(--ink3);font-size:9px;flex:none}
+.parcel-head::before{content:"\25B8";color:var(--ink3);font-size:11px;flex:none}
 .parcel-item[open]>.parcel-head::before{content:"\25BE"}
 .parcel-head .ph-lab{color:var(--ink3);flex:1}
 .parcel-head .ph-area{white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums}
@@ -358,6 +360,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 .parcel-detail{background:#e9edf0;border-top:1px solid var(--line)}
 .parcel-detail .si-row{padding-left:22px;font-size:12px}
 .parcel-total{background:var(--brand-soft)}
+#parcel-list{background:#f3f4f5}
 #parcel-list:empty{display:none}
 .siteintel .si-auto{color:var(--ink)}
 .siteintel .si-link{font-weight:600;font-size:11.5px;color:var(--accent);text-decoration:none;white-space:nowrap}
@@ -1631,10 +1634,10 @@ STEPS.forEach((t,i)=>{const b=document.createElement("button");b.className="step
 stepnav.appendChild(stepbtns);
 const navfoot=document.createElement("div");navfoot.className="navfoot";
 navfoot.innerHTML='<div class="navgrp" data-grp="work"><button class="navgrp-h" data-navtoggle="1"><span class="navcaret">▸</span> Workspace</button><div class="navgrp-body">'+
-  '<button id="openassume">Assumptions</button><button id="openhistory">Allocation history</button><button id="openlibrary">Benefit library</button><button id="openscenarios">Saved scenarios</button></div></div>'+
+  '<button id="openassume">Assumptions</button><button id="openhistory">Allocation History</button><button id="openlibrary">Benefit Library</button><button id="openscenarios">Saved Scenarios</button></div></div>'+
   '<div class="navgrp" data-grp="ref"><button class="navgrp-h" data-navtoggle="1"><span class="navcaret">▸</span> Reference</button><div class="navgrp-body">'+
-  '<button id="openmethod">User Guide</button><button id="opencases">Case studies</button></div></div>'+
-  '<button id="resetall" class="rst">Reset all</button>'+
+  '<button id="openmethod">User Guide</button><button id="opencases">Case Studies</button></div></div>'+
+  '<button id="resetall" class="rst">Reset All</button>'+
   '<div class="navcredit"><a href="https://www.tbrpc.org" target="_blank" rel="noopener">TBRPC Civic Tech</a> <span class="navver">v'+VERSION+'</span></div>';
 stepnav.appendChild(navfoot);
 navfoot.querySelectorAll("[data-navtoggle]").forEach(b=>b.addEventListener("click",()=>{const g=b.closest(".navgrp");const open=g.classList.toggle("open");b.setAttribute("aria-expanded",open?"true":"false");}));
@@ -2561,7 +2564,7 @@ function syncParcelHighlights(){
   if(!parcelLayer)return;
   _selParcels.forEach(l=>{try{l.setStyle(PARCEL_BASE);}catch(e){}}); _selParcels=[];
   if(!multiMode||!parcelsOn)return;
-  PARCELS.forEach(p=>{ if(p.lat==null||p.lon==null)return; parcelLayer.eachLayer(lyr=>{ if(_selParcels.indexOf(lyr)>=0)return; if(lyr.feature&&pointInGeom(p.lon,p.lat,lyr.feature.geometry)){lyr.setStyle(PARCEL_SEL);_selParcels.push(lyr);} }); });
+  PARCELS.forEach(p=>{ const dp=p.pin?dashPin(p.pin):null; let found=false; parcelLayer.eachLayer(lyr=>{ if(found||_selParcels.indexOf(lyr)>=0)return; const f=lyr.feature; if(!f)return; if((dp&&f.properties&&f.properties.id===dp)||(p.lat!=null&&p.lon!=null&&pointInGeom(p.lon,p.lat,f.geometry))){lyr.setStyle(PARCEL_SEL);_selParcels.push(lyr);found=true;} }); });
 }
 function toggleParcels(on){ parcelsOn=on; if(!parcelLayer||!map)return; if(on){parcelLayer.addTo(map);syncParcelHighlights();} else {map.removeLayer(parcelLayer);_selParcels=[];} }
 function addCraLayers(map){
@@ -3076,13 +3079,17 @@ const CASES=[{
   state:{pname:"Corey Landings",papp:"KT Corey Ave LLC / Kolter (CUP 25069)",use:"Condominium",btype:"High-rise (8+)",subtype:"Gulf-front",parking:"structured",coastal:"AE",district:"TC2",acres:4.51,byright:108,bonus:25,market:2600000,mktSF:2269,impact:28000},
   benefits:[{name:"Seawall / bulkhead",qty:103,pct:1},{name:"Public plaza / park",qty:24500,pct:1},{name:"Waterfront boardwalk / promenade",qty:600,pct:1},{name:"Public boat slip (Class A)",qty:4,pct:1}],
   address:"64 Corey Avenue, Saint Pete Beach",
-  /* the real 5-parcel assembly (PINs in raw 18-digit form so dashPin renders the public number); areas sum to 3.49 ac. Marker lat/lon are approximate within the Corey Circle site. */
+  /* the real 8-parcel assembly (PINs in raw 18-digit form so dashPin renders the public number);
+     areas sum to 4.50 ac. Marker lat/lon are the footprint centroids from the embedded parcel layer. */
   parcels:[
-    {pin:"153136000001400400",area:1.61,lat:27.74410,lon:-82.74575},
-    {pin:"153136000001400100",area:1.07,lat:27.74465,lon:-82.74540},
-    {pin:"153125780840000141",area:0.20,lat:27.74445,lon:-82.74560},
-    {pin:"153136306720630230",area:0.37,lat:27.74425,lon:-82.74585},
-    {pin:"153125780840000143",area:0.24,lat:27.74480,lon:-82.74545}
+    {pin:"153136000001400400",area:1.61,lat:27.74371,lon:-82.74587},  // 36-31-15-00000-140-0400
+    {pin:"153136000001400300",area:0.38,lat:27.74410,lon:-82.74556},  // 36-31-15-00000-140-0300
+    {pin:"153136000001400100",area:1.07,lat:27.74459,lon:-82.74547},  // 36-31-15-00000-140-0100
+    {pin:"153125780840000143",area:0.24,lat:27.74528,lon:-82.74603},  // 25-31-15-78084-000-0143
+    {pin:"153125780840000142",area:0.4,lat:27.74502,lon:-82.74618},   // 25-31-15-78084-000-0142
+    {pin:"153125780840000141",area:0.2,lat:27.74493,lon:-82.74653},   // 25-31-15-78084-000-0141
+    {pin:"153136135900000010",area:0.23,lat:27.74480,lon:-82.74683},  // 36-31-15-13590-000-0010
+    {pin:"153136306720630230",area:0.37,lat:27.74431,lon:-82.74648}   // 36-31-15-30672-063-0230
   ]
 }];
 function buildCases(){
@@ -3146,6 +3153,8 @@ function loadCaseParcels(c){
     if(c.parcels[0])setPin(c.parcels[0].lat,c.parcels[0].lon);
     var pa=document.getElementById("paddr"); if(pa)pa.value=c.address||"";
     renderParcelList();
+    if(typeof syncParcelHighlights==="function")syncParcelHighlights();   // highlight the loaded parcel footprints
+    if(map&&typeof L!=="undefined"){try{const grp=L.featureGroup(PARCELS.filter(p=>p.marker).map(p=>p.marker));if(grp.getLayers().length){map.fitBounds(grp.getBounds().pad(0.6));setTimeout(()=>{if(map)map.invalidateSize();},160);}}catch(e){}}
   } else { if(mpc)mpc.checked=false; if(sif)sif.style.display=""; }
 }
 function buildScenarios(){
