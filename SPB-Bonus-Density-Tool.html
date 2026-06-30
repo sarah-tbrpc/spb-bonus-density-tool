@@ -768,7 +768,7 @@ th.notecol{font-size:12px;font-weight:400}
       </div>
 
       <div class="subsec">
-        <h3>Known Limits, Read Before Relying on It</h3>
+        <h3>Known Limits</h3>
         <ul class="guide-list">
           <li><b>Plain-dollar decision.</b> Pass/fail compares the package's plain public value to the plain-dollar floor. Category multipliers (resilience 2.5×, etc.) only rank benefits within a package; they do not inflate the offer.</li>
           <li><b>Invented curve shapes.</b> The scarcity exponent and value-decline factor are judgment shapes, not empirical (both editable under <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions</a>).</li>
@@ -840,7 +840,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.20.6", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.20.7", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden — a
