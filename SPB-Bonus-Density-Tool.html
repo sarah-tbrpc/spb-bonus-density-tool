@@ -183,6 +183,7 @@ select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-i
 .benote-body textarea,.inputs textarea{width:100%;box-sizing:border-box;font-family:inherit;font-size:13px;padding:8px 10px;border:1px solid var(--line);border-radius:var(--r-sm);background:#fff;color:var(--ink);min-height:38px;resize:none;overflow:hidden;line-height:1.4}
 .benote-body textarea:focus,.inputs textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(39,87,106,.14)}
 .inp-lab{font-size:10px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink3);margin-bottom:3px;white-space:nowrap}
+.inp-sub{font-size:10px;color:var(--ink3);margin-top:4px;font-variant-numeric:tabular-nums}
 .inputs input{padding:6px 8px;font-size:13px;width:100%;height:38px;text-align:right;font-variant-numeric:tabular-nums}
 .browcalc{margin-top:8px}
 .bchips{display:flex;flex-wrap:wrap}
@@ -650,7 +651,7 @@ th.notecol{font-size:12px;font-weight:400}
         <details class="stephelp"><summary>How lines are counted</summary>Each line has two per-unit figures: <b>Developer cost / unit</b> (what it costs the developer to provide it) and <b>Public value / unit</b> (what it is worth to the city) — the gap between them is the public's gain from the trade, and it varies by benefit (sometimes the city values a thing far above what it costs to build; sometimes not). Public value offered = quantity × public value per unit; lines are ranked by the top-right badge (priority-weighted public value per developer dollar). Enter only the amount <b>beyond what code already requires</b> — if code mandates part of a benefit, leave that part out so required work isn't credited as a voluntary concession. Full method in the <a href="#" class="seclink" onclick="showAux('method');return false;">User&nbsp;Guide</a>; cost factors and the category priority weights (section D) are editable under <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions</a>.</details>
         <div id="blist"></div>
         <div id="pkg-summary"></div>
-        <div class="btot"><span>Developer cost</span><span class="mono" id="tot-a"></span></div>
+        <div class="btot"><span>Developer contribution (stated)</span><span class="mono" id="tot-a"></span></div>
         <div class="btot" style="border-top:1px solid var(--line);margin-top:4px;padding-top:9px"><span>Public value offered</span><span class="mono" id="tot-b"></span></div>
         <div class="addbar">
           <select id="addsel"></select>
@@ -860,7 +861,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.22.3", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.23.0", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden — a
@@ -2040,8 +2041,8 @@ function render(){
       '<button class="bdel" data-x="'+i+'" aria-label="Remove benefit" title="Remove benefit">×</button></div></div>'+
       '<div class="inputs">'+
         '<div><div class="inp-lab">Qty</div><input type="text" inputmode="decimal" value="'+fmtNum(x.qty)+'" data-i="'+i+'" data-f="qty"></div>'+
-        '<div><div class="inp-lab" title="What it costs the developer to provide one unit of this benefit.">Developer cost / unit</div><input type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.dev))+'" data-i="'+i+'" data-f="dev"></div>'+
-        '<div><div class="inp-lab" title="What one unit of this benefit is worth to the city. The gap above developer cost is the public&#39;s gain from the trade.">Public value / unit</div><input type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.city))+'" data-i="'+i+'" data-f="city"></div>'+
+        '<div><div class="inp-lab" title="The developer&#39;s stated total contribution for this benefit — what they propose to provide or pay (their claim / offer, not a verified pro-forma cost). The per-unit figure below is derived (total ÷ quantity).">Stated contribution</div><input type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.devTotal!=null?x.devTotal:x.dev*x.qty))+'" data-i="'+i+'" data-f="devtot"><div class="inp-sub">≈ '+fmt(Math.round(x.dev))+' / '+esc((x.unit||"unit").replace(/^\$\s*\/\s*/,""))+'</div></div>'+
+        '<div><div class="inp-lab" title="What one unit of this benefit is worth to the city. The gap above the developer&#39;s contribution is the public&#39;s gain from the trade.">Public value / unit</div><input type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.city))+'" data-i="'+i+'" data-f="city"></div>'+
       '</div>'+
       '<div class="bexchange" id="bexch-'+i+'" data-unit="'+esc(x.unit||'')+'">'+benefitExchSentence(x.name,x.unit,x.qty,x.pct)+'</div>'+
       '<details class="benote"><summary><span class="note-caret">▸</span> Notes &amp; source</summary><div class="benote-body">'+
@@ -2063,10 +2064,12 @@ function render(){
     bl.querySelectorAll("input,textarea").forEach(inp=>{
     if(inp.type==="checkbox"){inp.addEventListener("change",e=>{S.benefits[+e.target.dataset.i].recurring=e.target.checked;render();});return;}
     inp.addEventListener("input",e=>{
-      const i=+e.target.dataset.i,f=e.target.dataset.f;
+      const i=+e.target.dataset.i,f=e.target.dataset.f,b=S.benefits[i];
       if(e.target.tagName==="TEXTAREA")autoGrowTA(e.target);   // note/source grow to fit as you type
-      S.benefits[i][f]= (f==="note"||f==="source") ? e.target.value : (f==="pct" ? (parseNum(e.target.value)/100) : parseNum(e.target.value));
-      if(f==="qty"||f==="pct"){const be=document.getElementById("bexch-"+i); if(be)be.innerHTML=benefitExchSentence(S.benefits[i].name,be.dataset.unit,S.benefits[i].qty,S.benefits[i].pct);}
+      if(f==="devtot"){const T=parseNum(e.target.value); b.devTotal=T; b.dev=(b.qty>0)?T/b.qty:T;}   // stated contribution is a TOTAL; per-unit is derived
+      else { b[f]= (f==="note"||f==="source") ? e.target.value : (f==="pct" ? (parseNum(e.target.value)/100) : parseNum(e.target.value)); }
+      if(f==="qty"&&b.devTotal!=null){b.dev=(b.qty>0)?b.devTotal/b.qty:b.devTotal;}   // total stays fixed, per-unit re-derives
+      if(f==="qty"||f==="pct"){const be=document.getElementById("bexch-"+i); if(be)be.innerHTML=benefitExchSentence(b.name,be.dataset.unit,b.qty,b.pct);}
       softRender();});
     inp.addEventListener("change",e=>{const f=e.target.dataset.f; if(f!=="pct"&&f!=="note"&&f!=="source"&&f!=="term")e.target.value=fmtNum(parseNum(e.target.value));});});
   /* size note/source textareas to their pre-loaded text when their disclosure opens (scrollHeight is 0 while the <details> is closed) */
@@ -2952,17 +2955,17 @@ function derivCM(m){
 }
 function derivB(m){
   let d='<div class="card">'+derivMap('B')+
-   '<p class="lede" style="margin:0 0 16px"><b>The question:</b> what public value is actually on the table, and does it clear the bar? Add up each benefit’s quantity × the city’s value per unit (plain dollars). The decision then compares this offer to the break-even floor (worthwhile?) and the developer’s cost to the value-to-developer ceiling (feasible?).</p>';
+   '<p class="lede" style="margin:0 0 16px"><b>The question:</b> what public value is actually on the table, and does it clear the bar? Add up each benefit’s quantity × the city’s value per unit (plain dollars). The decision then compares this offer to the break-even floor (worthwhile?) and the developer’s stated contribution to the value-to-developer ceiling (feasible?).</p>';
   d+='<div class="deriv deriv-flat"><div class="step"><b>Public value offered = Σ (quantity × city value / unit)</b></div>';
   if(m.rows.length) m.rows.forEach(x=>{ d+='<div class="step">'+x.name+': '+x.qty+' × '+fmtFull(x.city)+(x.pct<1?(' × '+Math.round(x.pct*100)+'%'):'')+' = <b>'+fmtFull(x.cityPlain)+'</b>'+(x.mult!==1?(' <span class="anote">(×'+x.mult+' priority weight = '+fmtFull(x.cityVal)+', ranking only)</span>'):'')+'</div>'; });
   else d+='<div class="step"><span class="anote">No benefits added yet — add them on the Benefits step.</span></div>';
   d+='<div class="step" style="margin-top:6px"><b>Total offered public value</b> = <span class="res">'+fmtFull(m.Bplain)+'</span></div>';
-  d+='<div class="step" style="margin-top:8px"><b>Developer cost</b> (quantity × developer cost / unit) = <b>'+fmtFull(m.A)+'</b> — value ratio '+(m.gPlain?m.gPlain.toFixed(2):"0")+'×</div></div>';
+  d+='<div class="step" style="margin-top:8px"><b>Developer contribution (stated)</b> = Σ each benefit’s stated total = <b>'+fmtFull(m.A)+'</b> — value ratio '+(m.gPlain?m.gPlain.toFixed(2):"0")+'× <span class="anote">(what the applicant proposes to provide, not a verified pro-forma cost)</span></div></div>';
   const passW=m.Bplain>=m.cityMin, passF=m.A<=m.Vlow;
   const tag=(ok,t)=>'<span class="cmp-tag" style="background:'+(ok?'#e3f0e8':'#fbecd9')+';color:'+(ok?'var(--pass)':'var(--warn)')+'">'+t+'</span>';
   d+='<div style="margin-top:16px">'+
      '<div class="cmpline"><b>Worthwhile?</b> Offered <span class="cmp-v">'+fmtFull(m.Bplain)+'</span> vs floor <span class="cmp-v">'+fmtFull(m.cityMin)+'</span> '+tag(passW,passW?'meets the floor':'below the floor')+'</div>'+
-     '<div class="cmpline"><b>Feasible?</b> Developer cost <span class="cmp-v">'+fmtFull(m.A)+'</span> vs ceiling <span class="cmp-v">'+fmtFull(m.Vlow)+'</span> <span class="anote">(conservative)</span> '+tag(passF,passF?'within the ceiling':'over the ceiling')+'</div></div>';
+     '<div class="cmpline"><b>Feasible?</b> Developer contribution <span class="cmp-v">'+fmtFull(m.A)+'</span> vs ceiling <span class="cmp-v">'+fmtFull(m.Vlow)+'</span> <span class="anote">(conservative)</span> '+tag(passF,passF?'within the ceiling':'over the ceiling')+'</div></div>';
   d+='<p class="lede" style="margin-top:16px">The pass/fail test is in <b>plain dollars</b>. The <b>priority weights</b> (resilience 2.5×, etc.) do <i>not</i> move the decision; they only rank which benefits to prefer within a package. Per-unit costs and values are editable on the '+secLink('Benefits step',"goto(1)")+'; priority weights under '+secLink('Assumptions',"showAux('assumptions')")+' (section D).</p>';
   d+='</div>';
   return d;
