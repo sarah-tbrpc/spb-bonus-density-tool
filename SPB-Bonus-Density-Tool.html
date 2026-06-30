@@ -808,7 +808,7 @@ th.notecol{font-size:12px;font-weight:400}
           <li><b>Valuations assume delivery.</b> Condition allocations on security (letter of credit or bond), delivery timing, and recalculation if approved density rises.</li>
           <li><b>Single TLU pool.</b> All lodging scarcity is priced against the 325-unit pool; the separate TC-1 (50) and Boutique Hotel-Condo (125) pools are not modeled (<a href="#" class="seclink" onclick="goto(0);return false;">Step&nbsp;1</a> flags when they apply).</li>
           <li><b>Residential and lodging only.</b> Commercial components of mixed-use projects do not draw pool units and are out of scope.</li>
-          <li><b>Tax excluded.</b> The Fiscal Snapshot shows taxable value and yield per acre as context only; counting it toward the ask would be fiscalization of land use.</li>
+          <li><b>Tax excluded.</b> The Fiscal Snapshot shows taxable value and yield per acre as context only; counting it toward the ask would be <b>fiscalization of land use</b> (letting tax revenue, not planning merit, drive the decision). Property tax is owed once built regardless of the package, so it is not a benefit the developer provides.</li>
           <li><b>Placeholders.</b> Hard costs, category multipliers, impact figures, and district densities are placeholders pending local cost data, a current concurrency study, and adopted priorities. Confirm the district against the official FLU map.</li>
         </ul>
       </div>
@@ -899,7 +899,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.25.2", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.25.3", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
