@@ -701,9 +701,12 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
     <section class="panel" data-aux="method">
       <button class="btn auxback" style="margin-bottom:14px">← Back</button>
       <div class="eyebrow">Reference</div>
-      <h2 class="step-h">User Guide (placeholder)</h2>
+      <h2 class="step-h">User Guide &amp; Method</h2>
+      <div class="card" style="border-left:3px solid var(--accent)">
+        <p class="lede" style="margin:0"><b>Not an appraisal, pro forma, or legal determination.</b> This is a sketch-planning decision-support aid for bonus-density negotiations. Figures are order-of-magnitude and most defaults are uncalibrated placeholders — see the per-row Source column on Assumptions and the Benefit Library. A density / height increase may require a <b>voter referendum</b> under the city charter; route the exaction framing through the City Attorney before treating any number as actionable.</p>
+      </div>
 
-      <div hidden>
+      <div>
       <div class="card">
         <h3>What This Is</h3>
         <p class="lede" style="margin:0">A staff sketch tool for bonus-density negotiations: order-of-magnitude figures, not a certified appraisal, pro forma, or legal determination. It covers allocations from the city's two finite density pools (195-unit RU and the TLU pools); Large Resort district-cap lodging and comp-plan amendments are out of scope. Calibrate inputs to local data before relying on any number, and commission an independent feasibility review for any allocation large relative to the pool or marginal in its decision.</p>
@@ -754,6 +757,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
         <p class="lede" style="margin:8px 0 0"><b>Sources &amp; benchmarks.</b> Benchmark figures trace to published sources, cited per row on the Assumptions and Benefit-library pages: construction cost <b>RSMeans</b> / <b>ICC</b>; lodging <b>STR / HVS</b>; soft costs and margin <b>ULI / CBRE</b>; condo comps <b>Redfin</b>; benefit unit costs from <b>SFRPC</b>, <b>FEMA</b>, <b>FDEP</b>, <b>FHWA</b>, <b>WGI</b>, <b>Forward Pinellas</b>, <b>UF Shimberg</b>, and <b>HUD</b>. Value-layer multipliers draw on <b>NIBS</b> (resilience), <b>GASB 34 / FHWA</b> (lifecycle), <b>FL Stat. 255.20</b>, and <b>BEA / RIMS II</b>.</p>
         <p class="lede" style="margin:8px 0 0"><b>Value to developer (v1.16.0).</b> The bonus is valued from a per-unit market value run through a residual cost build-up. That market value can be entered directly as a sale comparable, or derived on Step 1 from an <b>income / fundamentals approach</b> shown as a cross-check with a one-click "use this": condominium = sellable SF × $/SF; multifamily rental = NOI ÷ cap rate (rent, vacancy, operating expense); lodging = ADR × occupancy × ancillary × EBITDA ÷ cap rate. (Rental previously borrowed the condo sale comp; the income approach now anchors it on its own operating economics.) Inputs are editable in Assumptions § B and § G. The core calculation now runs through a unit-tested engine module.</p>
         <p class="lede" style="margin:8px 0 0"><b>Two-tier marginal cost (v1.17.0).</b> Optionally charge a construction <b>step-up</b> only to the marginal bonus units (Assumptions § A, "Bonus-unit construction step-up"), reflecting that the added density is what pushes a project into a costlier construction type and structured parking. Default 1.00× leaves the calibrated figures unchanged; set it (e.g. 1.10–1.15×) to apply the two-tier residual-land-value treatment from the supporting analysis. This is a cost-side premium on the bonus units, separate from the value-side decline factor.</p>
+        <p class="lede" style="margin:8px 0 0"><b>Credibility apparatus on (v1.19.0).</b> Two staff-review holds were turned off after a page-by-page / sources review. (1) Per-row <b>Source</b> and <b>Notes</b> columns are visible again on Assumptions and the Benefit Library, with citations re-confirmed against primary sources; rows that are judgment shapes or national placeholders are labeled "Illustrative default — confirm locally" rather than implying a false source. (2) The <b>enforceability haircut</b> (§ I) is active again: an unsecured promise is no longer credited at 100% — name what secures each benefit (covenant, development agreement, condition of approval, bond) for full credit. Re-enabling the haircut lowers the credited public value of any package with unsecured items (expected and correct). Also corrected: the condo hard-cost note no longer mislabels ~$301/SF as the ICC R-2 Type IA rate (that rate is $234.59/SF); the bundled Corey Landings case study now uses the calibrated ~$3,146/unit impact floor instead of the retired $28,000 placeholder.</p>
       </div>
 
       <div class="card" id="legal-card">
@@ -803,12 +807,14 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 
 <script>
 "use strict";
-const VERSION="1.18.0", VERSION_DATE="2026-06-29";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
-/* Staff-review holds (restorable: flip to false). SIMPLE_BENEFITS hides the recurring + enforceability
-   controls on the Benefits step and counts every benefit at full credit (no haircut). HIDE_NOTES_SOURCE
-   blanks the Notes/Source columns on the Assumptions + Benefit-library pages at runtime; the underlying
-   text stays in the code so it can be confirmed and restored later. */
-const SIMPLE_BENEFITS=true, HIDE_NOTES_SOURCE=true;
+const VERSION="1.19.0", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
+/* Staff-review holds (restorable: flip to true to re-hide). v1.19.0 turned both OFF after the
+   page-by-page / sources review: the credibility apparatus is back on. SIMPLE_BENEFITS, when true,
+   hides the recurring + enforceability controls on the Benefits step and counts every benefit at full
+   credit (no haircut); now false, so unsecured promises take the §I enforceability haircut. HIDE_NOTES_SOURCE,
+   when true, blanks the Notes/Source columns on the Assumptions + Benefit-library pages at runtime; now
+   false, so the per-row citations are visible again. */
+const SIMPLE_BENEFITS=false, HIDE_NOTES_SOURCE=false;
 const K={hardCondo:237500,hardHotel:170000,soft:0.24,margin:0.15,decline:0.80,impact:3146,sales:0.06,scarExp:1.6};
 const CATMULT={"Workforce Housing":1.4,"Community Development":1.5,"Transportation":1.7,"Environmental":2.0,"Resilience":2.5,"Monetary / Cash":1.0};
 const BMULT={"Low-rise (1-3)":1.0,"Mid-rise (4-7)":1.15,"High-rise (8+)":1.35};
@@ -965,6 +971,9 @@ const LIBSRC={
 Object.keys(LIBSRC).forEach(function(nm){const i=libIndexOf(nm);if(i<0)return;const t=LIBSRC[nm],c=LIBCAL[i];
  if(t.note&&!c.note)c.note=t.note;
  if(t.source){ if(!c.source)c.source=t.source; else if(c.source.indexOf(t.source)<0)c.source=c.source+"; benchmark: "+t.source; }});
+/* Any row still without a cited source is a synthetic ±25% sketch band around a single seed value
+   (LIB_BAND), not a measured range — label it honestly so the column never implies a false source. */
+LIBCAL.forEach(function(c){if(!c.source)c.source="Illustrative default (±25% sketch band around a single seed value) — confirm against local bids / a published cost schedule.";});
 function libApplied(c,which){
   if(which==="dev")return (c.devOv!=null&&c.devOv!=="")?+c.devOv:(c.devLow+c.devHigh)/2;
   return (c.cityOv!=null&&c.cityOv!=="")?+c.cityOv:(c.cityLow+c.cityHigh)/2;
@@ -1036,7 +1045,7 @@ function enforceFactor(instr){return SPBEngine.enforceFactor(instr,ENFORCE);}   
    city general-fund cost per new unit; bedTax = county tourist tax on lodging room revenue. */
 const FISCAL={assessRatio:0.88,millage:3.15,millageTotal:15.9,servicePerUnit:600,bedTax:0.06};
 const ASSUMP=[
- {sec:"A. Marginal cost assumptions",label:"Hard cost, condo / multifamily",unit:"$/unit",basis:"unit",sf:2269,low:380000,high:630000,override:null,notes:"Range ≈ $167–278/SF on a 2,269-SF unit. Validated against the model's height multiplier (v1.14.0): the base × the High-rise (8+) factor lands at ~$301/SF = ICC Aug-2025 R-2 Type IA, the right concrete-tower figure for an 8-story project like Corey Landings. Localizing national ICC/RSMeans by the St. Petersburg RSMeans City Cost Index (~0.85) and adding the VE-zone pile/flood/wind coastal premium roughly cancel, so the range is kept. Enter as $/unit, or switch the basis to $/SF. Calibrate from: ICC Building Valuation Data; confirm against 2-3 recent local concrete-construction bids.",fmt:"$",apply:v=>K.hardCondo=v},
+ {sec:"A. Marginal cost assumptions",label:"Hard cost, condo / multifamily",unit:"$/unit",basis:"unit",sf:2269,low:380000,high:630000,override:null,notes:"Range ≈ $167–278/SF on a 2,269-SF unit. The base midpoint (~$223/SF) brackets the ICC Aug-2025 R-2 multiple-family Type IA figure of $234.59/SF; applying the model's High-rise (8+) multiplier lands near $301/SF, ABOVE the ICC base — consistent with a concrete-tower coastal/structured premium for an 8-story project like Corey Landings (this $301 is NOT the ICC R-2 IA rate, which is $234.59; the earlier note mislabeled it). Localizing national ICC/RSMeans by the St. Petersburg RSMeans City Cost Index (~0.85) and adding the VE-zone pile/flood/wind coastal premium roughly cancel, so the range is kept. Enter as $/unit, or switch the basis to $/SF. Calibrate from: ICC Building Valuation Data; confirm against 2–3 recent local concrete-construction bids.",fmt:"$",apply:v=>K.hardCondo=v},
  {sec:"A. Marginal cost assumptions",label:"Hard cost, temporary lodging",unit:"$/key",basis:"unit",sf:750,low:120000,high:220000,override:null,notes:"Validated against the model's height multiplier (v1.14.0), same discipline as the condo row: the base × the High-rise (8+) factor lands at ~$230–300k/key hard, matching HVS U.S. Hotel Development Cost Survey 2025 full-service (≈$245–300k hard, stripped from $409k/key all-in), while the low-rise base (×1.0) suits select-service. So the range is kept rather than raised, to avoid double-counting the height premium. RLB Q3 2025 Miami 5★ $460–620/SF cross-check. Enter as $/key, or switch the basis to $/SF and set the average key size (gross).",fmt:"$",apply:v=>K.hardHotel=v},
  {sec:"A. Marginal cost assumptions",label:"Soft costs",unit:"% of hard",low:18,high:30,override:null,notes:"Pre-development, A&E / professional fees, permits, financing, legal, contingency. Impact / SDC fees are NOT here, tracked separately as the mitigation floor (sec. E)",fmt:"%",apply:v=>K.soft=v/100},
  {sec:"A. Marginal cost assumptions",label:"Condo sales and marketing cost",unit:"% of sale price",low:5,high:7,override:null,notes:"Brokerage commission plus marketing on for-sale condo product; applies to Condominium only. Midpoint 6% preserves prior behavior.",fmt:"%",apply:v=>K.sales=v/100},
@@ -1120,34 +1129,80 @@ function aImplied(r){if(r.basis===undefined||!r.sf)return ""; const v=aApplied(r
   return aInSF(r)?("= $"+Math.round(v).toLocaleString()+" "+r.unit):("= $"+(Math.round(v/r.sf*100)/100).toLocaleString()+" /SF");}
 function fld(i,col,val,cls,fmt){const disp=(fmt==="$"&&val!=null&&val!=="")?(+val).toLocaleString():(val==null?"":val);const r=ASSUMP[i];const al=((r&&r.label?r.label:"value")+", "+col).replace(/"/g,"");return '<input type="text" inputmode="decimal" aria-label="'+al+'" data-i="'+i+'" data-col="'+col+'" value="'+disp+'" class="'+cls+'">';}
 ASSUMP.forEach(r=>{if(r.source===undefined)r.source="";});
-(function(){const seed={
-  "ICC building valuation, R-2 Type IA":"ICC Building Safety Journal, Building Valuation Data (Aug 2025)",
-  "Benefit return ratio (Tampa basis)":"City of Tampa Code of Ordinances §27-140",
-  "Hard cost, condo / multifamily":"ICC R-2 Type I/II (Aug 2025) $268–301/SF × St. Petersburg RSMeans City Cost Index ~0.85 + VE/pile coastal premium; RLB Q3 2025 Miami multifamily $235–285/SF",
-  "Hard cost, temporary lodging":"HVS U.S. Hotel Development Cost Survey 2025 (full-service $409k/key all-in → ~$245–300k hard); RLB Q3 2025 Miami 5★ $460–620/SF",
-  "Soft costs":"ULI Developer Handbook (A&E, permits, legal, financing)",
-  "Condo sales and marketing cost":"ULI / CBRE residential sales practice",
-  "Developer margin":"ULI / CBRE underwriting surveys (risk-adjusted return for feasibility)",
-  "Condo sale price, inland / non-front":"Closed SPB barrier-island comps (Boca Sands 5301 Gulf Blvd, Envoy Point, 2024–25): $525–720/SF; High adds new-construction premium (flagged, unproven on-island)",
-  "Condo sale price, gulf / waterfront":"Closed gulf/bay-front barrier-island $675–740/SF (Boca Sands; Mandalay Beach Club, Clearwater Beach); High = new gulf-front asking (Viceroy Clearwater ~$1,200/SF, flagged)",
-  "Condominium":"Pinellas County Code §150-40 Multimodal Impact Fee ($1,248/condo, Ord. 19-15) + St. Pete Beach Ord. 2022-04 parks fee ($843); verified vs adopted ordinance 2026-06",
-  "Multifamily rental":"Pinellas County Code §150-40 Multimodal ($1,420/MF unit, Ord. 19-15) + St. Pete Beach Ord. 2022-04 parks ($843); verified 2026-06",
-  "Temporary lodging":"Pinellas County Code §150-40 Multimodal Impact Fee ($1,604/room, Ord. 19-15); SPB parks fee is residential-only (lodging exempt); verified 2026-06",
-  "ADR, Gulf-front resort":"STR / Visit St. Pete-Clearwater (Gulf-front full-service, Jan 2026)",
-  "ADR, inland / mid-market":"STR / Visit St. Pete-Clearwater (inland select-service, Jan 2026)",
-  "Occupancy rate":"Visit St. Pete-Clearwater; submarket stabilized",
-  "Ancillary revenue multiplier":"STR / HVS resort operating data",
-  "EBITDA margin":"CBRE Hotels 2025",
-  "Hotel cap rate":"CBRE Hotels / PwC Real Estate Investor Survey (FL coastal resort)",
-  "Discount rate (real)":"OMB Circular A-94 / municipal-finance convention (real rate)",
-  "Benefit escalation rate":"Long-run CPI / municipal-cost inflation convention",
-  "Default benefit term":"Typical CUP / development-agreement obligation horizon",
-  "Recorded covenant / deed restriction":"Analyst judgment (instrument enforceability)",
-  "Recorded development agreement":"Analyst judgment (instrument enforceability)",
-  "Performance bond / surety":"Analyst judgment (instrument enforceability)",
-  "Condition of approval (CUP / ordinance)":"Analyst judgment (instrument enforceability)",
-  "Letter of intent / unsecured promise":"Analyst judgment (instrument enforceability)",
-  "No instrument / unspecified":"Analyst judgment (instrument enforceability)"};
+/* Per-row Source text. Verified rows (✅/🟨 in the sources review) carry a real citation; rows that are
+   judgment shapes or national placeholders (🟥) are labeled "Illustrative default — confirm locally" so the
+   column never implies a false source. Re-confirmed against primary sources 2026-06-30 (see REVIEW_sources-verified.md). */
+(function(){const ILLUS="Illustrative default — confirm locally. ";
+  const JUDGE="Engineering judgment (relative cost multiplier); no single citable source.";
+  const ENF="Analyst judgment (instrument-enforceability ordering).";
+  const CATSRC=ILLUS+"Priority weight; ranking only — does NOT enter the pass/fail verdict. Replace with a project benefit-cost ratio. Chicago Zoning §17-4-1000 et seq. is cited as precedent for category weighting.";
+  const CAPSRC="TBRPC framework (April 2026) — analytic overlay, not adopted code. Koontz / F.S. §163.3180 proportionate-share basis applies to the impact floor only; a fair-share guideline, not adopted code.";
+  const LODGE="STR / Visit St. Pete-Clearwater / CBRE Hotels / PwC — directional benchmarks; confirm with STR submarket data.";
+  const seed={
+  "ICC building valuation, R-2 Type IA":"ICC Aug-2025 Building Valuation Data, R-2 multiple-family Type IA = $234.59/SF (national average, permit-fee basis — not a bid estimate).",
+  "Benefit return ratio (Tampa basis)":"City of Tampa Code of Ordinances §27-140: $10 of bonus development per $1 of public benefit (outside the Channel District). External cross-check only.",
+  "Hard cost, condo / multifamily":"ICC Aug-2025 Building Valuation Data, R-2 multiple-family Type IA $234.59/SF (national, permit-fee basis) + RLB Q3 2025 Miami multifamily cross-check. Localize by St. Petersburg RSMeans City Cost Index ~0.85 and add a VE-zone pile/flood/wind coastal premium. Confirm against 2–3 recent local concrete-tower bids.",
+  "Hard cost, temporary lodging":"HVS U.S. Hotel Development Cost Survey 2025 (full-service ≈$409k/key all-in → ~$245–300k hard) + ICC Aug-2025 R-1 hotels Type IA $280.94/SF; RLB Q3 2025 Miami 5★ $460–620/SF. HVS is paywalled — confirm with a local hotel GC bid.",
+  "Soft costs":"ULI Developer Handbook convention (A&E, permits, financing, legal, contingency). Impact / SDC fees excluded (tracked separately as the floor).",
+  "Condo sales and marketing cost":"ULI / CBRE residential sales practice (brokerage + marketing on for-sale condo product).",
+  "Developer margin":"ULI / CBRE underwriting convention; flat margin on cost as a proxy for a 12–15% target IRR, not a time-based return.",
+  "Value decline factor":ILLUS+"Judgment shape (discount on later / marginal bonus units), not empirical.",
+  "Bonus-unit construction step-up":"Method analogy to the two-tier residual-land-value treatment (Codebase A). Optional cost premium charged to bonus units only; default 1.00× = off.",
+  "Condo sale price, inland / non-front":"Closed SPB barrier-island upscale condo sales $525–720/SF (Boca Sands 5301 Gulf Blvd, Envoy Point, 2024–25). High adds an unproven on-island new-construction premium. Verify against PCPAO closed sales (cite parcel / date).",
+  "Condo sale price, gulf / waterfront":"Closed gulf/bay-front barrier-island condos $675–740/SF (Boca Sands; Mandalay Beach Club, Clearwater Beach). High = new gulf-front asking (Viceroy Clearwater ~$1,200/SF, flagged). Verify against PCPAO closed sales (cite parcel / date).",
+  "Avg unit size, condominium":"Project plans / recent SPB condo comps; Corey Landings ≈ 2,269 SF. Calibrate per project.",
+  "Avg unit size, multifamily rental":"Project plans / RentCafe; St. Petersburg market blend. Calibrate per project.",
+  "Avg key size, temporary lodging":"Project plans / STR-HVS. Calibrate per project.",
+  "Condo sale price per SF (income/sales approach)":"Closed SPB barrier-island upscale condo sales $525–740/SF. Pull the actual PCPAO/MLS closed sales and cite parcel / date.",
+  "Apartment rent per SF / month (rental income approach)":ILLUS+"National / sketch placeholder; calibrate from RentCafe / CoStar / a local appraiser.",
+  "Rental vacancy allowance":ILLUS+"National placeholder.",
+  "Rental operating-expense ratio":ILLUS+"National placeholder.",
+  "Rental cap rate":ILLUS+"FL multifamily; calibrate to recent local trades.",
+  "Building, low-rise (1–3)":JUDGE,
+  "Building, mid-rise (4–7)":JUDGE,
+  "Building, high-rise (8+)":JUDGE,
+  "Parking, surface / included":JUDGE,
+  "Parking, podium":JUDGE,
+  "Parking, structured deck":JUDGE,
+  "Coastal, standard (AE)":JUDGE,
+  "Coastal, velocity / elevated (VE)":JUDGE+" VE adds an elevation / floodproofing premium.",
+  "Coastal, minimal (X)":JUDGE,
+  "Workforce housing":CATSRC,
+  "Community development":CATSRC,
+  "Transportation":CATSRC,
+  "Environmental":CATSRC,
+  "Resilience":CATSRC+" Resilience 2.5× draws on NIBS avoided-loss BCR; replace with a project FEMA-style benefit-cost ratio.",
+  "Monetary / cash":"A dollar is a dollar (1.0×). Ranking only; does not enter the verdict.",
+  "Condominium":"Pinellas County Multimodal Impact Fee (Code §150-40, Schedule A) $1,248/condo + St. Pete Beach parks/rec fee $843/unit (Ord. 2022-04). Pinellas levies no school/parks/fire/library impact fee. Confirm the current Pinellas Schedule A rate for the project's fee district — the MIFO is under update. High end is an unsourced proportionate-share placeholder.",
+  "Multifamily rental":"Pinellas County Multimodal Impact Fee (Code §150-40, Schedule A) $1,420/MF unit + St. Pete Beach parks/rec fee $843/unit (Ord. 2022-04). Confirm the current Pinellas Schedule A MF rate — the MIFO is under update. High end is an unsourced proportionate-share placeholder.",
+  "Temporary lodging":"Pinellas County Multimodal Impact Fee (Code §150-40, Schedule A) $1,604/room; the SPB parks/rec fee is residential-only (lodging exempt). Confirm the current Pinellas Schedule A hotel rate — the MIFO is under update. High end is an unsourced proportionate-share placeholder.",
+  "Contribution floor, lower bound":CAPSRC,
+  "Contribution floor, upper bound":CAPSRC,
+  "Value-capture target, lower bound":CAPSRC,
+  "Value-capture target, upper bound":CAPSRC,
+  "ADR, Gulf-front resort":LODGE,
+  "ADR, inland / mid-market":LODGE,
+  "Occupancy rate":LODGE,
+  "Ancillary revenue multiplier":LODGE,
+  "EBITDA margin":LODGE,
+  "Hotel cap rate":LODGE,
+  "Discount rate (real)":"OMB Circular A-94 / municipal-finance real-rate convention.",
+  "Benefit escalation rate":"Long-run CPI / municipal-cost inflation convention (kept below the discount rate).",
+  "Default benefit term":"Typical CUP / development-agreement obligation horizon.",
+  "Recorded covenant / deed restriction":ENF,
+  "Recorded development agreement":ENF,
+  "Performance bond / surety":ENF,
+  "Condition of approval (CUP / ordinance)":ENF,
+  "Letter of intent / unsecured promise":ENF,
+  "No instrument / unspecified":ENF,
+  "Projected demand":"Calibrate from the Allocation History ledger trend / building-permit history.",
+  "Planning horizon":"Calibrate from the Allocation History ledger trend / building-permit history.",
+  "Scarcity exponent":ILLUS+"Judgment curve shape, not empirically derived.",
+  "Assessment ratio (assessed ÷ market)":"FL assessment convention (new construction assessed near market; Save Our Homes / 10% cap compound later). Display-only context.",
+  "City millage rate":"SPB FY2026 adopted millage 3.0913 (The Gabber, Sept 2025). Display-only context.",
+  "Total millage, all taxing authorities":ILLUS+"Confirm on an actual SPB TRIM notice / adopted budget. Display-only context.",
+  "Annual city service cost / unit":ILLUS+"Replace with a per-capita marginal-cost figure from the adopted budget. Display-only context.",
+  "County tourist / bed tax":"Pinellas tourist-development (bed) tax 6%, collected and kept by the county. Display-only context."};
   ASSUMP.forEach(r=>{if(seed[r.label])r.source=seed[r.label];});})();
 if(HIDE_NOTES_SOURCE){ASSUMP.forEach(r=>{r.notes="";r.source="";});LIBCAL.forEach(c=>{c.note="";c.source="";});}
 const DEF_ASSUMP=ASSUMP.map(r=>({low:r.low,high:r.high,override:r.override}));
@@ -3150,9 +3205,9 @@ const CASES=[{
     ["Pool effect","Allocates 25 RU; divests the 150 vested under Ord. 2022-03 (net 125 returned) → 170 of 195 remaining"],
     ["Outcome","Approved with conditions"]
   ],
-  notes:"One-time City impact fees on this project were ≈ $5,300/unit (transportation $1,248 + parks $843 + sewer $3,216); the tool's default impact floor of $28,000/unit is a broader Koontz-nexus placeholder, editable under Assumptions. The benefit package loaded here is representative of the staff-report items that map cleanly to the library, refine quantities on the Benefits step.",
-  state:{pname:"Corey Landings",papp:"KT Corey Ave LLC / Kolter (CUP 25069)",use:"Condominium",btype:"High-rise (8+)",subtype:"Gulf-front",parking:"structured",coastal:"AE",district:"TC2",acres:4.51,byright:108,bonus:25,market:2600000,mktSF:2269,impact:28000},
-  benefits:[{name:"Seawall / bulkhead",qty:103,pct:1},{name:"Public plaza / park",qty:24500,pct:1},{name:"Waterfront boardwalk / promenade",qty:600,pct:1},{name:"Public boat slip (Class A)",qty:4,pct:1}],
+  notes:"The modeled impact-mitigation categories on this project run ≈ $2,091/unit (Pinellas multimodal $1,248 + SPB parks $843); separate sewer/utility connection charges (≈ $3,216) sit outside the floor. The case loads the tool's calibrated condo impact floor of ≈ $3,146/unit (the § E midpoint), editable under Assumptions — replacing the retired $28,000 placeholder the model elsewhere flags as ~10–13× too high. Benefits are loaded as conditions of CUP approval (90% enforceability credit). The package is representative of the staff-report items that map cleanly to the library; refine quantities on the Benefits step.",
+  state:{pname:"Corey Landings",papp:"KT Corey Ave LLC / Kolter (CUP 25069)",use:"Condominium",btype:"High-rise (8+)",subtype:"Gulf-front",parking:"structured",coastal:"AE",district:"TC2",acres:4.51,byright:108,bonus:25,market:2600000,mktSF:2269,impact:3146},
+  benefits:[{name:"Seawall / bulkhead",qty:103,pct:1,instr:"condition"},{name:"Public plaza / park",qty:24500,pct:1,instr:"condition"},{name:"Waterfront boardwalk / promenade",qty:600,pct:1,instr:"condition"},{name:"Public boat slip (Class A)",qty:4,pct:1,instr:"condition"}],
   address:"64 Corey Avenue, Saint Pete Beach",
   /* the real 8-parcel assembly (PINs in raw 18-digit form so dashPin renders the public number);
      areas sum to 4.50 ac. Marker lat/lon are the footprint centroids from the embedded parcel layer. */
