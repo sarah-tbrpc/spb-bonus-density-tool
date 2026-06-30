@@ -146,6 +146,10 @@ select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-i
 /* inline link to another section of the tool (Assumptions, Results, Benefits step, etc.) */
 .seclink{color:var(--accent);font-weight:600;text-decoration:underline;text-underline-offset:2px;cursor:pointer;background:none;border:none;padding:0;font:inherit}
 .seclink:hover{color:var(--accent-d)}
+.fiscal-cf{margin-top:16px;border-top:1px solid var(--line);padding-top:12px}
+.fcf-h{font-size:13px;font-weight:700;margin:0 0 8px;color:var(--ink)}
+.fcf-list{margin:10px 0 0;padding-left:18px;font-size:12.5px;line-height:1.5;color:var(--ink2)}
+.fcf-list li{margin-bottom:5px}
 @media(max-width:1024px){.case-grid{grid-template-columns:1fr}.case-img img{aspect-ratio:21/9;max-height:300px}}
 .hint{font-size:12px;color:var(--ink3);margin-top:6px}
 
@@ -638,8 +642,8 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
         <div class="vchart" style="margin-top:10px"><div id="scarcurve"></div></div>
         <div class="hint" id="scar-note" style="margin-top:8px"></div>
       </details>
-      <details class="card diagcard" id="fiscal-card"><summary>Fiscal Snapshot (Value per Acre)</summary>
-        <div class="sub">Urban3-style taxable value and tax yield per acre. Context only, not part of the decision.</div>
+      <details class="card diagcard" id="fiscal-card"><summary>Fiscal Snapshot &amp; Counterfactual (do nothing vs build)</summary>
+        <div class="sub">Taxable value / acre, plus a do-nothing-vs-by-right-vs-bonus property-tax comparison and the "cost of saying no." Context only, never part of the decision. Enter the current parcel assessed value below (county autofill or manual).</div>
         <div class="field" style="margin:6px 0 12px"><label class="lab"><span>Current parcel taxable value</span></label>
           <input type="text" inputmode="numeric" id="fiscal-tax" placeholder="from county autofill or enter manually" value=""></div>
         <div id="fiscal-figs"></div>
@@ -1027,8 +1031,10 @@ const ENFORCE={covenant:1.00,devagreement:0.95,bond:0.95,condition:0.90,loi:0.50
 const ENFORCE_LABEL={covenant:"Recorded covenant / deed restriction",devagreement:"Recorded development agreement",bond:"Performance bond / surety",condition:"Condition of approval (CUP / ordinance)",loi:"Letter of intent / unsecured promise",none:"No instrument / unspecified commitment"};
 const ENFORCE_ORDER=["covenant","devagreement","bond","condition","loi","none"];
 function enforceFactor(instr){return SPBEngine.enforceFactor(instr,ENFORCE);}   // delegates to engine/spb-engine.js (single source of truth)
-/* Fiscal Snapshot (revenue context only, never feeds the decision / ZOPA / break-even floor). */
-const FISCAL={assessRatio:0.88,millage:3.15};
+/* Fiscal Snapshot + counterfactual (revenue context only, never feeds the decision / ZOPA / break-even floor).
+   millageTotal = all taxing authorities (city+county+school+EMS+special); servicePerUnit = marginal annual
+   city general-fund cost per new unit; bedTax = county tourist tax on lodging room revenue. */
+const FISCAL={assessRatio:0.88,millage:3.15,millageTotal:15.9,servicePerUnit:600,bedTax:0.06};
 const ASSUMP=[
  {sec:"A. Marginal cost assumptions",label:"Hard cost, condo / multifamily",unit:"$/unit",basis:"unit",sf:2269,low:380000,high:630000,override:null,notes:"Range ≈ $167–278/SF on a 2,269-SF unit. Validated against the model's height multiplier (v1.14.0): the base × the High-rise (8+) factor lands at ~$301/SF = ICC Aug-2025 R-2 Type IA, the right concrete-tower figure for an 8-story project like Corey Landings. Localizing national ICC/RSMeans by the St. Petersburg RSMeans City Cost Index (~0.85) and adding the VE-zone pile/flood/wind coastal premium roughly cancel, so the range is kept. Enter as $/unit, or switch the basis to $/SF. Calibrate from: ICC Building Valuation Data; confirm against 2-3 recent local concrete-construction bids.",fmt:"$",apply:v=>K.hardCondo=v},
  {sec:"A. Marginal cost assumptions",label:"Hard cost, temporary lodging",unit:"$/key",basis:"unit",sf:750,low:120000,high:220000,override:null,notes:"Validated against the model's height multiplier (v1.14.0), same discipline as the condo row: the base × the High-rise (8+) factor lands at ~$230–300k/key hard, matching HVS U.S. Hotel Development Cost Survey 2025 full-service (≈$245–300k hard, stripped from $409k/key all-in), while the low-rise base (×1.0) suits select-service. So the range is kept rather than raised, to avoid double-counting the height premium. RLB Q3 2025 Miami 5★ $460–620/SF cross-check. Enter as $/key, or switch the basis to $/SF and set the average key size (gross).",fmt:"$",apply:v=>K.hardHotel=v},
@@ -1090,7 +1096,10 @@ const ASSUMP=[
  {sec:"J. Pool scarcity",label:"Planning horizon",unit:"years",low:10,high:20,override:null,notes:"Period over which pool scarcity is judged. Units remaining are read from the Allocation history ledger, not entered per deal.",fmt:"",apply:v=>S.hor=v},
  {sec:"J. Pool scarcity",label:"Scarcity exponent",unit:"curve shape",low:1.4,high:1.8,override:null,notes:"Shape of the scarcity ramp once the remaining pool falls below projected demand times the planning horizon: 1 is linear, higher keeps the pool value near zero longer and then rises steeply near depletion. A judgment shape, not empirically derived (see Method, Invented curve shapes). Applied is the midpoint (1.6) unless overridden.",fmt:"x",apply:v=>K.scarExp=v},
  {sec:"K. Fiscal snapshot (revenue context only)",label:"Assessment ratio (assessed ÷ market)",unit:"×",low:0.86,high:0.90,override:null,notes:"New construction is assessed near market; Save Our Homes and the non-homestead 10% cap compound later. Display-only, does not affect the decision, ZOPA, or break-even floor.",fmt:"",apply:v=>FISCAL.assessRatio=v},
- {sec:"K. Fiscal snapshot (revenue context only)",label:"City millage rate",unit:"mills",low:3.0,high:3.3,override:null,notes:"Placeholder, set to St. Pete Beach's current adopted millage. Display-only, does not affect the decision, ZOPA, or break-even floor.",fmt:"",apply:v=>FISCAL.millage=v}
+ {sec:"K. Fiscal snapshot (revenue context only)",label:"City millage rate",unit:"mills",low:3.0,high:3.3,override:null,notes:"Placeholder, set to St. Pete Beach's current adopted millage (FY25/26 ≈ 3.0913). Display-only, does not affect the decision, ZOPA, or break-even floor.",fmt:"",apply:v=>FISCAL.millage=v},
+ {sec:"K. Fiscal snapshot (revenue context only)",label:"Total millage, all taxing authorities",unit:"mills",low:15.0,high:16.8,override:null,notes:"Full TRIM-notice stack: city + county + school + EMS + special districts (≈15.9 in SPB). Drives the counterfactual's all-government property-tax columns (regional capture). Confirm on an actual SPB TRIM notice. Display-only.",fmt:"",apply:v=>FISCAL.millageTotal=v},
+ {sec:"K. Fiscal snapshot (revenue context only)",label:"Annual city service cost / unit",unit:"$/unit/yr",low:400,high:800,override:null,notes:"Marginal city general-fund cost per new unit/key (police, fire-EMS, roads, solid waste). Netted against the property-tax increment for the CITY net position in the counterfactual. Replace with a per-capita figure from the adopted budget. Display-only.",fmt:"$",apply:v=>FISCAL.servicePerUnit=v},
+ {sec:"K. Fiscal snapshot (revenue context only)",label:"County tourist / bed tax",unit:"%",low:6,high:6,override:null,notes:"Pinellas tourist-development (bed) tax on transient room revenue, collected and kept by the COUNTY, not the city. Shown in the counterfactual's regional column for lodging. Display-only.",fmt:"%",apply:v=>FISCAL.bedTax=v/100}
 ];
 /* aApplied always returns the NATIVE model unit ($/unit or $/key). The cost basis
    only changes how a row is entered and displayed, never what feeds the model. */
@@ -1944,7 +1953,24 @@ function fiscalFigures(){
   const annualTax=projTaxable*(mills/1000);
   const annualTaxPerAcre=(annualTax>0&&ac>0)?annualTax/ac:null;
   const bonusIncrement=(mkt>0&&S.bonus>0)?S.bonus*mkt*ratio*(mills/1000):0;
-  return {ac,mills,totalUnits,taxCur,curPerAcre,projTaxable,projPerAcre,annualTax,annualTaxPerAcre,bonusIncrement};
+  /* ---- counterfactual: do nothing (current assessed) vs by-right build vs bonus build ---- */
+  const cityM=mills/1000, allM=(FISCAL.millageTotal||mills)/1000;
+  const brVal=(mkt>0&&S.byright>0)?S.byright*mkt*ratio:null;     // by-right built, taxable
+  const boVal=(projTaxable>0)?projTaxable:null;                  // bonus built (by-right + bonus), taxable
+  const sc=v=>v==null?null:{val:v,city:v*cityM,all:v*allM};
+  const sq=sc(taxCur), br=sc(brVal), bo=sc(boVal);
+  const baseCity=sq?sq.city:0, baseAll=sq?sq.all:0;
+  const svc=(FISCAL.servicePerUnit||0)*totalUnits;
+  const cityNetBonus=bo?(bo.city-baseCity-svc):null;            // city net annual the bonus project adds (= cost of saying no)
+  const cityIncBonusVsByr=(bo&&br)?(bo.city-br.city):null;      // marginal city tax from the bonus units alone
+  const isLodge=S.use==="Temporary Lodging";
+  const roomRev=(isLodge&&totalUnits>0)?lodgeADR(S.subtype)*365*(LODGE.occ||0)*totalUnits:0;
+  const bedTaxYr=isLodge?roomRev*(FISCAL.bedTax||0):0;          // county tourist tax (not city)
+  const allIncBonus=bo?(bo.all-baseAll):0;
+  const totalNewPublic=allIncBonus+bedTaxYr;                    // all-government recurring upside (regional)
+  const cityShare=(totalNewPublic>0&&bo)?((bo.city-baseCity)/totalNewPublic):null;
+  return {ac,mills,totalUnits,taxCur,curPerAcre,projTaxable,projPerAcre,annualTax,annualTaxPerAcre,bonusIncrement,
+    cf:{sq,br,bo,allMills:FISCAL.millageTotal||mills,svc,svcPerUnit:FISCAL.servicePerUnit||0,cityNetBonus,cityIncBonusVsByr,isLodge,roomRev,bedTaxYr,allIncBonus,totalNewPublic,cityShare}};
 }
 function drawFiscal(){
   const el=document.getElementById("fiscal-figs"); if(!el)return;
@@ -1961,8 +1987,26 @@ function drawFiscal(){
     bars='<div class="fbars">'+(f.curPerAcre!=null?bar("Current / acre",f.curPerAcre,"#9aa6ad"):"")+bar("Projected / acre",f.projPerAcre,"var(--accent)")+'</div>'+
       (f.curPerAcre==null?'<div class="hint" style="margin-top:4px">Enter the current parcel taxable value above to compare before and after.</div>':"");
   }
-  el.innerHTML='<div class="numgrid">'+grid+'</div>'+bars+
-    '<div class="hint" style="margin-top:10px">Gross property-tax revenue at current millage, not net of service costs. Recurring tax revenue accrues regardless of the benefit package and is deliberately excluded from the decision.</div>';
+  /* ---- counterfactual: do nothing vs by-right vs bonus (city + all-government) ---- */
+  const cf=f.cf, dash2='<span class="anote">—</span>';
+  let cfHTML='';
+  if(cf.bo){
+    const row=(lab,key)=>'<tr><td>'+lab+'</td>'+['sq','br','bo'].map(k=>{const s=cf[k];return s?('<td class="r mono">'+fmt(s[key])+'</td>'):('<td class="r">'+dash2+'</td>');}).join('')+'</tr>';
+    const lines=[];
+    if(cf.cityNetBonus!=null) lines.push('<b>City net from the bonus project: '+fmt(cf.cityNetBonus)+'/yr</b> — property-tax increment over today, minus ≈'+fmt(cf.svcPerUnit)+'/unit annual service cost. This is the <b>cost of saying no</b>: what the city treasury forgoes each year if the lot stays as it is.');
+    if(cf.cityIncBonusVsByr!=null) lines.push('The bonus units add <b>'+fmt(cf.cityIncBonusVsByr)+'/yr</b> in city property tax over by-right.');
+    if(cf.isLodge&&cf.bedTaxYr>0) lines.push('County tourist (bed) tax ≈ <b>'+fmt(cf.bedTaxYr)+'/yr</b> — collected and kept by the county, not the city.');
+    if(cf.cityShare!=null) lines.push('The city captures only <b>≈'+Math.round(cf.cityShare*100)+'%</b> of the total new public revenue ('+fmt(cf.totalNewPublic)+'/yr all-government); the rest accrues to the county, schools, and region — a regionally valuable project can still be a close municipal call.');
+    lines.push('Plus the one-time public-benefit package the city negotiates on top (the '+secLink('Benefits step','goto(1)')+' offer). Screening estimate from your assumptions — refine the current assessed value and the '+secLink('total millage / service cost','showAux(\'assumptions\')')+'.');
+    cfHTML='<div class="fiscal-cf"><h4 class="fcf-h">Counterfactual — do nothing vs build</h4>'+
+      '<div class="atable-wrap"><table class="atable"><thead><tr><th scope="col"></th><th scope="col" class="r">No action</th><th scope="col" class="r">By-right</th><th scope="col" class="r">Bonus</th></tr></thead><tbody>'+
+      row("Assessed value","val")+row("City tax / yr","city")+row("All-government tax / yr ("+(Math.round(cf.allMills*10)/10)+" mills)","all")+
+      '</tbody></table></div><ul class="fcf-list">'+lines.map(l=>'<li>'+l+'</li>').join('')+'</ul></div>';
+  } else {
+    cfHTML='<div class="fiscal-cf"><h4 class="fcf-h">Counterfactual — do nothing vs build</h4><div class="hint">Set use type, market value, by-right and bonus units (and the current assessed value above) to compare: do nothing vs by-right vs bonus.</div></div>';
+  }
+  el.innerHTML='<div class="numgrid">'+grid+'</div>'+bars+cfHTML+
+    '<div class="hint" style="margin-top:10px">Gross property-tax revenue, not net beyond the per-unit service cost shown. Recurring tax accrues regardless of the benefit package and is deliberately excluded from the decision (it is context, not the verdict).</div>';
 }
 /* ---------- optional Tampa 10:1 / ICC construction-cost cross-check (reference only) ---------- */
 function drawXCheck(m){
