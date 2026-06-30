@@ -860,7 +860,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.22.2", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.22.3", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden — a
@@ -3395,13 +3395,14 @@ const CASES=[{
     ["By-right / bonus","108 by-right + 25 bonus (RU pool)"],
     ["District","TC-2 Corey Circle, 24 du/ac base"],
     ["Site","4.51 acres · AE coastal"],
+    ["Current site (no-action baseline)","8 vacant-commercial parcels, ≈$9.39M county taxable (Pinellas, 2026)"],
     ["Market","≈ $2.6M/unit (~$1,100–1,250/SF × 2,269 SF)"],
     ["Public benefits (applicant est.)","≈ $3.0M, seawall, public park, roundabout plaza, promenade, streetscape / 53 public parking spaces, boat slips"],
     ["Pool effect","Allocates 25 RU; divests the 150 vested under Ord. 2022-03 (net 125 returned) → 170 of 195 remaining"],
     ["Outcome","Approved with conditions"]
   ],
   notes:"The modeled impact-mitigation categories on this project run ≈ $2,091/unit (Pinellas multimodal $1,248 + SPB parks $843); separate sewer/utility connection charges (≈ $3,216) sit outside the floor. The case loads the tool's calibrated condo impact floor of ≈ $3,146/unit (the § E midpoint), editable under Assumptions — replacing the retired $28,000 placeholder the model elsewhere flags as ~10–13× too high. The package is representative of the staff-report items that map cleanly to the library; refine quantities on the Benefits step.",
-  state:{pname:"Corey Landings",papp:"KT Corey Ave LLC / Kolter (CUP 25069)",use:"Condominium",btype:"High-rise (8+)",subtype:"Gulf-front",parking:"structured",coastal:"AE",district:"TC2",acres:4.51,byright:108,bonus:25,market:2600000,mktSF:2269,impact:3146},
+  state:{pname:"Corey Landings",papp:"KT Corey Ave LLC / Kolter (CUP 25069)",use:"Condominium",btype:"High-rise (8+)",subtype:"Gulf-front",parking:"structured",coastal:"AE",district:"TC2",acres:4.51,byright:108,bonus:25,market:2600000,mktSF:2269,impact:3146,taxValue:9388710},
   benefits:[{name:"Seawall / bulkhead",qty:103,pct:1,instr:"condition"},{name:"Public plaza / park",qty:24500,pct:1,instr:"condition"},{name:"Waterfront boardwalk / promenade",qty:600,pct:1,instr:"condition"},{name:"Public boat slip (Class A)",qty:4,pct:1,instr:"condition"}],
   address:"64 Corey Avenue, Saint Pete Beach",
   /* the real 8-parcel assembly (PINs in raw 18-digit form so dashPin renders the public number);
