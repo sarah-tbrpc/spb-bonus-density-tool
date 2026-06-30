@@ -396,10 +396,10 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 .poollegend .sw{width:12px;height:12px;border-radius:3px;flex:none}
 .poollegend .ct{margin-left:auto;font-variant-numeric:tabular-nums;font-weight:600}
 .libsearch{display:flex;gap:8px;align-items:center;margin-bottom:12px}
-.libsearch #lib-search{flex:1;min-width:0}
-.libsec{cursor:pointer;user-select:none}
-.libsec:hover td{background:#b2d2d4}
-.lib-caret{display:inline-block;width:1em;color:var(--accent);font-size:11px}
+.libsearch #lib-search,.libsearch #assump-search{flex:1;min-width:0}
+.libsec,.asec-toggle{cursor:pointer;user-select:none}
+.libsec:hover td,.asec-toggle:hover td{background:#b2d2d4}
+.lib-caret,.asec-caret{display:inline-block;width:1em;color:var(--accent);font-size:11px}
 .atable .x{border:none;background:none;color:var(--ink3);cursor:pointer;font-size:16px}
 .atable .x:hover{color:var(--fail)}
 .skip-link{position:absolute;left:8px;top:-48px;background:var(--ink);color:#fff;padding:9px 14px;border-radius:6px;z-index:200;transition:top .15s}
@@ -758,6 +758,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
         <p class="lede" style="margin:8px 0 0"><b>Value to developer (v1.16.0).</b> The bonus is valued from a per-unit market value run through a residual cost build-up. That market value can be entered directly as a sale comparable, or derived on Step 1 from an <b>income / fundamentals approach</b> shown as a cross-check with a one-click "use this": condominium = sellable SF × $/SF; multifamily rental = NOI ÷ cap rate (rent, vacancy, operating expense); lodging = ADR × occupancy × ancillary × EBITDA ÷ cap rate. (Rental previously borrowed the condo sale comp; the income approach now anchors it on its own operating economics.) Inputs are editable in Assumptions § B and § G. The core calculation now runs through a unit-tested engine module.</p>
         <p class="lede" style="margin:8px 0 0"><b>Two-tier marginal cost (v1.17.0).</b> Optionally charge a construction <b>step-up</b> only to the marginal bonus units (Assumptions § A, "Bonus-unit construction step-up"), reflecting that the added density is what pushes a project into a costlier construction type and structured parking. Default 1.00× leaves the calibrated figures unchanged; set it (e.g. 1.10–1.15×) to apply the two-tier residual-land-value treatment from the supporting analysis. This is a cost-side premium on the bonus units, separate from the value-side decline factor.</p>
         <p class="lede" style="margin:8px 0 0"><b>Credibility apparatus on (v1.19.0).</b> Two staff-review holds were turned off after a page-by-page / sources review. (1) Per-row <b>Source</b> and <b>Notes</b> columns are visible again on Assumptions and the Benefit Library, with citations re-confirmed against primary sources; rows that are judgment shapes or national placeholders are labeled "Illustrative default — confirm locally" rather than implying a false source. (2) The <b>enforceability haircut</b> (§ I) is active again: an unsecured promise is no longer credited at 100% — name what secures each benefit (covenant, development agreement, condition of approval, bond) for full credit. Re-enabling the haircut lowers the credited public value of any package with unsecured items (expected and correct). Also corrected: the condo hard-cost note no longer mislabels ~$301/SF as the ICC R-2 Type IA rate (that rate is $234.59/SF); the bundled Corey Landings case study now uses the calibrated ~$3,146/unit impact floor instead of the retired $28,000 placeholder.</p>
+        <p class="lede" style="margin:8px 0 0"><b>Assumptions search &amp; sections (v1.19.1).</b> The Assumptions page now has a search box and Expand&nbsp;all / Collapse&nbsp;all controls, and its A–K sections collapse on click — matching the Benefit Library. Search matches benchmark names, units, notes, and sources.</p>
       </div>
 
       <div class="card" id="legal-card">
@@ -807,7 +808,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 
 <script>
 "use strict";
-const VERSION="1.19.0", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
+const VERSION="1.19.1", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
 /* Staff-review holds (restorable: flip to true to re-hide). v1.19.0 turned both OFF after the
    page-by-page / sources review: the credibility apparatus is back on. SIMPLE_BENEFITS, when true,
    hides the recurring + enforceability controls on the Benefits step and counts every benefit at full
@@ -1001,6 +1002,8 @@ function delCustomBenefit(i){
 }
 let libCollapsed={};   // category -> true when collapsed
 let libSearchQ="";     // current library search text (persists across re-renders)
+let assumpCollapsed={};// assumptions section (A–K) -> true when collapsed
+let assumpSearchQ="";  // current assumptions search text (persists across re-renders)
 
 const S={
   pname:"", papp:"",
@@ -2924,7 +2927,7 @@ function renderAux(name){const m=compute();
   if(name==="explainV")document.getElementById("aux-V").innerHTML=derivV(m);
   else if(name==="explainCityMin")document.getElementById("aux-CM").innerHTML=derivCM(m);
   else if(name==="explainB")document.getElementById("aux-B").innerHTML=derivB(m);
-  else if(name==="assumptions")document.getElementById("aux-assume").innerHTML=buildAssumptions();
+  else if(name==="assumptions"){document.getElementById("aux-assume").innerHTML=buildAssumptions();applyAssumpFilter();}
   else if(name==="library"){document.getElementById("aux-library").innerHTML=buildLibrary();applyLibFilter();}
   else if(name==="history")document.getElementById("aux-history").innerHTML=buildHistory();
   else if(name==="scenarios")document.getElementById("aux-scenarios").innerHTML=buildScenarios();
@@ -2951,10 +2954,14 @@ function buildAssumptions(){
   const srcBanner=(nNoSrc&&NS)?'<div class="calflag"><b>'+nNoSrc+' of '+ASSUMP.length+' benchmarks lack a cited source.</b> Treat those rows as sketch-grade placeholders until calibrated to local SPB / Pinellas data; each is flagged below and counted on the printed summary.</div>':'';
   const cgA=NS?'<col style="width:17%"><col style="width:10%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:24%"><col style="width:17%">'
               :'<col style="width:30%"><col style="width:18%"><col style="width:12%"><col style="width:12%"><col style="width:14%"><col style="width:14%">';
-  let h=srcBanner+'<fieldset class="lockfs"'+(advUnlocked?'':' disabled')+'><div class="atable-wrap"><table class="atable assumptable"><colgroup>'+cgA+'</colgroup><thead><tr><th scope="col">Benchmark</th><th scope="col">Units</th><th scope="col" class="r">Low</th><th scope="col" class="r">High</th><th scope="col" class="r">Applied</th><th scope="col" class="r">Override</th>'+(NS?'<th scope="col">Notes</th><th scope="col">Source</th>':'')+'</tr></thead><tbody>';
+  const searchBar='<div class="libsearch"><input type="text" id="assump-search" placeholder="Search benchmarks…" aria-label="Search benchmarks" value="'+esc(assumpSearchQ)+'">'+
+    '<button class="alink" id="assump-expand">Expand all</button><button class="alink" id="assump-collapse">Collapse all</button></div>';
+  const secCount={}; ASSUMP.forEach(r=>{secCount[r.sec]=(secCount[r.sec]||0)+1;});
+  let h=srcBanner+searchBar+'<fieldset class="lockfs"'+(advUnlocked?'':' disabled')+'><div class="atable-wrap"><table class="atable assumptable"><colgroup>'+cgA+'</colgroup><thead><tr><th scope="col">Benchmark</th><th scope="col">Units</th><th scope="col" class="r">Low</th><th scope="col" class="r">High</th><th scope="col" class="r">Applied</th><th scope="col" class="r">Override</th>'+(NS?'<th scope="col">Notes</th><th scope="col">Source</th>':'')+'</tr></thead><tbody>';
   let sec="";
   ASSUMP.forEach((r,i)=>{
-    if(r.sec!==sec){sec=r.sec;h+='<tr class="asecrow"><td colspan="'+ncols+'">'+sec+'</td></tr>';}
+    if(r.sec!==sec){sec=r.sec;h+='<tr class="asecrow asec-toggle" data-section="'+esc(sec)+'" role="button" tabindex="0" aria-label="Toggle '+esc(sec)+'"><td colspan="'+ncols+'"><span class="asec-caret">▾</span> '+sec+' <span class="anote">('+(secCount[sec]||0)+')</span></td></tr>';}
+    const ahay=esc((""+r.label+" "+r.unit+" "+(r.notes||"")+" "+(r.source||"")).toLowerCase());
     const hasBasis=r.basis!==undefined;
     let unitCell=r.unit;
     if(hasBasis){
@@ -2979,7 +2986,7 @@ function buildAssumptions(){
       tail='<td class="tnote">'+noteCell+'</td><td class="tnote">'+srcCell+'</td>';
     }
     const appliedExtra=(!NS&&impliedSpan)?('<div style="margin-top:2px">'+impliedSpan+'</div>'):"";
-    h+='<tr><td>'+r.label+'</td><td class="anote">'+unitCell+'</td>'+
+    h+='<tr data-asec="'+esc(r.sec)+'" data-search="'+ahay+'"><td>'+r.label+'</td><td class="anote">'+unitCell+'</td>'+
        '<td class="r">'+fld(i,"low",aToDisp(r,r.low),"alow",r.fmt)+'</td>'+
        '<td class="r">'+fld(i,"high",aToDisp(r,r.high),"ahigh",r.fmt)+'</td>'+
        '<td class="r"><span class="aapplied" data-i="'+i+'">'+fmtAssump(r)+'</span>'+appliedExtra+'</td>'+
@@ -2988,9 +2995,32 @@ function buildAssumptions(){
   });
   h+='</tbody></table></div></fieldset>';
   h+=lockBar("Calibrated model defaults","Construction costs, multipliers, scarcity shape, market comps, and policy guardrails.");
-  h+='<p class="lede" style="margin-top:14px">Applied is the midpoint of Low and High unless an Override is entered. Edit Low/High to reset the range, or enter an Override (blue) when a project-specific analysis gives a firm number. For hard costs, switch the basis to <b>$/SF</b> and set the average unit size if your cost data is per square foot, the model always stores the result per unit. Every Applied value flows into the model.</p>';
+  h+='<p class="lede" style="margin-top:14px">Search matches benchmark names, units, notes, and sources. Click a section header (or Collapse all) to fold it. Applied is the midpoint of Low and High unless an Override is entered. Edit Low/High to reset the range, or enter an Override (blue) when a project-specific analysis gives a firm number. For hard costs, switch the basis to <b>$/SF</b> and set the average unit size if your cost data is per square foot, the model always stores the result per unit. Every Applied value flows into the model.</p>';
   return h;
 }
+/* search + collapsible sections for Assumptions, mirroring the Benefit-library controls.
+   Operates on the rendered rows (no rebuild, keeps input focus). */
+function applyAssumpFilter(){
+  const box=document.getElementById("assump-search"); if(!box)return;
+  const q=box.value.trim().toLowerCase(); const searching=q!=="";
+  document.querySelectorAll('#aux-assume tr[data-asec]').forEach(function(tr){
+    const sec=tr.getAttribute("data-asec"), collapsed=!!assumpCollapsed[sec];
+    const match=!searching||(tr.getAttribute("data-search")||"").indexOf(q)>=0;
+    tr.style.display=(match&&(searching||!collapsed))?"":"none";
+  });
+  document.querySelectorAll('#aux-assume tr[data-section]').forEach(function(tr){
+    const sec=tr.getAttribute("data-section");
+    if(searching){
+      const any=Array.prototype.some.call(document.querySelectorAll('#aux-assume tr[data-asec="'+sec+'"]'),function(r){return r.style.display!=="none";});
+      tr.style.display=any?"":"none";
+    } else { tr.style.display=""; }
+    const open=searching||!assumpCollapsed[sec];
+    tr.setAttribute("aria-expanded",open?"true":"false");
+    const car=tr.querySelector(".asec-caret"); if(car)car.textContent=open?"▾":"▸";
+  });
+}
+function assumpToggleSec(sec){assumpCollapsed[sec]=!assumpCollapsed[sec];applyAssumpFilter();}
+function assumpSetAll(collapsed){new Set(ASSUMP.map(function(r){return r.sec;})).forEach(function(s){assumpCollapsed[s]=collapsed;});applyAssumpFilter();}
 /* ---------- robustness band ---------- */
 function roboNote(m){
   if(m.A===0&&m.Bplain===0) return "<b>No offer yet.</b> Add benefits to stress-test a package, with nothing offered there is no decision to test.";
@@ -3451,6 +3481,20 @@ function assumpEdit(e){
 }
 ["input","change"].forEach(ev=>document.getElementById("aux-assume").addEventListener(ev,assumpEdit));
 document.getElementById("aux-assume").addEventListener("click",e=>{const b=e.target.closest("[data-lock]"); if(b){advUnlocked=!advUnlocked;renderAux("assumptions");}});
+document.getElementById("aux-assume").addEventListener("click",function(e){
+  const t=e.target;
+  if(t.id==="assump-expand"){assumpSetAll(false);return;}
+  if(t.id==="assump-collapse"){assumpSetAll(true);return;}
+  const sec=t.closest&&t.closest(".asec-toggle");
+  if(sec){assumpToggleSec(sec.getAttribute("data-section"));}
+});
+document.getElementById("aux-assume").addEventListener("keydown",function(e){
+  if((e.key==="Enter"||e.key===" ")&&e.target.classList&&e.target.classList.contains("asec-toggle")){
+    e.preventDefault();assumpToggleSec(e.target.getAttribute("data-section"));}
+});
+document.getElementById("aux-assume").addEventListener("input",function(e){
+  if(e.target.id==="assump-search"){assumpSearchQ=e.target.value;applyAssumpFilter();}
+});
 document.getElementById("aux-library").addEventListener("click",e=>{const b=e.target.closest("[data-lock]"); if(b){advUnlocked=!advUnlocked;renderAux("library");}});
 document.getElementById("aux-history").addEventListener("click",e=>{const b=e.target.closest("[data-lock]"); if(b){advUnlocked=!advUnlocked;renderAux("history");}});
 ["input","change"].forEach(ev=>document.getElementById("aux-library").addEventListener(ev,libEdit));
