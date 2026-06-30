@@ -272,17 +272,17 @@ select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-i
 .lockbar button{flex:none}
 .lockfs{border:0;margin:0;padding:0;min-width:0}
 .lockfs[disabled] input,.lockfs[disabled] select{background:#f1f2f3;color:#6b7378;cursor:not-allowed}
-.zopa-track{position:relative;height:52px;margin:32px 0 20px}
+.zopa-track{position:relative;height:52px;margin:42px 0 30px}
 .zopa-bar{position:absolute;top:22px;left:0;right:0;height:8px;border-radius:4px;background:#e2e6e8}
 .zopa-zone{position:absolute;top:22px;height:8px;border-radius:4px;background:var(--accent)}
-.zopa-mark{position:absolute;top:12px;width:2px;height:28px;background:var(--ink)}
+.zopa-mark{position:absolute;top:22px;width:2px;height:30px;background:var(--ink)}
 .zopa-lab{position:absolute;font-size:11px;color:var(--ink2);white-space:nowrap;transform:translateX(-50%)}
-.zopa-lab.top{top:-14px}.zopa-lab.bot{top:46px}
+.zopa-lab.top{top:-22px}.zopa-lab.bot{top:54px}
 @media(max-width:560px){.zopa-lab{font-size:9px}}
 .zopa-target{position:absolute;top:9px;height:34px;border-radius:4px;background:rgba(227,160,80,.16);border:1px dashed rgba(176,122,46,.75);box-sizing:border-box}
 .zopa-contrib{position:absolute;top:9px;height:34px;border-radius:4px;background:rgba(120,130,138,.10);box-sizing:border-box}
-.zopa-tmark{position:absolute;top:14px;height:24px;border-left:2px dashed var(--accent)}
-.zopa-tick{position:absolute;top:2px;width:1px;height:28px;background:#aab3b9}
+.zopa-tmark{position:absolute;top:-8px;height:38px;border-left:2px dashed var(--accent)}
+.zopa-tick{position:absolute;top:-8px;width:1px;height:38px;background:#aab3b9}
 .rank{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line2)}
 .rank .bar{height:7px;border-radius:3px;background:var(--public);min-width:0}
 /* name column shrinks (equally across rows, so bars stay aligned) and truncates rather than
@@ -903,7 +903,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.26.2", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.26.3", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -2451,12 +2451,16 @@ function drawValueStack(m){
   const maxV=Math.max(gdv,1), yOf=v=>baseY-(v/maxV)*chartH;
   const bx=66,bw=120,labX=bx+bw+16;
   let g='<line x1="40" y1="'+baseY+'" x2="'+(W-8)+'" y2="'+baseY+'" stroke="#d6dbde"/>';
-  let cum=0;
+  let cum=0; const labs=[];
   segs.forEach(s=>{if(s.v<=0)return;const yb=yOf(cum),yt=yOf(cum+s.v),h=Math.max(1,yb-yt),mid=(yb+yt)/2;
     g+='<rect x="'+bx+'" y="'+yt.toFixed(1)+'" width="'+bw+'" height="'+h.toFixed(1)+'" fill="'+s.c+'"/>';
-    if(h>=12)g+='<line x1="'+(bx+bw)+'" y1="'+mid.toFixed(1)+'" x2="'+(labX-4)+'" y2="'+mid.toFixed(1)+'" stroke="#cdd3d7"/>'+
-      '<text x="'+labX+'" y="'+(mid+3.5).toFixed(1)+'" font-size="11" fill="#1b1f23"><tspan font-weight="600">'+esc(s.l)+'</tspan> '+kf(s.v)+'</text>';
-    cum+=s.v;});
+    labs.push({s:s,mid:mid,y:mid}); cum+=s.v;});
+  /* every non-zero slice gets a label; stagger them so thin slices (e.g. public benefits) aren't dropped */
+  labs.sort((a,b)=>a.y-b.y);
+  const MIN=16; for(let i=1;i<labs.length;i++){if(labs[i].y-labs[i-1].y<MIN)labs[i].y=labs[i-1].y+MIN;}
+  const ov=labs.length?(labs[labs.length-1].y-(baseY-2)):0; if(ov>0)labs.forEach(l=>l.y-=ov);
+  labs.forEach(l=>{g+='<line x1="'+(bx+bw)+'" y1="'+l.mid.toFixed(1)+'" x2="'+(labX-4)+'" y2="'+l.y.toFixed(1)+'" stroke="#cdd3d7"/>'+
+    '<text x="'+labX+'" y="'+(l.y+3.5).toFixed(1)+'" font-size="11" fill="#1b1f23"><tspan font-weight="600">'+esc(l.s.l)+'</tspan> '+kf(l.s.v)+'</text>';});
   g+='<text x="'+(bx+bw/2)+'" y="'+(yOf(gdv)-7).toFixed(1)+'" text-anchor="middle" font-size="12" font-weight="700" fill="#1b1f23">'+kf(gdv)+'</text>';
   g+='<text x="'+(bx+bw/2)+'" y="'+(baseY+15)+'" text-anchor="middle" font-size="9.5" fill="#54616c">'+bonus+' bonus units</text>';
   el.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="max-width:640px;display:block;margin:4px 0 6px" role="img" aria-label="Stacked bar: sale value of the bonus units '+kf(gdv)+' split into build cost, developer profit, public benefits '+kf(benefits)+', and net kept by developer '+kf(net)+'">'+g+'</svg>'+
