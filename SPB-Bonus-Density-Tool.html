@@ -520,7 +520,6 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
             </div>
             <div id="map" style="border:1px solid var(--line);border-radius:6px;background:#e9ecee"></div>
             <div class="hint" id="pin-coords" style="margin-top:8px"></div>
-            <div class="hint" style="margin-top:8px">Outside the CRD boundary a density or height increase needs a comprehensive-plan amendment — and, per the city charter, generally a <b>voter referendum</b> (narrow ≤5-parcel exception). Confirm the trigger with the City Attorney.</div>
           </div>
         </div>
       </div>
@@ -2538,7 +2537,7 @@ function siteIntelRows(d,filled){filled=filled||[];
   return rowRaw("Within the Community Redevelopment District",craHtml)
     +rowRaw("Future Land Use District",fluHtml)
     +rowRaw("Parcel ID",pinHtml)
-    +row("Parcel Stated Area",d.area,filled.indexOf("acres")>-1)
+    +row("Parcel Stated Area",fmtStatedArea(d.area),filled.indexOf("acres")>-1)
     +row("Current Use",d.usecode?(d.usecode+(useCodeDesc(d.usecode)?", "+titleCase(useCodeDesc(d.usecode)):"")):null,filled.indexOf("use")>-1)
     +rowRaw("Flood Risk",frHtml)
     +(!d.anyData?'<div class="si-row"><span class="anote" style="font-size:11px">Parcel / flood services offline, values above are from embedded city data.</span></div>':"");
@@ -2587,6 +2586,15 @@ async function addParcel(lat,lon,local){
 }
 /* acreage display: always 2 decimals so the summed figures read consistently everywhere (4.50, 0.20) */
 function acStr(n){return (Math.round((+n||0)*100)/100).toFixed(2);}
+/* normalize the county "stated area" string for display: an acreage figure (often returned with a bare
+   "a" unit) renders as a clean "X.XX ac"; a square-foot figure is left as-is. */
+function fmtStatedArea(v){
+  if(v==null||v==="")return v;
+  const s=(""+v).trim();
+  if(/\d\s*s/i.test(s))return s;                 // sf-labeled (e.g. "21,780 sf") — leave untouched
+  const n=parseNum(s);
+  return (isFinite(n)&&n>0&&n<500)?(acStr(n)+" ac"):s;
+}
 function applyParcelArea(){const known=PARCELS.filter(p=>p.area!=null);   // update Site Area only when a parcel carries an area; otherwise leave it untouched
   if(known.length){const sum=Math.round(known.reduce((s,p)=>s+p.area,0)*100)/100;
     S.acres=sum; const ac=document.getElementById("acres"); if(ac)ac.value=acStr(sum); render();}}
