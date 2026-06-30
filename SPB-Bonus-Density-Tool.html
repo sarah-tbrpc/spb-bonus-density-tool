@@ -143,6 +143,9 @@ select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-i
 .case-media{display:flex;flex-direction:column}
 .case-img img{width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;border-radius:8px;border:1px solid var(--line);display:block}
 .case-map{border-radius:8px;border:1px solid var(--line);background:#e9ecee;margin-top:12px;height:180px}
+/* inline link to another section of the tool (Assumptions, Results, Benefits step, etc.) */
+.seclink{color:var(--accent);font-weight:600;text-decoration:underline;text-underline-offset:2px;cursor:pointer;background:none;border:none;padding:0;font:inherit}
+.seclink:hover{color:var(--accent-d)}
 @media(max-width:1024px){.case-grid{grid-template-columns:1fr}.case-img img{aspect-ratio:21/9;max-height:300px}}
 .hint{font-size:12px;color:var(--ink3);margin-top:6px}
 
@@ -494,7 +497,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
             </div>
             <div id="map" style="border:1px solid var(--line);border-radius:6px;background:#e9ecee"></div>
             <div class="hint" id="pin-coords" style="margin-top:8px"></div>
-            <div class="hint" style="margin-top:8px">Density increases outside the CRA boundary require a comprehensive plan amendment.</div>
+            <div class="hint" style="margin-top:8px">Density increases outside the CRD boundary require a comprehensive plan amendment.</div>
           </div>
         </div>
       </div>
@@ -564,7 +567,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
       <div class="eyebrow">Step 2 of 3 · Benefits</div>
       <h2 class="step-h">Public Benefit Package</h2>
       <p class="lede" style="margin-bottom:18px">Add benefits, set quantity and share above code; each is ranked by public value per developer dollar.</p>
-        <details class="stephelp"><summary>How lines are counted</summary>Per line: quantity, percent above code (only that share counts), and optionally the developer's cost and city's value per unit (library defaults). The top-right pill is the value ratio: public value per developer dollar, after the category multiplier (cash 1×). Percent above code scales both sides, so it doesn't change the ratio; it stops crediting code-required work, distinct from the break-even floor (which offsets impacts). Multipliers and cost factors are editable under Assumptions.</details>
+        <details class="stephelp"><summary>How lines are counted</summary>Per line: quantity, percent above code (only that share counts), and optionally the developer's cost and city's value per unit (library defaults). The top-right pill is the value ratio: public value per developer dollar, after the category multiplier (cash 1×). Percent above code scales both sides, so it doesn't change the ratio; it stops crediting code-required work, distinct from the break-even floor (which offsets impacts). Multipliers and cost factors are editable under <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions</a>.</details>
         <div id="blist"></div>
         <div id="pkg-summary"></div>
         <div class="btot"><span>Developer cost</span><span class="mono" id="tot-a"></span></div>
@@ -601,7 +604,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
       </div>
       <div class="card" id="solver-card">
         <h3>Suggested Counter-Package</h3>
-        <div class="sub">A starting offer: the most plain-value-efficient library benefits, sized to clear the break-even floor within the developer's budget. A negotiation aid, not a recommendation; load it onto the Benefits step and adjust.</div>
+        <div class="sub">The most plain-value-efficient library benefits, sized to clear the break-even floor within the developer's budget. A negotiation aid, not a recommendation; add it to whatever is already on the Benefits step and adjust.</div>
         <div id="solver"></div>
       </div>
       <div class="card" id="vstack-card">
@@ -647,7 +650,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
         <div class="hint" id="spark-note"></div>
       </details>
       <details class="card diagcard" id="xcheck-card"><summary>Cross-Check: Tampa 10:1 / ICC Construction-Cost Basis</summary>
-        <div class="sub">An optional sanity check against the basis SPB Planning cited (Tampa Code 27-140 and ICC). It compares the developer’s benefit spend to the bonus units' construction cost. <b>Reference only, not part of the decision.</b> Inputs editable under Assumptions § F.</div>
+        <div class="sub">An optional sanity check against the basis SPB Planning cited (Tampa Code 27-140 and ICC). It compares the developer’s benefit spend to the bonus units' construction cost. <b>Reference only, not part of the decision.</b> Inputs editable under <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions § F</a>.</div>
         <div class="numgrid" id="xcheck"></div>
         <div class="hint" id="xcheck-note"></div>
       </details>
@@ -687,7 +690,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
       <button class="btn auxback" style="margin-bottom:14px">← Back</button>
       <div class="eyebrow">Settings</div>
       <h2 class="step-h">Benefit Library</h2>
-      <p class="lede">The <b>city’s value</b> of each benefit (Low/High/Applied/Override; Applied is the midpoint unless overridden), seeding the city value when you add it. The <b>developer’s cost</b> is not set here, it’s their per-project proposal on the Benefits step. Placeholders, calibrate to local bids.</p>
+      <p class="lede">The <b>city’s value</b> of each benefit (Low/High/Applied/Override; Applied is the midpoint unless overridden), seeding the city value when you add it. The <b>developer’s cost</b> is not set here, it’s their per-project proposal on the <a href="#" class="seclink" onclick="goto(1);return false;">Benefits step</a>. Placeholders, calibrate to local bids.</p>
       <div id="aux-library"></div>
     </section>
 
@@ -726,7 +729,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
       <div class="card">
         <h3>Known Limits, Read Before Relying on It</h3>
         <p class="lede" style="margin:0 0 8px"><b>Plain-dollar decision.</b> The pass/fail compares the package's plain public value (city cost to provide) to the plain-dollar break-even floor. <b>Category multipliers</b> (resilience 2.5×, etc.) only <i>rank</i> benefits within a package, never inflating the offer on the decision scale. <span class="anote">(Earlier versions weighted the offer first; removed in v1.1.)</span> Category weighting has precedent (Chicago Zoning Ordinance §17-4-1000 et seq.).</p>
-        <p class="lede" style="margin:0 0 8px"><b>Invented curve shapes.</b> The scarcity exponent and value-decline factor are judgment shapes, not empirical (both editable under Assumptions). At full depletion the floor reaches the units' full value, so the tool reports no agreement zone rather than implying a package could close the gap.</p>
+        <p class="lede" style="margin:0 0 8px"><b>Invented curve shapes.</b> The scarcity exponent and value-decline factor are judgment shapes, not empirical (both editable under <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions</a>). At full depletion the floor reaches the units' full value, so the tool reports no agreement zone rather than implying a package could close the gap.</p>
         <p class="lede" style="margin:0 0 8px"><b>Margin is not a return.</b> Developer margin is a flat percentage of cost, a proxy for a 12–15% target IRR. It ignores financing, hold period, and time value, so a developer's analyst will test feasibility differently. Treat value to developer as an order-of-magnitude ceiling.</p>
         <p class="lede" style="margin:0 0 8px"><b>Land is held constant.</b> Value to developer prices only the marginal bonus units and does not subtract land (a by-right sunk cost). Right for the increment, but it understates all-in cost and is not a residual land value.</p>
         <p class="lede" style="margin:0 0 8px"><b>Double-counting trap.</b> Required mitigation also entered as a voluntary benefit gets counted twice. Use "% above code" to count only the above-code share, as Chicago's bonus rules require.</p>
@@ -1652,7 +1655,12 @@ function goto(i){cur=Math.max(0,Math.min(STEPS.length-1,i));
   else{nb.style.visibility="visible";nb.innerHTML="Next: "+NEXT_DEST[cur+1]+" →";}
   document.getElementById("crumbs").textContent=(cur+1)+" / "+STEPS.length;
   try{if(location.protocol.indexOf("http")===0)localStorage.setItem("spb_step",String(cur));}catch(e){}
-  window.scrollTo({top:0,behavior:"smooth"});if(cur===0&&map){setTimeout(()=>map.invalidateSize(),120);}render();}
+  window.scrollTo({top:0,behavior:"smooth"});
+  if(cur===0&&map){setTimeout(()=>{map.invalidateSize();
+    /* a case loaded its parcels while the map was hidden (Case Studies page) — fit to them now that Step 1 is visible */
+    if(parcelFitPending){parcelFitPending=false;try{const grp=L.featureGroup(PARCELS.filter(p=>p.marker).map(p=>p.marker));if(grp.getLayers().length&&grp.getBounds().isValid())map.fitBounds(grp.getBounds().pad(0.6));}catch(e){}}
+  },140);}
+  render();}
 document.getElementById("back").onclick=()=>goto(cur-1);
 document.getElementById("next").onclick=()=>goto(cur+1);
 
@@ -1751,7 +1759,7 @@ function updateDealStrip(m){
   const upool=(S.use==="Temporary Lodging")?"TLU":"RU";
   const distLabel=(S.district&&S.district!=="UNK")?(d.label||S.district):"District not set";
   const useLabel=S.use||"Use not set";
-  const poolLabel=(S.pathway==="LR District Ramp")?"Out of scope (LR)":(S.use?(S.rem+' of '+(POOL_TOTAL[upool]||0)+' '+upool):"Pool not set");   // LR is out of scope; otherwise unknown until a use type is chosen
+  const poolLabel=(S.pathway==="LR District Ramp")?"District cap, no pool":(S.use?(S.rem+' of '+(POOL_TOTAL[upool]||0)+' '+upool):"Pool not set");   // LR adds lodging within the district cap (no pool draw); otherwise unknown until a use type is chosen
   el.hidden=false;
   el.innerHTML=
     '<div class="ds"><span class="dsk">District</span><span class="dsv">'+esc(distLabel)+'</span></div>'+
@@ -1976,13 +1984,13 @@ function drawXCheck(m){
 
 function verdictObj(m){
   const C={ok:["#e7f1ea","#1f5c3c"],warn:["#f6efde","#7a5a12"],bad:["#f6e2e4","#8a2832"],neu:["#eef0f2","#54616c"]};
-  const capPre=m.overCap?"The requested total exceeds the district density cap; as bonus density it would require a comprehensive plan amendment. On the economics: ":"";
+  /* Large Resort: lodging added by conditional use within the district cap (LDC Div. 35), NOT a pool
+     draw — poolPath is already false here, so no scarcity cost. The impact-mitigation floor and the
+     developer ceiling still bound the deal, so LR runs the normal economics with an explanatory note
+     instead of being treated as out of scope. */
+  const lrNote=(S.pathway==="LR District Ramp")?"Large Resort adds lodging by conditional use within the district cap (50–75 TLU/ac, LDC Div. 35), not a pool draw, so no pool-scarcity cost applies — the impact-mitigation floor and the developer ceiling still bound the deal. ":"";
+  const capPre=lrNote+(m.overCap?"The requested total exceeds the district density cap; as bonus density it would require a comprehensive plan amendment. On the economics: ":"");
   const unsecuredNote=(m.flags&&m.flags.unsecuredShare>=0.25)?(' <b>Caution:</b> '+Math.round(m.flags.unsecuredShare*100)+'% of the offered value rests on unsecured promises (no instrument named, credited at '+Math.round(ENFORCE.none*100)+'%); name what secures them or read the offer as softer than it looks.'):"";
-  /* Scope guard: this tool evaluates RU / TLU density-pool allocations only. Large Resort adds
-     lodging within its own district cap by conditional use (no pool draw, different legal posture),
-     so the pool framework (floor, scarcity, ZOPA) does not apply. */
-  if(S.pathway==="LR District Ramp") return {tag:"Out of scope",bg:C.neu[0],fg:C.neu[1],light:"#9aa3a8",status:"Out of scope (LR district cap)",tip:"Large Resort density additions are within the district's own cap, not a pool draw; this tool evaluates pool allocations only.",head:"Large Resort, outside this tool's scope",
-    body:"Large Resort lodging is allowed by conditional use within the district's own cap (LDC Div. 35), not a draw from the RU or TLU pools, so this tool's pool framework does not apply. Evaluate it under the LR district standards directly."};
   /* Deep scarcity: when the scarcity-adjusted floor exceeds the developer ceiling, no realistic
      package can close the gap. Report it as Hold (the pool's option value beats this request)
      rather than the misleading "renegotiate" path. Fires before everything else so it is robust to
@@ -2187,7 +2195,11 @@ function solvePackage(m){
   return {pick,plain,weighted,dev,floor,ceiling,clears:plain>=floor-1,feasible:dev<=ceiling+1,hc};
 }
 function loadSolverPackage(s){
-  S.benefits=s.pick.map(p=>({name:p.name,qty:p.qty,pct:1,instr:"condition"}));
+  /* ADD the suggested package to the existing benefits (sweeten the pot), don't replace them.
+     Dedupe by name so loading twice doesn't double up. */
+  const have=new Set((S.benefits||[]).map(b=>b.name));
+  const add=s.pick.filter(p=>!have.has(p.name)).map(p=>({name:p.name,qty:p.qty,pct:1,instr:"condition"}));
+  S.benefits=(S.benefits||[]).concat(add);
   goto(1);
 }
 function drawSolver(m){
@@ -2200,7 +2212,7 @@ function drawSolver(m){
   const status=s.clears?(s.feasible?'<b style="color:var(--pass)">Clears the break-even floor within the developer budget.</b>':'<b style="color:var(--warn)">Clears the floor, but the package cost exceeds the developer budget.</b>'):'<b style="color:var(--warn)">The library cannot clear the floor within the developer budget at current values.</b>';
   el.innerHTML='<div class="atable-wrap"><table class="atable"><thead><tr><th scope="col">Benefit</th><th scope="col" class="r">Qty</th><th scope="col" class="r">Dev cost</th><th scope="col" class="r">Public value</th><th scope="col" class="r">Ratio</th></tr></thead><tbody>'+rows+
     '</tbody><tfoot><tr><td>Totals</td><td class="r"></td><td class="r mono">'+fmt(s.dev)+'</td><td class="r mono">'+fmt(s.plain)+'</td><td class="r"></td></tr></tfoot></table></div>'+
-    '<div class="hint" style="margin-top:8px">'+status+' Break-even floor '+fmt(s.floor)+', developer ceiling '+fmt(s.ceiling)+'. Enforceability assumed at condition-of-approval ('+Math.round(s.hc*100)+'%); securing an item with a stronger instrument lifts its credit. <button class="alink" id="solver-load">Load this package onto the Benefits step →</button></div>';
+    '<div class="hint" style="margin-top:8px">'+status+' Break-even floor '+fmt(s.floor)+', developer ceiling '+fmt(s.ceiling)+'. Enforceability assumed at condition-of-approval ('+Math.round(s.hc*100)+'%); securing an item with a stronger instrument lifts its credit. <button class="alink" id="solver-load">Add this package to the Benefits step →</button></div>';
   const b=document.getElementById("solver-load"); if(b)b.onclick=()=>loadSolverPackage(s);
 }
 function drawRanks(m){
@@ -2355,7 +2367,7 @@ function siteIntelRows(d,filled){filled=filled||[];
   const craHtml=(d.cra==null)?"-":(d.cra?'<span class="si-auto">Yes</span>':"No");
   let fluHtml;
   if(d.fluCode){fluHtml=esc(d.fluCode+(FLU_LABEL[d.fluCode]?", "+FLU_LABEL[d.fluCode]:""));}
-  else if(d.cra===false){fluHtml='Not mapped <span class="anote" style="font-weight:400">(FLU is mapped only inside the CRA in this tool)</span>';}
+  else if(d.cra===false){fluHtml='Not mapped <span class="anote" style="font-weight:400">(FLU is mapped only inside the CRD in this tool)</span>';}
   else {fluHtml="-";}
   const frParts=[];
   if(d.fldZone)frParts.push("FEMA "+d.fldZone+(d.cz&&d.cz!==d.fldZone?", coastal":""));
@@ -2367,7 +2379,7 @@ function siteIntelRows(d,filled){filled=filled||[];
     if(d.fldZone||d.bfe!=null)fl.push('<a class="si-link" target="_blank" rel="noopener" href="https://msc.fema.gov/portal/firmette?latitude='+d.lat.toFixed(6)+'&longitude='+d.lon.toFixed(6)+'">↗ FEMA map</a>');
     if(d.evac)fl.push('<a class="si-link" target="_blank" rel="noopener" href="https://kyz.pinellas.gov/">↗ Evac zones</a>');
     frHtml=esc(frVal)+(fl.length?' '+fl.join(' '):'');}
-  return rowRaw("Within St. Pete Beach CRA",craHtml)
+  return rowRaw("Within the Community Redevelopment District",craHtml)
     +rowRaw("Future Land Use District",fluHtml)
     +rowRaw("Parcel ID",pinHtml)
     +row("Parcel Stated Area",d.area,filled.indexOf("acres")>-1)
@@ -2396,7 +2408,7 @@ async function gatherSiteIntel(lat,lon){
    click adds a numbered parcel; the parcels' stated areas are summed into Site Area. Parcel 1 also
    drives district / flood / coastal through the normal pin path. PARCELS is module-local (not in S),
    so saved scenarios carry only the resulting Site Area, not the marker list. */
-let PARCELS=[], multiMode=false;
+let PARCELS=[], multiMode=false, parcelFitPending=false;
 function dashPin(pin){const d=(""+(pin||"")).replace(/\D/g,"");return (d.length===18)?(d.slice(4,6)+"-"+d.slice(2,4)+"-"+d.slice(0,2)+"-"+d.slice(6,11)+"-"+d.slice(11,14)+"-"+d.slice(14,18)):(d||(""+(pin||"")));}
 /* look up a parcel's site address from the embedded parcel layer by its dashed id (lazy-built map) */
 let _parcelAddrMap=null;
@@ -2435,10 +2447,12 @@ function renderParcelList(){const el=document.getElementById("parcel-list"); if(
     const areaTxt=(p.area!=null?(p.area+" ac"):"area n/a");
     const del='<button data-pdel="'+i+'" title="Remove this parcel" aria-label="Remove parcel '+(i+1)+'" style="background:none;border:none;color:#b0392e;cursor:pointer;font-size:14px;line-height:1;padding:0 0 0 8px">×</button>';
     const detail=p.data?siteIntelRows(p.data,[]):'<div class="si-row"><span class="anote">Loading parcel data…</span></div>';
-    return '<details class="parcel-item"><summary class="parcel-head"><span class="ph-lab">'+lab+'</span><span class="ph-area">'+areaTxt+del+'</span></summary><div class="parcel-detail">'+detail+'</div></details>';
+    return '<details class="parcel-item" name="parcelacc"><summary class="parcel-head"><span class="ph-lab">'+lab+'</span><span class="ph-area">'+areaTxt+del+'</span></summary><div class="parcel-detail">'+detail+'</div></details>';
   }).join("");
   el.innerHTML=rows+'<div class="si-row parcel-total"><span><b>'+PARCELS.length+' parcels</b></span><b>'+sum+' ac total</b></div>';
-  el.querySelectorAll("[data-pdel]").forEach(b=>b.onclick=(ev)=>{ev.preventDefault();ev.stopPropagation();removeParcel(+b.dataset.pdel);});}
+  el.querySelectorAll("[data-pdel]").forEach(b=>b.onclick=(ev)=>{ev.preventDefault();ev.stopPropagation();removeParcel(+b.dataset.pdel);});
+  /* accordion: only one parcel detail open at a time (native name= plus a JS fallback for older browsers) */
+  el.querySelectorAll(".parcel-item").forEach(d=>d.addEventListener("toggle",function(){if(this.open)el.querySelectorAll(".parcel-item").forEach(o=>{if(o!==this&&o.open)o.open=false;});}));}
 /* avg unit/key size is use-aware: seed S.mktSF from the use type. Called on use selection and when
    the avg-size Assumptions rows are edited, NOT on scenario load or district auto-detect (so a
    stored or manual size is preserved), mirroring how seedMarket re-seeds the market value. */
@@ -2477,7 +2491,7 @@ function applyDistrict(key){
     const poolMsg=(d.pathway==="Pool Allocation")
       ?"Bonus units draw from the density pool, so a pool scarcity cost applies (shown on the Results page)."
       :((d.pathway==="LR District Ramp")
-        ?""
+        ?"Added lodging is by conditional use within the district cap (50–75 TLU/ac), not a pool draw, so no pool-scarcity cost applies — the impact-mitigation floor and the developer ceiling still apply (shown on the Results page)."
         :"Increases require a comprehensive plan amendment; no density pool here.");
     drEl.innerHTML="<b>"+esc(d.label)+"</b>, "+esc(d.pathway)+". "+baseTxt+poolMsg+" "+ldcLink;
   }
@@ -2581,7 +2595,7 @@ function addCraLayers(map){
   try{
     /* map legend: CRA + city boundaries only (per-parcel pool-eligibility shading removed) */
     const hasParcels=(typeof PARCELS_GEO!=="undefined"&&PARCELS_GEO);
-    const leg=L.control({position:"bottomright"}); leg.onAdd=()=>{const d=L.DomUtil.create("div","flu-legend");d.innerHTML=(hasParcels?'<label class="flu-lg flu-lg-toggle"><input type="checkbox" id="parcel-toggle"'+(parcelsOn?" checked":"")+'><span class="sw-parcel"></span>Parcels</label>':'')+'<div class="flu-lg"><span class="sw-city"></span>City boundary</div><div class="flu-lg"><span class="sw-cra"></span>CRA boundary</div>';L.DomEvent.disableScrollPropagation(d);L.DomEvent.disableClickPropagation(d);return d;}; leg.addTo(map);
+    const leg=L.control({position:"bottomright"}); leg.onAdd=()=>{const d=L.DomUtil.create("div","flu-legend");d.innerHTML=(hasParcels?'<label class="flu-lg flu-lg-toggle"><input type="checkbox" id="parcel-toggle"'+(parcelsOn?" checked":"")+'><span class="sw-parcel"></span>Parcels</label>':'')+'<div class="flu-lg"><span class="sw-city"></span>City boundary</div><div class="flu-lg"><span class="sw-cra"></span>CRD boundary</div>';L.DomEvent.disableScrollPropagation(d);L.DomEvent.disableClickPropagation(d);return d;}; leg.addTo(map);
     if(typeof SPB_GEO!=="undefined"&&SPB_GEO){
       L.geoJSON(SPB_GEO,{style:{color:"#14366e",weight:2,fill:false}}).addTo(map);
     }
@@ -2673,7 +2687,7 @@ function derivV(m){
    '<div class="step"><b>Sanity check, implied return on cost</b></div>'+
    '<div class="step">delivered cost (no profit) = '+fmtFull(m.tc)+'; market '+fmtFull(S.market)+' ÷ '+fmtFull(m.tc)+' − 1 = <b>'+Math.round(m.impMargin*100)+'%</b> (assumed target ≈ '+Math.round(S.margin*100)+'%)</div>'+
    '</div>'+
-   '<p class="lede" style="margin-top:14px">This is the most the bonus is worth to the developer, their walk-away budget and the ceiling on what they could hand back. The decline factor discounts later units. Cost factors are editable under Assumptions.</p>'+
+   '<p class="lede" style="margin-top:14px">This is the most the bonus is worth to the developer, their walk-away budget and the ceiling on what they could hand back. The decline factor discounts later units. Cost factors are editable under '+secLink('Assumptions',"showAux('assumptions')")+'.</p>'+
    '<p class="lede" style="margin-top:8px">The <b>implied return on cost</b> is the margin the bonus units throw off at the entered market price, a check on the inputs, not a model input. It runs well above a normal '+Math.round(S.margin*100)+'% target because the cost here excludes land (held constant; see Method): the higher it reads, the larger the value to developer and the city’s room to negotiate. If it reads near zero or negative, the residual is clamped to zero and the bonus has little standalone value, usually a sign the market price or hard cost needs correcting.</p>'+
    '</div><div class="vchart">'+waterfallV()+'</div></div></div>';
 }
@@ -2689,7 +2703,7 @@ function derivCM(m){
   d+='<div class="step">impact '+fmtFull(S.impact)+'/unit × '+S.bonus+' bonus units = <b>'+fmtFull(m.I)+'</b></div>';
   d+='<div class="step"><b>Break-even floor = pool value used + impact offset</b></div>';
   d+='<div class="step">'+fmtFull(m.D)+' + '+fmtFull(m.I)+' = <span class="res">'+fmtFull(m.cityMin)+'</span></div></div>';
-  d+='<p class="lede" style="margin-top:14px">The value of the scarce pool units used plus the impact offset the city can lawfully require. Impact is editable under Assumptions; pool figures on the Results page, under Density Pool and Scarcity.</p>';
+  d+='<p class="lede" style="margin-top:14px">The value of the scarce pool units used plus the impact offset the city can lawfully require. Impact is editable under '+secLink('Assumptions',"showAux('assumptions')")+'; pool figures on the '+secLink('Results page',"goto(2)")+', under Density Pool and Scarcity.</p>';
   return d;
 }
 function derivB(m){
@@ -2697,7 +2711,7 @@ function derivB(m){
   m.rows.forEach(x=>{ d+='<div class="step">'+x.name+': '+x.qty+' × '+fmtFull(x.city)+' × '+Math.round(x.pct*100)+'% = <b>'+fmtFull(x.cityPlain)+'</b>'+(x.mult!==1?(' <span class="anote">(×'+x.mult+' priority weight → '+fmtFull(x.cityVal)+' for ranking)</span>'):'')+'</div>'; });
   d+='<div class="step">Offered public value (plain $) = <span class="res">'+fmtFull(m.Bplain)+'</span></div>';
   d+='<div class="step" style="margin-top:8px">Developer cost (qty × dev $/unit × % above) = <b>'+fmtFull(m.A)+'</b>; value ratio = '+(m.gPlain?m.gPlain.toFixed(2):"0")+'× (plain) · '+(m.g?m.g.toFixed(2):"0")+'× (priority-weighted)</div></div>';
-  d+='<p class="lede" style="margin-top:14px">The pass/fail test is in <b>plain dollars</b>, the deal is worthwhile when the package’s plain public value meets the break-even floor, and feasible when developer cost stays under the value to developer. The <b>category multipliers</b> (resilience 2.5×, etc.) do <i>not</i> move the decision; they only rank which benefits to prefer within a package. Per-unit costs and values are editable on the Benefits step; multipliers under Assumptions.</p>';
+  d+='<p class="lede" style="margin-top:14px">The pass/fail test is in <b>plain dollars</b>, the deal is worthwhile when the package’s plain public value meets the break-even floor, and feasible when developer cost stays under the value to developer. The <b>category multipliers</b> (resilience 2.5×, etc.) do <i>not</i> move the decision; they only rank which benefits to prefer within a package. Per-unit costs and values are editable on the '+secLink('Benefits step',"goto(1)")+'; multipliers under '+secLink('Assumptions',"showAux('assumptions')")+'.</p>';
   return d;
 }
 /* ---------- benefit library (editable) ---------- */
@@ -2819,6 +2833,8 @@ function showAux(name){returnStep=cur;
 }
 /* open the User Guide and jump to the Legal & political guardrails card (from the Results pointer) */
 function openLegal(){showAux("method");setTimeout(()=>{const el=document.getElementById("legal-card");if(el)el.scrollIntoView({behavior:"smooth",block:"start"});},140);}
+/* inline link to another section of the tool (for dynamic copy). action is a JS snippet, e.g. "showAux('assumptions')" or "goto(1)". */
+function secLink(label,action){return '<a href="#" class="seclink" onclick="'+action+';return false;">'+label+'</a>';}
 let advUnlocked=false;
 function lockBar(title,note){
   return '<div class="lockbar">'+(advUnlocked
@@ -3103,7 +3119,7 @@ const CASES=[{
   ]
 }];
 function buildCases(){
-  let h='<p class="lede">Real, verified projects worked end-to-end. Load one to populate every input, then review the full breakdown, the four numbers, the ZOPA with its target-capture zone, and the value charts, and adjust it to explore alternatives. Loading replaces the current project inputs; the Assumptions and the allocation ledger are kept.</p>';
+  let h='<p class="lede">Real, verified projects worked end-to-end. Load one to populate every input, then review the full breakdown, the four numbers, the ZOPA with its target-capture zone, and the value charts, and adjust it to explore alternatives. Loading replaces the current project inputs; the '+secLink('Assumptions',"showAux('assumptions')")+' and the '+secLink('allocation ledger',"showAux('history')")+' are kept.</p>';
   CASES.forEach((c,i)=>{
     const textCol='<p class="lede" style="margin:10px 0">'+esc(c.blurb)+'</p>'+
        '<div class="atable-wrap"><table class="atable"><tbody>'+
@@ -3148,6 +3164,27 @@ function loadCase(idx){
   render();
   goto(STEPS.length-1);          // jump to Results to show the worked outcome
 }
+/* a point guaranteed INSIDE a polygon footprint, for marker placement: the bbox centre when it
+   falls inside, else the midpoint of the widest horizontal interior span (handles L-shaped lots) */
+function interiorPoint(geom){
+  if(!geom)return null;
+  const outer=(geom.type==="Polygon")?geom.coordinates[0]:(geom.type==="MultiPolygon"?geom.coordinates[0][0]:null);
+  if(!outer||!outer.length)return null;
+  let minx=Infinity,miny=Infinity,maxx=-Infinity,maxy=-Infinity;
+  outer.forEach(c=>{if(c[0]<minx)minx=c[0];if(c[0]>maxx)maxx=c[0];if(c[1]<miny)miny=c[1];if(c[1]>maxy)maxy=c[1];});
+  const cx=(minx+maxx)/2, cy=(miny+maxy)/2;
+  if(pointInGeom(cx,cy,geom))return [cy,cx];   // [lat,lon]
+  const xs=[];
+  for(let i=0,j=outer.length-1;i<outer.length;j=i++){const yi=outer[i][1],yj=outer[j][1];
+    if((yi>cy)!==(yj>cy)){xs.push(outer[i][0]+(cy-yi)/(yj-yi)*(outer[j][0]-outer[i][0]));}}
+  xs.sort((a,b)=>a-b);
+  let mid=cx,best=-1;
+  for(let k=0;k+1<xs.length;k+=2){const len=xs[k+1]-xs[k];if(len>best){best=len;mid=(xs[k]+xs[k+1])/2;}}
+  return [cy,mid];
+}
+/* embedded parcel footprint feature by dashed id (lazy map) */
+let _parcelFeatMap=null;
+function parcelFeatById(dashedId){if(!dashedId)return null;if(!_parcelFeatMap){_parcelFeatMap={};if(typeof PARCELS_GEO!=="undefined"&&PARCELS_GEO)PARCELS_GEO.features.forEach(f=>{if(f.properties&&f.properties.id)_parcelFeatMap[f.properties.id]=f;});}return _parcelFeatMap[dashedId]||null;}
 function loadCaseParcels(c){
   if(typeof clearParcels==="function")clearParcels();
   multiMode=false;
@@ -3155,17 +3192,32 @@ function loadCaseParcels(c){
   if(c.parcels&&c.parcels.length){
     multiMode=true; if(mpc)mpc.checked=true; if(sif)sif.style.display="none";
     c.parcels.forEach(function(p,k){
+      const did=dashPin(p.pin), feat=parcelFeatById(did), ip=feat?interiorPoint(feat.geometry):null;
+      const lat=ip?ip[0]:p.lat, lon=ip?ip[1]:p.lon;   // place the marker ON the footprint
       var mk=null;
-      if(map&&typeof L!=="undefined"){mk=L.circleMarker([p.lat,p.lon],{radius:10,color:"#27576a",weight:2,fillColor:"#86bcb6",fillOpacity:.85}).addTo(map).bindTooltip(String(k+1),{permanent:true,direction:"center",className:"parcel-num"});}
-      PARCELS.push({lat:p.lat,lon:p.lon,pin:p.pin,area:p.area,data:{pin:p.pin,parcelNo:dashPin(p.pin)},marker:mk,localId:dashPin(p.pin)});
+      if(map&&typeof L!=="undefined"){mk=L.circleMarker([lat,lon],{radius:10,color:"#27576a",weight:2,fillColor:"#86bcb6",fillOpacity:.85}).addTo(map).bindTooltip(String(k+1),{permanent:true,direction:"center",className:"parcel-num"});}
+      PARCELS.push({lat:lat,lon:lon,pin:p.pin,area:p.area,data:{pin:p.pin,parcelNo:did},marker:mk,localId:did,localAddr:(feat&&feat.properties)?(feat.properties.ad||null):null});
     });
     applyParcelArea();
-    if(c.parcels[0])setPin(c.parcels[0].lat,c.parcels[0].lon);
+    if(PARCELS[0])setPin(PARCELS[0].lat,PARCELS[0].lon);
     var pa=document.getElementById("paddr"); if(pa)pa.value=c.address||"";
     renderParcelList();
     if(typeof syncParcelHighlights==="function")syncParcelHighlights();   // highlight the loaded parcel footprints
-    if(map&&typeof L!=="undefined"){try{const grp=L.featureGroup(PARCELS.filter(p=>p.marker).map(p=>p.marker));if(grp.getLayers().length){map.fitBounds(grp.getBounds().pad(0.6));setTimeout(()=>{if(map)map.invalidateSize();},160);}}catch(e){}}
+    parcelFitPending=true;   // goto(0) re-fits to the parcels once Step 1's map is actually visible (case may load with the map hidden)
+    if(map&&typeof L!=="undefined"){try{const grp=L.featureGroup(PARCELS.filter(p=>p.marker).map(p=>p.marker));if(grp.getLayers().length&&grp.getBounds().isValid()){map.fitBounds(grp.getBounds().pad(0.6));setTimeout(()=>{if(map)map.invalidateSize();},160);}}catch(e){}}
+    fetchCaseParcelData();   // best-effort: fill flood / use / CRD / FLU metadata per parcel from the county service
   } else { if(mpc)mpc.checked=false; if(sif)sif.style.display=""; }
+}
+/* fill each case-loaded parcel's detail (flood, use, district, area) from the county service,
+   keeping the case PIN as the id. Graceful on failure / offline (the detail just stays sparse). */
+function fetchCaseParcelData(){
+  PARCELS.slice().forEach(async function(p){
+    if(!p||p.lat==null||p.lon==null)return;
+    try{ const d=await fetchSiteData(p.lat,p.lon); if(!d||PARCELS.indexOf(p)<0)return;
+      p.data=Object.assign({},d,{pin:p.pin,parcelNo:dashPin(p.pin)});
+      renderParcelList(); if(typeof syncParcelHighlights==="function")syncParcelHighlights();
+    }catch(e){}
+  });
 }
 function buildScenarios(){
   let h='<div class="card"><div class="sub">'+(scenHosted?"Saved to this browser (localStorage). Browser storage can be cleared at any time and is not shared between machines, <b>the exported .json file is the durable copy</b>. Use Export to keep a file you can re-import later or share.":"Held in memory only, this is not a hosted page, so saved scenarios clear on reload. <b>The exported .json file is the durable copy</b>, use Export to save them to a file and Import to restore them.")+'</div>'+
