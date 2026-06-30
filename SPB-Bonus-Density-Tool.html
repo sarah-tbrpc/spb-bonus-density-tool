@@ -931,7 +931,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.28.3", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.29.0", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -1590,7 +1590,13 @@ function resetAll(){
     var mult = CATMULT[lib.cat] || 1;
     var recurring = !!b.recurring;
     var term = recurring ? ((b.term > 0) ? b.term : PVD.term) : 0;
-    var pvf = recurring ? pvFactor(PVD.esc, PVD.disc, term) : 1; // one-time benefits use a factor of 1
+    /* POLICY (bounded recurring PV): an escalation at or above the discount rate makes the growing-annuity
+       closed form diverge — its PV grows without bound in the term, over-crediting a long obligation and
+       inflating both developer cost and city value. Clamp the escalation to the discount rate so pvFactor
+       takes its bounded n/(1+disc) linear branch. escViol (below) still flags that the entered escalation
+       is not safely below the discount rate. */
+    var escEff = (PVD.esc >= PVD.disc) ? PVD.disc : PVD.esc;
+    var pvf = recurring ? pvFactor(escEff, PVD.disc, term) : 1; // one-time benefits use a factor of 1
     var annualDev = b.qty * devU * b.pct, annualCity = b.qty * cityU * b.pct; // for recurring, per-year amounts
     var instr = b.instr || "";
     var unsecured = SIMPLE_BENEFITS ? false : !instr;            // no instrument named -> unsecured

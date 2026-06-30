@@ -204,7 +204,13 @@
     var mult = CATMULT[lib.cat] || 1;
     var recurring = !!b.recurring;
     var term = recurring ? ((b.term > 0) ? b.term : PVD.term) : 0;
-    var pvf = recurring ? pvFactor(PVD.esc, PVD.disc, term) : 1; // one-time benefits use a factor of 1
+    /* POLICY (bounded recurring PV): an escalation at or above the discount rate makes the growing-annuity
+       closed form diverge — its PV grows without bound in the term, over-crediting a long obligation and
+       inflating both developer cost and city value. Clamp the escalation to the discount rate so pvFactor
+       takes its bounded n/(1+disc) linear branch. escViol (below) still flags that the entered escalation
+       is not safely below the discount rate. */
+    var escEff = (PVD.esc >= PVD.disc) ? PVD.disc : PVD.esc;
+    var pvf = recurring ? pvFactor(escEff, PVD.disc, term) : 1; // one-time benefits use a factor of 1
     var annualDev = b.qty * devU * b.pct, annualCity = b.qty * cityU * b.pct; // for recurring, per-year amounts
     var instr = b.instr || "";
     var unsecured = SIMPLE_BENEFITS ? false : !instr;            // no instrument named -> unsecured
