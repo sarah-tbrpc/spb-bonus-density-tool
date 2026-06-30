@@ -127,6 +127,21 @@ h2.step-h{font-size:23px;font-weight:700;margin:4px 0 7px;letter-spacing:-.02em}
 .ihint-tip b{color:#fff}
 .ihint:hover .ihint-tip,.ihint:focus .ihint-tip{opacity:1;visibility:visible}
 .lab .val{font-variant-numeric:tabular-nums;font-weight:600;font-size:13px;color:var(--ink)}
+/* editable market-value box that sits beside the slider (direct entry for precise dollar figures) */
+.mv-edit{display:inline-flex;align-items:center;gap:9px;min-width:0}
+.mv-box{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:5px;padding:3px 8px;background:var(--card)}
+.mv-box:focus-within{border-color:var(--accent);box-shadow:var(--ring)}
+.mv-cur{color:var(--ink3);font-size:13px;margin-right:1px}
+#mv-num{border:none;outline:none;background:none;width:92px;text-align:right;font:600 13px/1.2 inherit;font-family:inherit;font-variant-numeric:tabular-nums;color:var(--ink)}
+.mv-edit .val.anote{font-weight:400;color:var(--ink3);font-size:11.5px;white-space:nowrap}
+/* Step-1 ceiling/floor schematic: previews what the page's inputs produce before the user fills it in */
+.s1-schema{background:#f6f8f9;border:1px solid var(--line);border-radius:8px;padding:10px 13px;margin:0 0 20px;font-size:12.5px;color:var(--ink2);line-height:1.5}
+.s1-end{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin:1px 0}
+.s1-cap{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 9px;border-radius:999px;color:#fff;flex:none}
+.s1-cap.ceil{background:var(--developer)}
+.s1-cap.floor{background:var(--public)}
+.s1-sub{color:var(--ink3);font-size:11.5px}
+.s1-foot{margin-top:7px;padding-top:7px;border-top:1px solid var(--line2);color:var(--ink3);font-size:11.5px}
 input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:999px;background:linear-gradient(90deg,var(--accent) var(--p,40%),#d9dde1 var(--p,40%));outline:none;margin:8px 0}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#fff;border:2px solid var(--accent);cursor:pointer;box-shadow:0 1px 3px rgba(16,24,40,.28);transition:transform .1s}
 input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.12)}
@@ -565,8 +580,13 @@ th.notecol{font-size:12px;font-weight:400}
     <section class="panel" data-step="0">
       <div class="card">
       <div class="eyebrow">Step 1 of 3 · Project</div>
-      <h2 class="step-h">Define the Project &amp; Bonus Request</h2>
-      <p class="lede" style="margin-bottom:18px">Name the project, place it on the map to set the district and density pool, classify the use and construction cost, then enter the density request.</p>
+      <h2 class="step-h">Define the Project and Bonus Request</h2>
+      <p class="lede" style="margin-bottom:13px">Name the project, place it on the map to set the district and density pool, classify the use and construction cost, then enter the density request.</p>
+      <div class="s1-schema" role="note" aria-label="This step sets the ceiling (value to the developer) and the floor (impact plus pool value); Step 2 fills the room between them with public benefits.">
+        <div class="s1-end"><span class="s1-cap ceil">Ceiling</span> <span>value to the developer <span class="s1-sub">(market value − build cost, × the bonus units)</span></span></div>
+        <div class="s1-end"><span class="s1-cap floor">Floor</span> <span>impact offset + pool value <span class="s1-sub">(the least the city can lawfully accept)</span></span></div>
+        <div class="s1-foot">This step sets <b>both ends</b> of the deal; Step 2 fills the room between them with public benefits.</div>
+      </div>
 
       <div class="projid-row">
         <div><label class="lab"><span>Project Name</span></label><input type="text" id="pname" value="" placeholder="e.g. Bayfront Residences"></div>
@@ -627,8 +647,8 @@ th.notecol{font-size:12px;font-weight:400}
           </div>
           <div class="hint" style="margin-top:6px">Converts $/unit to $/SF, seeded from the use type. Enter a $/SF to set the market value below.</div>
           <div class="hint" id="progarea" style="margin-top:6px;display:none"></div>
-          <label class="lab" style="margin-top:18px"><span>Market Value per unit/key <span class="ihint" data-ih="Why: the sale or income value of one bonus unit, the single biggest driver of the result.|How: market value minus build-and-sell cost is the residual; times bonus units gives the value to developer (the ceiling)."></span></span><span class="val" id="mv-v"></span></label>
-          <input type="range" id="mv" min="150000" max="3500000" step="25000" value="1800000">
+          <label class="lab" style="margin-top:18px"><span>Market Value per unit/key <span class="ihint" data-ih="Why: the sale or income value of one bonus unit, the single biggest driver of the result.|How: market value minus build-and-sell cost is the residual; times bonus units gives the value to developer (the ceiling)."></span></span><span class="mv-edit"><span class="mv-box"><span class="mv-cur">$</span><input type="text" inputmode="numeric" id="mv-num" aria-label="Market value per unit or key, dollars"></span><span class="val anote" id="mv-v"></span></span></label>
+          <input type="range" id="mv" min="150000" max="3500000" step="25000" value="1800000" aria-label="Market value per unit or key (slider)">
           <div class="hint" id="mkt-income" style="margin-top:6px"></div>
           <details class="specest" id="mktest"><summary>Estimate market value from market sub-type</summary>
             <div class="field" style="margin-top:10px"><label class="lab"><span>Market Sub-Type <span class="ihint" data-ih="Why: Gulf-front commands higher prices than inland.|How: it seeds the market-value estimate (and the nightly rate for lodging)."></span></span></label>
@@ -928,7 +948,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.29.2", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.29.3", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -1927,6 +1947,12 @@ function benefitExchSentence(name,unit,qty,pct){
 function bindRange(id,key){const el=document.getElementById(id);
   el.addEventListener("input",()=>{S[key]=+el.value;setP(el);render();});setP(el);}
 bindRange("mv","market");bindRange("bonus","bonus");
+/* direct numeric entry for market value (the slider is too coarse for a precise figure in the millions).
+   Typing sets S.market exactly and repositions the slider; the slider/$-per-SF paths keep it in sync via render(). */
+(function(){const n=document.getElementById("mv-num");if(!n)return;
+  n.addEventListener("input",e=>{const v=parseNum(e.target.value);if(v>0){S.market=v;const mv=document.getElementById("mv");if(mv){mv.value=clampMv(v);setP(mv);}render();}});
+  n.addEventListener("change",e=>{e.target.value=S.market?fmtNum(S.market):"";});
+})();
 /* seed the market value: lodging → income approach (value per key); multifamily rental → income
    approach (NOI ÷ cap); condominium → sale comp by sub-type. (Rental previously, and incorrectly,
    used the condo sale comp, the income approach ported from Codebase A fixes that.) */
@@ -2081,7 +2107,10 @@ function render(){
   const m=compute();
   updateDealStrip(m);
   const isLodge=S.use==="Temporary Lodging";
-  document.getElementById("mv-v").textContent=fmt(S.market)+(isLodge?" / key":" / unit")+((!isLodge&&S.mktSF>0)?(" · $"+Math.round(S.market/S.mktSF).toLocaleString()+"/SF"):"");
+  /* the editable box now carries the dollar figure; the readout beside it shows only the per-unit / $-per-SF
+     context. Skip overwriting the box while it is being typed in (avoids cursor jumps). */
+  document.getElementById("mv-v").textContent=(isLodge?"/ key":"/ unit")+((!isLodge&&S.mktSF>0)?(" · $"+Math.round(S.market/S.mktSF).toLocaleString()+"/SF"):"");
+  const mvn=document.getElementById("mv-num"); if(mvn&&mvn!==document.activeElement)mvn.value=S.market?fmtNum(S.market):"";
   const pa=document.getElementById("progarea");   // informational total program area (sellable / rentable, gross for lodging keys; not GFA)
   if(pa){const totU=(S.byright||0)+(S.bonus||0); if(S.mktSF>0&&totU>0){const Nsf=Math.round(totU*S.mktSF/1000)*1000; pa.innerHTML="≈ "+Nsf.toLocaleString()+" SF total program area ("+totU.toLocaleString()+" units × "+S.mktSF.toLocaleString()+" SF)"; pa.style.display="";} else pa.style.display="none";}
   const mi=document.getElementById("mkt-income");
