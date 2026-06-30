@@ -812,7 +812,8 @@ th.notecol{font-size:12px;font-weight:400}
         <p class="lede" style="margin:8px 0 0"><b>Sentence-case benefit summary (v1.19.18).</b> The per-benefit summary now reads naturally: small counts are spelled out, units and names are singular or plural to match the quantity, and the benefit name is lower-cased mid-sentence — e.g. "Developer will provide one public restroom facility…" / "…five public restroom facilities…" / "…103 linear feet of seawall / bulkhead…". Trailing qualifiers like "(Class A)" or "@120% AMI" are preserved when pluralizing.</p>
         <p class="lede" style="margin:8px 0 0"><b>Cleaner above-code wording (v1.19.19).</b> The summary now omits the "% above code" clause when it's 100% (the whole benefit counts), and only surfaces it for a partial discount — e.g. "…100 linear feet of seawall / bulkhead, of which 50% counts as above what code already requires, …" — since that's the only case where it changes the credited amount.</p>
         <p class="lede" style="margin:8px 0 0"><b>Removed the "% above code" field (v1.19.20).</b> The control was ambiguous — "50% above code" read as "50% more than code requires," when it actually meant "credit only that share." Planners now simply <b>enter the quantity above what code already requires</b> (the whole amount for a fully voluntary benefit). Every line is credited at full value; the math is unchanged (the old field defaulted to 100%).</p>
-        <p class="lede" style="margin:8px 0 0"><b>Category icons + cleaner info icon (v1.19.21).</b> Each benefit card now shows a clean line icon (in a teal chip) for its category — a shield for Resilience, buildings for Community Development, a bus for Transportation, a house for Workforce Housing, a leaf for Environmental, a coin for Cash — to the left of the title. The Notes &amp; source column header is now a crisp lowercase-i info icon (inline SVG) instead of the old glyph.
+        <p class="lede" style="margin:8px 0 0"><b>Category icons + cleaner info icon (v1.19.21).</b> Each benefit card now shows a clean line icon (in a teal chip) for its category — a shield for Resilience, buildings for Community Development, a bus for Transportation, a house for Workforce Housing, a leaf for Environmental, a coin for Cash — to the left of the title. The Notes &amp; source column header is now a crisp lowercase-i info icon (inline SVG) instead of the old glyph.</p>
+        <p class="lede" style="margin:8px 0 0"><b>Trimmed footer copy (v1.19.22).</b> Removed the long how-to paragraphs under the Assumptions and Benefit Library tables — the controls are self-explanatory.
       </div>
 
       <div class="card" id="legal-card">
@@ -862,7 +863,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.19.21", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
+const VERSION="1.19.22", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden — a
@@ -2982,7 +2983,6 @@ function buildLibrary(){
     if(advUnlocked)h+='<tr class="libaddrow" data-cat="'+esc(cat)+'"><td colspan="'+ncols+'"><button class="alink" data-libadd="'+esc(cat)+'">+ Add custom benefit to '+cat+'</button></td></tr>';
   });
   h+='</tbody></table></div></fieldset>';
-  h+='<p class="lede" style="margin-top:14px">These are the <b>city’s value</b> of each benefit (Low / High / Applied / Override), the developer’s cost is entered per project on the Benefits step. <b>Notes</b> and <b>Source</b> are free-text: open <b>Notes &amp; source</b> on any row to read or edit the basis for a figure and where it came from (a few rows are pre-seeded from the Corey Landings staff report as worked examples); a ⚠ on the toggle marks a row with no cited source. Search matches names, notes, and sources. Click a category header to collapse it; edit Low/High to set a range, or enter an Override (blue) for a firm figure (Applied is the midpoint unless an Override is given). Use <b>+ Add custom benefit</b> to create your own item, give it a name, unit, and city value; once named it appears in the Benefits-step menu. The library (including custom benefits, notes, and sources) is kept on Reset all and saved with scenarios.</p>';
   return h;
 }
 /* search + collapsible categories, operates on the rendered rows (no rebuild, keeps focus) */
@@ -3108,7 +3108,6 @@ function buildAssumptions(){
        noteRow;
   });
   h+='</tbody></table></div></fieldset>';
-  h+='<p class="lede" style="margin-top:14px">Search matches benchmark names, units, notes, and sources. Click a section header (or Collapse all) to fold it; open <b>Notes &amp; source</b> on a row to read or edit its basis and citation (a ⚠ on the toggle marks a row with no cited source). Applied is the midpoint of Low and High unless an Override is entered. Edit Low/High to reset the range, or enter an Override (blue) when a project-specific analysis gives a firm number. For hard costs, switch the basis to <b>$/SF</b> and set the average unit size if your cost data is per square foot, the model always stores the result per unit. Every Applied value flows into the model.</p>';
   return h;
 }
 /* search + collapsible sections for Assumptions, mirroring the Benefit-library controls.
