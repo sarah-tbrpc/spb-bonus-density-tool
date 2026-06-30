@@ -671,7 +671,7 @@ th.notecol{font-size:12px;font-weight:400}
         <div id="ranks"></div>
       </div>
       <div class="card" id="explore-card">
-        <h3>Deal Explorer, What-If Package Size</h3>
+        <h3>Deal Explorer</h3>
         <div class="sub">Drag to test how much benefit spending the deal needs, at a fixed value ratio. It doesn’t change your entered package.</div>
         <div class="field"><label class="lab"><span>What-If Developer Spend on Benefits</span><span class="val" id="explore-v"></span></label>
           <input type="range" id="explore" min="0" max="100" step="1" value="0"></div>
@@ -679,14 +679,14 @@ th.notecol{font-size:12px;font-weight:400}
       </div>
 
       <h3 class="diag-h">Diagnostics</h3>
-      <details class="card diagcard" id="fiscal-card"><summary>Fiscal Snapshot &amp; Counterfactual (do nothing vs build)</summary>
+      <details class="card diagcard" id="fiscal-card"><summary>Fiscal Snapshot &amp; Counterfactual (Do Nothing vs. Build)</summary>
         <div class="sub">Taxable value / acre, plus a do-nothing-vs-by-right-vs-bonus property-tax comparison and the "cost of saying no." Context only, never part of the decision. Enter the current parcel assessed value below (county autofill or manual).</div>
         <div class="field" style="margin:6px 0 12px"><label class="lab"><span>Current parcel taxable value</span></label>
           <input type="text" inputmode="numeric" id="fiscal-tax" placeholder="from county autofill or enter manually" value=""></div>
         <div id="fiscal-figs"></div>
       </details>
       <details class="card diagcard" id="xcheck-card"><summary>Cross-Check: Tampa 10:1 / ICC Construction-Cost Basis</summary>
-        <div class="sub">An optional sanity check against the basis SPB Planning cited (Tampa Code 27-140 and ICC). It compares the developer’s benefit spend to the bonus units' construction cost. <b>Reference only, not part of the decision.</b> Inputs editable under <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions § F</a>.</div>
+        <div class="sub">An optional cross-check against the basis SPB Planning cited (Tampa Code 27-140 and ICC). It compares the developer’s benefit spend to the bonus units' construction cost. <b>Reference only, not part of the decision.</b> Inputs editable under <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions § F</a>.</div>
         <div class="numgrid" id="xcheck"></div>
         <div class="hint" id="xcheck-note"></div>
       </details>
@@ -803,7 +803,8 @@ th.notecol{font-size:12px;font-weight:400}
         <p class="lede" style="margin:8px 0 0"><b>Editing toggle &amp; pool alignment (v1.19.11).</b> The "Enable editing" bar on Assumptions and the Benefit Library now sits above the search bar (was at the bottom). On Step 1, the pool donut and the scarcity curve are top-aligned so their titles line up, and the curve's height is tuned so its <b>x-axis</b> lines up with the rule above the legend's "Pool total" row (the axis labels sit below it).</p>
         <p class="lede" style="margin:8px 0 0"><b>Plain-English benefit summary (v1.19.14).</b> Each benefit card now shows a one-line summary below the inputs — e.g. "Developer will provide 103 linear feet of Seawall / bulkhead, entered at 100% above code, in exchange for the bonus density" — so a bare quantity reads in its real unit. It updates live as you change the quantity or % above code.</p>
         <p class="lede" style="margin:8px 0 0"><b>Removed the Unit-Count Sensitivity card (v1.19.15).</b> The net-value-vs-bonus-count sparkline was duplicative of the Step 1 scarcity curve and, in the common slack-pool case, just showed a rising line that read as "more units = more public value" — not the decision the tool makes. The deep-scarcity edge it flagged is already handled by the "Hold" verdict.</p>
-        <p class="lede" style="margin:8px 0 0"><b>Library &amp; case-study cleanup (v1.19.16).</b> Removed the "code sets a minimum" checkbox/badge from the Benefit Library (extra detail not needed, especially with benefits assumed secured). In Case Studies, the facts table now uses a narrow label / wide value split (30/70) so values wrap less and the table is shorter.
+        <p class="lede" style="margin:8px 0 0"><b>Library &amp; case-study cleanup (v1.19.16).</b> Removed the "code sets a minimum" checkbox/badge from the Benefit Library (extra detail not needed, especially with benefits assumed secured). In Case Studies, the facts table now uses a narrow label / wide value split (30/70) so values wrap less and the table is shorter.</p>
+        <p class="lede" style="margin:8px 0 0"><b>Copy tweaks (v1.19.17).</b> Cross-check card reads "cross-check" (was "sanity check"); the fiscal counterfactual reads "Do Nothing vs. Build" consistently; the Deal Explorer card title is just "Deal Explorer".
       </div>
 
       <div class="card" id="legal-card">
@@ -853,7 +854,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.19.16", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
+const VERSION="1.19.17", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden — a
@@ -2149,12 +2150,12 @@ function drawFiscal(){
     if(cf.isLodge&&cf.bedTaxYr>0) lines.push('County tourist (bed) tax ≈ <b>'+fmt(cf.bedTaxYr)+'/yr</b> — collected and kept by the county, not the city.');
     if(cf.cityShare!=null) lines.push('The city captures only <b>≈'+Math.round(cf.cityShare*100)+'%</b> of the total new public revenue ('+fmt(cf.totalNewPublic)+'/yr all-government); the rest accrues to the county, schools, and region — a regionally valuable project can still be a close municipal call.');
     lines.push('Plus the one-time public-benefit package the city negotiates on top (the '+secLink('Benefits step','goto(1)')+' offer). Screening estimate from your assumptions — refine the current assessed value and the '+secLink('total millage / service cost','showAux(\'assumptions\')')+'.');
-    cfHTML='<div class="fiscal-cf"><h4 class="fcf-h">Counterfactual — do nothing vs build</h4>'+
+    cfHTML='<div class="fiscal-cf"><h4 class="fcf-h">Counterfactual — Do Nothing vs. Build</h4>'+
       '<div class="atable-wrap"><table class="atable"><thead><tr><th scope="col"></th><th scope="col" class="r">No action</th><th scope="col" class="r">By-right</th><th scope="col" class="r">Bonus</th></tr></thead><tbody>'+
       row("Assessed value","val")+row("City tax / yr","city")+row("All-government tax / yr ("+(Math.round(cf.allMills*10)/10)+" mills)","all")+
       '</tbody></table></div><ul class="fcf-list">'+lines.map(l=>'<li>'+l+'</li>').join('')+'</ul></div>';
   } else {
-    cfHTML='<div class="fiscal-cf"><h4 class="fcf-h">Counterfactual — do nothing vs build</h4><div class="hint">Set use type, market value, by-right and bonus units (and the current assessed value above) to compare: do nothing vs by-right vs bonus.</div></div>';
+    cfHTML='<div class="fiscal-cf"><h4 class="fcf-h">Counterfactual — Do Nothing vs. Build</h4><div class="hint">Set use type, market value, by-right and bonus units (and the current assessed value above) to compare: do nothing vs by-right vs bonus.</div></div>';
   }
   el.innerHTML='<div class="numgrid">'+grid+'</div>'+bars+cfHTML+
     '<div class="hint" style="margin-top:10px">Gross property-tax revenue, not net beyond the per-unit service cost shown. Recurring tax accrues regardless of the benefit package and is deliberately excluded from the decision (it is context, not the verdict).</div>';
