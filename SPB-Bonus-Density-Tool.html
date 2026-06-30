@@ -911,7 +911,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.27.0", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.27.1", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -2075,6 +2075,9 @@ function render(){
 
   const bl=document.getElementById("blist");bl.innerHTML="";
   m.rows.forEach((x,i)=>{
+    /* materialize the effective per-unit values so quantity edits multiply (total = qty × per-unit)
+       instead of erasing the field; library-seeded benefits otherwise have undefined dev/city */
+    if(S.benefits[i]){ if(S.benefits[i].dev==null)S.benefits[i].dev=x.dev; if(S.benefits[i].city==null)S.benefits[i].city=x.city; }
     const li=libIndexOf(x.name);
     const nVal=(x.note!=null)?x.note:((li>=0&&LIBCAL[li])?(LIBCAL[li].note||""):"");
     const sVal=(x.source!=null)?x.source:((li>=0&&LIBCAL[li])?(LIBCAL[li].source||""):"");
@@ -2091,8 +2094,8 @@ function render(){
       '<button class="bdel" data-x="'+i+'" aria-label="Remove benefit" title="Remove benefit">×</button></div></div>'+
       '<div class="inputs">'+
         '<div><div class="inp-lab">Qty</div><input type="text" inputmode="decimal" value="'+fmtNum(x.qty)+'" data-i="'+i+'" data-f="qty"></div>'+
-        '<div><div class="inp-lab" title="Enter the developer&#39;s total stated contribution, OR the per-unit rate below; whichever you leave blank is computed from the quantity.">Stated contribution</div><input type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.devTotal!=null?x.devTotal:x.dev*x.qty))+'" data-i="'+i+'" data-f="devtot"><div class="inp-perunit"><input type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.dev))+'" data-i="'+i+'" data-f="devper" aria-label="'+esc(x.name)+', stated contribution per unit"><span>/ '+esc((x.unit||"unit").replace(/^\$\s*\/\s*/,""))+'</span></div></div>'+
-        '<div><div class="inp-lab" title="What this benefit is worth to the city. Enter the total, OR the per-unit rate below; whichever you leave blank is computed from the quantity. The gap above the developer&#39;s contribution is the public&#39;s gain from the trade.">Public value</div><input type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.cityTotal!=null?x.cityTotal:x.city*x.qty))+'" data-i="'+i+'" data-f="citytot"><div class="inp-perunit"><input type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.city))+'" data-i="'+i+'" data-f="cityper" aria-label="'+esc(x.name)+', public value per unit"><span>/ '+esc((x.unit||"unit").replace(/^\$\s*\/\s*/,""))+'</span></div></div>'+
+        '<div><div class="inp-lab" title="Enter the developer&#39;s total stated contribution, OR the per-unit rate below; whichever you leave blank is computed from the quantity.">Stated contribution</div><input type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.dev*x.qty))+'" data-i="'+i+'" data-f="devtot"><div class="inp-perunit"><input type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.dev))+'" data-i="'+i+'" data-f="devper" aria-label="'+esc(x.name)+', stated contribution per unit"><span>/ '+esc((x.unit||"unit").replace(/^\$\s*\/\s*/,""))+'</span></div></div>'+
+        '<div><div class="inp-lab" title="What this benefit is worth to the city. Enter the total, OR the per-unit rate below; whichever you leave blank is computed from the quantity. The gap above the developer&#39;s contribution is the public&#39;s gain from the trade.">Public value</div><input type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.city*x.qty))+'" data-i="'+i+'" data-f="citytot"><div class="inp-perunit"><input type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.city))+'" data-i="'+i+'" data-f="cityper" aria-label="'+esc(x.name)+', public value per unit"><span>/ '+esc((x.unit||"unit").replace(/^\$\s*\/\s*/,""))+'</span></div></div>'+
       '</div>'+
       '<div class="bexchange" id="bexch-'+i+'" data-unit="'+esc(x.unit||'')+'">'+benefitExchSentence(x.name,x.unit,x.qty,x.pct)+'</div>'+
       '<details class="benote"><summary><span class="note-caret">▸</span> Notes &amp; source</summary><div class="benote-body">'+
@@ -2116,20 +2119,21 @@ function render(){
     inp.addEventListener("input",e=>{
       const i=+e.target.dataset.i,f=e.target.dataset.f,b=S.benefits[i];
       if(e.target.tagName==="TEXTAREA")autoGrowTA(e.target);   // note/source grow to fit as you type
-      if(f==="devtot"){const T=parseNum(e.target.value); b.devTotal=T; b.dev=(b.qty>0)?T/b.qty:T;}        // enter the TOTAL: per-unit derives
-      else if(f==="devper"){b.dev=parseNum(e.target.value); b.devTotal=null;}                              // enter the PER-UNIT: total derives (qty × per-unit)
-      else if(f==="citytot"){const T=parseNum(e.target.value); b.cityTotal=T; b.city=(b.qty>0)?T/b.qty:T;}
-      else if(f==="cityper"){b.city=parseNum(e.target.value); b.cityTotal=null;}
+      /* per-unit (dev/city) is canonical; the total is always quantity × per-unit. Editing the total
+         back-solves the per-unit; changing quantity keeps the per-unit and re-multiplies the total. */
+      if(f==="devtot"){const T=parseNum(e.target.value); b.dev=(b.qty>0)?T/b.qty:T;}        // enter the TOTAL -> per-unit
+      else if(f==="devper"){b.dev=parseNum(e.target.value);}                                 // enter the PER-UNIT
+      else if(f==="citytot"){const T=parseNum(e.target.value); b.city=(b.qty>0)?T/b.qty:T;}
+      else if(f==="cityper"){b.city=parseNum(e.target.value);}
       else { b[f]= (f==="note"||f==="source") ? e.target.value : (f==="pct" ? (parseNum(e.target.value)/100) : parseNum(e.target.value)); }
-      if(f==="qty"&&b.devTotal!=null){b.dev=(b.qty>0)?b.devTotal/b.qty:b.devTotal;}                        // totals fixed, per-unit re-derives on qty change
-      if(f==="qty"&&b.cityTotal!=null){b.city=(b.qty>0)?b.cityTotal/b.qty:b.cityTotal;}
+      const dev=(+b.dev||0), city=(+b.city||0), qty=(+b.qty||0);
       /* keep the sibling total/per-unit fields in sync without a full re-render (preserve focus) */
       const row=e.target.closest(".brow");
       if(row){
-        if(f!=="devtot"){const tt=row.querySelector('input[data-f="devtot"]'); if(tt&&document.activeElement!==tt)tt.value=fmtNum(Math.round(b.devTotal!=null?b.devTotal:b.dev*b.qty));}
-        if(f!=="devper"){const pp=row.querySelector('input[data-f="devper"]'); if(pp&&document.activeElement!==pp)pp.value=fmtNum(Math.round(b.dev));}
-        if(f!=="citytot"){const ct=row.querySelector('input[data-f="citytot"]'); if(ct&&document.activeElement!==ct)ct.value=fmtNum(Math.round(b.cityTotal!=null?b.cityTotal:b.city*b.qty));}
-        if(f!=="cityper"){const cp=row.querySelector('input[data-f="cityper"]'); if(cp&&document.activeElement!==cp)cp.value=fmtNum(Math.round(b.city));}
+        if(f!=="devtot"){const tt=row.querySelector('input[data-f="devtot"]'); if(tt&&document.activeElement!==tt)tt.value=fmtNum(Math.round(dev*qty));}
+        if(f!=="devper"){const pp=row.querySelector('input[data-f="devper"]'); if(pp&&document.activeElement!==pp)pp.value=fmtNum(Math.round(dev));}
+        if(f!=="citytot"){const ct=row.querySelector('input[data-f="citytot"]'); if(ct&&document.activeElement!==ct)ct.value=fmtNum(Math.round(city*qty));}
+        if(f!=="cityper"){const cp=row.querySelector('input[data-f="cityper"]'); if(cp&&document.activeElement!==cp)cp.value=fmtNum(Math.round(city));}
       }
       if(f==="qty"||f==="pct"){const be=document.getElementById("bexch-"+i); if(be)be.innerHTML=benefitExchSentence(b.name,be.dataset.unit,b.qty,b.pct);}
       softRender();});
@@ -2356,7 +2360,7 @@ function draftMemo(m){
   L.push("PROPOSED PUBLIC BENEFITS");
   if(m.rows&&m.rows.length) m.rows.forEach(function(x){
     const u=(x.unit||"unit").replace(/^\$\s*\/\s*/,"");
-    const tot=(x.devTotal!=null)?x.devTotal:Math.round(x.dev*x.qty);
+    const tot=Math.round(x.dev*x.qty);
     L.push("  - "+x.name+": "+(x.qty||0).toLocaleString()+" "+u+", stated "+fmt(tot)+"; city value "+fmt(x.cityPlain));
   }); else L.push("  None entered.");
   L.push("");
