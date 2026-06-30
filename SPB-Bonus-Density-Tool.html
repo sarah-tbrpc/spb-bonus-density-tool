@@ -685,11 +685,6 @@ th.notecol{font-size:12px;font-weight:400}
           <input type="text" inputmode="numeric" id="fiscal-tax" placeholder="from county autofill or enter manually" value=""></div>
         <div id="fiscal-figs"></div>
       </details>
-      <details class="card diagcard"><summary>Unit-Count Sensitivity</summary>
-        <div class="sub">Net public value as the bonus allocation varies (requested allocation marked). Net = gross public value less the city's scarcity and impact costs.</div>
-        <svg class="spark" id="spark" viewBox="0 0 600 150" preserveAspectRatio="none"></svg>
-        <div class="hint" id="spark-note"></div>
-      </details>
       <details class="card diagcard" id="xcheck-card"><summary>Cross-Check: Tampa 10:1 / ICC Construction-Cost Basis</summary>
         <div class="sub">An optional sanity check against the basis SPB Planning cited (Tampa Code 27-140 and ICC). It compares the developer’s benefit spend to the bonus units' construction cost. <b>Reference only, not part of the decision.</b> Inputs editable under <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions § F</a>.</div>
         <div class="numgrid" id="xcheck"></div>
@@ -806,7 +801,8 @@ th.notecol{font-size:12px;font-weight:400}
         <p class="lede" style="margin:8px 0 0"><b>Benefit-card notes collapsed (v1.19.9).</b> On the Benefits step, each benefit card's Notes and Source fields are now behind a small "Notes &amp; source" disclosure instead of two always-open text boxes, so the cards stay compact. The fields still edit and save exactly as before.</p>
         <p class="lede" style="margin:8px 0 0"><b>Layout polish (v1.19.10).</b> The Step 1 pool allocation donut and the scarcity curve now sit side by side (was stacked). Notes/Source text areas auto-grow to fit their text — both as you type and when pre-loaded — instead of clipping. And the Seawall / bulkhead benefit no longer ships a pre-filled $2,000 Override (its Applied is now the Low/High midpoint; the $2,000 City-verified figure remains in the row's note).</p>
         <p class="lede" style="margin:8px 0 0"><b>Editing toggle &amp; pool alignment (v1.19.11).</b> The "Enable editing" bar on Assumptions and the Benefit Library now sits above the search bar (was at the bottom). On Step 1, the pool donut and the scarcity curve are top-aligned so their titles line up, and the curve's height is tuned so its <b>x-axis</b> lines up with the rule above the legend's "Pool total" row (the axis labels sit below it).</p>
-        <p class="lede" style="margin:8px 0 0"><b>Plain-English benefit summary (v1.19.14).</b> Each benefit card now shows a one-line summary below the inputs — e.g. "Developer will provide 103 linear feet of Seawall / bulkhead, entered at 100% above code, in exchange for the bonus density" — so a bare quantity reads in its real unit. It updates live as you change the quantity or % above code.
+        <p class="lede" style="margin:8px 0 0"><b>Plain-English benefit summary (v1.19.14).</b> Each benefit card now shows a one-line summary below the inputs — e.g. "Developer will provide 103 linear feet of Seawall / bulkhead, entered at 100% above code, in exchange for the bonus density" — so a bare quantity reads in its real unit. It updates live as you change the quantity or % above code.</p>
+        <p class="lede" style="margin:8px 0 0"><b>Removed the Unit-Count Sensitivity card (v1.19.15).</b> The net-value-vs-bonus-count sparkline was duplicative of the Step 1 scarcity curve and, in the common slack-pool case, just showed a rising line that read as "more units = more public value" — not the decision the tool makes. The deep-scarcity edge it flagged is already handled by the "Hold" verdict.
       </div>
 
       <div class="card" id="legal-card">
@@ -856,7 +852,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.19.14", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
+const VERSION="1.19.15", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden — a
@@ -2054,7 +2050,7 @@ function render(){
 
   document.getElementById("numgrid").innerHTML=numgridHTML(m);
   paintVerdict(m,v);
-  drawZopa(m);drawRanks(m);drawSpark(m);drawRobo(m);drawDensity(m);drawXCheck(m);drawValueStack(m);drawSolver(m);drawFiscal();
+  drawZopa(m);drawRanks(m);drawRobo(m);drawDensity(m);drawXCheck(m);drawValueStack(m);drawSolver(m);drawFiscal();
 }
 function softRender(){
   const m=compute();
@@ -2070,7 +2066,7 @@ function softRender(){
         : 'cost '+fmt(x.devCost)+' → city value '+fmt(x.cityPlain))+(x.hc<1?' (after '+Math.round(x.hc*100)+'% credit)':'');}});
     if(cur===STEPS.length-1){paintVerdict(m,v);
     document.getElementById("numgrid").innerHTML=numgridHTML(m);
-    drawZopa(m);drawRanks(m);drawSpark(m);drawRobo(m);drawDensity(m);drawXCheck(m);drawValueStack(m);drawSolver(m);drawFiscal();}
+    drawZopa(m);drawRanks(m);drawRobo(m);drawDensity(m);drawXCheck(m);drawValueStack(m);drawSolver(m);drawFiscal();}
 }
 /* ---------- value density + deal explorer ---------- */
 function perOf(val,den){return (den>0)?val/den:null;}
@@ -2423,35 +2419,6 @@ function drawRanks(m){
     '<div class="rank"><span class="nm">'+x.name+'</span><div class="bar" aria-hidden="true" style="flex:0 0 '+(x.gain/gmax*55)+'%"></div><span class="g">'+x.gain.toFixed(1)+'\u00d7</span></div>'
   ).join("")||'<div class="hint">Add benefits to populate the ranking.</div>';
 }
-function drawSpark(m){
-  const g=m.gPlain||1, step=5, N=11, pts=[];
-  const vlu=(S.bonus>0)?(m.Vlow/S.bonus):Math.max(0,m.r)*S.decline;   // pool cost on the decision's conservative basis (v1.13.0), matching drawScarcity
-  for(let i=0;i<N;i++){
-    const u=Math.max(1,Math.round(S.bonus+(i-5)*step));
-    const V=m.r*u*S.decline;
-    const scar=1-Math.min(1,Math.max(0,((S.rem-u)/S.dem)/S.hor));
-    const D=Math.max(0,vlu)*Math.pow(scar,K.scarExp)*u;
-    const I=S.impact*u;
-    pts.push({u,net:V*g-D-I});
-  }
-  const xs=pts.map(p=>p.u),ns=pts.map(p=>p.net);
-  const xmin=Math.min.apply(null,xs),xmax=Math.max.apply(null,xs),nmin=Math.min.apply(null,ns.concat([0])),nmax=Math.max.apply(null,ns.concat([1]));
-  const sp=document.getElementById("spark");
-  const W=Math.max(320,(sp&&sp.clientWidth)||980); if(sp)sp.setAttribute("viewBox","0 0 "+W+" 150");  // render 1:1 to the real width → no horizontal distortion of dots/labels
-  const X=u=>(u-xmin)/(xmax-xmin||1)*(W-40)+20, Y=n=>140-(n-nmin)/(nmax-nmin||1)*126;
-  const path=pts.map((p,i)=>(i?"L":"M")+X(p.u).toFixed(1)+" "+Y(p.net).toFixed(1)).join(" ");
-  const reqX=X(Math.max(1,S.bonus));
-  (function(){var sp=document.getElementById("spark");sp.setAttribute("role","img");sp.setAttribute("aria-label","Sensitivity chart: net public value across bonus unit counts, marked at "+S.bonus+" units.");})();
-  document.getElementById("spark").innerHTML=
-    '<path d="'+path+'" fill="none" stroke="#27576a" stroke-width="2"/>'+
-    '<line x1="'+reqX+'" y1="6" x2="'+reqX+'" y2="140" stroke="#1b1f23" stroke-dasharray="3 3" stroke-width="1"/>'+
-    '<text x="'+reqX+'" y="16" font-size="10" fill="#1b1f23" text-anchor="middle" font-family="Lexend,system-ui,-apple-system,Segoe UI,Roboto,sans-serif">'+S.bonus+'u</text>'+
-    pts.map(p=>'<circle cx="'+X(p.u)+'" cy="'+Y(p.net)+'" r="2.3" fill="#27576a"/>').join("");
-  document.getElementById("spark-note").innerHTML = (ns[ns.length-1]>=ns[0])
-    ? "Net public value increases across this range; pool scarcity is not the binding constraint on unit count. The binding constraints are site design and compatibility and the district density cap (safety and infrastructure thresholds are addressed earlier in review)."
-    : "Net public value reaches a maximum then declines as scarcity increases; allocate near the maximum.";
-}
-
 /* ---------- location -> zoning -> density framework ---------- */
 const DISTRICTS={
  "LR":  {label:"Large Resort (LR)", use:"Temporary Lodging", unit:"TLU", base:50, cap:75, pathway:"LR District Ramp", node:"CO_DIV35LRLAREDI", note:"Residential base 15 du/ac; transient lodging up to 50/ac (small-scale) or 75/ac (large-scale ≥3 ac, min 200 TLU). The LR district is NOT pool-eligible, added lodging density is by conditional use within the district cap, so no pool scarcity cost. (FLU SPA-1; LDC Div. 35. The 2007 reduction of LR from 18→15 du/ac and 80→75 TLU/ac is the source of the 195 RU and 325 TLU pools.)"},
