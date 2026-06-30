@@ -309,7 +309,11 @@ select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-i
 svg.spark{width:100%;height:150px;display:block}
 
 footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);z-index:40}
-.nav-in{max-width:none;margin:0;padding:11px 28px;display:flex;justify-content:space-between;align-items:center}
+/* 3-column grid (equal side columns) so the page counter sits at the TRUE center regardless of the Back/Next button widths */
+.nav-in{max-width:none;margin:0;padding:11px 28px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center}
+.nav-in #back{justify-self:start}
+.nav-in #crumbs{justify-self:center;text-align:center}
+.nav-in #next{justify-self:end}
 .btn{display:inline-flex;align-items:center;justify-content:center;line-height:1.1;font-family:inherit;font-size:14px;font-weight:600;padding:6px 16px;border-radius:var(--r-sm);cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--ink);transition:background .15s,border-color .15s,box-shadow .15s,transform .04s}
 .btn:hover{background:#f7f8f9;border-color:#c9cfd4}
 .btn:active{transform:translateY(1px)}
@@ -317,8 +321,8 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 .btn.primary:hover{background:var(--accent-d);border-color:var(--accent-d)}
 .btn:disabled{opacity:.4;cursor:default;box-shadow:none}
 .fine{font-size:11px;color:var(--ink3);line-height:1.5;margin-top:12px}
-.alink{font-size:12px;background:none;border:1px solid var(--line);border-radius:var(--r-sm);padding:4px 10px;cursor:pointer;color:var(--ink2);font-family:inherit;transition:border-color .14s,color .14s,background .14s}
-.alink:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.alink{font-size:12px;font-weight:600;background:var(--card);border:1px solid var(--accent);border-radius:var(--r-sm);padding:4px 10px;cursor:pointer;color:var(--accent);font-family:inherit;transition:border-color .14s,color .14s,background .14s}
+.alink:hover{border-color:var(--accent);color:#fff;background:var(--accent)}
 .rd.clk{cursor:pointer}
 .rd.clk:hover .k,.rd.clk:hover .v{color:var(--accent)}
 .agrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
@@ -350,7 +354,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 .cmp-tag{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px}
 .memo-text{width:100%;box-sizing:border-box;font:12.5px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--ink);background:#fbfcfc;border:1px solid var(--line);border-radius:8px;padding:12px 14px;resize:vertical;white-space:pre-wrap}
 .memo-actions{display:flex;align-items:center;gap:12px;margin-top:8px}
-.atable-wrap{overflow:auto;max-height:62vh;margin-top:4px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-sm);scrollbar-width:thin}
+.atable-wrap{overflow:auto;max-height:62vh;margin-top:4px;border:1px solid var(--line);border-radius:var(--r-sm);scrollbar-width:thin}
 .atable{width:100%;border-collapse:collapse;font-size:13px}
 .atable th{position:sticky;top:0;z-index:5;text-align:left;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink);background:var(--brand-soft);border-bottom:1px solid #a9c8cb;padding:9px 10px;font-weight:700;white-space:nowrap}
 .atable th.r{text-align:right}
@@ -682,7 +686,7 @@ th.notecol{font-size:12px;font-weight:400}
           <select id="addsel"></select>
           <button class="addbtn" id="addbtn">Add</button>
         </div>
-        <div class="hint">Benefit values come from the <a href="#" class="seclink" onclick="showAux('library');return false;">library</a>; add unlisted items by extending it. Full method in the <a href="#" class="seclink" onclick="showAux('method');return false;">User&nbsp;Guide</a>; cost factors are editable under <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions</a>.</div>
+        <div class="hint">Benefits sourced from the <a href="#" class="seclink" onclick="showAux('library');return false;">Benefits Library</a>. Full method in the <a href="#" class="seclink" onclick="showAux('method');return false;">User&nbsp;Guide</a>; cost factors are editable under <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions</a>.</div>
       </div>
     </section>
 
@@ -922,7 +926,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.28.0", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.28.1", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
