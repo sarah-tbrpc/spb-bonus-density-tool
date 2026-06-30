@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Density Bonus Valuation Tool</title>
+<link rel="icon" type="image/jpeg" href="images/tbrpc.jpg">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -115,6 +116,13 @@ h2.step-h{font-size:23px;font-weight:700;margin:4px 0 7px;letter-spacing:-.02em}
 
 .field{margin:18px 0}
 .lab{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:13px;margin-bottom:6px;color:var(--ink2)}
+/* inline info icon with on-hover/-focus explanation ("why we ask / how it affects the calc") */
+.ihint{position:relative;display:inline-flex;align-items:center;vertical-align:middle;margin-left:5px;color:var(--ink3);cursor:help}
+.ihint:hover,.ihint:focus{color:var(--accent);outline:none}
+.ihint svg{width:14px;height:14px;display:block}
+.ihint-tip{position:absolute;left:0;bottom:calc(100% + 9px);width:260px;max-width:64vw;background:var(--ink);color:#fff;font:400 11.5px/1.5 system-ui,sans-serif;text-transform:none;letter-spacing:0;text-align:left;padding:9px 11px;border-radius:7px;box-shadow:0 6px 18px rgba(0,0,0,.22);opacity:0;visibility:hidden;transition:opacity .12s;z-index:70;pointer-events:none;white-space:normal}
+.ihint-tip b{color:#fff}
+.ihint:hover .ihint-tip,.ihint:focus .ihint-tip{opacity:1;visibility:visible}
 .lab .val{font-variant-numeric:tabular-nums;font-weight:600;font-size:13px;color:var(--ink)}
 input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:999px;background:linear-gradient(90deg,var(--accent) var(--p,40%),#d9dde1 var(--p,40%));outline:none;margin:8px 0}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#fff;border:2px solid var(--accent);cursor:pointer;box-shadow:0 1px 3px rgba(16,24,40,.28);transition:transform .1s}
@@ -551,7 +559,7 @@ th.notecol{font-size:12px;font-weight:400}
         <h3>Location and Zoning</h3>
         <div class="locgrid">
           <div class="locinfo">
-            <div class="field" style="margin-top:0"><label class="lab"><span>District / Land-Use Category</span></label>
+            <div class="field" style="margin-top:0"><label class="lab"><span>District / Land-Use Category <span class="ihint" data-ih="Why: it sets the density pool, base density, cap, and which approval pathway applies.|How: it determines whether the bonus draws from a finite pool (adding a scarcity cost) or uses a district cap instead."></span></span></label>
               <select id="district"></select></div>
             <div id="dist-rules" class="hint"></div>
             <div class="field" id="siteintel-field" style="margin-bottom:0;margin-top:14px"><label class="lab"><span>Property &amp; Site Data</span></label>
@@ -577,13 +585,13 @@ th.notecol{font-size:12px;font-weight:400}
         <h3>Development Classification and Cost</h3>
         <div class="sub">Enter construction cost and market value directly, or use the estimators to derive them from specs.</div>
         <div class="row2">
-          <div><label class="lab"><span>Use Type</span><span class="val anote" id="utype" title="Residential draws from the RU pool; temporary lodging from the TLU pool"></span></label>
+          <div><label class="lab"><span>Use Type <span class="ihint" data-ih="Why: residential draws from the 195-unit RU pool; temporary lodging from the 325-unit TLU pool.|How: it sets the construction-cost basis, the per-unit impact fee, and how market value is estimated."></span></span><span class="val anote" id="utype" title="Residential draws from the RU pool; temporary lodging from the TLU pool"></span></label>
             <select id="use"><option value="">Select…</option><option>Condominium</option><option>Multifamily Rental</option><option>Temporary Lodging</option></select></div>
-          <div><label class="lab"><span>Building Type</span></label>
+          <div><label class="lab"><span>Building Type <span class="ihint" data-ih="Why: taller buildings cost more per unit to build.|How: it multiplies the construction cost, which lowers the residual and the value to developer."></span></span></label>
             <select id="btype"><option value="">Select…</option><option>Low-rise (1-3)</option><option>Mid-rise (4-7)</option><option>High-rise (8+)</option></select></div>
         </div>
         <div class="hint" id="use-subpool" style="margin-top:6px;color:#7a5a12"></div>
-        <div class="field"><label class="lab"><span>Construction Cost per Unit / Key</span></label>
+        <div class="field"><label class="lab"><span>Construction Cost per Unit / Key <span class="ihint" data-ih="Why: what it costs the developer to build one bonus unit.|How: market value minus this cost (with soft costs and margin) is the residual the bonus creates, the basis for value to developer."></span></span></label>
           <input type="text" inputmode="numeric" id="hardunit" placeholder="$ per unit">
           <div class="hint" id="hardunit-hint" style="margin-top:6px"></div></div>
         <details class="specest" id="costest"><summary>Estimate construction cost from project specs</summary>
@@ -601,11 +609,11 @@ th.notecol{font-size:12px;font-weight:400}
           </div>
           <div class="hint" style="margin-top:6px">Converts $/unit to $/SF, seeded from the use type. Enter a $/SF to set the market value below.</div>
           <div class="hint" id="progarea" style="margin-top:6px;display:none"></div>
-          <label class="lab" style="margin-top:18px"><span>Market Value per unit/key</span><span class="val" id="mv-v"></span></label>
+          <label class="lab" style="margin-top:18px"><span>Market Value per unit/key <span class="ihint" data-ih="Why: the sale or income value of one bonus unit, the single biggest driver of the result.|How: market value minus build-and-sell cost is the residual; times bonus units gives the value to developer (the ceiling)."></span></span><span class="val" id="mv-v"></span></label>
           <input type="range" id="mv" min="150000" max="3500000" step="25000" value="1800000">
           <div class="hint" id="mkt-income" style="margin-top:6px"></div>
           <details class="specest" id="mktest"><summary>Estimate market value from market sub-type</summary>
-            <div class="field" style="margin-top:10px"><label class="lab"><span>Market Sub-Type</span></label>
+            <div class="field" style="margin-top:10px"><label class="lab"><span>Market Sub-Type <span class="ihint" data-ih="Why: Gulf-front commands higher prices than inland.|How: it seeds the market-value estimate (and the nightly rate for lodging)."></span></span></label>
               <select id="subtype"><option value="">Select…</option><option>Inland/Non-front</option><option>Gulf-front</option></select></div>
           </details>
         </div>
@@ -614,20 +622,20 @@ th.notecol{font-size:12px;font-weight:400}
       <div class="subsec">
         <h3>Density Request and Value</h3>
         <div class="row2">
-          <div><label class="lab"><span>Site Area (acres)</span></label><input type="number" id="acres" value="0" step="0.1">
+          <div><label class="lab"><span>Site Area (acres) <span class="ihint" data-ih="Why: checks the request against the district density cap and gives value-per-acre context.|How: it does not change the worthwhile or feasible verdict; it bounds the allowable units and informs the fiscal snapshot."></span></span></label><input type="number" id="acres" value="0" step="0.1">
             <div class="hint" style="margin-top:6px">Auto-summed from your map parcel selection; type to override.</div></div>
-          <div><label class="lab"><span>By-Right Entitlement (units/keys)</span></label><input type="text" inputmode="numeric" id="byright" value="0">
+          <div><label class="lab"><span>By-Right Entitlement (units/keys) <span class="ihint" data-ih="Why: the units already allowed without a bonus.|How: these are not valued; only the bonus units above this baseline are priced."></span></span></label><input type="text" inputmode="numeric" id="byright" value="0">
             <div class="hint" id="byright-hint" style="margin-top:6px"></div></div>
         </div>
         <div class="field">
-          <label class="lab"><span>Bonus Request (units/keys)</span><span class="val" id="bonus-v"></span></label>
+          <label class="lab"><span>Bonus Request (units/keys) <span class="ihint" data-ih="Why: the extra units requested from the pool.|How: it drives all three core numbers: value to developer (times residual), the impact floor (times impact fee), and pool scarcity."></span></span><span class="val" id="bonus-v"></span></label>
           <input type="range" id="bonus" min="0" max="50" step="1" value="0">
           <div class="hint" id="cap-note" style="margin-top:8px"></div>
         </div>
         <div class="row2">
           <div><label class="lab"><span>Total units/keys</span><span class="val" id="total-v"></span></label>
             <div class="hint" style="margin-top:8px">By-right plus bonus.</div></div>
-          <div><label class="lab"><span>Impact Mitigation $ / Unit</span></label><input type="text" inputmode="numeric" id="impact" value="" placeholder="$ per bonus unit"></div>
+          <div><label class="lab"><span>Impact Mitigation $ / Unit <span class="ihint" data-ih="Why: the developer fair-share of the traffic, utility, and service impact each bonus unit creates.|How: times bonus units is the impact offset, the compellable part of the break-even floor (Koontz / F.S. 163.3180)."></span></span></label><input type="text" inputmode="numeric" id="impact" value="" placeholder="$ per bonus unit"></div>
         </div>
       </div>
       </div>
@@ -903,7 +911,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.26.4", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.27.0", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -2958,6 +2966,25 @@ function addCraLayers(map){
     }
   }catch(e){}
 }
+/* turn any <span class="ihint" data-ih="..."> placeholder into an accessible info icon with a
+   hover/focus tooltip; supports a "Why:" / "How:" split using a | separator in the text */
+function buildInfoIcons(root){
+  (root||document).querySelectorAll('.ihint[data-ih]').forEach(function(el){
+    if(el.dataset.built)return; el.dataset.built="1";
+    const raw=el.getAttribute("data-ih")||"";
+    el.setAttribute("tabindex","0"); el.setAttribute("role","note"); el.setAttribute("aria-label",raw.replace(/\|/g," "));
+    el.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16.5"/><circle cx="12" cy="7.6" r="1.2" fill="currentColor" stroke="none"/></svg>';
+    const tip=document.createElement("span"); tip.className="ihint-tip";
+    raw.split("|").forEach(function(part,i){ part=part.trim(); if(!part)return;
+      const m=part.match(/^(Why|How):\s*(.*)$/);
+      const p=document.createElement("div"); if(i>0)p.style.marginTop="5px";
+      if(m){const b=document.createElement("b");b.textContent=m[1]+": ";p.appendChild(b);p.appendChild(document.createTextNode(m[2]));}
+      else p.textContent=part;
+      tip.appendChild(p);
+    });
+    el.appendChild(tip);
+  });
+}
 function initMap(){
   const el=document.getElementById("map");
   if(typeof L==="undefined"){el.innerHTML="<div style='padding:16px;color:#54616c;font-size:13px'>Map unavailable (no internet). Select the district below; the rest of the tool works offline.</div>";return;}
@@ -3695,6 +3722,7 @@ document.getElementById("subtype").value=S.subtype;
 document.getElementById("parking").value=S.parking;
 document.getElementById("coastal").value=S.coastal;
 initMap();
+buildInfoIcons();
 applyAssumptions();
 applyDistrict(S.district);
 document.querySelectorAll(".auxback").forEach(b=>b.addEventListener("click",()=>goto(returnStep)));
