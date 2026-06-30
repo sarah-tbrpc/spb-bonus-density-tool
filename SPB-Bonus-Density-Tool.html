@@ -309,6 +309,21 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 .deriv .res{font-weight:700;color:var(--accent)}
 .deriv b{color:var(--ink)}
 .deriv.deriv-flat{background:none;border:none;border-radius:0;padding:0}
+/* derivation page: decision-map orientation box + horizontal "where the money goes" legend */
+.dmap{background:#f3f7f7;border-left:3px solid var(--accent);border-radius:6px;padding:12px 14px;margin:0 0 16px}
+.dmap p{margin:0}
+.dmap .on{color:var(--accent-d);font-weight:700}
+.wbar{display:flex;width:100%;height:38px;border-radius:5px;overflow:hidden;border:1px solid var(--line)}
+.wbar span{display:block;height:100%}
+.wlg{margin:10px 0 0;display:flex;flex-direction:column;gap:5px}
+.wlg-item{display:flex;align-items:center;gap:8px;font-size:12.5px}
+.wlg-sw{width:12px;height:12px;border-radius:3px;flex:none}
+.wlg-tx{color:var(--ink)}
+.wlg-v{margin-left:auto;font-variant-numeric:tabular-nums;color:var(--ink2)}
+.wlg-item.res .wlg-tx,.wlg-item.res .wlg-v{font-weight:700;color:var(--accent-d)}
+.cmpline{display:flex;align-items:baseline;gap:8px;font-size:13.5px;margin:6px 0;flex-wrap:wrap}
+.cmpline .cmp-v{font-variant-numeric:tabular-nums;font-weight:700}
+.cmp-tag{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px}
 .atable-wrap{overflow:auto;max-height:62vh;margin-top:4px;border:1px solid var(--line);border-radius:var(--r-sm);scrollbar-width:thin}
 .atable{width:100%;border-collapse:collapse;font-size:13px}
 .atable th{position:sticky;top:0;z-index:5;text-align:left;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink);background:var(--brand-soft);border-bottom:1px solid #a9c8cb;padding:9px 10px;font-weight:700;white-space:nowrap}
@@ -686,7 +701,7 @@ th.notecol{font-size:12px;font-weight:400}
       </div>
 
       <h3 class="diag-h">Diagnostics</h3>
-      <details class="card diagcard" id="fiscal-card"><summary>Fiscal Snapshot &amp; Counterfactual (Do Nothing vs. Build)</summary>
+      <details class="card diagcard" id="fiscal-card"><summary>Fiscal Snapshot &amp; Counterfactual</summary>
         <div class="sub">Taxable value / acre, plus a do-nothing-vs-by-right-vs-bonus property-tax comparison — broken out by level of government (city / county / schools / other local) so staff can see how little of the ad-valorem the city keeps — and the "cost of saying no." Context only, never part of the decision. Enter the current parcel assessed value below (county autofill or manual).</div>
         <div class="field" style="margin:6px 0 12px"><label class="lab"><span>Current parcel taxable value</span></label>
           <input type="text" inputmode="numeric" id="fiscal-tax" placeholder="from county autofill or enter manually" value=""></div>
@@ -843,7 +858,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.21.2", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.21.3", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden — a
@@ -2164,7 +2179,7 @@ function drawFiscal(){
     if(cf.isLodge&&cf.salesTaxYr>0) lines.push('Sales tax on room revenue ≈ <b>'+fmt(cf.salesTaxYr)+'/yr</b> — goes to the <b>state</b> (with a small county surtax share), not the city.');
     if(cf.cityShare!=null) lines.push('The city captures only <b>≈'+Math.round(cf.cityShare*100)+'%</b> of the total new public revenue ('+fmt(cf.totalNewPublic)+'/yr across all governments); the rest accrues to the county, schools, state and region — a regionally valuable project can still be a close municipal call.');
     lines.push('Plus the one-time public-benefit package the city negotiates on top (the '+secLink('Benefits step','goto(1)')+' offer). Screening estimate from your assumptions — refine the current assessed value and the '+secLink('total millage / service cost','showAux(\'assumptions\')')+'.');
-    cfHTML='<div class="fiscal-cf"><h4 class="fcf-h">Counterfactual — Do Nothing vs. Build</h4>'+
+    cfHTML='<div class="fiscal-cf"><h4 class="fcf-h">Counterfactual by scenario</h4>'+
       '<div class="atable-wrap"><table class="atable"><thead><tr><th scope="col"></th><th scope="col" class="r">No action</th><th scope="col" class="r">By-right</th><th scope="col" class="r">Bonus</th></tr></thead><tbody>'+
       row("Assessed value","val")+
       row("City property tax / yr ("+fm(cf.cityMills)+" mills)","city")+
@@ -2174,7 +2189,7 @@ function drawFiscal(){
       '<tr class="atot"><td>All-government property tax / yr ('+fm(cf.allMills)+" mills)</td>"+['sq','br','bo'].map(k=>{const s=cf[k];return s?('<td class="r mono">'+fmt(s.all)+'</td>'):('<td class="r">'+dash2+'</td>');}).join('')+'</tr>'+
       '</tbody></table></div><div class="anote" style="margin:6px 0 0">Florida levies no state property tax, so ad-valorem splits only across local governments; the city keeps the first row.'+((cf.isLodge)?' Bed and sales taxes (county / state) are listed below — they are not property tax.':'')+'</div><ul class="fcf-list">'+lines.map(l=>'<li>'+l+'</li>').join('')+'</ul></div>';
   } else {
-    cfHTML='<div class="fiscal-cf"><h4 class="fcf-h">Counterfactual — Do Nothing vs. Build</h4><div class="hint">Set use type, market value, by-right and bonus units (and the current assessed value above) to compare: do nothing vs by-right vs bonus.</div></div>';
+    cfHTML='<div class="fiscal-cf"><h4 class="fcf-h">Counterfactual by scenario</h4><div class="hint">Set use type, market value, by-right and bonus units (and the current assessed value above) to compare: do nothing vs by-right vs bonus.</div></div>';
   }
   el.innerHTML='<div class="numgrid">'+grid+'</div>'+bars+cfHTML+
     '<div class="hint" style="margin-top:10px">Gross property-tax revenue, not net beyond the per-unit service cost shown. Recurring tax accrues regardless of the benefit package and is deliberately excluded from the decision (it is context, not the verdict).</div>';
@@ -2834,87 +2849,96 @@ function fmtFull(n){return (n<0?"-":"")+"$"+Math.round(Math.abs(n)).toLocaleStri
 /* Residual-per-unit waterfall: market value, minus the cost components, equals the residual.
    The tool prices the bonus INCREMENT (land held constant), so this is a residual-per-unit
    breakdown, not a land-value-over-time curve. Inline SVG, no dependencies. */
+function derivMap(active){
+  const cls=k=>active===k?' class="on"':'';
+  const what=active==='V'?'the <b>value to developer</b> — the ceiling':active==='CM'?'the <b>break-even floor</b> — the minimum':'the <b>public value offered</b> — what is on the table';
+  return '<div class="dmap"><p>The recommendation weighs three numbers. The <span'+cls('B')+'>public value offered</span> must reach the <span'+cls('CM')+'>break-even floor</span> for the deal to be <b>worthwhile</b>, and the developer’s cost must stay under the <span'+cls('V')+'>value to developer</span> for it to be <b>feasible</b>. This page explains '+what+'.</p></div>';
+}
 function waterfallV(){
-  if(!S.use||!(S.market>0)) return '<div class="hint" style="margin:2px 0 12px">Select a use type and market value to see the residual breakdown. <a href="#" style="color:var(--accent);font-weight:600;text-decoration:none" onclick="goto(0);return false;">← Go to Step 1</a></div>';
+  if(!S.use||!(S.market>0)) return '<div class="hint" style="margin:2px 0 12px">Select a use type and market value to see where the sale price goes. <a href="#" style="color:var(--accent);font-weight:600;text-decoration:none" onclick="goto(0);return false;">← Go to Step 1</a></div>';
   const base=(S.use==="Temporary Lodging")?K.hardHotel:K.hardCondo;
   const hard=base*(BMULT[S.btype]||1)*(PMULT[S.parking]||1)*(FMULT[S.coastal]||1);
   const soft=hard*K.soft, margin=hard*(1+K.soft)*S.margin;
   const sales=(S.use==="Condominium")?S.market*K.sales:0;
   const residual=S.market-(hard+soft+margin+sales);
-  const segs=[{l:"Hard cost",v:hard,c:"#cf8a7d"},{l:"Soft ("+Math.round(K.soft*100)+"%)",v:soft,c:"#dca99e"},
-    {l:"Margin ("+Math.round(S.margin*100)+"%)",v:margin,c:"#ecc07a"}];
-  if(sales>0)segs.push({l:"Sales (6%)",v:sales,c:"#c7ad86"});
-  segs.push({l:"Residual",v:Math.max(0,residual),c:"#27576a"});
-  const costSum=hard+soft+margin+sales;
+  const segs=[{l:"Hard cost (construction)",v:hard,c:"#cf8a7d"},{l:"Soft costs (design, permits, fees)",v:soft,c:"#dca99e"},
+    {l:"Developer margin (profit)",v:margin,c:"#ecc07a"}];
+  if(sales>0)segs.push({l:"Sales & marketing",v:sales,c:"#c7ad86"});
+  const resPos=Math.max(0,residual);
+  segs.push({l:"Residual — the developer’s gain",v:resPos,c:"#27576a",res:true});
   const kf=v=>(v<0?"−":"")+"$"+Math.round(Math.abs(v)/1000).toLocaleString()+"k";
-  const W=620,H=300,padT=26,padB=36,chartH=H-padT-padB,baseY=padT+chartH;
-  const maxV=Math.max(S.market,costSum+Math.max(0,residual),1);
-  const yOf=v=>baseY-(Math.max(0,v)/maxV)*chartH;
-  const bw=92,leftX=52,rightX=232,labX=rightX+bw+16;
-  let g='<line x1="38" y1="'+baseY+'" x2="'+(W-8)+'" y2="'+baseY+'" stroke="#d6dbde"/>';
-  // left bar: market value (the whole)
-  g+='<rect x="'+leftX+'" y="'+yOf(S.market).toFixed(1)+'" width="'+bw+'" height="'+(baseY-yOf(S.market)).toFixed(1)+'" rx="2" fill="#5a7d8c"/>';
-  g+='<text x="'+(leftX+bw/2)+'" y="'+(yOf(S.market)-7).toFixed(1)+'" text-anchor="middle" font-size="12" font-weight="700" fill="#1b1f23">'+kf(S.market)+'</text>';
-  g+='<text x="'+(leftX+bw/2)+'" y="'+(baseY+15)+'" text-anchor="middle" font-size="10" fill="#54616c">Market value</text>';
-  g+='<text x="'+(leftX+bw/2)+'" y="'+(baseY+27)+'" text-anchor="middle" font-size="9" fill="#8a949b">what it sells for</text>';
-  // right bar: the same dollars, stacked (residual on top)
-  let cum=0;
-  segs.forEach(s=>{const yb=yOf(cum),yt=yOf(cum+s.v),h=Math.max(1,yb-yt),mid=(yb+yt)/2;
-    g+='<rect x="'+rightX+'" y="'+yt.toFixed(1)+'" width="'+bw+'" height="'+h.toFixed(1)+'" fill="'+s.c+'"/>';
-    if(h>=12){g+='<line x1="'+(rightX+bw)+'" y1="'+mid.toFixed(1)+'" x2="'+(labX-4)+'" y2="'+mid.toFixed(1)+'" stroke="#cdd3d7"/>'+
-      '<text x="'+labX+'" y="'+(mid+3.5).toFixed(1)+'" font-size="10.5" fill="#1b1f23"><tspan font-weight="600">'+esc(s.l)+'</tspan> '+kf(s.v)+'</text>';}
-    cum+=s.v;});
-  g+='<text x="'+(rightX+bw/2)+'" y="'+(baseY+15)+'" text-anchor="middle" font-size="10" fill="#54616c">Where it goes</text>';
-  g+='<text x="'+(rightX+bw/2)+'" y="'+(baseY+27)+'" text-anchor="middle" font-size="9" fill="#8a949b">cost + profit + leftover</text>';
-  if(residual<=0)g+='<text x="'+labX+'" y="'+(yOf(costSum)+4).toFixed(1)+'" font-size="10" fill="#b4453c">costs exceed market, no residual</text>';
-  return '<div style="font-size:12px;color:#1b1f23;margin-bottom:8px;line-height:1.45"><b>What one bonus unit sells for, and where that money goes.</b> The left bar is the sale value; the right bar splits that <i>same</i> amount into building cost, the developer’s profit, and the leftover (teal), their gain per bonus unit. The bigger the teal slice, the more the city can ask for in return.</div>'+
-    '<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="max-width:640px;display:block;margin:2px 0 6px" role="img" aria-label="Left bar market value '+kf(S.market)+'; right bar the same amount split into hard cost, soft cost, margin'+(sales>0?', sales':'')+' and residual '+kf(residual)+'">'+g+'</svg>'+
-    '<div class="hint" style="margin-top:2px">Right bar slices: <b>Hard</b> (construction), <b>Soft</b> (design/permits/fees)'+(sales>0?', <b>Sales</b> (sales &amp; marketing)':'')+', developer <b>Margin</b> (profit), and the <b>Residual</b>, the leftover value each bonus unit adds for the developer.</div>';
+  const total=Math.max(S.market,1), pct=v=>Math.round(v/total*100);
+  const bar=segs.filter(s=>s.v>0).map(s=>'<span style="width:'+(s.v/total*100).toFixed(2)+'%;background:'+s.c+'" title="'+esc(s.l)+' '+kf(s.v)+'"></span>').join('');
+  const legend=segs.map(s=>'<div class="wlg-item'+(s.res?' res':'')+'"><span class="wlg-sw" style="background:'+s.c+'"></span><span class="wlg-tx">'+esc(s.l)+'</span><span class="wlg-v">'+kf(s.v)+' · '+pct(s.v)+'%</span></div>').join('');
+  return '<p class="lede" style="margin:0 0 8px">One bonus unit sells for <b>'+kf(S.market)+'</b>. Here is where that money goes:</p>'+
+    '<div class="wbar" role="img" aria-label="Sale price '+kf(S.market)+' split into hard cost '+kf(hard)+', soft cost '+kf(soft)+', margin '+kf(margin)+(sales>0?', sales '+kf(sales):'')+' and residual '+kf(residual)+'">'+bar+'</div>'+
+    '<div class="wlg">'+legend+'</div>'+
+    (residual>0
+      ? '<p class="lede" style="margin:12px 0 0">The teal <b>residual ('+kf(resPos)+' per unit)</b> is the value the bonus density actually creates for the developer — the sale price left after cost and profit. The bigger that slice, the more the city can ask for in return.</p>'
+      : '<p class="lede" style="margin:12px 0 0"><b style="color:#b4453c">Cost and profit exceed the sale price</b>, so there is no residual — the bonus has little standalone value at these inputs (check the market price and the hard cost).</p>');
 }
 function derivV(m){
   const base=(S.use==="Temporary Lodging")?K.hardHotel:K.hardCondo;
   const hard=base*(BMULT[S.btype]||1)*(PMULT[S.parking]||1)*(FMULT[S.coastal]||1);
   const sales=(S.use==="Condominium")?S.market*K.sales:0;
   const cost=hard*(1+K.soft)*(1+S.margin)+sales;
-  return '<div class="card"><div class="vgrid"><div class="vsteps">'+
-   '<div class="deriv deriv-flat">'+
-   '<div class="step"><b>1. Cost + profit per unit</b></div>'+
+  return '<div class="card">'+derivMap('V')+
+   '<p class="lede" style="margin:0 0 16px"><b>The question:</b> how much is the bonus density worth to the developer? Each bonus unit sells for the market price; after build cost and a normal profit, the leftover — the <b>residual</b> — is what the extra density is worth to them. Across all the bonus units, that is their walk-away budget: the most they could rationally hand back.</p>'+
+   waterfallV()+
+   '<div class="deriv deriv-flat" style="margin-top:18px">'+
+   '<div class="step"><b>1. Cost + profit, per unit</b></div>'+
    '<div class="step">base hard cost ('+S.use+') = '+fmtFull(base)+'</div>'+
    '<div class="step">× building '+S.btype+' ('+(BMULT[S.btype])+') × parking '+S.parking+' ('+(PMULT[S.parking])+') × coastal '+S.coastal+' ('+(FMULT[S.coastal])+') = '+fmtFull(hard)+'</div>'+
    '<div class="step">× (1 + soft '+Math.round(K.soft*100)+'%) × (1 + margin '+Math.round(S.margin*100)+'%)'+(sales?' + sales '+fmtFull(sales):'')+' = <b>'+fmtFull(cost)+'</b></div>'+
-   '<div class="step"><b>2. Residual value per bonus unit</b></div>'+
-   '<div class="step">market '+fmtFull(S.market)+' − cost '+fmtFull(cost)+' = <b>'+fmtFull(m.r)+'</b></div>'+
-   '<div class="step"><b>3. Value to developer</b></div>'+
-   '<div class="step">residual '+fmtFull(m.r)+' × '+S.bonus+' bonus units × decline factor '+S.decline+' = <span class="res">'+fmtFull(m.V)+'</span> <span class="anote">(midpoint)</span></div>'+
-   (m.Vlow<m.Vhigh?'<div class="step"><b>Cost-driven range:</b> '+fmtFull(m.Vlow)+' (high build cost → conservative, used for the feasibility decision) to '+fmtFull(m.Vhigh)+' (low build cost → negotiation target). <span class="anote">Cost-driven only, market-value uncertainty is not in this band. Marginal bonus units on an already-entitled site often build below average cost, so the high end is a realistic stretch.</span></div>':'')+
-   '<div class="step"><b>Sanity check, implied return on cost</b></div>'+
-   '<div class="step">delivered cost (no profit) = '+fmtFull(m.tc)+'; market '+fmtFull(S.market)+' ÷ '+fmtFull(m.tc)+' − 1 = <b>'+Math.round(m.impMargin*100)+'%</b> (assumed target ≈ '+Math.round(S.margin*100)+'%)</div>'+
+   '<div class="step" style="margin-top:8px"><b>2. Residual, per bonus unit</b> = market − cost</div>'+
+   '<div class="step">'+fmtFull(S.market)+' − '+fmtFull(cost)+' = <b>'+fmtFull(m.r)+'</b></div>'+
+   '<div class="step" style="margin-top:8px"><b>3. Value to developer</b> = residual × bonus units × decline factor</div>'+
+   '<div class="step">'+fmtFull(m.r)+' × '+S.bonus+' × '+S.decline+' = <span class="res">'+fmtFull(m.V)+'</span> <span class="anote">(midpoint)</span></div>'+
+   (m.Vlow<m.Vhigh?'<div class="step" style="margin-top:8px"><b>Range:</b> '+fmtFull(m.Vlow)+' (high build cost → conservative, used for the feasibility test) to '+fmtFull(m.Vhigh)+' (low build cost → negotiation target). <span class="anote">Cost-driven only; market-value uncertainty is not in this band. Marginal bonus units on an already-entitled site often build below average cost, so the high end is a realistic stretch.</span></div>':'')+
    '</div>'+
-   '<p class="lede" style="margin-top:14px">This is the most the bonus is worth to the developer, their walk-away budget and the ceiling on what they could hand back. The decline factor discounts later units. Cost factors are editable under '+secLink('Assumptions',"showAux('assumptions')")+'.</p>'+
-   '<p class="lede" style="margin-top:8px">The <b>implied return on cost</b> is the margin the bonus units throw off at the entered market price, a check on the inputs, not a model input. It runs well above a normal '+Math.round(S.margin*100)+'% target because the cost here excludes land (held constant; see Method): the higher it reads, the larger the value to developer and the city’s room to negotiate. If it reads near zero or negative, the residual is clamped to zero and the bonus has little standalone value, usually a sign the market price or hard cost needs correcting.</p>'+
-   '</div><div class="vchart">'+waterfallV()+'</div></div></div>';
+   '<p class="lede" style="margin-top:16px">This is the <b>ceiling</b>: the most the bonus is worth to the developer and the cap on what they could hand back. The decline factor discounts later units. Cost factors are editable under '+secLink('Assumptions',"showAux('assumptions')")+'.</p>'+
+   '<details class="stephelp" style="margin-top:10px"><summary>Sanity check: implied return on cost</summary>Delivered cost without profit = '+fmtFull(m.tc)+'; market '+fmtFull(S.market)+' ÷ that − 1 = <b>'+Math.round(m.impMargin*100)+'%</b> (assumed target ≈ '+Math.round(S.margin*100)+'%). A check on the inputs, not a model input. It runs above a normal '+Math.round(S.margin*100)+'% target because the cost here excludes land (held constant; see Method): the higher it reads, the larger the value to developer and the city’s room to negotiate. Near zero or negative, the residual is clamped to zero and the bonus has little standalone value — usually a sign the market price or hard cost needs correcting.</details>'+
+   '</div>';
 }
 function derivCM(m){
-  let d='<p class="lede" style="margin:0 0 12px">The break-even floor is the least public value the deal must return; below it, the public is subsidizing the project. <span class="anote">(Formally, the lawful mitigation baseline under F.S. §163.3180 proportionate share and Nollan/Dolan/Koontz.)</span></p>';
-  d+='<div class="deriv"><div class="step"><b>Pool value used</b></div>';
+  let d='<div class="card">'+derivMap('CM')+
+   '<p class="lede" style="margin:0 0 16px"><b>The question:</b> what is the least public value the deal must return? Two pieces the city can lawfully require: the developer’s fair share of the impact the new units create, plus the value of the scarce pool units the bonus consumes. Below this floor, the public is subsidizing the project.</p>';
+  if(m.cityMin>0){
+    const segs=[{l:"Impact offset",v:m.I,c:"#7c9aa6"},{l:"Pool value used",v:m.D,c:"#cf8a7d"}].filter(s=>s.v>0);
+    const tot=Math.max(m.cityMin,1), kf=v=>"$"+Math.round(v/1000).toLocaleString()+"k";
+    d+='<div class="wbar" style="height:30px">'+segs.map(s=>'<span style="width:'+(s.v/tot*100).toFixed(2)+'%;background:'+s.c+'" title="'+s.l+'"></span>').join('')+'</div>'+
+       '<div class="wlg">'+segs.map(s=>'<div class="wlg-item"><span class="wlg-sw" style="background:'+s.c+'"></span><span class="wlg-tx">'+s.l+'</span><span class="wlg-v">'+kf(s.v)+'</span></div>').join('')+
+       '<div class="wlg-item res"><span class="wlg-sw" style="background:transparent"></span><span class="wlg-tx">Break-even floor (total)</span><span class="wlg-v">'+kf(m.cityMin)+'</span></div></div>';
+  }
+  d+='<div class="deriv deriv-flat" style="margin-top:18px">';
+  d+='<div class="step"><b>1. Impact offset</b> = impact $/unit × bonus units <span class="anote">(compellable under F.S. §163.3180; Nollan / Dolan / Koontz)</span></div>';
+  d+='<div class="step">'+fmtFull(S.impact)+' × '+S.bonus+' = <b>'+fmtFull(m.I)+'</b></div>';
+  d+='<div class="step" style="margin-top:8px"><b>2. Pool value used</b>'+(m.poolPath?' = residual × scarcity^'+K.scarExp+' × bonus units':'')+'</div>';
   if(m.poolPath){const ra=S.rem-S.bonus;
-    d+='<div class="step">units left after grant = '+S.rem+' − '+S.bonus+' = '+ra+'</div>';
-    d+='<div class="step">scarcity = 1 − min(1, ('+ra+' ÷ demand '+S.dem+'/yr) ÷ horizon '+S.hor+' yr) = '+m.scar.toFixed(3)+'</div>';
-    d+='<div class="step">D = residual '+fmtFull(m.r)+' × scarcity^'+K.scarExp+' ('+Math.pow(m.scar,K.scarExp).toFixed(3)+') × '+S.bonus+' = <b>'+fmtFull(m.D)+'</b></div>';
-  } else { d+='<div class="step">pathway "'+S.pathway+'" does not draw from the pool → D = <b>$0</b></div>'; }
-  d+='<div class="step"><b>Impact offset</b></div>';
-  d+='<div class="step">impact '+fmtFull(S.impact)+'/unit × '+S.bonus+' bonus units = <b>'+fmtFull(m.I)+'</b></div>';
-  d+='<div class="step"><b>Break-even floor = pool value used + impact offset</b></div>';
-  d+='<div class="step">'+fmtFull(m.D)+' + '+fmtFull(m.I)+' = <span class="res">'+fmtFull(m.cityMin)+'</span></div></div>';
-  d+='<p class="lede" style="margin-top:14px">The value of the scarce pool units used plus the impact offset the city can lawfully require. Impact is editable under '+secLink('Assumptions',"showAux('assumptions')")+'; pool figures on '+secLink('Step 1',"goto(0)")+', under Density Pool and Scarcity.</p>';
+    d+='<div class="step">units left after grant = '+S.rem+' − '+S.bonus+' = '+ra+'; scarcity = 1 − min(1, ('+ra+' ÷ demand '+S.dem+'/yr) ÷ horizon '+S.hor+' yr) = '+m.scar.toFixed(3)+'</div>';
+    d+='<div class="step">residual '+fmtFull(m.r)+' × '+Math.pow(m.scar,K.scarExp).toFixed(3)+' × '+S.bonus+' = <b>'+fmtFull(m.D)+'</b></div>';
+  } else { d+='<div class="step">pathway “'+S.pathway+'” does not draw from the pool → <b>$0</b></div>'; }
+  d+='<div class="step" style="margin-top:8px"><b>Break-even floor</b> = impact offset + pool value used</div>';
+  d+='<div class="step">'+fmtFull(m.I)+' + '+fmtFull(m.D)+' = <span class="res">'+fmtFull(m.cityMin)+'</span></div></div>';
+  d+='<p class="lede" style="margin-top:16px">This is the <b>floor</b>: the impact the city can lawfully require plus the value of the scarce pool units consumed. Impact is editable under '+secLink('Assumptions',"showAux('assumptions')")+'; pool figures on '+secLink('Step 1',"goto(0)")+', under Density Pool and Scarcity.</p>';
+  d+='</div>';
   return d;
 }
 function derivB(m){
-  let d='<div class="deriv"><div class="step"><b>Public value offered (plain $) = sum of: qty × city $/unit</b>, the city’s plain-dollar cost to provide the package (qty = the amount above what code requires). This is the figure the decision compares to the baseline.</div>';
-  m.rows.forEach(x=>{ d+='<div class="step">'+x.name+': '+x.qty+' × '+fmtFull(x.city)+(x.pct<1?(' × '+Math.round(x.pct*100)+'%'):'')+' = <b>'+fmtFull(x.cityPlain)+'</b>'+(x.mult!==1?(' <span class="anote">(×'+x.mult+' priority weight → '+fmtFull(x.cityVal)+' for ranking)</span>'):'')+'</div>'; });
-  d+='<div class="step">Offered public value (plain $) = <span class="res">'+fmtFull(m.Bplain)+'</span></div>';
-  d+='<div class="step" style="margin-top:8px">Developer cost (qty × dev $/unit × % above) = <b>'+fmtFull(m.A)+'</b>; value ratio = '+(m.gPlain?m.gPlain.toFixed(2):"0")+'× (plain) · '+(m.g?m.g.toFixed(2):"0")+'× (priority-weighted)</div></div>';
-  d+='<p class="lede" style="margin-top:14px">The pass/fail test is in <b>plain dollars</b>, the deal is worthwhile when the package’s plain public value meets the break-even floor, and feasible when developer cost stays under the value to developer. The <b>category multipliers</b> (resilience 2.5×, etc.) do <i>not</i> move the decision; they only rank which benefits to prefer within a package. Per-unit costs and values are editable on the '+secLink('Benefits step',"goto(1)")+'; multipliers under '+secLink('Assumptions',"showAux('assumptions')")+'.</p>';
+  let d='<div class="card">'+derivMap('B')+
+   '<p class="lede" style="margin:0 0 16px"><b>The question:</b> what public value is actually on the table, and does it clear the bar? Add up each benefit’s quantity × the city’s value per unit (plain dollars). The decision then compares this offer to the break-even floor (worthwhile?) and the developer’s cost to the value-to-developer ceiling (feasible?).</p>';
+  d+='<div class="deriv deriv-flat"><div class="step"><b>Public value offered = Σ (quantity × city value / unit)</b></div>';
+  if(m.rows.length) m.rows.forEach(x=>{ d+='<div class="step">'+x.name+': '+x.qty+' × '+fmtFull(x.city)+(x.pct<1?(' × '+Math.round(x.pct*100)+'%'):'')+' = <b>'+fmtFull(x.cityPlain)+'</b>'+(x.mult!==1?(' <span class="anote">(×'+x.mult+' priority weight = '+fmtFull(x.cityVal)+', ranking only)</span>'):'')+'</div>'; });
+  else d+='<div class="step"><span class="anote">No benefits added yet — add them on the Benefits step.</span></div>';
+  d+='<div class="step" style="margin-top:6px"><b>Total offered public value</b> = <span class="res">'+fmtFull(m.Bplain)+'</span></div>';
+  d+='<div class="step" style="margin-top:8px"><b>Developer cost</b> (quantity × developer cost / unit) = <b>'+fmtFull(m.A)+'</b> — value ratio '+(m.gPlain?m.gPlain.toFixed(2):"0")+'×</div></div>';
+  const passW=m.Bplain>=m.cityMin, passF=m.A<=m.Vlow;
+  const tag=(ok,t)=>'<span class="cmp-tag" style="background:'+(ok?'#e3f0e8':'#fbecd9')+';color:'+(ok?'var(--pass)':'var(--warn)')+'">'+t+'</span>';
+  d+='<div style="margin-top:16px">'+
+     '<div class="cmpline"><b>Worthwhile?</b> Offered <span class="cmp-v">'+fmtFull(m.Bplain)+'</span> vs floor <span class="cmp-v">'+fmtFull(m.cityMin)+'</span> '+tag(passW,passW?'meets the floor':'below the floor')+'</div>'+
+     '<div class="cmpline"><b>Feasible?</b> Developer cost <span class="cmp-v">'+fmtFull(m.A)+'</span> vs ceiling <span class="cmp-v">'+fmtFull(m.Vlow)+'</span> <span class="anote">(conservative)</span> '+tag(passF,passF?'within the ceiling':'over the ceiling')+'</div></div>';
+  d+='<p class="lede" style="margin-top:16px">The pass/fail test is in <b>plain dollars</b>. The <b>priority weights</b> (resilience 2.5×, etc.) do <i>not</i> move the decision; they only rank which benefits to prefer within a package. Per-unit costs and values are editable on the '+secLink('Benefits step',"goto(1)")+'; priority weights under '+secLink('Assumptions',"showAux('assumptions')")+' (section D).</p>';
+  d+='</div>';
   return d;
 }
 /* ---------- benefit library (editable) ---------- */
