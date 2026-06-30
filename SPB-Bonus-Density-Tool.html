@@ -400,11 +400,13 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 .libsec,.asec-toggle{cursor:pointer;user-select:none}
 .libsec:hover td,.asec-toggle:hover td{background:#b2d2d4}
 .lib-caret,.asec-caret{display:inline-block;width:1em;color:var(--accent);font-size:11px}
-/* per-row Notes & source disclosure (replaces the old wide Notes/Source columns; keeps rows narrow on small screens) */
-.notetog{display:inline-block;margin-top:4px;font-size:11px;color:var(--accent);cursor:pointer;user-select:none}
-.notetog:hover{text-decoration:underline}
-.notetog .note-caret{display:inline-block;width:.9em;font-size:10px}
-.nosrc-dot{color:#b07a2e;font-weight:700}
+/* per-row Notes & source disclosure: a compact icon in its own (rightmost) column opens a full-width sub-row, so item rows stay single-line */
+.notecol{text-align:center}
+th.notecol{font-size:12px;font-weight:400}
+.notetog{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;font-size:13px;color:var(--accent);cursor:pointer;user-select:none;border-radius:4px}
+.notetog:hover{background:var(--accent-soft)}
+.notetog.nosrc{color:var(--warn-ink)}
+.notetog .note-caret{font-size:11px;line-height:1}
 .noterow td{background:#f6f8f9}
 .notewrap{display:flex;flex-direction:column;gap:8px;font-size:12px;line-height:1.55;padding:4px 2px}
 .noteblk .notelab{display:block;font-weight:700;color:var(--accent-d);text-transform:uppercase;font-size:10px;letter-spacing:.04em;margin-bottom:2px}
@@ -784,7 +786,8 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
         <p class="lede" style="margin:8px 0 0"><b>Type-scale cleanup (v1.19.4).</b> Normalized text sizes to a consistent integer ladder (23 page title · 15 section/card titles · 14 body · 13 labels · 12 hints · 11–10 micro-labels), removing ad-hoc half-pixel sizes. Body prose dropped from 15→14px so it reads clearly below the 15px card titles (they had been the same size).</p>
         <p class="lede" style="margin:8px 0 0"><b>Button polish (v1.19.5).</b> Buttons now vertically center their label (tight line-height + flex centering, fixing top-heavy text), and the left-nav step buttons (1–3) are shorter with a smaller number circle (an inherited padding rule had been inflating the circle to ~34px).</p>
         <p class="lede" style="margin:8px 0 0"><b>Benefits assumed secured (v1.19.6).</b> Simplified the benefit model: every benefit is now credited at <b>100%</b>, since a density bonus is granted as a condition of approval (the city secures the benefits before releasing the units). The per-row <b>Recurring</b> and <b>Secured by</b> controls, the unsecured/above-code caution chips, and the now-inert Assumptions sections H (recurring-benefit present value) and I (enforceability credit) are hidden. This reverses the v1.19.0 enforceability haircut in favor of a simpler, plain-dollar package value. (Restorable in code via the SIMPLE_BENEFITS flag.)</p>
-        <p class="lede" style="margin:8px 0 0"><b>Pool &amp; scarcity moved to Step 1 (v1.19.7).</b> The Density Pool and Scarcity visualization (allocation donut + scarcity curve) now lives on Step 1, directly below the bonus-request slider, so it updates live as you size the request — where it's most useful. It's no longer a Results diagnostic; the Results page keeps the resulting "Pool value used" headline number and its derivation.
+        <p class="lede" style="margin:8px 0 0"><b>Pool &amp; scarcity moved to Step 1 (v1.19.7).</b> The Density Pool and Scarcity visualization (allocation donut + scarcity curve) now lives on Step 1, directly below the bonus-request slider, so it updates live as you size the request — where it's most useful. It's no longer a Results diagnostic; the Results page keeps the resulting "Pool value used" headline number and its derivation.</p>
+        <p class="lede" style="margin:8px 0 0"><b>Notes &amp; source moved to an icon column (v1.19.8).</b> On Assumptions and the Benefit Library, the Notes &amp; source disclosure is now a compact ⓘ icon in its own column to the right of Override, instead of a text toggle under each title. Item rows stay single-line; clicking the icon still drops a full-width Notes/Source panel below the row (the icon turns orange when a row has no cited source).
       </div>
 
       <div class="card" id="legal-card">
@@ -834,7 +837,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 
 <script>
 "use strict";
-const VERSION="1.19.7", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
+const VERSION="1.19.8", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden — a
@@ -2894,18 +2897,20 @@ function libRatio(i){const r=LIB[i],c=LIBCAL[i];const dev=libApplied(c,"dev"),ci
 function libApplDisp(i,which){return "$"+Math.round(libApplied(LIBCAL[i],which)).toLocaleString();}
 function buildLibrary(){
   let h="";
-  const NS=!HIDE_NOTES_SOURCE, ncols=6;   // Notes/Source are now a per-row "Notes & source" disclosure (full-width sub-row), not columns — keeps rows readable on small screens. NS gates whether the disclosure renders.
+  const NS=!HIDE_NOTES_SOURCE, ncols=NS?7:6;   // Notes/Source open from a compact icon in their own column (rightmost) into a full-width sub-row, so item rows stay single-line. NS gates whether that column renders.
   const nLibNoSrc=LIBCAL.filter(c=>c&&!(c.source&&String(c.source).trim())).length;
   if(nLibNoSrc&&NS)h+='<div class="calflag"><b>'+nLibNoSrc+' of '+LIBCAL.length+' library values lack a cited source.</b> Those are sketch-grade placeholders until calibrated to local data; each is flagged below and counted on the printed summary.</div>';
   h+='<div class="libsearch"><input type="text" id="lib-search" placeholder="Search benefits…" aria-label="Search benefits" value="'+esc(libSearchQ)+'">'+
     '<button class="alink" id="lib-expand">Expand all</button><button class="alink" id="lib-collapse">Collapse all</button></div>';
   h+='<fieldset class="lockfs"'+(advUnlocked?'':' disabled')+'>';
-  const cgLib='<col style="width:30%"><col style="width:16%"><col style="width:13%"><col style="width:13%"><col style="width:14%"><col style="width:14%">';
+  const cgLib=NS?'<col style="width:28%"><col style="width:15%"><col style="width:13%"><col style="width:13%"><col style="width:13%"><col style="width:13%"><col style="width:5%">'
+               :'<col style="width:30%"><col style="width:16%"><col style="width:13%"><col style="width:13%"><col style="width:14%"><col style="width:14%">';
   h+='<div class="atable-wrap"><table class="atable libtable">'+
     '<colgroup>'+cgLib+'</colgroup>'+
     '<thead><tr>'+
     '<th scope="col">Benefit</th><th scope="col">Unit</th>'+
     '<th scope="col" class="r">Low</th><th scope="col" class="r">High</th><th scope="col" class="r">Applied</th><th scope="col" class="r">Override</th>'+
+    (NS?'<th scope="col" class="notecol" title="Notes &amp; source"><span class="sr-only">Notes &amp; source</span>ⓘ</th>':'')+
     '</tr></thead><tbody>';
   CATS_ORDER.forEach(cat=>{
     const n=LIB.filter(r=>r[1]===cat).length;
@@ -2925,13 +2930,14 @@ function buildLibrary(){
         ? '<input type="text" class="libunit" data-lib="'+i+'" data-col="unit" value="'+esc(r[2])+'" placeholder="$/unit" aria-label="Unit">'
         : '<span class="anote">'+r[2]+'</span>';
       const libNoSrc=!(c.source&&String(c.source).trim());
-      const libTog=NS?('<span class="notetog" role="button" tabindex="0" aria-expanded="false" aria-label="'+esc(r[0])+', notes and source"><span class="note-caret">▸</span> Notes &amp; source'+(libNoSrc?' <span class="nosrc-dot" title="no cited source">⚠</span>':'')+'</span>'):'';
-      h+='<tr data-cat="'+esc(cat)+'" data-search="'+hay+'"><td>'+nameCell+(libTog?('<div>'+libTog+'</div>'):'')+'</td><td>'+unitCell+'</td>'+
+      const libTog=NS?('<span class="notetog'+(libNoSrc?' nosrc':'')+'" role="button" tabindex="0" aria-expanded="false" title="Notes &amp; source'+(libNoSrc?' — no cited source':'')+'" aria-label="'+esc(r[0])+', notes and source"><span class="note-caret">▸</span></span>'):'';
+      h+='<tr data-cat="'+esc(cat)+'" data-search="'+hay+'"><td>'+nameCell+'</td><td>'+unitCell+'</td>'+
         '<td class="r">'+libfld(i,"cityLow",c.cityLow,"alow")+'</td>'+
         '<td class="r">'+libfld(i,"cityHigh",c.cityHigh,"ahigh")+'</td>'+
         '<td class="r"><span class="aapplied" id="libcity-'+i+'">'+libApplDisp(i,"city")+'</span></td>'+
-        '<td class="r">'+libfld(i,"cityOv",c.cityOv,"ov")+'</td></tr>'+
-        (NS?('<tr class="noterow" style="display:none"><td colspan="6"><div class="notewrap">'+
+        '<td class="r">'+libfld(i,"cityOv",c.cityOv,"ov")+'</td>'+
+        (NS?'<td class="notecol">'+libTog+'</td>':'')+'</tr>'+
+        (NS?('<tr class="noterow" style="display:none"><td colspan="'+ncols+'"><div class="notewrap">'+
           '<div class="noteblk"><span class="notelab">Notes</span> '+libtxt(i,"note",c.note,"Notes")+'</div>'+
           '<div class="noteblk"><span class="notelab">Source</span> '+libtxt(i,"source",c.source,"Source")+(libNoSrc?'<div class="nosrc">⚠ Uncalibrated, no cited source</div>':'')+'</div>'+
           '</div></td></tr>'):'');
@@ -3017,14 +3023,15 @@ function lockBar(title,note){
     : '<span>🔒 <b>'+title+'</b>, '+note+'</span><button class="btn" data-lock="1">Enable editing</button>')+'</div>';
 }
 function buildAssumptions(){
-  const NS=!HIDE_NOTES_SOURCE, ncols=6;   // Notes/Source are now a per-row "Notes & source" disclosure (full-width sub-row), not columns — keeps rows readable on small screens. NS gates whether the disclosure renders.
+  const NS=!HIDE_NOTES_SOURCE, ncols=NS?7:6;   // Notes/Source open from a compact icon in their own column (rightmost) into a full-width sub-row, so rows stay single-line. NS gates whether that column renders.
   const nNoSrc=ASSUMP.filter(r=>!(r.source&&String(r.source).trim())).length;
   const srcBanner=(nNoSrc&&NS)?'<div class="calflag"><b>'+nNoSrc+' of '+ASSUMP.length+' benchmarks lack a cited source.</b> Treat those rows as sketch-grade placeholders until calibrated to local SPB / Pinellas data; each is flagged below and counted on the printed summary.</div>':'';
-  const cgA='<col style="width:30%"><col style="width:18%"><col style="width:12%"><col style="width:12%"><col style="width:14%"><col style="width:14%">';
+  const cgA=NS?'<col style="width:28%"><col style="width:17%"><col style="width:12%"><col style="width:12%"><col style="width:13%"><col style="width:13%"><col style="width:5%">'
+             :'<col style="width:30%"><col style="width:18%"><col style="width:12%"><col style="width:12%"><col style="width:14%"><col style="width:14%">';
   const searchBar='<div class="libsearch"><input type="text" id="assump-search" placeholder="Search benchmarks…" aria-label="Search benchmarks" value="'+esc(assumpSearchQ)+'">'+
     '<button class="alink" id="assump-expand">Expand all</button><button class="alink" id="assump-collapse">Collapse all</button></div>';
   const secCount={}; ASSUMP.forEach(r=>{secCount[r.sec]=(secCount[r.sec]||0)+1;});
-  let h=srcBanner+searchBar+'<fieldset class="lockfs"'+(advUnlocked?'':' disabled')+'><div class="atable-wrap"><table class="atable assumptable"><colgroup>'+cgA+'</colgroup><thead><tr><th scope="col">Benchmark</th><th scope="col">Units</th><th scope="col" class="r">Low</th><th scope="col" class="r">High</th><th scope="col" class="r">Applied</th><th scope="col" class="r">Override</th></tr></thead><tbody>';
+  let h=srcBanner+searchBar+'<fieldset class="lockfs"'+(advUnlocked?'':' disabled')+'><div class="atable-wrap"><table class="atable assumptable"><colgroup>'+cgA+'</colgroup><thead><tr><th scope="col">Benchmark</th><th scope="col">Units</th><th scope="col" class="r">Low</th><th scope="col" class="r">High</th><th scope="col" class="r">Applied</th><th scope="col" class="r">Override</th>'+(NS?'<th scope="col" class="notecol" title="Notes &amp; source"><span class="sr-only">Notes &amp; source</span>ⓘ</th>':'')+'</tr></thead><tbody>';
   let sec="";
   ASSUMP.forEach((r,i)=>{
     if(SIMPLE_BENEFITS && /^[HI]\./.test(r.sec)) return;   // recurring-PV (H) + enforceability (I) don't feed the model when benefits are assumed secured — hide them
@@ -3041,7 +3048,7 @@ function buildAssumptions(){
     /* the live "= $X/SF" implied readout (id aimpl-i, updated on edit) sits under the Applied value. */
     const impliedSpan=hasBasis?'<span class="anote" id="aimpl-'+i+'" style="white-space:nowrap;color:var(--accent)">'+aImplied(r)+'</span>':"";
     const noSrc=!(r.source&&String(r.source).trim());
-    const tog=NS?('<div><span class="notetog" role="button" tabindex="0" aria-expanded="false" aria-label="'+esc(r.label)+', notes and source"><span class="note-caret">▸</span> Notes &amp; source'+(noSrc?' <span class="nosrc-dot" title="no cited source">⚠</span>':'')+'</span></div>'):'';
+    const tog=NS?('<span class="notetog'+(noSrc?' nosrc':'')+'" role="button" tabindex="0" aria-expanded="false" title="Notes &amp; source'+(noSrc?' — no cited source':'')+'" aria-label="'+esc(r.label)+', notes and source"><span class="note-caret">▸</span></span>'):'';
     let noteRow="";
     if(NS){
       const noteContent=advUnlocked
@@ -3050,17 +3057,18 @@ function buildAssumptions(){
       const srcContent=(advUnlocked
         ? '<input type="text" class="asrc" data-i="'+i+'" data-col="source" value="'+esc(r.source||"")+'" placeholder="source…" aria-label="'+esc(r.label)+', source">'
         : esc(r.source||""))+(noSrc?'<div class="nosrc">⚠ Uncalibrated, no cited source</div>':"");
-      noteRow='<tr class="noterow" style="display:none"><td colspan="6"><div class="notewrap">'+
+      noteRow='<tr class="noterow" style="display:none"><td colspan="'+ncols+'"><div class="notewrap">'+
         '<div class="noteblk"><span class="notelab">Notes</span> '+noteContent+'</div>'+
         '<div class="noteblk"><span class="notelab">Source</span> '+srcContent+'</div>'+
         '</div></td></tr>';
     }
     const appliedExtra=impliedSpan?('<div style="margin-top:2px">'+impliedSpan+'</div>'):"";
-    h+='<tr data-asec="'+esc(r.sec)+'" data-search="'+ahay+'"><td>'+r.label+tog+'</td><td class="anote">'+unitCell+'</td>'+
+    h+='<tr data-asec="'+esc(r.sec)+'" data-search="'+ahay+'"><td>'+r.label+'</td><td class="anote">'+unitCell+'</td>'+
        '<td class="r">'+fld(i,"low",aToDisp(r,r.low),"alow",r.fmt)+'</td>'+
        '<td class="r">'+fld(i,"high",aToDisp(r,r.high),"ahigh",r.fmt)+'</td>'+
        '<td class="r"><span class="aapplied" data-i="'+i+'">'+fmtAssump(r)+'</span>'+appliedExtra+'</td>'+
-       '<td class="r">'+fld(i,"override",aToDisp(r,r.override),"ov",r.fmt)+'</td></tr>'+
+       '<td class="r">'+fld(i,"override",aToDisp(r,r.override),"ov",r.fmt)+'</td>'+
+       (NS?'<td class="notecol">'+tog+'</td>':'')+'</tr>'+
        noteRow;
   });
   h+='</tbody></table></div></fieldset>';
