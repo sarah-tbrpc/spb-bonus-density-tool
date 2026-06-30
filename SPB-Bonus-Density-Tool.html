@@ -860,7 +860,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.22.0", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.22.1", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden — a
@@ -2517,6 +2517,21 @@ async function arcQuery(base,lat,lon){
   const q=base+"/query?geometry="+lon+","+lat+"&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=*&returnGeometry=false";
   try{const d=await jsonp(q); const f=d&&d.features&&d.features[0]; return (f&&f.attributes)?f.attributes:null;}catch(e){return null;}
 }
+/* sum county taxable + just value across ALL parcel records at a point. Condos store one record per
+   unit stacked on the same footprint, so a single-feature read undercounts the building; this sums
+   every intersecting record (a single non-condo parcel returns one). Acreage is NOT summed here
+   (each stacked record carries the whole-footprint acreage; acreage comes from the Accela layer). */
+async function sumParcelTaxable(lat,lon){
+  const base="https://services.arcgis.com/f5HgUpxURgEzTccH/arcgis/rest/services/Pinellas_ParcelPropertyInfo/FeatureServer/0";
+  const q=base+"/query?geometry="+lon+","+lat+"&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=CNTY_TAXABLE_VALUE,JUST_LAND,JUST_BUILDING&returnGeometry=false";
+  try{
+    const d=await jsonp(q); const fs=(d&&d.features)||[];
+    if(!fs.length)return null;
+    let tax=0,jv=0,n=0;
+    fs.forEach(f=>{const a=f.attributes||{}; const t=+a.CNTY_TAXABLE_VALUE; if(isFinite(t)&&t>0){tax+=t;} jv+=(+(a.JUST_LAND||0))+(+(a.JUST_BUILDING||0)); n++;});
+    return {taxable:tax>0?tax:null,justVal:jv>0?jv:null,count:n};
+  }catch(e){return null;}
+}
 function attrEnding(o,sub){ if(!o)return null; const k=Object.keys(o).find(k=>k.toUpperCase().endsWith(sub)); return k?o[k]:null; }
 /* Pinellas PAO_USECODE = standard FL DOR 2-digit use code + 2 local digits.
    Map the leading 2 digits to the statewide DOR category for a readable label. */
@@ -2556,20 +2571,15 @@ function floodToCoastal(z){z=(""+(z||"")).toUpperCase();
 async function fetchSiteData(lat,lon){
   const PARCEL="https://egis.pinellas.gov/gis/rest/services/Accela/AccelaAddressParcel/MapServer/1";
   const FEMA="https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/28";
-  /* Pinellas ParcelPropertyInfo (ArcGIS Online): county-taxable + just values per parcel, for the fiscal snapshot */
-  const PROP="https://services.arcgis.com/f5HgUpxURgEzTccH/arcgis/rest/services/Pinellas_ParcelPropertyInfo/FeatureServer/0";
-  const res=await Promise.all([arcQuery(PARCEL,lat,lon),arcQuery(FEMA,lat,lon),arcQuery(PROP,lat,lon)]);
-  const pcl=res[0],fld=res[1],prop=res[2];
+  const res=await Promise.all([arcQuery(PARCEL,lat,lon),arcQuery(FEMA,lat,lon),sumParcelTaxable(lat,lon)]);
+  const pcl=res[0],fld=res[1],prop=res[2];   // prop = summed taxable/just across all records at the point (condo-safe)
   const fldZone=fld?(fld.FLD_ZONE||attrEnding(fld,"FLD_ZONE")):null;
   let bfe=fld?(fld.STATIC_BFE!=null?fld.STATIC_BFE:attrEnding(fld,"STATIC_BFE")):null;
   if(bfe!=null&&(+bfe<=-9000))bfe=null;
-  const tvRaw=prop?(prop.CNTY_TAXABLE_VALUE!=null?prop.CNTY_TAXABLE_VALUE:attrEnding(prop,"TAXABLE_VALUE")):null;
-  const taxable=(tvRaw!=null&&isFinite(+tvRaw)&&+tvRaw>0)?+tvRaw:null;
-  const jv=prop?((+(prop.JUST_LAND||0))+(+(prop.JUST_BUILDING||0))):0;
   return {lat,lon,anyData:!!(pcl||fld||prop),
     pin:attrEnding(pcl,"PIN")||attrEnding(pcl,"PARCELID")||attrEnding(pcl,"STRAP"),
     area:attrEnding(pcl,"STATEDAREA"),usecode:attrEnding(pcl,"PAO_USECODE"),evac:attrEnding(pcl,"EVACZONE"),
-    taxable:taxable,justVal:(isFinite(jv)&&jv>0)?jv:null,
+    taxable:prop?prop.taxable:null,justVal:prop?prop.justVal:null,taxParcels:prop?prop.count:0,
     fldZone,bfe,cz:floodToCoastal(fldZone),cra:inCRA(lat,lon),fluCode:fluAt(lat,lon)};
 }
 /* render the Property & Site Data rows from a fetchSiteData result. `filled` marks rows auto-filled
@@ -2602,7 +2612,7 @@ function siteIntelRows(d,filled){filled=filled||[];
     +rowRaw("Parcel ID",pinHtml)
     +row("Parcel Stated Area",fmtStatedArea(d.area),filled.indexOf("acres")>-1)
     +row("Current Use",d.usecode?(d.usecode+(useCodeDesc(d.usecode)?", "+titleCase(useCodeDesc(d.usecode)):"")):null,filled.indexOf("use")>-1)
-    +rowRaw("County Taxable Value",d.taxable!=null?('$'+Math.round(d.taxable).toLocaleString()+(filled.indexOf("tax")>-1?' <span class="si-auto">→ fiscal snapshot</span>':'')):"-")
+    +rowRaw("County Taxable Value",d.taxable!=null?('$'+Math.round(d.taxable).toLocaleString()+(d.taxParcels>1?' <span class="anote" style="font-weight:400">('+d.taxParcels+' records summed)</span>':'')+(filled.indexOf("tax")>-1?' <span class="si-auto">→ fiscal snapshot</span>':'')):"-")
     +rowRaw("Flood Risk",frHtml)
     +(!d.anyData?'<div class="si-row"><span class="anote" style="font-size:11px">Parcel / flood services offline, values above are from embedded city data.</span></div>':"");
 }
