@@ -1,10 +1,10 @@
 /* =============================================================================
- * SPB Bonus-Density — core valuation engine (extracted from SPB-Bonus-Density-Tool.html)
+ * SPB Bonus-Density, core valuation engine (extracted from SPB-Bonus-Density-Tool.html)
  *
  * WHY THIS FILE EXISTS
  *   The tool ships as a single self-contained HTML file (zero build step, served
- *   from GitHub Pages). That is great for deployment but left the money math —
- *   residualUnit() and compute() — buried in a ~2,000-line untyped <script> with
+ *   from GitHub Pages). That is great for deployment but left the money math , 
+ *   residualUnit() and compute(), buried in a ~2,000-line untyped <script> with
  *   no automated tests, audited only by hand. This module lifts that core math
  *   out into pure, parameterized, JSDoc-typed functions that can be unit tested
  *   under Node (`node --test`, zero dependencies) while STILL being embeddable
@@ -26,8 +26,8 @@
  *
  * IMPORTANT: the formulas here are a faithful, behavior-preserving extraction of
  *   the v1.15.0 logic. The characterization tests (engine/spb-engine.test.js)
- *   lock in the current numeric outputs — including the documented worked
- *   reconciliation (Corey Landing → value-to-developer $5,681,500) — so any
+ *   lock in the current numeric outputs, including the documented worked
+ *   reconciliation (Corey Landing → value-to-developer $5,681,500), so any
  *   accidental change to the math fails a test rather than shipping silently.
  * ========================================================================== */
 ;(function (root, factory) {
@@ -43,7 +43,7 @@
    * @property {number} hardCondo  base hard cost per condo/MF unit ($)
    * @property {number} hardHotel  base hard cost per lodging key ($)
    * @property {number} soft       soft-cost fraction of hard (e.g. 0.24)
-   * @property {number} margin     developer margin fraction (e.g. 0.15) — note: per-deal margin is passed separately to residualUnit
+   * @property {number} margin     developer margin fraction (e.g. 0.15). Note: per-deal margin is passed separately to residualUnit
    * @property {number} decline    value-decline factor on marginal bonus units (e.g. 0.80)
    * @property {number} sales      condo sales/marketing fraction of market price (e.g. 0.06)
    * @property {number} scarExp    scarcity-curve exponent (e.g. 1.6)
@@ -237,8 +237,8 @@
    * @property {?number|string} hardOv  per-unit hard-cost override, or null/""
    * @property {string} pathway         "Pool Allocation" enables pool opportunity cost
    * @property {number} acres
-   * @property {number} base            by-right density (du/ac or TLU/ac) — for byrightDerived
-   * @property {number} cap             pool-augmented ceiling density — for maxUnits/overCap
+   * @property {number} base            by-right density (du/ac or TLU/ac), for byrightDerived
+   * @property {number} cap             pool-augmented ceiling density, for maxUnits/overCap
    * --- pool/impact ---
    * @property {number} rem             pool units remaining (resolved from the ledger by the caller)
    * @property {number} dem             projected annual demand
@@ -300,7 +300,7 @@
       Vhigh = residualUnit(market, use, margin, btype, parking, coastal, hcLo, undefined, K, BMULT, PMULT, FMULT, bonusStep) * bonus * decline;
     }
 
-    /* implied return-on-cost the bonus units actually carry at this market price — a sanity check,
+    /* implied return-on-cost the bonus units actually carry at this market price, a sanity check,
        not a model input. tc = delivered cost with no profit; the bonus units carry the step-up. */
     var hardC = effHardUnit(input.hardOv, use, btype, parking, coastal, K, BMULT, PMULT, FMULT) * bonusStep;
     var salesC = use === "Condominium" ? market * K.sales : 0;
@@ -370,7 +370,7 @@
    */
 
   /**
-   * Income / fundamentals approach to the VALUE PER UNIT — ported from Codebase A's
+   * Income / fundamentals approach to the VALUE PER UNIT, ported from Codebase A's
    * pro forma (computeScenario GDV), expressed per unit so it can serve as an
    * alternative anchor or cross-check to B's single entered market comparable.
    *
