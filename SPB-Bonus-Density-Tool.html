@@ -741,11 +741,11 @@ th.notecol{font-size:12px;font-weight:400}
       <h2 class="step-h">User Guide &amp; Method</h2>
       <p class="lede">How this tool prices a density-bonus deal, what each number means, the limits to keep in mind, and the legal guardrails that sit on top of the local code.</p>
       <div class="card">
-        <h3>What it is</h3>
+        <h3>What It Is</h3>
         <p class="lede" style="margin:0">A staff sketch tool for bonus-density negotiations: order-of-magnitude figures, <b>not an appraisal, pro forma, or legal determination</b>. It prices bonus allocations from the city's two finite pools (195-unit RU, 325-unit TLU) and Large Resort district-cap lodging (added by conditional use, so no pool-scarcity cost applies; the impact floor and developer ceiling still bound the deal). Where added density instead needs a comp-plan amendment or <b>charter referendum</b>, the tool flags that separate approval. Calibrate inputs to local data before relying on any number, and commission an independent feasibility review for any allocation large relative to the pool or marginal in its decision.</p>
 
         <div class="subsec">
-        <h3>The numbers, in plain terms</h3>
+        <h3>The Numbers, in Plain Terms</h3>
         <ul class="guide-list">
           <li><b>Value to developer.</b> The most the bonus units are worth to the developer (discounted residual profit): the walk-away ceiling. Test the conservative low end; the high end is the negotiation target. Derived from a per-unit market value — entered as a sale comp or built up from an income approach on <a href="#" class="seclink" onclick="goto(0);return false;">Step&nbsp;1</a> (condo = $/SF; rental = NOI ÷ cap rate; lodging = ADR × occ × ancillary × EBITDA ÷ cap rate) — run through a residual cost build-up.</li>
           <li><b>Pool value used.</b> Value of the finite pool units the bonus consumes (pool pathway only). Near zero while the pool is plentiful; ramps as the balance falls below projected demand × horizon; at full depletion reaches the units' full value and the tool recommends <b>Hold</b>.</li>
@@ -758,17 +758,17 @@ th.notecol{font-size:12px;font-weight:400}
       </div>
 
       <div class="subsec">
-        <h3>The three inputs that matter most</h3>
+        <h3>The Three Inputs That Matter Most</h3>
         <p class="lede" style="margin:0">Market value (the ceiling), construction cost (the floor), and developer margin (the split) drive nearly every output — calibrate these first, under <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions</a>. The scarcity exponent matters only near depletion.</p>
       </div>
 
       <div class="subsec">
-        <h3>How the recommendation is reached</h3>
+        <h3>How the Recommendation Is Reached</h3>
         <p class="lede" style="margin:0"><b>Worthwhile</b> when public value offered meets the break-even floor. <b>Feasible</b> when developer cost stays under the value to developer, tested on its conservative low end. The agreement zone runs from the lowest worthwhile spend up to that ceiling — fill it with the highest value-ratio benefits first.</p>
       </div>
 
       <div class="subsec">
-        <h3>Known limits, read before relying on it</h3>
+        <h3>Known Limits, Read Before Relying on It</h3>
         <ul class="guide-list">
           <li><b>Plain-dollar decision.</b> Pass/fail compares the package's plain public value to the plain-dollar floor. Category multipliers (resilience 2.5×, etc.) only rank benefits within a package; they do not inflate the offer.</li>
           <li><b>Invented curve shapes.</b> The scarcity exponent and value-decline factor are judgment shapes, not empirical (both editable under <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions</a>).</li>
@@ -792,7 +792,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 
       <div class="subsec" id="legal-card">
-        <h3>Legal &amp; political guardrails</h3>
+        <h3>Legal &amp; Political Guardrails</h3>
         <p class="lede" style="margin:0 0 10px">Surfaced as caveats, not enforced in the math. Route the exaction framing through the City Attorney before treating any number as actionable.</p>
         <ul class="guide-list">
           <li><b>Charter referendum.</b> The SPB charter requires a <b>voter referendum</b> before the Commission can increase height, density, or intensity, or change a land-use category. A recommended bonus may not be grantable by staff or Commission action alone.</li>
@@ -840,7 +840,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.20.5", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.20.6", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden — a
@@ -887,7 +887,7 @@ function htxt(i,fld,val){return advUnlocked?hfld(i,fld,val,"text","htext"):esc(v
 /* horizontal stacked drawdown bar per pool: approved allocations (teal segments, one per project)
    plus the striped remaining balance. Pure HTML/CSS so it is robust and prints. */
 function poolBarsInner(){
-  const pools=[{p:"RU",label:"Residential (RU) pool"},{p:"TLU",label:"Transient lodging (TLU) pool — TC-2 / Activity Center / Bayou"}];
+  const pools=[{p:"RU",label:"Residential (RU) Pool"},{p:"TLU",label:"Transient Lodging (TLU) Pool — TC-2 / Activity Center / Bayou"}];
   let h="";
   pools.forEach(function(pl){
     const total=POOL_TOTAL[pl.p]||0;
@@ -907,12 +907,9 @@ function poolBarsInner(){
   h+='<div class="poolbar-legend"><span><i style="background:var(--accent-d)"></i> Approved allocation (by project)</span><span><i class="pbseg-rem" style="border:1px solid var(--line)"></i> Remaining pool</span></div>';
   return h;
 }
-function poolBarsHTML(){
-  return '<div class="card"><h3>Pool drawdown</h3><div class="sub">Approved allocations against each finite pool — the scarcity the model prices. Only rows with an Approved decision count; Superseded and Other-pool rows are excluded.</div><div id="pooldrawdown">'+poolBarsInner()+'</div></div>';
-}
 function buildHistory(){
   let h=lockBar("Allocation ledger","The institutional record of pool draws that drives the scarcity calculation.")+'<fieldset class="lockfs"'+(advUnlocked?'':' disabled')+'>';
-  h+='<div class="card"><h3>Density pool</h3><div class="sub">Remaining = pool total minus the approved allocations below (Superseded and Other-pool rows are excluded); this drives the scarcity cost. Pool totals are set from LDC §39.18 (RU 195) and the Future Land Use element (TLU 325).</div><div id="pooldrawdown">'+poolBarsInner()+'</div><div class="hint" style="margin-top:12px">The modeled TLU pool (325) is the Town Center-2 / Activity Center / Bayou Residential pool. SPB also has separate transient-lodging pools the tool does not total — Boutique Hotel/Condo 125, Town Center Core (TC-1) 50, Upham Beach Village 175. Lodging deals outside the TC-2/AC/Bayou districts draw from those instead.</div></div>';
+  h+='<div class="card"><h3>Density Pool</h3><div class="sub">Remaining = pool total minus the approved allocations below (Superseded and Other-pool rows are excluded); this drives the scarcity cost. Pool totals are set from LDC §39.18 (RU 195) and the Future Land Use element (TLU 325).</div><div id="pooldrawdown">'+poolBarsInner()+'</div><div class="hint" style="margin-top:12px">The modeled TLU pool (325) is the Town Center-2 / Activity Center / Bayou Residential pool. SPB also has separate transient-lodging pools the tool does not total — Boutique Hotel/Condo 125, Town Center Core (TC-1) 50, Upham Beach Village 175. Lodging deals outside the TC-2/AC/Bayou districts draw from those instead.</div></div>';
   (function(){const counted=HISTORY.filter(r=>/approv/i.test(r.decision||""));
     const tot=counted.reduce((s,r)=>s+(+r.approved||0),0);
     const by=st=>counted.filter(r=>(r.status||"Approved")===st).reduce((s,r)=>s+(+r.approved||0),0);
