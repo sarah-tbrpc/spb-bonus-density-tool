@@ -1146,7 +1146,8 @@ const DEFAULTS=JSON.parse(JSON.stringify(S));
 const DEF_K=JSON.parse(JSON.stringify(K)),DEF_CAT=JSON.parse(JSON.stringify(CATMULT)),DEF_B=JSON.parse(JSON.stringify(BMULT)),DEF_P=JSON.parse(JSON.stringify(PMULT)),DEF_F=JSON.parse(JSON.stringify(FMULT)),DEF_IMP=JSON.parse(JSON.stringify(IMPACT_BY_USE));
 function syncInputsFromState(){
   const sv=(id,v)=>{const el=document.getElementById(id);if(el)el.value=(v==null?"":v);};
-  ["pname","papp","paddr","acres","use","btype","subtype","parking","coastal","district"].forEach(id=>sv(id,S[id]));
+  ["pname","papp","paddr","use","btype","subtype","parking","coastal","district"].forEach(id=>sv(id,S[id]));
+  const ai=document.getElementById("acres"); if(ai)ai.value=(S.acres>0)?acStr(S.acres):0;   // Site Area shown to 2 decimals
   const bi=document.getElementById("byright"); if(bi)bi.value=fmtNum(S.byright);
   const ii=document.getElementById("impact"); if(ii)ii.value=S.impact?fmtNum(S.impact):"";
   const hu=document.getElementById("hardunit"); if(hu)hu.value=(S.hardOv!=null&&S.hardOv!=="")?fmtNum(S.hardOv):"";
@@ -1657,8 +1658,10 @@ function goto(i){cur=Math.max(0,Math.min(STEPS.length-1,i));
   try{if(location.protocol.indexOf("http")===0)localStorage.setItem("spb_step",String(cur));}catch(e){}
   window.scrollTo({top:0,behavior:"smooth"});
   if(cur===0&&map){setTimeout(()=>{map.invalidateSize();
-    /* a case loaded its parcels while the map was hidden (Case Studies page) — fit to them now that Step 1 is visible */
-    if(parcelFitPending){parcelFitPending=false;try{const grp=L.featureGroup(PARCELS.filter(p=>p.marker).map(p=>p.marker));if(grp.getLayers().length&&grp.getBounds().isValid())map.fitBounds(grp.getBounds().pad(0.6));}catch(e){}}
+    /* a case loaded its parcels while the map was hidden (Case Studies page). Fit to the parcel
+       coordinates first, THEN draw the numbered markers on the already-sized/zoomed map — creating
+       them earlier (on a hidden / world-zoom map) is what produced the off-position "double" markers. */
+    if(parcelFitPending){parcelFitPending=false;fitParcelsAndMark(0);}
   },140);}
   render();}
 document.getElementById("back").onclick=()=>goto(cur-1);
@@ -1804,7 +1807,7 @@ function render(){
   document.getElementById("total-v").textContent=(S.byright+S.bonus).toLocaleString()+" units";
   const brh=document.getElementById("byright-hint");
   if(brh){brh.innerHTML=(S.base>0&&S.acres>0)
-    ? ("District base "+S.base+" du/ac × "+S.acres+" ac ≈ <b>"+Math.round(m.byrightDerived).toLocaleString()+"</b> by-right"+(Math.abs(m.byrightDerived-S.byright)>1?", entered "+S.byright.toLocaleString():" ✓")+" Existing recognized units (city property records) may lawfully exceed base × acres on redevelopment sites; enter the recognized figure.")
+    ? ("District base "+S.base+" du/ac × "+acStr(S.acres)+" ac ≈ <b>"+Math.round(m.byrightDerived).toLocaleString()+"</b> by-right"+(Math.abs(m.byrightDerived-S.byright)>1?", entered "+S.byright.toLocaleString():" ✓")+" Existing recognized units (city property records) may lawfully exceed base × acres on redevelopment sites; enter the recognized figure.")
     : "Set the district and site area to auto-check this.";}
   const cn=document.getElementById("cap-note");
   if(cn){ if(S.cap>0&&S.acres>0){ cn.innerHTML="Site "+S.acres+" ac \u00d7 base "+S.base+" = "+Math.round(S.base*S.acres).toLocaleString()+" by-right; cap "+S.cap+"/ac = "+Math.round(m.maxUnits).toLocaleString()+" max. Requested total "+m.total.toLocaleString()+(m.overCap?(", <b>exceeds the cap by "+Math.round(m.total-m.maxUnits).toLocaleString()+" units</b>; not grantable as bonus density without a comprehensive plan amendment."):(", within the cap ("+Math.round(m.headroom).toLocaleString()+" units of headroom)."));}
@@ -2011,7 +2014,7 @@ function verdictObj(m){
   if(!m.worth && m.room>0) return {tag:"Below minimum",bg:C.warn[0],fg:C.warn[1],light:"#d9a400",status:"Keep negotiating",tip:"Public value is below the break-even floor, but the developer still has budget room, add higher-ratio benefits to close the gap.",head:"Below break-even floor, renegotiate",
     body:capPre+"Offered public value is short of the break-even floor by "+fmt(m.cityMin-m.Bplain)+", so the public is subsidizing the project. "+fmt(m.room)+" of developer budget remains, so adding higher value-to-cost benefits can close it."+unsecuredNote};
   if(!m.feas) return {tag:"Over budget",bg:C.bad[0],fg:C.bad[1],light:"#c0392b",status:"Stalled",tip:"The package costs more than the bonus is worth to the developer; they would build by-right. Trim the package or grant more units.",head:"Package exceeds developer budget",
-    body:"Package cost ("+fmt(m.A)+") exceeds the conservative value to the developer ("+fmt(m.Vlow)+"; even the high end is "+fmt(m.Vhigh)+"). The applicant would build by-right. Reduce the package or grant more units."};
+    body:capPre+"Package cost ("+fmt(m.A)+") exceeds the conservative value to the developer ("+fmt(m.Vlow)+"; even the high end is "+fmt(m.Vhigh)+"). The applicant would build by-right. Reduce the package or grant more units."};
   /* reachable only at A exactly = Vlow; retained as a safe fallback */
   return {tag:"No zone",bg:C.bad[0],fg:C.bad[1],light:"#c0392b",status:"No agreement zone",tip:"Even a minimal acceptable package costs more than the bonus is worth, deny or restructure.",head:"No agreement zone",
     body:"The minimum acceptable package costs more than the bonus is worth to the developer. Deny or restructure the request."};
@@ -2395,7 +2398,7 @@ async function gatherSiteIntel(lat,lon){
   /* auto-fill Site area from the parcel's stated area (best-effort, left editable). Only if it looks
      like an acreage value, not a square-foot figure, and not while building a multi-parcel project. */
   const aNum=(/\d\s*s/i.test(""+d.area))?NaN:parseNum(d.area);   // comma-safe (parseNum strips commas); reject sf-labeled strings (a digit then an s-suffix) so only acreage auto-fills, not "21,780 sf"
-  if(isFinite(aNum)&&aNum>0&&aNum<500&&!multiMode){S.acres=Math.round(aNum*100)/100; const ac=document.getElementById("acres"); if(ac)ac.value=S.acres; filled.push("acres");}
+  if(isFinite(aNum)&&aNum>0&&aNum<500&&!multiMode){S.acres=Math.round(aNum*100)/100; const ac=document.getElementById("acres"); if(ac)ac.value=acStr(S.acres); filled.push("acres");}
   /* auto-fill Use type from the parcel's current PAO use code (best-effort, left editable) */
   const ut=useCodeToUse(d.usecode);
   if(ut){S.use=ut; const us=document.getElementById("use"); if(us)us.value=ut; syncUseDerived(); filled.push("use");}
@@ -2429,9 +2432,11 @@ async function addParcel(lat,lon,local){
   if(first){setPin(lat,lon);reverseGeocode(lat,lon);}   // parcel 1 resolves district + flood + address
   applyParcelArea(); renderParcelList(); syncParcelHighlights();
 }
+/* acreage display: always 2 decimals so the summed figures read consistently everywhere (4.50, 0.20) */
+function acStr(n){return (Math.round((+n||0)*100)/100).toFixed(2);}
 function applyParcelArea(){const known=PARCELS.filter(p=>p.area!=null);   // update Site Area only when a parcel carries an area; otherwise leave it untouched
   if(known.length){const sum=Math.round(known.reduce((s,p)=>s+p.area,0)*100)/100;
-    S.acres=sum; const ac=document.getElementById("acres"); if(ac)ac.value=sum; render();}}
+    S.acres=sum; const ac=document.getElementById("acres"); if(ac)ac.value=acStr(sum); render();}}
 function removeParcel(i){const p=PARCELS[i]; if(p&&p.marker&&map)map.removeLayer(p.marker); PARCELS.splice(i,1);
   PARCELS.forEach((q,k)=>{if(q.marker)q.marker.setTooltipContent(String(k+1));});
   if(i===0&&PARCELS.length>0){setPin(PARCELS[0].lat,PARCELS[0].lon);reverseGeocode(PARCELS[0].lat,PARCELS[0].lon);}   // the new parcel 1 drives district + flood + address
@@ -2444,12 +2449,12 @@ function renderParcelList(){const el=document.getElementById("parcel-list"); if(
   const rows=PARCELS.map((p,i)=>{
     const addr=p.localAddr||parcelAddr(p.pin?dashPin(p.pin):null);   // address is the title; the parcel id stays in the expanded detail
     const lab=(i+1)+'. '+(addr?esc(addr):(p.pin?esc(dashPin(p.pin)):"parcel"));
-    const areaTxt=(p.area!=null?(p.area+" ac"):"area n/a");
+    const areaTxt=(p.area!=null?(acStr(p.area)+" ac"):"area n/a");
     const del='<button data-pdel="'+i+'" title="Remove this parcel" aria-label="Remove parcel '+(i+1)+'" style="background:none;border:none;color:#b0392e;cursor:pointer;font-size:14px;line-height:1;padding:0 0 0 8px">×</button>';
     const detail=p.data?siteIntelRows(p.data,[]):'<div class="si-row"><span class="anote">Loading parcel data…</span></div>';
     return '<details class="parcel-item" name="parcelacc"><summary class="parcel-head"><span class="ph-lab">'+lab+'</span><span class="ph-area">'+areaTxt+del+'</span></summary><div class="parcel-detail">'+detail+'</div></details>';
   }).join("");
-  el.innerHTML=rows+'<div class="si-row parcel-total"><span><b>'+PARCELS.length+' parcels</b></span><b>'+sum+' ac total</b></div>';
+  el.innerHTML=rows+'<div class="si-row parcel-total"><span><b>'+PARCELS.length+' parcels</b></span><b>'+acStr(sum)+' ac total</b></div>';
   el.querySelectorAll("[data-pdel]").forEach(b=>b.onclick=(ev)=>{ev.preventDefault();ev.stopPropagation();removeParcel(+b.dataset.pdel);});
   /* accordion: only one parcel detail open at a time (native name= plus a JS fallback for older browsers) */
   el.querySelectorAll(".parcel-item").forEach(d=>d.addEventListener("toggle",function(){if(this.open)el.querySelectorAll(".parcel-item").forEach(o=>{if(o!==this&&o.open)o.open=false;});}));}
@@ -2969,7 +2974,7 @@ function buildPrintSheet(){
   const d=DISTRICTS[S.district]||DISTRICTS.UNK;
   const assetList=m.rows.length?m.rows.map(function(x){return '<li><b>'+esc(x.name)+'</b>, '+x.qty+(x.pct<1?(' ('+Math.round(x.pct*100)+'% above code)'):'')+' · city value '+fmt(x.cityPlain)+'</li>';}).join(""):'<li>No public benefits entered yet.</li>';
   const execTop='<div class="ps-exec"><div class="ps-light" style="background:'+v.light+'"></div>'+
-    '<div><div class="ps-status">'+v.status+'</div><div class="ps-ask">Requesting <b>'+S.bonus+'</b> bonus '+d.unit+(S.byright?(' of '+(S.byright+S.bonus)+' total units'):'')+(S.acres>0?(' on '+S.acres+' acres'):'')+'</div></div></div>'+
+    '<div><div class="ps-status">'+v.status+'</div><div class="ps-ask">Requesting <b>'+S.bonus+'</b> bonus '+d.unit+(S.byright?(' of '+(S.byright+S.bonus)+' total units'):'')+(S.acres>0?(' on '+acStr(S.acres)+' acres'):'')+'</div></div></div>'+
     '<div class="ps-sec">Deal zone, offer vs. city floor and developer ceiling</div>'+psZopaSVG(m)+
     '<div class="ps-sec">Community assets secured</div><ul class="ps-assets">'+assetList+'</ul>';
   let dt=""; try{dt=new Date().toISOString().slice(0,10);}catch(e){dt="";}
@@ -3194,19 +3199,34 @@ function loadCaseParcels(c){
     c.parcels.forEach(function(p,k){
       const did=dashPin(p.pin), feat=parcelFeatById(did), ip=feat?interiorPoint(feat.geometry):null;
       const lat=ip?ip[0]:p.lat, lon=ip?ip[1]:p.lon;   // place the marker ON the footprint
-      var mk=null;
-      if(map&&typeof L!=="undefined"){mk=L.circleMarker([lat,lon],{radius:10,color:"#27576a",weight:2,fillColor:"#86bcb6",fillOpacity:.85}).addTo(map).bindTooltip(String(k+1),{permanent:true,direction:"center",className:"parcel-num"});}
-      PARCELS.push({lat:lat,lon:lon,pin:p.pin,area:p.area,data:{pin:p.pin,parcelNo:did},marker:mk,localId:did,localAddr:(feat&&feat.properties)?(feat.properties.ad||null):null});
+      /* marker is created later by placeParcelMarkers() once the map is visible + fitted (deferred to
+         avoid the off-position "double" markers drawn on a hidden / world-zoom map during the load) */
+      PARCELS.push({lat:lat,lon:lon,pin:p.pin,area:p.area,data:{pin:p.pin,parcelNo:did},marker:null,localId:did,localAddr:(feat&&feat.properties)?(feat.properties.ad||null):null});
     });
     applyParcelArea();
     if(PARCELS[0])setPin(PARCELS[0].lat,PARCELS[0].lon);
     var pa=document.getElementById("paddr"); if(pa)pa.value=c.address||"";
     renderParcelList();
     if(typeof syncParcelHighlights==="function")syncParcelHighlights();   // highlight the loaded parcel footprints
-    parcelFitPending=true;   // goto(0) re-fits to the parcels once Step 1's map is actually visible (case may load with the map hidden)
-    if(map&&typeof L!=="undefined"){try{const grp=L.featureGroup(PARCELS.filter(p=>p.marker).map(p=>p.marker));if(grp.getLayers().length&&grp.getBounds().isValid()){map.fitBounds(grp.getBounds().pad(0.6));setTimeout(()=>{if(map)map.invalidateSize();},160);}}catch(e){}}
+    parcelFitPending=true;   // goto(0) fits the map and draws the markers once Step 1 is actually visible
+    if(cur===0&&map)goto(0); // already on Step 1 → place markers now (loadCase normally jumps to Results first)
     fetchCaseParcelData();   // best-effort: fill flood / use / CRD / FLU metadata per parcel from the county service
   } else { if(mpc)mpc.checked=false; if(sif)sif.style.display=""; }
+}
+/* fit the map to the loaded parcels and draw their markers, retrying until the just-shown map has a
+   real size (fitBounds on a 0-size / hidden map otherwise snaps to the world view at zoom 0) */
+function fitParcelsAndMark(tries){tries=tries||0; if(!map||typeof L==="undefined")return;
+  map.invalidateSize();
+  if(map.getSize().x<60 && tries<6){setTimeout(()=>fitParcelsAndMark(tries+1),120);return;}
+  try{const lls=PARCELS.filter(p=>p.lat!=null).map(p=>[p.lat,p.lon]); if(lls.length)map.fitBounds(L.latLngBounds(lls).pad(0.6));}catch(e){}
+  placeParcelMarkers();
+}
+/* (re)create the numbered parcel markers on the live map — used after a case load once the map is sized */
+function placeParcelMarkers(){
+  if(!map||typeof L==="undefined")return;
+  PARCELS.forEach(function(p,k){ if(p.marker){try{map.removeLayer(p.marker);}catch(e){}}
+    p.marker=(p.lat!=null)?L.circleMarker([p.lat,p.lon],{radius:10,color:"#27576a",weight:2,fillColor:"#86bcb6",fillOpacity:.85}).addTo(map).bindTooltip(String(k+1),{permanent:true,direction:"center",className:"parcel-num"}):null;
+  });
 }
 /* fill each case-loaded parcel's detail (flood, use, district, area) from the county service,
    keeping the case PIN as the id. Graceful on failure / offline (the detail just stays sparse). */
@@ -3234,7 +3254,7 @@ function buildScenarios(){
   scenarios.forEach(function(s,i){const u=s.sum||{};
     const ac=u.acres, pva=(ac>0&&u.B!=null)?u.B/ac:null, overMin=(u.cityMin>0&&u.B!=null)?u.B/u.cityMin:null;
     h+='<tr><td>'+esc(s.name)+'</td><td class="anote">'+esc(s.ts)+(s.version?(' · v'+esc(s.version)):' · v1.0')+'</td><td class="anote">'+esc(u.use)+' / '+esc(u.district)+'</td>'+
-       '<td class="r">'+(u.bonus==null?"-":u.bonus)+'</td><td class="r">'+(ac==null?"-":ac)+'</td><td class="r mono">'+fmt(u.V||0)+'</td><td class="r mono">'+fmt(u.cityMin||0)+'</td>'+
+       '<td class="r">'+(u.bonus==null?"-":u.bonus)+'</td><td class="r">'+(ac==null?"-":acStr(ac))+'</td><td class="r mono">'+fmt(u.V||0)+'</td><td class="r mono">'+fmt(u.cityMin||0)+'</td>'+
        '<td class="r mono">'+fmt(u.A||0)+'</td><td class="r mono">'+fmt(u.B||0)+'</td><td class="r mono">'+(pva==null?"-":fmt(pva))+'</td><td class="r">'+(u.g?u.g.toFixed(2)+'×':'-')+'</td><td class="r">'+(overMin==null?"-":overMin.toFixed(2)+'×')+'</td>'+
        '<td>'+esc(u.verdict||"")+'</td>'+
        '<td style="white-space:nowrap"><button class="alink" data-load="'+i+'">Load</button> <button class="x scendel" data-scendel="'+i+'" aria-label="Delete '+esc(s.name)+'">×</button></td></tr>';
