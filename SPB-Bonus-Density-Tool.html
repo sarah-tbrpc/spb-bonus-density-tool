@@ -804,7 +804,7 @@ th.notecol{font-size:12px;font-weight:400}
         <p class="lede" style="margin:8px 0 0"><b>Notes &amp; source moved to an icon column (v1.19.8).</b> On Assumptions and the Benefit Library, the Notes &amp; source disclosure is now a compact ⓘ icon in its own column to the right of Override, instead of a text toggle under each title. Item rows stay single-line; clicking the icon still drops a full-width Notes/Source panel below the row (the icon turns orange when a row has no cited source).</p>
         <p class="lede" style="margin:8px 0 0"><b>Benefit-card notes collapsed (v1.19.9).</b> On the Benefits step, each benefit card's Notes and Source fields are now behind a small "Notes &amp; source" disclosure instead of two always-open text boxes, so the cards stay compact. The fields still edit and save exactly as before.</p>
         <p class="lede" style="margin:8px 0 0"><b>Layout polish (v1.19.10).</b> The Step 1 pool allocation donut and the scarcity curve now sit side by side (was stacked). Notes/Source text areas auto-grow to fit their text — both as you type and when pre-loaded — instead of clipping. And the Seawall / bulkhead benefit no longer ships a pre-filled $2,000 Override (its Applied is now the Low/High midpoint; the $2,000 City-verified figure remains in the row's note).</p>
-        <p class="lede" style="margin:8px 0 0"><b>Editing toggle &amp; pool alignment (v1.19.11).</b> The "Enable editing" bar on Assumptions and the Benefit Library now sits above the search bar (was at the bottom). On Step 1, the pool donut and the scarcity curve are top-aligned so their titles line up, and the curve's height is tuned so its baseline meets the legend's "Pool total" line (v1.19.12).
+        <p class="lede" style="margin:8px 0 0"><b>Editing toggle &amp; pool alignment (v1.19.11).</b> The "Enable editing" bar on Assumptions and the Benefit Library now sits above the search bar (was at the bottom). On Step 1, the pool donut and the scarcity curve are top-aligned so their titles line up, and the curve's height is tuned so its <b>x-axis</b> lines up with the legend's "Pool total" row (the axis labels sit below it) (v1.19.13).
       </div>
 
       <div class="card" id="legal-card">
@@ -854,7 +854,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.19.12", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
+const VERSION="1.19.13", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden — a
@@ -2250,7 +2250,7 @@ function drawScarcity(upool,m){
   if(!m.poolPath||total<=0){el.innerHTML='<div class="hint">This pathway doesn’t draw from the density pool, so there’s no scarcity cost to plot.</div>';return;}
   const bonus=S.bonus,dem=Math.max(0.0001,S.dem),hor=Math.max(0.0001,S.hor),res=(S.bonus>0?Math.max(0,m.Vlow/S.bonus):0);   // conservative per-unit value, same basis as the floor's D
   const costAt=r=>{const ra=Math.max(0,r-bonus);const sc=1-Math.min(1,(ra/dem)/hor);return res*Math.pow(Math.max(0,sc),K.scarExp)*bonus;};
-  const W=380,H=154,padL=52,padR=12,padT=10,padB=32,cw=W-padL-padR,ch=H-padT-padB;   // H tuned so the curve's bottom aligns with the legend's "Pool total" line beside it
+  const W=380,H=186,padL=52,padR=12,padT=10,padB=32,cw=W-padL-padR,ch=H-padT-padB;   // H/padB tuned so the plot's x-axis lines up with the legend's "Pool total" row beside it; the axis labels hang below it
   const N=80,pts=[];let maxC=0;
   for(let i=0;i<=N;i++){const r=total*i/N,c=costAt(r);if(c>maxC)maxC=c;pts.push([r,c]);}
   if(maxC<=0)maxC=1;
