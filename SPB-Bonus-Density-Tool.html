@@ -59,7 +59,7 @@ header.top{background:rgba(255,255,255,.92);backdrop-filter:saturate(1.15) blur(
 /* let the main column shrink to the available space so a wide table (e.g. the 14-column scenario
    compare) scrolls inside its .atable-wrap instead of stretching the grid and the whole page */
 .layout>main{min-width:0}
-nav.steps{position:sticky;top:108px;align-self:start;display:flex;flex-direction:column;gap:2px}
+nav.steps{position:sticky;top:108px;align-self:start;display:flex;flex-direction:column;gap:2px;min-height:calc(100vh - 200px)}
 .stepbtns{display:flex;flex-direction:column;gap:2px}
 .navfoot{margin-top:24px;display:flex;flex-direction:column;gap:2px;padding-top:14px;border-top:1px solid var(--line);flex:1}
 .navgrp{display:flex;flex-direction:column;gap:2px;margin-bottom:4px}
@@ -650,7 +650,7 @@ th.notecol{font-size:12px;font-weight:400}
       <div class="eyebrow">Step 2 of 3 · Benefits</div>
       <h2 class="step-h">Build the Public Benefit Package</h2>
       <p class="lede" style="margin-bottom:18px">Add benefits and enter the quantity provided <b>above what code already requires</b>; each line is ranked by priority-weighted public value per developer dollar (the badge).</p>
-        <details class="stephelp"><summary>How lines are counted</summary>Each line has two per-unit figures: <b>Developer cost / unit</b> (what it costs the developer to provide it) and <b>Public value / unit</b> (what it is worth to the city), the gap between them is the public's gain from the trade, and it varies by benefit (sometimes the city values a thing far above what it costs to build; sometimes not). Public value offered = quantity × public value per unit; lines are ranked by the top-right badge (priority-weighted public value per developer dollar). Enter only the amount <b>beyond what code already requires</b>, if code mandates part of a benefit, leave that part out so required work isn't credited as a voluntary concession. Full method in the <a href="#" class="seclink" onclick="showAux('method');return false;">User&nbsp;Guide</a>; cost factors and the category priority weights (section D) are editable under <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions</a>.</details>
+        <details class="stephelp"><summary>How lines are counted</summary>Each line has two figures: the developer's <b>stated contribution</b> (the total they propose to provide or pay) and the <b>public value</b> (what it is worth to the city, per unit). Public value offered = quantity × public value per unit; lines are ranked by the top-right badge (public value per dollar of stated contribution). Enter only the amount <b>beyond what code already requires</b>, if code mandates part of a benefit, leave that part out so required work isn't credited as a voluntary concession. Full method in the <a href="#" class="seclink" onclick="showAux('method');return false;">User&nbsp;Guide</a>; cost factors are editable under <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions</a>.</details>
         <div id="blist"></div>
         <div id="pkg-summary"></div>
         <div class="btot"><span>Developer contribution (stated)</span><span class="mono" id="tot-a"></span></div>
@@ -782,7 +782,7 @@ th.notecol{font-size:12px;font-weight:400}
           <li><b>Break-even floor.</b> Impact offset plus pool value consumed. Below it, the public subsidizes the project.</li>
           <li><b>Developer's stated contribution.</b> What the applicant proposes to provide or pay for the package (their claim, not a verified cost); entered per benefit on the <a href="#" class="seclink" onclick="goto(1);return false;">Benefits step</a>.</li>
           <li><b>Public value offered.</b> The city's plain-dollar cost to provide the package (quantity above code × city $/unit). Benefits are credited at full value, secured as a condition of approval before the units release. This is what the decision tests against the floor.</li>
-          <li><b>Value ratio</b> (the badge on each benefit). A ranking score: city value × the category's priority weight (Resilience 2.5×, Environmental 2.0×, … Cash 1.0×) ÷ developer cost. Higher means more priority-weighted public value per developer dollar. It orders benefits by efficiency and drives the suggested counter-package, but it does <b>not</b> enter the pass/fail verdict, which compares plain, unweighted public value to the floor. The priority weights are placeholders pending adopted city priorities, editable under <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions</a> (section D).</li>
+          <li><b>Value ratio</b> (the badge on each benefit). Public value to the city per dollar of the developer's stated contribution. It ranks benefits by efficiency and drives the suggested counter-package, but it does <b>not</b> enter the pass/fail verdict, which compares public value to the floor in plain dollars.</li>
         </ul>
       </div>
 
@@ -899,7 +899,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.25.7", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.25.8", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -1186,12 +1186,6 @@ const ASSUMP=[
  {sec:"C. Construction cost multipliers",label:"Coastal, standard (AE)",unit:"×",low:1.00,high:1.00,override:null,notes:"Base coastal construction",fmt:"x",apply:v=>FMULT.AE=v},
  {sec:"C. Construction cost multipliers",label:"Coastal, velocity / elevated (VE)",unit:"×",low:1.04,high:1.12,override:null,notes:"Elevation / floodproofing premium",fmt:"x",apply:v=>FMULT.VE=v},
  {sec:"C. Construction cost multipliers",label:"Coastal, minimal (X)",unit:"×",low:0.95,high:0.99,override:null,notes:"",fmt:"x",apply:v=>FMULT.X=v},
- {sec:"D. Benefit priority weights (by category)",label:"Workforce housing",unit:"×",low:1.2,high:1.6,override:null,notes:"Priority weight for workforce / affordable-housing benefits. Ranking only. It does not change the pass/fail verdict. Calibrate from City Commission adopted priorities.",fmt:"x",apply:v=>CATMULT["Workforce Housing"]=v},
- {sec:"D. Benefit priority weights (by category)",label:"Community development",unit:"×",low:1.3,high:1.7,override:null,notes:"Priority weight for placemaking / public-access benefits. Ranking only. Calibrate from City Commission adopted priorities.",fmt:"x",apply:v=>CATMULT["Community Development"]=v},
- {sec:"D. Benefit priority weights (by category)",label:"Transportation",unit:"×",low:1.5,high:1.9,override:null,notes:"Priority weight for mobility / concurrency-relief benefits. Ranking only. Calibrate from City Commission adopted priorities.",fmt:"x",apply:v=>CATMULT["Transportation"]=v},
- {sec:"D. Benefit priority weights (by category)",label:"Environmental",unit:"×",low:1.7,high:2.3,override:null,notes:"Priority weight for ecosystem / stormwater-service benefits. Ranking only. Calibrate from City Commission adopted priorities.",fmt:"x",apply:v=>CATMULT["Environmental"]=v},
- {sec:"D. Benefit priority weights (by category)",label:"Resilience",unit:"×",low:2.0,high:3.0,override:null,notes:"Priority weight for coastal-resilience benefits (ranking only). The most defensible approach is to skip the weight and set the benefit's public value directly from a FEMA-style benefit-cost analysis, the present value of avoided flood losses (structure, contents, debris, displacement, utilities, recreation), e.g. the South Florida RPC / AECOM Resilience BCA tool, using FEMA/OMB conventions (7% real discount rate, ~50-yr life). Absent a BCA, calibrate this weight from City Commission adopted priorities.",fmt:"x",apply:v=>CATMULT["Resilience"]=v},
- {sec:"D. Benefit priority weights (by category)",label:"Monetary / cash",unit:"×",low:1.0,high:1.0,override:null,notes:"Cash is the numeraire (1.0×), a dollar is a dollar. Setting another category above 1.0 says the city values that benefit more than the cash it would cost the developer.",fmt:"x",apply:v=>CATMULT["Monetary / Cash"]=v},
  {sec:"E. Impact mitigation ($/unit by use)",label:"Condominium",unit:"$/unit",low:2091,high:4200,override:null,notes:"Re-anchored to VERIFIED adopted fees (v1.14.0). LOW = the actual adopted impact-fee burden on a new condo: Pinellas County Multimodal Impact Fee $1,248/unit (Code §150-40 Sch. A, Ord. 19-15) + St. Pete Beach parks/rec impact fee $843/unit (Ord. 2022-04) = $2,091. Pinellas levies NO school/parks/fire/library impact fee (schools funded by millage). HIGH = a flagged placeholder for the units' full proportionate-share impact cost (analyst overlay, set above the adopted floor since FL adopted fees recover only part of calculated cost); replace with a Pinellas concurrency/impact study. Applied midpoint drives the model.",fmt:"$",apply:v=>IMPACT_BY_USE["Condominium"]=v},
  {sec:"E. Impact mitigation ($/unit by use)",label:"Multifamily rental",unit:"$/unit",low:2263,high:4500,override:null,notes:"Re-anchored to VERIFIED adopted fees (v1.14.0). LOW = Pinellas Multimodal $1,420/unit (Code §150-40 Sch. A) + St. Pete Beach parks/rec $843/unit (Ord. 2022-04) = $2,263. No county school/parks/fire impact fee. HIGH = flagged proportionate-share full-cost placeholder (analyst overlay; replace with a concurrency study). Applied midpoint drives the model.",fmt:"$",apply:v=>IMPACT_BY_USE["Multifamily Rental"]=v},
  {sec:"E. Impact mitigation ($/unit by use)",label:"Temporary lodging",unit:"$/key",low:1604,high:3200,override:null,notes:"Re-anchored to VERIFIED adopted fees (v1.14.0). LOW = Pinellas Multimodal Impact Fee $1,604/room (Code §150-40 Sch. A, Hotel use). The SPB parks/rec fee is residential-only and exempts lodging; Pinellas has no other lodging impact fee. HIGH = flagged proportionate-share placeholder (analyst overlay; lodging generates fewer trips and no school demand). Applied midpoint drives the model.",fmt:"$",apply:v=>IMPACT_BY_USE["Temporary Lodging"]=v},
@@ -2075,7 +2069,7 @@ function render(){
     if(x.unsecured) chips+='<span class="pctwarn" title="No enforceability instrument named, so this promise is treated as unsecured and credited at '+Math.round(x.hc*100)+'% (the §I unsecured factor). Name what secures it (covenant, development agreement, condition of approval, bond) for full credit.">⚠ Unsecured, credited '+Math.round(x.hc*100)+'%</span>';
     if(x.aboveCodeFlag) chips+='<span class="pctwarn" title="This benefit has a code minimum and is entered at 100% above code, so the full quantity credits as voluntary. If code already requires part of it, lower percent above code so only the above-code share counts.">⚠ 100% above a code minimum</span>';
     row.innerHTML='<div class="browtop"><div class="browhead"><span class="bicon">'+catIcon(x.cat)+'</span><div><div class="nm">'+x.name+'</div><div class="cat">'+x.cat+' · unit: '+x.unit+'</div></div></div>'+
-      '<div class="browg"><span class="bratio-cap">priority value<br>per $ spent</span><span class="bratio" title="Ranking score = (city $ value × the category priority weight, e.g. Resilience 2.5× / Cash 1.0×) ÷ developer $ cost. Higher = more priority-weighted public value per developer dollar. Used only to rank benefits and build the suggested counter-package; it does NOT affect the Favorable / Below-minimum verdict, which uses plain unweighted dollars. The priority weights are editable in Assumptions section D.">'+(x.gain?x.gain.toFixed(1)+"×":"-")+'</span>'+
+      '<div class="browg"><span class="bratio-cap">public value<br>per $ spent</span><span class="bratio" title="Public value to the city per $1 of the developer&#39;s stated contribution. Ranks benefits; it does not affect the verdict.">'+(function(){var pr=x.devCost?x.cityPlain/x.devCost:0;return pr?pr.toFixed(1)+"×":"-";})()+'</span>'+
       '<button class="bdel" data-x="'+i+'" aria-label="Remove benefit" title="Remove benefit">×</button></div></div>'+
       '<div class="inputs">'+
         '<div><div class="inp-lab">Qty</div><input type="text" inputmode="decimal" value="'+fmtNum(x.qty)+'" data-i="'+i+'" data-f="qty"></div>'+
@@ -2130,7 +2124,7 @@ function softRender(){
   const v=verdictObj(m);
   document.getElementById("readout").innerHTML=readoutHTML(m,v);
   document.querySelectorAll("#blist .brow").forEach((row,i)=>{const x=m.rows[i];
-    if(x){const gv=row.querySelector(".bratio"); if(gv)gv.textContent=x.gain?x.gain.toFixed(1)+"×":"-";
+    if(x){const gv=row.querySelector(".bratio"); if(gv){var pr=x.devCost?x.cityPlain/x.devCost:0;gv.textContent=pr?pr.toFixed(1)+"×":"-";}
       const bc=row.querySelector(".bmeta .deriv"); if(bc)bc.textContent=(x.recurring
         ? 'annual cost '+fmt(x.annualDev)+' → annual city '+fmt(x.annualCity)+' · PV: cost '+fmt(x.devCost)+' → city value '+fmt(x.cityPlain)
         : 'cost '+fmt(x.devCost)+' → city value '+fmt(x.cityPlain))+(x.hc<1?' (after '+Math.round(x.hc*100)+'% credit)':'');}});
@@ -2394,7 +2388,7 @@ function drawScarcity(upool,m){
   const W=380,H=163,padL=52,padR=12,padT=10,padB=32,cw=W-padL-padR,ch=H-padT-padB;   // H/padB tuned so the plot's x-axis lines up with the "sum" rule above the legend's "Pool total" row beside it; the axis labels hang below it
   const N=80,pts=[];let maxC=0;
   for(let i=0;i<=N;i++){const r=total*i/N,c=costAt(r);if(c>maxC)maxC=c;pts.push([r,c]);}
-  if(maxC<=0)maxC=1;
+  if(maxC<=0){el.innerHTML='<div class="hint">Select a use type and market value on Step 1 to plot the scarcity curve.</div>';return;}
   const xOf=r=>padL+(r/total)*cw, yOf=c=>padT+ch-(c/maxC)*ch;
   let line="";pts.forEach((p,i)=>{line+=(i?" L":"M")+xOf(p[0]).toFixed(1)+" "+yOf(p[1]).toFixed(1);});
   const area=line+" L"+xOf(total).toFixed(1)+" "+yOf(0).toFixed(1)+" L"+xOf(0).toFixed(1)+" "+yOf(0).toFixed(1)+" Z";
@@ -2544,10 +2538,10 @@ function drawSolver(m){
   const b=document.getElementById("solver-load"); if(b)b.onclick=()=>loadSolverPackage(s);
 }
 function drawRanks(m){
-  const rows=[...m.rows].filter(x=>x.devCost>0).sort((a,b)=>b.gain-a.gain);
-  const gmax=Math.max.apply(null,rows.map(x=>x.gain).concat([1]));
+  const rows=[...m.rows].filter(x=>x.devCost>0).map(x=>Object.assign({},x,{pr:x.cityPlain/x.devCost})).sort((a,b)=>b.pr-a.pr);
+  const gmax=Math.max.apply(null,rows.map(x=>x.pr).concat([1]));
   document.getElementById("ranks").innerHTML=rows.map(x=>
-    '<div class="rank"><span class="nm">'+x.name+'</span><div class="bar" aria-hidden="true" style="flex:0 0 '+(x.gain/gmax*55)+'%"></div><span class="g">'+x.gain.toFixed(1)+'\u00d7</span></div>'
+    '<div class="rank"><span class="nm">'+x.name+'</span><div class="bar" aria-hidden="true" style="flex:0 0 '+(x.pr/gmax*55)+'%"></div><span class="g">'+x.pr.toFixed(1)+'\u00d7</span></div>'
   ).join("")||'<div class="hint">Add benefits to populate the ranking.</div>';
 }
 /* ---------- location -> zoning -> density framework ---------- */
@@ -3041,7 +3035,7 @@ function derivB(m){
   let d='<div class="card">'+derivMap('B')+
    '<p class="lede" style="margin:0 0 16px"><b>The question:</b> what public value is actually on the table, and does it clear the bar? Add up each benefit’s quantity × the city’s value per unit (plain dollars). The decision then compares this offer to the break-even floor (worthwhile?) and the developer’s stated contribution to the value-to-developer ceiling (feasible?).</p>';
   d+='<div class="deriv deriv-flat"><div class="step"><b>Public value offered = Σ (quantity × city value / unit)</b></div>';
-  if(m.rows.length) m.rows.forEach(x=>{ d+='<div class="step">'+x.name+': '+x.qty+' × '+fmtFull(x.city)+(x.pct<1?(' × '+Math.round(x.pct*100)+'%'):'')+' = <b>'+fmtFull(x.cityPlain)+'</b>'+(x.mult!==1?(' <span class="anote">(×'+x.mult+' priority weight = '+fmtFull(x.cityVal)+', ranking only)</span>'):'')+'</div>'; });
+  if(m.rows.length) m.rows.forEach(x=>{ d+='<div class="step">'+x.name+': '+x.qty+' × '+fmtFull(x.city)+(x.pct<1?(' × '+Math.round(x.pct*100)+'%'):'')+' = <b>'+fmtFull(x.cityPlain)+'</b>'+'</div>'; });
   else d+='<div class="step"><span class="anote">No benefits added yet. Add them on the Benefits step.</span></div>';
   d+='<div class="step" style="margin-top:6px"><b>Total offered public value</b> = <span class="res">'+fmtFull(m.Bplain)+'</span></div>';
   d+='<div class="step" style="margin-top:8px"><b>Developer contribution (stated)</b> = Σ each benefit’s stated total = <b>'+fmtFull(m.A)+'</b>, value ratio '+(m.gPlain?m.gPlain.toFixed(2):"0")+'× <span class="anote">(what the applicant proposes to provide, not a verified pro-forma cost)</span></div></div>';
@@ -3050,7 +3044,7 @@ function derivB(m){
   d+='<div style="margin-top:16px">'+
      '<div class="cmpline"><b>Worthwhile?</b> Offered <span class="cmp-v">'+fmtFull(m.Bplain)+'</span> vs floor <span class="cmp-v">'+fmtFull(m.cityMin)+'</span> '+tag(passW,passW?'meets the floor':'below the floor')+'</div>'+
      '<div class="cmpline"><b>Feasible?</b> Developer contribution <span class="cmp-v">'+fmtFull(m.A)+'</span> vs ceiling <span class="cmp-v">'+fmtFull(m.Vlow)+'</span> <span class="anote">(conservative)</span> '+tag(passF,passF?'within the ceiling':'over the ceiling')+'</div></div>';
-  d+='<p class="lede" style="margin-top:16px">The pass/fail test is in <b>plain dollars</b>. The <b>priority weights</b> (resilience 2.5×, etc.) do <i>not</i> move the decision; they only rank which benefits to prefer within a package. Per-unit costs and values are editable on the '+secLink('Benefits step',"goto(1)")+'; priority weights under '+secLink('Assumptions',"showAux('assumptions')")+' (section D).</p>';
+  d+='<p class="lede" style="margin-top:16px">The pass/fail test is in <b>plain dollars</b>. The value ratio (the badge on each benefit) ranks which benefits to prefer within a package; it does not move the decision. Per-unit costs and values are editable on the '+secLink('Benefits step',"goto(1)")+'.</p>';
   d+='</div>';
   return d;
 }
@@ -3360,7 +3354,7 @@ function buildPrintSheet(){
     '<div class="ps-sec">Community assets secured</div><ul class="ps-assets">'+assetList+'</ul>';
   let dt=""; try{dt=new Date().toISOString().slice(0,10);}catch(e){dt="";}
   const capCell=(S.cap>0&&S.acres>0)?(Math.round(m.maxUnits).toLocaleString()+(m.overCap?" (over cap)":"")):"n/a";
-  const rows=m.rows.map(function(x){return '<tr><td>'+esc(x.name)+(x.recurring?' <span style="font-size:8px;color:#666">(PV, '+x.term+'-yr)</span>':'')+(x.hc<1?' <span style="font-size:8px;color:#666">('+Math.round(x.hc*100)+'% enforce)</span>':'')+'</td><td>'+esc(x.cat)+'</td><td class="r">'+x.qty+'</td><td class="r">'+Math.round(x.pct*100)+'%</td><td class="r">'+fmt(x.devCost)+'</td><td class="r">'+fmt(x.cityPlain)+'</td><td class="r">'+(x.gain?x.gain.toFixed(1)+'×':'-')+'</td></tr>';}).join("")||'<tr><td colspan="7">No benefits entered.</td></tr>';
+  const rows=m.rows.map(function(x){return '<tr><td>'+esc(x.name)+(x.recurring?' <span style="font-size:8px;color:#666">(PV, '+x.term+'-yr)</span>':'')+(x.hc<1?' <span style="font-size:8px;color:#666">('+Math.round(x.hc*100)+'% enforce)</span>':'')+'</td><td>'+esc(x.cat)+'</td><td class="r">'+x.qty+'</td><td class="r">'+Math.round(x.pct*100)+'%</td><td class="r">'+fmt(x.devCost)+'</td><td class="r">'+fmt(x.cityPlain)+'</td><td class="r">'+(function(){var pr=x.devCost?x.cityPlain/x.devCost:0;return pr?pr.toFixed(1)+'×':'-';})()+'</td></tr>';}).join("")||'<tr><td colspan="7">No benefits entered.</td></tr>';
   document.getElementById("printsheet").innerHTML=
    '<div class="ps-h"><div><div class="ps-title">St. Pete Beach, Bonus Density Scenario</div><div class="ps-sub">Staff sketch tool, order-of-magnitude figures to frame a negotiation, not an appraisal, pro forma, or legal determination.</div></div><div class="ps-date">'+dt+'</div></div>'+
    execTop+
