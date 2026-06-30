@@ -155,6 +155,10 @@ select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-i
 
 .brow{border:1px solid var(--line);border-radius:10px;background:var(--card);padding:14px 16px;margin-bottom:10px;box-shadow:var(--sh-sm)}
 .browtop{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.browhead{display:flex;align-items:center;gap:11px;min-width:0}
+.bicon{flex:none;width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:var(--accent-soft);color:var(--accent-d)}
+.bicon svg{width:19px;height:19px;display:block}
+.ico-info{width:15px;height:15px;display:inline-block;vertical-align:middle;color:var(--accent)}
 .brow .nm{font-size:14px;font-weight:600}
 .brow .cat{font-size:11px;color:var(--ink3);margin-top:1px}
 .browg{display:flex;align-items:center;flex:none}
@@ -807,7 +811,8 @@ th.notecol{font-size:12px;font-weight:400}
         <p class="lede" style="margin:8px 0 0"><b>Copy tweaks (v1.19.17).</b> Cross-check card reads "cross-check" (was "sanity check"); the fiscal counterfactual reads "Do Nothing vs. Build" consistently; the Deal Explorer card title is just "Deal Explorer".</p>
         <p class="lede" style="margin:8px 0 0"><b>Sentence-case benefit summary (v1.19.18).</b> The per-benefit summary now reads naturally: small counts are spelled out, units and names are singular or plural to match the quantity, and the benefit name is lower-cased mid-sentence — e.g. "Developer will provide one public restroom facility…" / "…five public restroom facilities…" / "…103 linear feet of seawall / bulkhead…". Trailing qualifiers like "(Class A)" or "@120% AMI" are preserved when pluralizing.</p>
         <p class="lede" style="margin:8px 0 0"><b>Cleaner above-code wording (v1.19.19).</b> The summary now omits the "% above code" clause when it's 100% (the whole benefit counts), and only surfaces it for a partial discount — e.g. "…100 linear feet of seawall / bulkhead, of which 50% counts as above what code already requires, …" — since that's the only case where it changes the credited amount.</p>
-        <p class="lede" style="margin:8px 0 0"><b>Removed the "% above code" field (v1.19.20).</b> The control was ambiguous — "50% above code" read as "50% more than code requires," when it actually meant "credit only that share." Planners now simply <b>enter the quantity above what code already requires</b> (the whole amount for a fully voluntary benefit). Every line is credited at full value; the math is unchanged (the old field defaulted to 100%).
+        <p class="lede" style="margin:8px 0 0"><b>Removed the "% above code" field (v1.19.20).</b> The control was ambiguous — "50% above code" read as "50% more than code requires," when it actually meant "credit only that share." Planners now simply <b>enter the quantity above what code already requires</b> (the whole amount for a fully voluntary benefit). Every line is credited at full value; the math is unchanged (the old field defaulted to 100%).</p>
+        <p class="lede" style="margin:8px 0 0"><b>Category icons + cleaner info icon (v1.19.21).</b> Each benefit card now shows a clean line icon (in a teal chip) for its category — a shield for Resilience, buildings for Community Development, a bus for Transportation, a house for Workforce Housing, a leaf for Environmental, a coin for Cash — to the left of the title. The Notes &amp; source column header is now a crisp lowercase-i info icon (inline SVG) instead of the old glyph.
       </div>
 
       <div class="card" id="legal-card">
@@ -857,7 +862,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.19.20", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
+const VERSION="1.19.21", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden — a
@@ -1819,6 +1824,19 @@ function pluralWord(w){if(/[^aeiouAEIOU]y$/.test(w))return w.slice(0,-1)+"ies";i
    ("Public boat slip (Class A)" -> "Public boat slips (Class A)"; "Workforce unit @120% AMI" -> "Workforce units @120% AMI") */
 function pluralName(name){const i=name.search(/\s*[\(@]/);const base=(i>=0?name.slice(0,i):name).trim();const suf=i>=0?(" "+name.slice(i).trim()):"";const parts=base.split(/\s+/);parts[parts.length-1]=pluralWord(parts[parts.length-1]);return parts.join(" ")+suf;}
 function lcFirst(s){return s?s.charAt(0).toLowerCase()+s.slice(1):s;}
+/* clean line icon per benefit category, shown as a chip beside the benefit name */
+function catIcon(cat){
+  const I={
+    "Resilience":'<path d="M12 3 5 6v5c0 4.2 2.9 7.4 7 8.7 4.1-1.3 7-4.5 7-8.7V6l-7-3Z"/>',
+    "Community Development":'<path d="M3 21h18"/><rect x="5" y="8" width="6" height="13" rx="1"/><rect x="13" y="4" width="6" height="17" rx="1"/><path d="M8 12h0M8 16h0M16 8h0M16 12h0M16 16h0"/>',
+    "Transportation":'<rect x="4" y="5" width="16" height="12" rx="2"/><path d="M4 12h16"/><circle cx="8" cy="19" r="1.4"/><circle cx="16" cy="19" r="1.4"/>',
+    "Workforce Housing":'<path d="M4 11 12 4l8 7"/><path d="M6 9.5V20h12V9.5"/><rect x="10" y="14" width="4" height="6"/>',
+    "Environmental":'<path d="M4 20c0-9 7-16 16-16 0 9-7 16-16 16Z"/><path d="M5 19C9 15 14 12 18 10"/>',
+    "Monetary / Cash":'<circle cx="12" cy="12" r="8"/><path d="M12 7.5v9"/><path d="M14.6 9.5C14 8.7 13 8.2 12 8.2c-1.4 0-2.4.7-2.4 1.8 0 2.4 5 1.2 5 3.8 0 1.1-1.1 1.9-2.6 1.9-1 0-2-.5-2.6-1.3"/>'
+  };
+  const p=I[cat]||'<circle cx="12" cy="12" r="8"/>';
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>';
+}
 /* plain-English summary of a benefit line — singular/plural- and case-aware, e.g.
    "one public restroom facility", "five public restroom facilities", "103 linear feet of seawall / bulkhead" */
 function benefitExchSentence(name,unit,qty,pct){
@@ -2021,7 +2039,7 @@ function render(){
     if(x.escViol) chips+='<span class="pctwarn" title="Escalation ('+(PVD.esc*100).toFixed(1)+'%) is not below the discount rate ('+(PVD.disc*100).toFixed(1)+'%). A stream that grows at least as fast as it is discounted over-credits a long obligation; lower escalation or raise the discount rate under Assumptions section H.">⚠ Escalation not below discount</span>';
     if(x.unsecured) chips+='<span class="pctwarn" title="No enforceability instrument named, so this promise is treated as unsecured and credited at '+Math.round(x.hc*100)+'% (the §I unsecured factor). Name what secures it (covenant, development agreement, condition of approval, bond) for full credit.">⚠ Unsecured, credited '+Math.round(x.hc*100)+'%</span>';
     if(x.aboveCodeFlag) chips+='<span class="pctwarn" title="This benefit has a code minimum and is entered at 100% above code, so the full quantity credits as voluntary. If code already requires part of it, lower percent above code so only the above-code share counts.">⚠ 100% above a code minimum</span>';
-    row.innerHTML='<div class="browtop"><div><div class="nm">'+x.name+'</div><div class="cat">'+x.cat+' · unit: '+x.unit+'</div></div>'+
+    row.innerHTML='<div class="browtop"><div class="browhead"><span class="bicon">'+catIcon(x.cat)+'</span><div><div class="nm">'+x.name+'</div><div class="cat">'+x.cat+' · unit: '+x.unit+'</div></div></div>'+
       '<div class="browg"><span class="bratio" title="public value per developer dollar">'+(x.gain?x.gain.toFixed(1)+"×":"-")+'</span>'+
       '<button class="bdel" data-x="'+i+'" aria-label="Remove benefit" title="Remove benefit">×</button></div></div>'+
       '<div class="inputs">'+
@@ -2932,7 +2950,7 @@ function buildLibrary(){
     '<thead><tr>'+
     '<th scope="col">Benefit</th><th scope="col">Unit</th>'+
     '<th scope="col" class="r">Low</th><th scope="col" class="r">High</th><th scope="col" class="r">Applied</th><th scope="col" class="r">Override</th>'+
-    (NS?'<th scope="col" class="notecol" title="Notes &amp; source"><span class="sr-only">Notes &amp; source</span>ⓘ</th>':'')+
+    (NS?'<th scope="col" class="notecol" title="Notes &amp; source"><span class="sr-only">Notes &amp; source</span><svg class="ico-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16.5"/><circle cx="12" cy="7.6" r="1.2" fill="currentColor" stroke="none"/></svg></th>':'')+
     '</tr></thead><tbody>';
   CATS_ORDER.forEach(cat=>{
     const n=LIB.filter(r=>r[1]===cat).length;
@@ -3049,7 +3067,7 @@ function buildAssumptions(){
   const searchBar='<div class="libsearch"><input type="text" id="assump-search" placeholder="Search benchmarks…" aria-label="Search benchmarks" value="'+esc(assumpSearchQ)+'">'+
     '<button class="alink" id="assump-expand">Expand all</button><button class="alink" id="assump-collapse">Collapse all</button></div>';
   const secCount={}; ASSUMP.forEach(r=>{secCount[r.sec]=(secCount[r.sec]||0)+1;});
-  let h=srcBanner+lockBar("Calibrated model defaults","Construction costs, multipliers, scarcity shape, market comps, and policy guardrails.")+searchBar+'<fieldset class="lockfs"'+(advUnlocked?'':' disabled')+'><div class="atable-wrap"><table class="atable assumptable"><colgroup>'+cgA+'</colgroup><thead><tr><th scope="col">Benchmark</th><th scope="col">Units</th><th scope="col" class="r">Low</th><th scope="col" class="r">High</th><th scope="col" class="r">Applied</th><th scope="col" class="r">Override</th>'+(NS?'<th scope="col" class="notecol" title="Notes &amp; source"><span class="sr-only">Notes &amp; source</span>ⓘ</th>':'')+'</tr></thead><tbody>';
+  let h=srcBanner+lockBar("Calibrated model defaults","Construction costs, multipliers, scarcity shape, market comps, and policy guardrails.")+searchBar+'<fieldset class="lockfs"'+(advUnlocked?'':' disabled')+'><div class="atable-wrap"><table class="atable assumptable"><colgroup>'+cgA+'</colgroup><thead><tr><th scope="col">Benchmark</th><th scope="col">Units</th><th scope="col" class="r">Low</th><th scope="col" class="r">High</th><th scope="col" class="r">Applied</th><th scope="col" class="r">Override</th>'+(NS?'<th scope="col" class="notecol" title="Notes &amp; source"><span class="sr-only">Notes &amp; source</span><svg class="ico-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16.5"/><circle cx="12" cy="7.6" r="1.2" fill="currentColor" stroke="none"/></svg></th>':'')+'</tr></thead><tbody>';
   let sec="";
   ASSUMP.forEach((r,i)=>{
     if(SIMPLE_BENEFITS && /^[HI]\./.test(r.sec)) return;   // recurring-PV (H) + enforceability (I) don't feed the model when benefits are assumed secured — hide them
