@@ -126,7 +126,7 @@ select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-i
 .atable select,.bmeta select{background-size:11px;background-position:right 9px center}
 .atable input,.atable select,.inputs input,.brow input,.agrid input{min-height:0}
 .seg{display:flex;gap:6px;flex-wrap:wrap}
-.seg button{flex:1;min-width:78px;border:1px solid var(--line);background:#fff;color:var(--ink2);border-radius:5px;padding:8px;font-family:inherit;font-size:13px;cursor:pointer}
+.seg button{flex:1;min-width:78px;border:1px solid var(--line);background:#fff;color:var(--ink2);border-radius:5px;padding:6px 9px;font-family:inherit;font-size:13px;cursor:pointer}
 .seg button[data-on=pass]{border-color:var(--pass);background:var(--pass);color:#fff}
 .seg button[data-on=mit]{border-color:var(--warn);background:var(--warn);color:#fff}
 .seg button[data-on=fail]{border-color:var(--fail);background:var(--fail);color:#fff}
@@ -270,14 +270,14 @@ svg.spark{width:100%;height:150px;display:block}
 
 footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);z-index:40}
 .nav-in{max-width:none;margin:0;padding:11px 28px;display:flex;justify-content:space-between;align-items:center}
-.btn{font-family:inherit;font-size:14px;font-weight:600;padding:10px 18px;border-radius:var(--r-sm);cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--ink);transition:background .15s,border-color .15s,box-shadow .15s,transform .04s}
+.btn{font-family:inherit;font-size:14px;font-weight:600;padding:6px 16px;border-radius:var(--r-sm);cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--ink);transition:background .15s,border-color .15s,box-shadow .15s,transform .04s}
 .btn:hover{background:#f7f8f9;border-color:#c9cfd4}
 .btn:active{transform:translateY(1px)}
 .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:var(--sh-sm)}
 .btn.primary:hover{background:var(--accent-d);border-color:var(--accent-d)}
 .btn:disabled{opacity:.4;cursor:default;box-shadow:none}
 .fine{font-size:11.5px;color:var(--ink3);line-height:1.5;margin-top:12px}
-.alink{font-size:12px;background:none;border:1px solid var(--line);border-radius:var(--r-sm);padding:6px 11px;cursor:pointer;color:var(--ink2);font-family:inherit;transition:border-color .14s,color .14s,background .14s}
+.alink{font-size:12px;background:none;border:1px solid var(--line);border-radius:var(--r-sm);padding:4px 10px;cursor:pointer;color:var(--ink2);font-family:inherit;transition:border-color .14s,color .14s,background .14s}
 .alink:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
 .rd.clk{cursor:pointer}
 .rd.clk:hover .k,.rd.clk:hover .v{color:var(--accent)}
@@ -406,10 +406,19 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 .notetog .note-caret{display:inline-block;width:.9em;font-size:10px}
 .nosrc-dot{color:#b07a2e;font-weight:700}
 .noterow td{background:#f6f8f9}
-.notewrap{display:flex;flex-wrap:wrap;gap:10px 28px;font-size:12px;line-height:1.55;padding:4px 2px}
-.notewrap .noteblk{flex:1 1 0;min-width:220px}
+.notewrap{display:flex;flex-direction:column;gap:8px;font-size:12px;line-height:1.55;padding:4px 2px}
 .noteblk .notelab{display:block;font-weight:700;color:var(--accent-d);text-transform:uppercase;font-size:10px;letter-spacing:.04em;margin-bottom:2px}
 .noterow input.asrc,.noterow input.libtext{width:100%}
+/* pool-drawdown bars (Allocation History) */
+.poolbar-row{margin-top:13px}
+.poolbar-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:13px;margin-bottom:5px;flex-wrap:wrap}
+.poolbar{display:flex;height:22px;border-radius:6px;overflow:hidden;border:1px solid var(--line);background:#eef0f2}
+.pbseg{height:100%;min-width:1px}
+.pbseg+.pbseg{border-left:1px solid rgba(255,255,255,.55)}
+.pbseg-rem{background:repeating-linear-gradient(45deg,#e6eaed,#e6eaed 6px,#dde2e6 6px,#dde2e6 12px)}
+.poolbar-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:8px;font-size:11px;color:var(--ink2)}
+.poolbar-legend span{display:inline-flex;align-items:center;gap:5px}
+.poolbar-legend i{width:11px;height:11px;border-radius:2px;display:inline-block}
 .atable .x{border:none;background:none;color:var(--ink3);cursor:pointer;font-size:16px}
 .atable .x:hover{color:var(--fail)}
 .skip-link{position:absolute;left:8px;top:-48px;background:var(--ink);color:#fff;padding:9px 14px;border-radius:6px;z-index:200;transition:top .15s}
@@ -418,7 +427,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 .rd.clk{cursor:pointer}
 .rd.clk:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-.navfoot button,.btn,.addbtn{min-height:40px}
+.navfoot button,.btn,.addbtn{min-height:32px}
 .atable .x{min-width:24px;min-height:24px;line-height:1}
 @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 .actbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
@@ -769,7 +778,8 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
         <p class="lede" style="margin:8px 0 0"><b>Two-tier marginal cost (v1.17.0).</b> Optionally charge a construction <b>step-up</b> only to the marginal bonus units (Assumptions § A, "Bonus-unit construction step-up"), reflecting that the added density is what pushes a project into a costlier construction type and structured parking. Default 1.00× leaves the calibrated figures unchanged; set it (e.g. 1.10–1.15×) to apply the two-tier residual-land-value treatment from the supporting analysis. This is a cost-side premium on the bonus units, separate from the value-side decline factor.</p>
         <p class="lede" style="margin:8px 0 0"><b>Credibility apparatus on (v1.19.0).</b> Two staff-review holds were turned off after a page-by-page / sources review. (1) Per-row <b>Source</b> and <b>Notes</b> columns are visible again on Assumptions and the Benefit Library, with citations re-confirmed against primary sources; rows that are judgment shapes or national placeholders are labeled "Illustrative default — confirm locally" rather than implying a false source. (2) The <b>enforceability haircut</b> (§ I) is active again: an unsecured promise is no longer credited at 100% — name what secures each benefit (covenant, development agreement, condition of approval, bond) for full credit. Re-enabling the haircut lowers the credited public value of any package with unsecured items (expected and correct). Also corrected: the condo hard-cost note no longer mislabels ~$301/SF as the ICC R-2 Type IA rate (that rate is $234.59/SF); the bundled Corey Landings case study now uses the calibrated ~$3,146/unit impact floor instead of the retired $28,000 placeholder.</p>
         <p class="lede" style="margin:8px 0 0"><b>Assumptions search &amp; sections (v1.19.1).</b> The Assumptions page now has a search box and Expand&nbsp;all / Collapse&nbsp;all controls, and its A–K sections collapse on click — matching the Benefit Library. Search matches benchmark names, units, notes, and sources.</p>
-        <p class="lede" style="margin:8px 0 0"><b>Notes &amp; source as a per-row disclosure (v1.19.2).</b> On both Assumptions and the Benefit Library, Notes and Source are no longer wide table columns that pushed rows off-screen; each row now has a <b>Notes &amp; source</b> toggle that opens a full-width panel below it, laid out as two side-by-side columns (Notes | Source) that wrap to stacked when space is tight (with a ⚠ marker when a row has no cited source). Far more readable on small screens, and editing still works when the table is unlocked.</p>
+        <p class="lede" style="margin:8px 0 0"><b>Notes &amp; source as a per-row disclosure (v1.19.2).</b> On both Assumptions and the Benefit Library, Notes and Source are no longer wide table columns that pushed rows off-screen; each row now has a <b>Notes &amp; source</b> toggle that opens a full-width panel below it (Notes then Source, with a ⚠ marker when a row has no cited source). Far more readable on small screens, and editing still works when the table is unlocked.</p>
+        <p class="lede" style="margin:8px 0 0"><b>Pool-drawdown chart &amp; UI polish (v1.19.3).</b> The Allocation History page now shows a horizontal <b>pool-drawdown bar</b> for each pool (approved allocations by project vs the striped remaining balance) — the scarcity the model prices, made visible. Also: fixed the Deal Explorer slider showing a stray colored fill at 0%, and slimmed button heights throughout.</p>
       </div>
 
       <div class="card" id="legal-card">
@@ -819,7 +829,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 
 <script>
 "use strict";
-const VERSION="1.19.2", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
+const VERSION="1.19.3", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
 /* Staff-review holds (restorable: flip to true to re-hide). v1.19.0 turned both OFF after the
    page-by-page / sources review: the credibility apparatus is back on. SIMPLE_BENEFITS, when true,
    hides the recurring + enforceability controls on the Benefits step and counts every benefit at full
@@ -858,14 +868,41 @@ function poolAllocated(p){return HISTORY.reduce((s,h)=>s+((h.pool===p&&/approv/i
 function poolRemaining(p){return (POOL_TOTAL[p]||0)-poolAllocated(p);}
 function poolSummaryText(){return "RU: "+POOL_TOTAL.RU+" total \u2212 "+poolAllocated("RU")+" approved = <b>"+poolRemaining("RU")+" remaining</b>  \u00b7  TLU: "+POOL_TOTAL.TLU+" total \u2212 "+poolAllocated("TLU")+" approved = <b>"+poolRemaining("TLU")+" remaining</b>";}
 function refreshRemaining(){const unit=(S.use==="Temporary Lodging")?"TLU":"RU";S.rem=poolRemaining(unit);const el=document.getElementById("rem");if(el){el.value=S.rem;setP(el);}}
-function afterHistoryChange(){refreshRemaining();const ps=document.getElementById("pool-summary");if(ps)ps.innerHTML=poolSummaryText();updateBonusMax();render();}
+function afterHistoryChange(){refreshRemaining();const ps=document.getElementById("pool-summary");if(ps)ps.innerHTML=poolSummaryText();const pb=document.getElementById("pooldrawdown");if(pb)pb.innerHTML=poolBarsInner();updateBonusMax();render();}
 function hfld(i,fld,val,type,cls){const r=HISTORY[i]||{};const who=(r.project&&(""+r.project).trim())?r.project:("row "+(i+1));const al=(who+", "+fld).replace(/"/g,"");const safe=(val==null?"":(""+val).replace(/"/g,"&quot;"));const ttl=(safe!=="")?' title="'+safe+'"':"";return '<input type="'+type+'" aria-label="'+al+'"'+ttl+' data-i="'+i+'" data-fld="'+fld+'" value="'+safe+'" class="'+cls+'">';}
 function hsel(i,fld,val,opts){const r=HISTORY[i]||{};const who=(r.project&&(""+r.project).trim())?r.project:("row "+(i+1));const al=(who+", "+fld).replace(/"/g,"");return '<select aria-label="'+al+'" data-i="'+i+'" data-fld="'+fld+'" class="hsel">'+opts.map(x=>'<option'+(x===val?' selected':'')+'>'+x+'</option>').join('')+'</select>';}
 /* free-text ledger cell: wrapping plain text when locked (legible, no cut-off), editable input when unlocked */
 function htxt(i,fld,val){return advUnlocked?hfld(i,fld,val,"text","htext"):esc(val||"");}
+/* horizontal stacked drawdown bar per pool: approved allocations (teal segments, one per project)
+   plus the striped remaining balance. Pure HTML/CSS so it is robust and prints. */
+function poolBarsInner(){
+  const pools=[{p:"RU",label:"Residential (RU) pool"},{p:"TLU",label:"Transient lodging (TLU) pool — TC-2 / Activity Center / Bayou"}];
+  let h="";
+  pools.forEach(function(pl){
+    const total=POOL_TOTAL[pl.p]||0;
+    const counted=HISTORY.filter(function(r){return r.pool===pl.p&&/approv/i.test(r.decision||"");});
+    const alloc=counted.reduce(function(s,r){return s+(+r.approved||0);},0);
+    const rem=Math.max(0,total-alloc);
+    const pct=function(n){return total>0?(n/total*100):0;};
+    let segs="";
+    counted.forEach(function(r,idx){
+      const shade=(idx%2)?"var(--accent)":"var(--accent-d)";
+      segs+='<div class="pbseg" style="width:'+pct(+r.approved||0).toFixed(2)+'%;background:'+shade+'" title="'+esc(r.project||"")+': '+(+r.approved||0)+' '+pl.p+(r.source?(" ("+esc(r.source)+")"):"")+'"></div>';
+    });
+    segs+='<div class="pbseg pbseg-rem" style="width:'+pct(rem).toFixed(2)+'%" title="Remaining: '+rem+' '+pl.p+'"></div>';
+    h+='<div class="poolbar-row"><div class="poolbar-head"><b>'+pl.label+'</b><span class="anote">'+alloc+' of '+total+' allocated · <b>'+rem+' remaining</b></span></div>'+
+       '<div class="poolbar" role="img" aria-label="'+pl.label+': '+alloc+' of '+total+' '+pl.p+' allocated, '+rem+' remaining">'+segs+'</div></div>';
+  });
+  h+='<div class="poolbar-legend"><span><i style="background:var(--accent-d)"></i> Approved allocation (by project)</span><span><i class="pbseg-rem" style="border:1px solid var(--line)"></i> Remaining pool</span></div>';
+  return h;
+}
+function poolBarsHTML(){
+  return '<div class="card"><h3>Pool drawdown</h3><div class="sub">Approved allocations against each finite pool — the scarcity the model prices. Only rows with an Approved decision count; Superseded and Other-pool rows are excluded.</div><div id="pooldrawdown">'+poolBarsInner()+'</div></div>';
+}
 function buildHistory(){
   let h='<fieldset class="lockfs"'+(advUnlocked?'':' disabled')+'>';
   h+='<div class="card"><h3>Density pool</h3><div class="sub">Remaining = pool total minus allocations below. This drives the scarcity cost in the model. Calibrate from: official Future Land Use map and LDC §39.18 (pool totals and district base/cap densities).</div><div class="agrid" style="grid-template-columns:repeat(2,1fr)"><div><label>RU pool total</label><input type="number" id="poolRU" value="'+POOL_TOTAL.RU+'"></div><div><label>TLU pool total</label><input type="number" id="poolTLU" value="'+POOL_TOTAL.TLU+'"></div></div><div class="hint" id="pool-summary" style="margin-top:10px">'+poolSummaryText()+'</div><div class="hint" style="margin-top:6px">The modeled TLU pool (325) is the Town Center-2 / Activity Center / Bayou Residential pool. SPB also has separate transient-lodging pools the tool does not total, Boutique Hotel/Condo 125, Town Center Core (TC-1) 50, Upham Beach Village 175. Lodging deals outside the TC-2/AC/Bayou districts draw from those instead.</div></div>';
+  h+=poolBarsHTML();
   (function(){const counted=HISTORY.filter(r=>/approv/i.test(r.decision||""));
     const tot=counted.reduce((s,r)=>s+(+r.approved||0),0);
     const by=st=>counted.filter(r=>(r.status||"Approved")===st).reduce((s,r)=>s+(+r.approved||0),0);
@@ -1993,6 +2030,7 @@ function perOf(val,den){return (den>0)?val/den:null;}
 function updateExplore(m){
   m=m||compute();
   const sl=document.getElementById("explore"); if(!sl)return;
+  setP(sl);   // sync the track fill to the value (otherwise the range CSS shows its 40% default fill)
   const pct=+sl.value;
   const spend=(m.zCeil>0)?(pct/100)*m.zCeil:0;
   const pubVal=(m.gPlain>0)?spend*m.gPlain:0;
