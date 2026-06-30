@@ -120,7 +120,7 @@ h2.step-h{font-size:23px;font-weight:700;margin:4px 0 7px;letter-spacing:-.02em}
 .ihint{position:relative;display:inline-flex;align-items:center;vertical-align:middle;margin-left:5px;color:var(--ink3);cursor:help}
 .ihint:hover,.ihint:focus{color:var(--accent);outline:none}
 .ihint svg{width:14px;height:14px;display:block}
-.ihint-tip{position:absolute;left:0;bottom:calc(100% + 9px);width:260px;max-width:64vw;background:var(--ink);color:#fff;font:400 11.5px/1.5 system-ui,sans-serif;text-transform:none;letter-spacing:0;text-align:left;padding:9px 11px;border-radius:7px;box-shadow:0 6px 18px rgba(0,0,0,.22);opacity:0;visibility:hidden;transition:opacity .12s;z-index:70;pointer-events:none;white-space:normal}
+.ihint-tip{position:absolute;left:0;bottom:calc(100% + 9px);width:260px;max-width:64vw;background:#27576a;color:#fff;font:400 11.5px/1.5 system-ui,sans-serif;text-transform:none;letter-spacing:0;text-align:left;padding:9px 11px;border-radius:7px;box-shadow:0 6px 18px rgba(0,0,0,.22);opacity:0;visibility:hidden;transition:opacity .12s;z-index:70;pointer-events:none;white-space:normal}
 .ihint-tip b{color:#fff}
 .ihint:hover .ihint-tip,.ihint:focus .ihint-tip{opacity:1;visibility:visible}
 .lab .val{font-variant-numeric:tabular-nums;font-weight:600;font-size:13px;color:var(--ink)}
@@ -441,9 +441,12 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 .poolhead{display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--line)}
 .poolhead-info{flex:1;min-width:200px}
 /* Step 1 pool section: donut/legend and the scarcity curve side by side, wrapping to stacked when narrow */
-.poolviz{display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start;margin-bottom:14px}
-.poolviz .poolhead{flex:1 1 320px;margin:0;padding:0;border:none}
-.poolviz .vchart{flex:1 1 320px;min-width:0}
+.poolviz{display:flex;gap:22px;flex-wrap:nowrap;align-items:flex-start;margin-bottom:18px}
+.poolviz .poolhead{flex:1 1 360px;flex-wrap:nowrap;gap:16px;min-width:0;margin:0;padding:0;border:none}
+.poolviz .poolhead>svg{flex:none}
+.poolviz .poolhead .poolhead-info{flex:1 1 auto;min-width:0}
+.poolviz .vchart{flex:1 1 340px;min-width:0}
+@media(max-width:680px){.poolviz{flex-wrap:wrap}.poolviz .poolhead,.poolviz .vchart{flex:1 1 100%}}
 .poolwhich{font-weight:700;font-size:15px;margin-bottom:10px;line-height:1.3}
 .poolwhich .sub{display:block;font-weight:400;font-size:12px;color:var(--ink3);margin-top:3px;line-height:1.45}
 .poollegend{display:flex;flex-direction:column;gap:6px;font-size:12px;max-width:280px}
@@ -911,7 +914,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.27.3", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.27.4", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -2094,8 +2097,8 @@ function render(){
       '<button class="bdel" data-x="'+i+'" aria-label="Remove benefit" title="Remove benefit">×</button></div></div>'+
       '<div class="inputs">'+
         '<div><div class="inp-lab">Qty <span class="ihint" data-ih="Why: how much of this benefit is provided (linear feet, square feet, slips, etc.).|How: total = quantity x per-unit, so it scales both the developer contribution and the public value."></span></div><input type="text" inputmode="decimal" value="'+fmtNum(x.qty)+'" data-i="'+i+'" data-f="qty"></div>'+
-        '<div><div class="inp-lab" title="Enter the developer&#39;s total stated contribution, OR the per-unit rate below; whichever you leave blank is computed from the quantity.">Stated contribution <span class="ihint" data-ih="Why: what the applicant proposes to provide or pay for this benefit (their claim, not a verified cost).|How: summed across all benefits, it is the developer contribution tested against the value-to-developer ceiling (is it feasible?)."></span></div><input type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.dev*x.qty))+'" data-i="'+i+'" data-f="devtot"><div class="inp-perunit"><input type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.dev))+'" data-i="'+i+'" data-f="devper" aria-label="'+esc(x.name)+', stated contribution per unit"><span>/ '+esc((x.unit||"unit").replace(/^\$\s*\/\s*/,""))+'</span></div></div>'+
-        '<div><div class="inp-lab" title="What this benefit is worth to the city. Enter the total, OR the per-unit rate below; whichever you leave blank is computed from the quantity. The gap above the developer&#39;s contribution is the public&#39;s gain from the trade.">Public value <span class="ihint" data-ih="Why: what this benefit is worth to the city (replacement or avoided cost).|How: summed across all benefits, it is the public value offered, tested against the break-even floor (is it worthwhile?)."></span></div><input type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.city*x.qty))+'" data-i="'+i+'" data-f="citytot"><div class="inp-perunit"><input type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.city))+'" data-i="'+i+'" data-f="cityper" aria-label="'+esc(x.name)+', public value per unit"><span>/ '+esc((x.unit||"unit").replace(/^\$\s*\/\s*/,""))+'</span></div></div>'+
+        '<div><div class="inp-lab">Stated contribution <span class="ihint" data-ih="Why: what the applicant proposes to provide or pay for this benefit (their claim, not a verified cost).|How: summed across all benefits, it is the developer contribution tested against the value-to-developer ceiling (is it feasible?)."></span></div><input type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.dev*x.qty))+'" data-i="'+i+'" data-f="devtot"><div class="inp-perunit"><input type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.dev))+'" data-i="'+i+'" data-f="devper" aria-label="'+esc(x.name)+', stated contribution per unit"><span>/ '+esc((x.unit||"unit").replace(/^\$\s*\/\s*/,""))+'</span></div></div>'+
+        '<div><div class="inp-lab">Public value <span class="ihint" data-ih="Why: what this benefit is worth to the city (replacement or avoided cost).|How: summed across all benefits, it is the public value offered, tested against the break-even floor (is it worthwhile?)."></span></div><input type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.city*x.qty))+'" data-i="'+i+'" data-f="citytot"><div class="inp-perunit"><input type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.city))+'" data-i="'+i+'" data-f="cityper" aria-label="'+esc(x.name)+', public value per unit"><span>/ '+esc((x.unit||"unit").replace(/^\$\s*\/\s*/,""))+'</span></div></div>'+
       '</div>'+
       '<div class="bexchange" id="bexch-'+i+'" data-unit="'+esc(x.unit||'')+'">'+benefitExchSentence(x.name,x.unit,x.qty,x.pct)+'</div>'+
       '<details class="benote"><summary><span class="note-caret">▸</span> Notes &amp; source</summary><div class="benote-body">'+
