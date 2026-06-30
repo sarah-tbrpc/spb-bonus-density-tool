@@ -468,8 +468,8 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
       <p class="lede" style="margin-bottom:18px">Name the project, place it on the map to set the district and density pool, classify the use and construction cost, then enter the density request.</p>
 
       <div class="projid-row">
-        <div><label class="lab"><span>Project Name</span></label><input type="text" id="pname" value=""></div>
-        <div><label class="lab"><span>Applicant / Developer</span></label><input type="text" id="papp" value=""></div>
+        <div><label class="lab"><span>Project Name</span></label><input type="text" id="pname" value="" placeholder="e.g. Bayfront Residences"></div>
+        <div><label class="lab"><span>Applicant / Developer</span></label><input type="text" id="papp" value="" placeholder="e.g. Coastal Development LLC"></div>
       </div>
 
       <div class="subsec">
@@ -2370,7 +2370,7 @@ function siteIntelRows(d,filled){filled=filled||[];
   return rowRaw("Within St. Pete Beach CRA",craHtml)
     +rowRaw("Future Land Use District",fluHtml)
     +rowRaw("Parcel ID",pinHtml)
-    +row("Parcel Stated Area",d.area!=null?d.area+(filled.indexOf("acres")>-1?" → Site Area (verify units)":""):null,filled.indexOf("acres")>-1)
+    +row("Parcel Stated Area",d.area,filled.indexOf("acres")>-1)
     +row("Current Use",d.usecode?(d.usecode+(useCodeDesc(d.usecode)?", "+titleCase(useCodeDesc(d.usecode)):"")):null,filled.indexOf("use")>-1)
     +rowRaw("Flood Risk",frHtml)
     +(!d.anyData?'<div class="si-row"><span class="anote" style="font-size:11px">Parcel / flood services offline, values above are from embedded city data.</span></div>':"");
@@ -2398,15 +2398,22 @@ async function gatherSiteIntel(lat,lon){
    so saved scenarios carry only the resulting Site Area, not the marker list. */
 let PARCELS=[], multiMode=false;
 function dashPin(pin){const d=(""+(pin||"")).replace(/\D/g,"");return (d.length===18)?(d.slice(4,6)+"-"+d.slice(2,4)+"-"+d.slice(0,2)+"-"+d.slice(6,11)+"-"+d.slice(11,14)+"-"+d.slice(14,18)):(d||(""+(pin||"")));}
-async function addParcel(lat,lon){
+/* look up a parcel's site address from the embedded parcel layer by its dashed id (lazy-built map) */
+let _parcelAddrMap=null;
+function parcelAddr(dashedId){ if(!dashedId)return null; if(!_parcelAddrMap){_parcelAddrMap={}; if(typeof PARCELS_GEO!=="undefined"&&PARCELS_GEO)PARCELS_GEO.features.forEach(f=>{if(f.properties&&f.properties.id)_parcelAddrMap[f.properties.id]=f.properties.ad||"";});} return _parcelAddrMap[dashedId]||null; }
+async function addParcel(lat,lon,local){
+  const lid=(local&&local.properties)?local.properties.id:null;          // embedded-layer footprint id (set when a parcel polygon was clicked)
+  const laddr=(local&&local.properties)?(local.properties.ad||null):null;
+  if(lid&&PARCELS.some(p=>p.localId===lid)){renderParcelList();return;}   // same footprint already in the project — the county service can return different stacked condo-unit PINs for one lot, so dedup by footprint, not PIN
   const d=await fetchSiteData(lat,lon);   // full property + flood + site data, collected per parcel
   const pin=d.pin;
-  const an=(/\d\s*s/i.test(""+d.area))?NaN:parseNum(d.area), area=(isFinite(an)&&an>0&&an<500)?Math.round(an*100)/100:null;   // comma-safe (parseNum strips commas); reject sf-labeled strings (a digit then an s-suffix) so only acreage auto-fills
-  if(pin!=null&&PARCELS.some(p=>p.pin===pin)){renderParcelList();return;}   // same parcel clicked twice, do not double-count its area
+  let an=(/\d\s*s/i.test(""+d.area))?NaN:parseNum(d.area), area=(isFinite(an)&&an>0&&an<500)?Math.round(an*100)/100:null;   // comma-safe (parseNum strips commas); reject sf-labeled strings (a digit then an s-suffix) so only acreage auto-fills
+  if(area==null&&local&&local.properties&&local.properties.a>0)area=local.properties.a;   // fall back to the embedded parcel acreage
+  if(lid?PARCELS.some(p=>p.localId===lid):(pin!=null&&PARCELS.some(p=>p.pin===pin))){renderParcelList();return;}   // dedup (footprint id when clicked, else county pin); re-checked after the async fetch
   const first=PARCELS.length===0;
   let mk=null;
   if(map&&typeof L!=="undefined"){mk=L.circleMarker([lat,lon],{radius:10,color:"#27576a",weight:2,fillColor:"#86bcb6",fillOpacity:.85}).addTo(map).bindTooltip(String(PARCELS.length+1),{permanent:true,direction:"center",className:"parcel-num"});}
-  PARCELS.push({lat,lon,pin,area,data:d,marker:mk});
+  PARCELS.push({lat,lon,pin,area,data:d,marker:mk,localId:lid,localAddr:laddr});
   if(first){setPin(lat,lon);reverseGeocode(lat,lon);}   // parcel 1 resolves district + flood + address
   applyParcelArea(); renderParcelList(); syncParcelHighlights();
 }
@@ -2423,13 +2430,14 @@ function renderParcelList(){const el=document.getElementById("parcel-list"); if(
   if(!PARCELS.length){el.innerHTML='<div class="hint" style="padding:8px 11px">Click each parcel on the map to add it to the project (zoom in to see the lot lines; toggle them in the map legend). Parcel 1 sets the district and flood data; property and site data are collected for each, and stated areas are summed into Site Area.</div>';return;}
   const sum=Math.round(PARCELS.filter(p=>p.area!=null).reduce((s,p)=>s+p.area,0)*100)/100;
   const rows=PARCELS.map((p,i)=>{
-    const lab=(i+1)+'. '+(p.pin?esc(dashPin(p.pin)):"parcel");
+    const addr=p.localAddr||parcelAddr(p.pin?dashPin(p.pin):null);   // address is the title; the parcel id stays in the expanded detail
+    const lab=(i+1)+'. '+(addr?esc(addr):(p.pin?esc(dashPin(p.pin)):"parcel"));
     const areaTxt=(p.area!=null?(p.area+" ac"):"area n/a");
     const del='<button data-pdel="'+i+'" title="Remove this parcel" aria-label="Remove parcel '+(i+1)+'" style="background:none;border:none;color:#b0392e;cursor:pointer;font-size:14px;line-height:1;padding:0 0 0 8px">×</button>';
     const detail=p.data?siteIntelRows(p.data,[]):'<div class="si-row"><span class="anote">Loading parcel data…</span></div>';
     return '<details class="parcel-item"><summary class="parcel-head"><span class="ph-lab">'+lab+'</span><span class="ph-area">'+areaTxt+del+'</span></summary><div class="parcel-detail">'+detail+'</div></details>';
   }).join("");
-  el.innerHTML=rows+'<div class="si-row parcel-total"><span><b>'+PARCELS.length+' parcels</b></span><b>'+sum+' ac total → Site Area</b></div>';
+  el.innerHTML=rows+'<div class="si-row parcel-total"><span><b>'+PARCELS.length+' parcels</b></span><b>'+sum+' ac total</b></div>';
   el.querySelectorAll("[data-pdel]").forEach(b=>b.onclick=(ev)=>{ev.preventDefault();ev.stopPropagation();removeParcel(+b.dataset.pdel);});}
 /* avg unit/key size is use-aware: seed S.mktSF from the use type. Called on use selection and when
    the avg-size Assumptions rows are edited, NOT on scenario load or district auto-detect (so a
@@ -2548,15 +2556,17 @@ function addParcelLayer(map){
       lyr.bindTooltip(lab||esc(p.id||"parcel"),{sticky:true,direction:"top",className:"parcel-tip",opacity:0.95});
       lyr.on("mouseover",()=>{if(_selParcels.indexOf(lyr)<0)lyr.setStyle(PARCEL_HOVER);});
       lyr.on("mouseout",()=>{if(_selParcels.indexOf(lyr)<0)lyr.setStyle(PARCEL_BASE);});
-      lyr.on("click",(e)=>{_lastParcelClick=Date.now();onParcelClick(e.latlng);L.DomEvent.stop(e);});
+      lyr.on("click",(e)=>{_lastParcelClick=Date.now();onParcelClick(e.latlng,f);L.DomEvent.stop(e);});
     }});
     if(parcelsOn)parcelLayer.addTo(map);
     const tog=document.getElementById("parcel-toggle"); if(tog)tog.addEventListener("change",e=>toggleParcels(e.target.checked));
   }catch(e){}
 }
 /* clicking a parcel polygon = same as clicking the map at that point, but on a target the user can see */
-function onParcelClick(ll){
-  if(multiMode){ addParcel(ll.lat,ll.lng); }
+function onParcelClick(ll,feat){
+  const lid=(feat&&feat.properties)?feat.properties.id:null;
+  if(multiMode){ if(lid&&PARCELS.some(p=>p.localId===lid))return;   // clicking a footprint already in the project is a no-op, not a new parcel
+    addParcel(ll.lat,ll.lng,feat); }
   else { if(marker)marker.setLatLng(ll); setPin(ll.lat,ll.lng); reverseGeocode(ll.lat,ll.lng); }
 }
 /* highlight the footprints that contain the currently-selected parcels (multi-parcel mode) */
@@ -3147,7 +3157,7 @@ function loadCaseParcels(c){
     c.parcels.forEach(function(p,k){
       var mk=null;
       if(map&&typeof L!=="undefined"){mk=L.circleMarker([p.lat,p.lon],{radius:10,color:"#27576a",weight:2,fillColor:"#86bcb6",fillOpacity:.85}).addTo(map).bindTooltip(String(k+1),{permanent:true,direction:"center",className:"parcel-num"});}
-      PARCELS.push({lat:p.lat,lon:p.lon,pin:p.pin,area:p.area,data:{parcelNo:dashPin(p.pin)},marker:mk});
+      PARCELS.push({lat:p.lat,lon:p.lon,pin:p.pin,area:p.area,data:{pin:p.pin,parcelNo:dashPin(p.pin)},marker:mk,localId:dashPin(p.pin)});
     });
     applyParcelArea();
     if(c.parcels[0])setPin(c.parcels[0].lat,c.parcels[0].lon);
