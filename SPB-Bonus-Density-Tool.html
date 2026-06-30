@@ -400,6 +400,16 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 .libsec,.asec-toggle{cursor:pointer;user-select:none}
 .libsec:hover td,.asec-toggle:hover td{background:#b2d2d4}
 .lib-caret,.asec-caret{display:inline-block;width:1em;color:var(--accent);font-size:11px}
+/* per-row Notes & source disclosure (replaces the old wide Notes/Source columns; keeps rows narrow on small screens) */
+.notetog{display:inline-block;margin-top:4px;font-size:11px;color:var(--accent);cursor:pointer;user-select:none}
+.notetog:hover{text-decoration:underline}
+.notetog .note-caret{display:inline-block;width:.9em;font-size:10px}
+.nosrc-dot{color:#b07a2e;font-weight:700}
+.noterow td{background:#f6f8f9}
+.notewrap{display:flex;flex-wrap:wrap;gap:10px 28px;font-size:12px;line-height:1.55;padding:4px 2px}
+.notewrap .noteblk{flex:1 1 0;min-width:220px}
+.noteblk .notelab{display:block;font-weight:700;color:var(--accent-d);text-transform:uppercase;font-size:10px;letter-spacing:.04em;margin-bottom:2px}
+.noterow input.asrc,.noterow input.libtext{width:100%}
 .atable .x{border:none;background:none;color:var(--ink3);cursor:pointer;font-size:16px}
 .atable .x:hover{color:var(--fail)}
 .skip-link{position:absolute;left:8px;top:-48px;background:var(--ink);color:#fff;padding:9px 14px;border-radius:6px;z-index:200;transition:top .15s}
@@ -759,6 +769,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
         <p class="lede" style="margin:8px 0 0"><b>Two-tier marginal cost (v1.17.0).</b> Optionally charge a construction <b>step-up</b> only to the marginal bonus units (Assumptions § A, "Bonus-unit construction step-up"), reflecting that the added density is what pushes a project into a costlier construction type and structured parking. Default 1.00× leaves the calibrated figures unchanged; set it (e.g. 1.10–1.15×) to apply the two-tier residual-land-value treatment from the supporting analysis. This is a cost-side premium on the bonus units, separate from the value-side decline factor.</p>
         <p class="lede" style="margin:8px 0 0"><b>Credibility apparatus on (v1.19.0).</b> Two staff-review holds were turned off after a page-by-page / sources review. (1) Per-row <b>Source</b> and <b>Notes</b> columns are visible again on Assumptions and the Benefit Library, with citations re-confirmed against primary sources; rows that are judgment shapes or national placeholders are labeled "Illustrative default — confirm locally" rather than implying a false source. (2) The <b>enforceability haircut</b> (§ I) is active again: an unsecured promise is no longer credited at 100% — name what secures each benefit (covenant, development agreement, condition of approval, bond) for full credit. Re-enabling the haircut lowers the credited public value of any package with unsecured items (expected and correct). Also corrected: the condo hard-cost note no longer mislabels ~$301/SF as the ICC R-2 Type IA rate (that rate is $234.59/SF); the bundled Corey Landings case study now uses the calibrated ~$3,146/unit impact floor instead of the retired $28,000 placeholder.</p>
         <p class="lede" style="margin:8px 0 0"><b>Assumptions search &amp; sections (v1.19.1).</b> The Assumptions page now has a search box and Expand&nbsp;all / Collapse&nbsp;all controls, and its A–K sections collapse on click — matching the Benefit Library. Search matches benchmark names, units, notes, and sources.</p>
+        <p class="lede" style="margin:8px 0 0"><b>Notes &amp; source as a per-row disclosure (v1.19.2).</b> On both Assumptions and the Benefit Library, Notes and Source are no longer wide table columns that pushed rows off-screen; each row now has a <b>Notes &amp; source</b> toggle that opens a full-width panel below it, laid out as two side-by-side columns (Notes | Source) that wrap to stacked when space is tight (with a ⚠ marker when a row has no cited source). Far more readable on small screens, and editing still works when the table is unlocked.</p>
       </div>
 
       <div class="card" id="legal-card">
@@ -808,7 +819,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 
 <script>
 "use strict";
-const VERSION="1.19.1", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
+const VERSION="1.19.2", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
 /* Staff-review holds (restorable: flip to true to re-hide). v1.19.0 turned both OFF after the
    page-by-page / sources review: the credibility apparatus is back on. SIMPLE_BENEFITS, when true,
    hides the recurring + enforceability controls on the Benefits step and counts every benefit at full
@@ -2831,20 +2842,18 @@ function libRatio(i){const r=LIB[i],c=LIBCAL[i];const dev=libApplied(c,"dev"),ci
 function libApplDisp(i,which){return "$"+Math.round(libApplied(LIBCAL[i],which)).toLocaleString();}
 function buildLibrary(){
   let h="";
-  const NS=!HIDE_NOTES_SOURCE, ncols=NS?8:6;   // Notes/Source columns hidden under the staff-review hold → drop them, don't leave them empty
+  const NS=!HIDE_NOTES_SOURCE, ncols=6;   // Notes/Source are now a per-row "Notes & source" disclosure (full-width sub-row), not columns — keeps rows readable on small screens. NS gates whether the disclosure renders.
   const nLibNoSrc=LIBCAL.filter(c=>c&&!(c.source&&String(c.source).trim())).length;
   if(nLibNoSrc&&NS)h+='<div class="calflag"><b>'+nLibNoSrc+' of '+LIBCAL.length+' library values lack a cited source.</b> Those are sketch-grade placeholders until calibrated to local data; each is flagged below and counted on the printed summary.</div>';
   h+='<div class="libsearch"><input type="text" id="lib-search" placeholder="Search benefits…" aria-label="Search benefits" value="'+esc(libSearchQ)+'">'+
     '<button class="alink" id="lib-expand">Expand all</button><button class="alink" id="lib-collapse">Collapse all</button></div>';
   h+='<fieldset class="lockfs"'+(advUnlocked?'':' disabled')+'>';
-  const cgLib=NS?'<col style="width:17%"><col style="width:10%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:24%"><col style="width:17%">'
-                :'<col style="width:30%"><col style="width:16%"><col style="width:13%"><col style="width:13%"><col style="width:14%"><col style="width:14%">';
+  const cgLib='<col style="width:30%"><col style="width:16%"><col style="width:13%"><col style="width:13%"><col style="width:14%"><col style="width:14%">';
   h+='<div class="atable-wrap"><table class="atable libtable">'+
     '<colgroup>'+cgLib+'</colgroup>'+
     '<thead><tr>'+
     '<th scope="col">Benefit</th><th scope="col">Unit</th>'+
     '<th scope="col" class="r">Low</th><th scope="col" class="r">High</th><th scope="col" class="r">Applied</th><th scope="col" class="r">Override</th>'+
-    (NS?'<th scope="col">Notes</th><th scope="col">Source</th>':'')+
     '</tr></thead><tbody>';
   CATS_ORDER.forEach(cat=>{
     const n=LIB.filter(r=>r[1]===cat).length;
@@ -2863,19 +2872,23 @@ function buildLibrary(){
       const unitCell=custom
         ? '<input type="text" class="libunit" data-lib="'+i+'" data-col="unit" value="'+esc(r[2])+'" placeholder="$/unit" aria-label="Unit">'
         : '<span class="anote">'+r[2]+'</span>';
-      h+='<tr data-cat="'+esc(cat)+'" data-search="'+hay+'"><td>'+nameCell+'</td><td>'+unitCell+'</td>'+
+      const libNoSrc=!(c.source&&String(c.source).trim());
+      const libTog=NS?('<span class="notetog" role="button" tabindex="0" aria-expanded="false" aria-label="'+esc(r[0])+', notes and source"><span class="note-caret">▸</span> Notes &amp; source'+(libNoSrc?' <span class="nosrc-dot" title="no cited source">⚠</span>':'')+'</span>'):'';
+      h+='<tr data-cat="'+esc(cat)+'" data-search="'+hay+'"><td>'+nameCell+(libTog?('<div>'+libTog+'</div>'):'')+'</td><td>'+unitCell+'</td>'+
         '<td class="r">'+libfld(i,"cityLow",c.cityLow,"alow")+'</td>'+
         '<td class="r">'+libfld(i,"cityHigh",c.cityHigh,"ahigh")+'</td>'+
         '<td class="r"><span class="aapplied" id="libcity-'+i+'">'+libApplDisp(i,"city")+'</span></td>'+
-        '<td class="r">'+libfld(i,"cityOv",c.cityOv,"ov")+'</td>'+
-        (NS?('<td class="tnote">'+libtxt(i,"note",c.note,"Notes")+'</td>'+
-        '<td class="tnote">'+libtxt(i,"source",c.source,"Source")+((c.source&&String(c.source).trim())?"":'<div class="nosrc">⚠ Uncalibrated, no cited source</div>')+'</td>'):'')+'</tr>';
+        '<td class="r">'+libfld(i,"cityOv",c.cityOv,"ov")+'</td></tr>'+
+        (NS?('<tr class="noterow" style="display:none"><td colspan="6"><div class="notewrap">'+
+          '<div class="noteblk"><span class="notelab">Notes</span> '+libtxt(i,"note",c.note,"Notes")+'</div>'+
+          '<div class="noteblk"><span class="notelab">Source</span> '+libtxt(i,"source",c.source,"Source")+(libNoSrc?'<div class="nosrc">⚠ Uncalibrated, no cited source</div>':'')+'</div>'+
+          '</div></td></tr>'):'');
     });
     if(advUnlocked)h+='<tr class="libaddrow" data-cat="'+esc(cat)+'"><td colspan="'+ncols+'"><button class="alink" data-libadd="'+esc(cat)+'">+ Add custom benefit to '+cat+'</button></td></tr>';
   });
   h+='</tbody></table></div></fieldset>';
   h+=lockBar("Benefit-library values","The city’s valuation of each public benefit, shared across all projects.");
-  h+='<p class="lede" style="margin-top:14px">These are the <b>city’s value</b> of each benefit (Low / High / Applied / Override), the developer’s cost is entered per project on the Benefits step. <b>Notes</b> and <b>Source</b> are free-text: record the basis for a figure and where it came from (a few rows are pre-seeded from the Corey Landings staff report as worked examples). Search matches names, notes, and sources. Click a category header to collapse it; edit Low/High to set a range, or enter an Override (blue) for a firm figure (Applied is the midpoint unless an Override is given). Use <b>+ Add custom benefit</b> to create your own item, give it a name, unit, and city value; once named it appears in the Benefits-step menu. The library (including custom benefits, notes, and sources) is kept on Reset all and saved with scenarios.</p>';
+  h+='<p class="lede" style="margin-top:14px">These are the <b>city’s value</b> of each benefit (Low / High / Applied / Override), the developer’s cost is entered per project on the Benefits step. <b>Notes</b> and <b>Source</b> are free-text: open <b>Notes &amp; source</b> on any row to read or edit the basis for a figure and where it came from (a few rows are pre-seeded from the Corey Landings staff report as worked examples); a ⚠ on the toggle marks a row with no cited source. Search matches names, notes, and sources. Click a category header to collapse it; edit Low/High to set a range, or enter an Override (blue) for a firm figure (Applied is the midpoint unless an Override is given). Use <b>+ Add custom benefit</b> to create your own item, give it a name, unit, and city value; once named it appears in the Benefits-step menu. The library (including custom benefits, notes, and sources) is kept on Reset all and saved with scenarios.</p>';
   return h;
 }
 /* search + collapsible categories, operates on the rendered rows (no rebuild, keeps focus) */
@@ -2886,7 +2899,10 @@ function applyLibFilter(){
     const cat=tr.getAttribute("data-cat"), collapsed=!!libCollapsed[cat];
     if(tr.classList.contains("libaddrow")){tr.style.display=(searching||collapsed)?"none":"";return;}
     const match=!searching||(tr.getAttribute("data-search")||"").indexOf(q)>=0;
-    tr.style.display=(match&&(searching||!collapsed))?"":"none";
+    const show=match&&(searching||!collapsed);
+    tr.style.display=show?"":"none";
+    const nr=tr.nextElementSibling;   // keep the Notes & source sub-row in sync with its item row
+    if(nr&&nr.classList.contains("noterow"))nr.style.display=(show&&nr.classList.contains("open"))?"":"none";
   });
   document.querySelectorAll('#aux-library tr[data-section]').forEach(function(tr){
     const cat=tr.getAttribute("data-section");
@@ -2949,15 +2965,14 @@ function lockBar(title,note){
     : '<span>🔒 <b>'+title+'</b>, '+note+'</span><button class="btn" data-lock="1">Enable editing</button>')+'</div>';
 }
 function buildAssumptions(){
-  const NS=!HIDE_NOTES_SOURCE, ncols=NS?8:6;   // Notes/Source hidden under the staff-review hold → drop the columns rather than leave them empty
+  const NS=!HIDE_NOTES_SOURCE, ncols=6;   // Notes/Source are now a per-row "Notes & source" disclosure (full-width sub-row), not columns — keeps rows readable on small screens. NS gates whether the disclosure renders.
   const nNoSrc=ASSUMP.filter(r=>!(r.source&&String(r.source).trim())).length;
   const srcBanner=(nNoSrc&&NS)?'<div class="calflag"><b>'+nNoSrc+' of '+ASSUMP.length+' benchmarks lack a cited source.</b> Treat those rows as sketch-grade placeholders until calibrated to local SPB / Pinellas data; each is flagged below and counted on the printed summary.</div>':'';
-  const cgA=NS?'<col style="width:17%"><col style="width:10%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:24%"><col style="width:17%">'
-              :'<col style="width:30%"><col style="width:18%"><col style="width:12%"><col style="width:12%"><col style="width:14%"><col style="width:14%">';
+  const cgA='<col style="width:30%"><col style="width:18%"><col style="width:12%"><col style="width:12%"><col style="width:14%"><col style="width:14%">';
   const searchBar='<div class="libsearch"><input type="text" id="assump-search" placeholder="Search benchmarks…" aria-label="Search benchmarks" value="'+esc(assumpSearchQ)+'">'+
     '<button class="alink" id="assump-expand">Expand all</button><button class="alink" id="assump-collapse">Collapse all</button></div>';
   const secCount={}; ASSUMP.forEach(r=>{secCount[r.sec]=(secCount[r.sec]||0)+1;});
-  let h=srcBanner+searchBar+'<fieldset class="lockfs"'+(advUnlocked?'':' disabled')+'><div class="atable-wrap"><table class="atable assumptable"><colgroup>'+cgA+'</colgroup><thead><tr><th scope="col">Benchmark</th><th scope="col">Units</th><th scope="col" class="r">Low</th><th scope="col" class="r">High</th><th scope="col" class="r">Applied</th><th scope="col" class="r">Override</th>'+(NS?'<th scope="col">Notes</th><th scope="col">Source</th>':'')+'</tr></thead><tbody>';
+  let h=srcBanner+searchBar+'<fieldset class="lockfs"'+(advUnlocked?'':' disabled')+'><div class="atable-wrap"><table class="atable assumptable"><colgroup>'+cgA+'</colgroup><thead><tr><th scope="col">Benchmark</th><th scope="col">Units</th><th scope="col" class="r">Low</th><th scope="col" class="r">High</th><th scope="col" class="r">Applied</th><th scope="col" class="r">Override</th></tr></thead><tbody>';
   let sec="";
   ASSUMP.forEach((r,i)=>{
     if(r.sec!==sec){sec=r.sec;h+='<tr class="asecrow asec-toggle" data-section="'+esc(sec)+'" role="button" tabindex="0" aria-label="Toggle '+esc(sec)+'"><td colspan="'+ncols+'"><span class="asec-caret">▾</span> '+sec+' <span class="anote">('+(secCount[sec]||0)+')</span></td></tr>';}
@@ -2970,32 +2985,34 @@ function buildAssumptions(){
         '<option value="sf"'+(r.basis==="sf"?" selected":"")+'>$/SF</option></select>'+
         '<div class="anote" style="margin-top:4px;white-space:nowrap">avg <input type="text" inputmode="decimal" class="hnum basis-sf" data-i="'+i+'" value="'+(r.sf||"").toLocaleString()+'" aria-label="'+r.label+', average size in square feet"> '+(r.unit==="$/key"?"SF/key":"SF/unit")+'</div>';
     }
-    /* the live "= $X/SF" implied readout (id aimpl-i, updated on edit). It normally lives in the Notes
-       cell; when Notes/Source are hidden it moves under the Applied value so it is never lost. */
+    /* the live "= $X/SF" implied readout (id aimpl-i, updated on edit) sits under the Applied value. */
     const impliedSpan=hasBasis?'<span class="anote" id="aimpl-'+i+'" style="white-space:nowrap;color:var(--accent)">'+aImplied(r)+'</span>':"";
-    let tail="";
+    const noSrc=!(r.source&&String(r.source).trim());
+    const tog=NS?('<div><span class="notetog" role="button" tabindex="0" aria-expanded="false" aria-label="'+esc(r.label)+', notes and source"><span class="note-caret">▸</span> Notes &amp; source'+(noSrc?' <span class="nosrc-dot" title="no cited source">⚠</span>':'')+'</span></div>'):'';
+    let noteRow="";
     if(NS){
-      const noteCell=advUnlocked
-        ? '<input type="text" class="asrc" data-i="'+i+'" data-col="notes" value="'+esc(r.notes||"")+'" placeholder="notes…" aria-label="'+esc(r.label)+', notes">'+(impliedSpan?(' '+impliedSpan):"")
-        : (esc(r.notes||"")+(impliedSpan?(' '+impliedSpan):""));
-      const noSrc=!(r.source&&String(r.source).trim());
-      const srcFlag=noSrc?'<div class="nosrc">⚠ Uncalibrated, no cited source</div>':"";
-      const srcCell=(advUnlocked
+      const noteContent=advUnlocked
+        ? '<input type="text" class="asrc" data-i="'+i+'" data-col="notes" value="'+esc(r.notes||"")+'" placeholder="notes…" aria-label="'+esc(r.label)+', notes">'
+        : esc(r.notes||"");
+      const srcContent=(advUnlocked
         ? '<input type="text" class="asrc" data-i="'+i+'" data-col="source" value="'+esc(r.source||"")+'" placeholder="source…" aria-label="'+esc(r.label)+', source">'
-        : esc(r.source||""))+srcFlag;
-      tail='<td class="tnote">'+noteCell+'</td><td class="tnote">'+srcCell+'</td>';
+        : esc(r.source||""))+(noSrc?'<div class="nosrc">⚠ Uncalibrated, no cited source</div>':"");
+      noteRow='<tr class="noterow" style="display:none"><td colspan="6"><div class="notewrap">'+
+        '<div class="noteblk"><span class="notelab">Notes</span> '+noteContent+'</div>'+
+        '<div class="noteblk"><span class="notelab">Source</span> '+srcContent+'</div>'+
+        '</div></td></tr>';
     }
-    const appliedExtra=(!NS&&impliedSpan)?('<div style="margin-top:2px">'+impliedSpan+'</div>'):"";
-    h+='<tr data-asec="'+esc(r.sec)+'" data-search="'+ahay+'"><td>'+r.label+'</td><td class="anote">'+unitCell+'</td>'+
+    const appliedExtra=impliedSpan?('<div style="margin-top:2px">'+impliedSpan+'</div>'):"";
+    h+='<tr data-asec="'+esc(r.sec)+'" data-search="'+ahay+'"><td>'+r.label+tog+'</td><td class="anote">'+unitCell+'</td>'+
        '<td class="r">'+fld(i,"low",aToDisp(r,r.low),"alow",r.fmt)+'</td>'+
        '<td class="r">'+fld(i,"high",aToDisp(r,r.high),"ahigh",r.fmt)+'</td>'+
        '<td class="r"><span class="aapplied" data-i="'+i+'">'+fmtAssump(r)+'</span>'+appliedExtra+'</td>'+
-       '<td class="r">'+fld(i,"override",aToDisp(r,r.override),"ov",r.fmt)+'</td>'+
-       tail+'</tr>';
+       '<td class="r">'+fld(i,"override",aToDisp(r,r.override),"ov",r.fmt)+'</td></tr>'+
+       noteRow;
   });
   h+='</tbody></table></div></fieldset>';
   h+=lockBar("Calibrated model defaults","Construction costs, multipliers, scarcity shape, market comps, and policy guardrails.");
-  h+='<p class="lede" style="margin-top:14px">Search matches benchmark names, units, notes, and sources. Click a section header (or Collapse all) to fold it. Applied is the midpoint of Low and High unless an Override is entered. Edit Low/High to reset the range, or enter an Override (blue) when a project-specific analysis gives a firm number. For hard costs, switch the basis to <b>$/SF</b> and set the average unit size if your cost data is per square foot, the model always stores the result per unit. Every Applied value flows into the model.</p>';
+  h+='<p class="lede" style="margin-top:14px">Search matches benchmark names, units, notes, and sources. Click a section header (or Collapse all) to fold it; open <b>Notes &amp; source</b> on a row to read or edit its basis and citation (a ⚠ on the toggle marks a row with no cited source). Applied is the midpoint of Low and High unless an Override is entered. Edit Low/High to reset the range, or enter an Override (blue) when a project-specific analysis gives a firm number. For hard costs, switch the basis to <b>$/SF</b> and set the average unit size if your cost data is per square foot, the model always stores the result per unit. Every Applied value flows into the model.</p>';
   return h;
 }
 /* search + collapsible sections for Assumptions, mirroring the Benefit-library controls.
@@ -3006,7 +3023,10 @@ function applyAssumpFilter(){
   document.querySelectorAll('#aux-assume tr[data-asec]').forEach(function(tr){
     const sec=tr.getAttribute("data-asec"), collapsed=!!assumpCollapsed[sec];
     const match=!searching||(tr.getAttribute("data-search")||"").indexOf(q)>=0;
-    tr.style.display=(match&&(searching||!collapsed))?"":"none";
+    const show=match&&(searching||!collapsed);
+    tr.style.display=show?"":"none";
+    const nr=tr.nextElementSibling;   // keep the Notes & source sub-row in sync with its item row
+    if(nr&&nr.classList.contains("noterow"))nr.style.display=(show&&nr.classList.contains("open"))?"":"none";
   });
   document.querySelectorAll('#aux-assume tr[data-section]').forEach(function(tr){
     const sec=tr.getAttribute("data-section");
@@ -3021,6 +3041,16 @@ function applyAssumpFilter(){
 }
 function assumpToggleSec(sec){assumpCollapsed[sec]=!assumpCollapsed[sec];applyAssumpFilter();}
 function assumpSetAll(collapsed){new Set(ASSUMP.map(function(r){return r.sec;})).forEach(function(s){assumpCollapsed[s]=collapsed;});applyAssumpFilter();}
+/* toggle a row's "Notes & source" sub-row open/closed (Assumptions + Benefit Library). The toggle is a
+   role=button span (not a <button>) so it stays clickable even when the editing fieldset is disabled. */
+function toggleNoteRow(tog){
+  const row=tog.closest("tr"); if(!row)return;
+  const nr=row.nextElementSibling; if(!nr||!nr.classList.contains("noterow"))return;
+  const open=nr.classList.toggle("open");
+  nr.style.display=open?"":"none";
+  tog.setAttribute("aria-expanded",open?"true":"false");
+  const car=tog.querySelector(".note-caret"); if(car)car.textContent=open?"▾":"▸";
+}
 /* ---------- robustness band ---------- */
 function roboNote(m){
   if(m.A===0&&m.Bplain===0) return "<b>No offer yet.</b> Add benefits to stress-test a package, with nothing offered there is no decision to test.";
@@ -3483,13 +3513,16 @@ function assumpEdit(e){
 document.getElementById("aux-assume").addEventListener("click",e=>{const b=e.target.closest("[data-lock]"); if(b){advUnlocked=!advUnlocked;renderAux("assumptions");}});
 document.getElementById("aux-assume").addEventListener("click",function(e){
   const t=e.target;
+  const nt=t.closest&&t.closest(".notetog"); if(nt){toggleNoteRow(nt);return;}
   if(t.id==="assump-expand"){assumpSetAll(false);return;}
   if(t.id==="assump-collapse"){assumpSetAll(true);return;}
   const sec=t.closest&&t.closest(".asec-toggle");
   if(sec){assumpToggleSec(sec.getAttribute("data-section"));}
 });
 document.getElementById("aux-assume").addEventListener("keydown",function(e){
-  if((e.key==="Enter"||e.key===" ")&&e.target.classList&&e.target.classList.contains("asec-toggle")){
+  if(e.key!=="Enter"&&e.key!==" ")return;
+  const nt=e.target.closest&&e.target.closest(".notetog"); if(nt){e.preventDefault();toggleNoteRow(nt);return;}
+  if(e.target.classList&&e.target.classList.contains("asec-toggle")){
     e.preventDefault();assumpToggleSec(e.target.getAttribute("data-section"));}
 });
 document.getElementById("aux-assume").addEventListener("input",function(e){
@@ -3500,6 +3533,7 @@ document.getElementById("aux-history").addEventListener("click",e=>{const b=e.ta
 ["input","change"].forEach(ev=>document.getElementById("aux-library").addEventListener(ev,libEdit));
 document.getElementById("aux-library").addEventListener("click",function(e){
   const t=e.target;
+  const nt=t.closest&&t.closest(".notetog"); if(nt){toggleNoteRow(nt);return;}
   if(t.dataset.libadd!==undefined){addCustomBenefit(t.dataset.libadd);return;}
   if(t.dataset.libdel!==undefined){delCustomBenefit(+t.dataset.libdel);return;}
   if(t.id==="lib-expand"){libSetAll(false);return;}
@@ -3508,7 +3542,9 @@ document.getElementById("aux-library").addEventListener("click",function(e){
   if(sec){libToggleCat(sec.getAttribute("data-section"));}
 });
 document.getElementById("aux-library").addEventListener("keydown",function(e){
-  if((e.key==="Enter"||e.key===" ")&&e.target.classList&&e.target.classList.contains("libsec")){
+  if(e.key!=="Enter"&&e.key!==" ")return;
+  const nt=e.target.closest&&e.target.closest(".notetog"); if(nt){e.preventDefault();toggleNoteRow(nt);return;}
+  if(e.target.classList&&e.target.classList.contains("libsec")){
     e.preventDefault();libToggleCat(e.target.getAttribute("data-section"));}
 });
 document.getElementById("aux-library").addEventListener("input",function(e){
