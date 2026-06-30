@@ -928,7 +928,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.29.1", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.29.2", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -2567,7 +2567,7 @@ function drawZopa(m){
     return;
   }
   t.style.display="";
-  t.setAttribute("role","img");t.setAttribute("aria-label","Deal zone from break-even floor "+fmt(m.zFloor)+" to developer ceiling "+fmt(m.zCeil)+"; current public value offered "+fmt(m.A)+".");
+  t.setAttribute("role","img");t.setAttribute("aria-label","Deal zone from the minimum spend "+fmt(m.zFloor)+" (the least the package must cost to clear the break-even floor at its current efficiency) up to the developer ceiling "+fmt(m.zCeil)+"; current offer "+fmt(m.A)+".");
   const max=Math.max(m.zCeil,m.Vhigh||0,m.A,m.zFloor)*1.08||1;
   const pct=x=>Math.max(0,Math.min(100,x/max*100));
   const fl=pct(m.zFloor),ce=pct(m.zCeil),of=pct(m.A);
@@ -2587,14 +2587,20 @@ function drawZopa(m){
     '<div class="zopa-mark" style="left:'+of+'%"></div>'+
     '<div class="zopa-tick" style="left:'+fl+'%"></div>'+
     '<div class="zopa-tick" style="left:'+ce+'%"></div>'+
-    zlab(fl,'top','floor '+zf(m.zFloor))+
+    zlab(fl,'top','min spend '+zf(m.zFloor))+
     zlab(ce,'top','ceiling, low '+zf(m.zCeil))+
     (tg>=0?'<div class="zopa-tmark" style="left:'+tg+'%"></div>'+zlab(tg,'top','ceiling, high '+zf(m.Vhigh),'color:var(--accent)'):'')+
     zlab(of,'bot','offer '+zf(m.A));
   const baseNote = m.A>m.zCeil
     ? "Offer exceeds the ceiling; the package is infeasible for the developer."
-    : (m.A<m.zFloor ? "Offer is below the floor; increase the package to meet the break-even floor."
+    : (m.A<m.zFloor ? "Offer is below the minimum for this package: its public value falls short of the break-even floor. Raise spend to about "+fmt(m.zFloor)+", or improve the mix to lower that threshold."
     : "Offer is within the agreement zone. Unspent developer budget between the offer and the ceiling: "+fmt(m.room)+".");
+  /* The lower bound is zFloor = break-even floor / gPlain: a SPEND threshold that depends on the current
+     package's public-value efficiency, not a fixed dollar floor. Spell that out so it is not misread, and
+     so it is clear it re-sizes when the mix changes or the suggested counter-package is loaded. */
+  const floorNote = (m.gPlain>0)
+    ? ' The lower bound is a <b>minimum spend at this package’s current efficiency</b>, not a fixed dollar floor: it is the break-even floor ('+fmt(m.cityMin)+') divided by the package’s public-value efficiency (about $'+(Math.round(m.gPlain*100)/100).toFixed(2)+' of public value per $1 spent). A more efficient or larger mix lowers it, so it moves whenever you change the benefit mix or apply the suggested counter-package.'
+    : '';
   const rangeNote = (m.Vhigh>m.zCeil+1)
     ? ' The two ceiling marks are the <b>low (conservative)</b> and <b>high</b> estimates of the value to the developer; the bonus is worth somewhere in that range to them. The decision and the agreement zone use the conservative (low) ceiling; the high mark is the optimistic end, not a spending target. The shaded fair-share band below is a separate concept (a share of value, not the value itself), so it does not line up with either ceiling mark.'
     : '';
@@ -2609,7 +2615,7 @@ function drawZopa(m){
       'The lighter band is the '+Math.round(CAPTURE.contribLo*100)+'–'+Math.round(CAPTURE.contribHi*100)+'% contribution floor (Koontz). '+
       '<span class="anote">Analytic overlay from the TBRPC framework, not adopted code.</span></div>';
   }
-  document.getElementById("zopa-note").innerHTML = baseNote + rangeNote + capNote;
+  document.getElementById("zopa-note").innerHTML = baseNote + floorNote + rangeNote + capNote;
 }
 /* counter-package solver: greedily pick the most plain-value-efficient library benefits to clear the
    break-even floor within the developer budget. Constraint is the PLAIN value (decision basis), objective
