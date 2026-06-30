@@ -107,6 +107,10 @@ h2.step-h{font-size:23px;font-weight:700;margin:4px 0 7px;letter-spacing:-.02em}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;margin-bottom:16px;box-shadow:var(--sh-sm)}
 .card h3{font-size:15px;font-weight:700;margin-bottom:3px;letter-spacing:-.01em}
 .card .sub{font-size:14px;color:var(--ink3);margin-bottom:14px;line-height:1.5}
+.guide-list{margin:4px 0 0;padding-left:20px}
+.guide-list li{margin:0 0 9px;color:var(--ink2);font-size:14px;line-height:1.55}
+.guide-list li:last-child{margin-bottom:0}
+.guide-list b{color:var(--ink)}
 .subsec{border-top:1px solid var(--line);margin-top:22px;padding-top:20px}
 
 .field{margin:18px 0}
@@ -738,61 +742,59 @@ th.notecol{font-size:12px;font-weight:400}
       <button class="btn auxback" style="margin-bottom:14px">← Back</button>
       <div class="eyebrow">Reference</div>
       <h2 class="step-h">User Guide &amp; Method</h2>
-      <div class="card" style="border-left:3px solid var(--accent)">
-        <p class="lede" style="margin:0"><b>Not an appraisal, pro forma, or legal determination.</b> This is a sketch-planning decision-support aid for bonus-density negotiations. Figures are order-of-magnitude and most defaults are uncalibrated placeholders — see the per-row Source column on Assumptions and the Benefit Library. A density / height increase may require a <b>voter referendum</b> under the city charter; route the exaction framing through the City Attorney before treating any number as actionable.</p>
-      </div>
-
       <div>
       <div class="card">
-        <h3>What This Is</h3>
-        <p class="lede" style="margin:0">A staff sketch tool for bonus-density negotiations: order-of-magnitude figures, not a certified appraisal, pro forma, or legal determination. It covers bonus allocations from the city's two finite density pools (195-unit RU and the TLU pools) and Large Resort district-cap lodging (added by conditional use within the district cap, so no pool-scarcity cost applies — the impact floor and developer ceiling still bound the deal). Where added density instead requires a comprehensive-plan amendment or charter referendum, the tool flags that separate approval rather than treating it as a routine allocation. Calibrate inputs to local data before relying on any number, and commission an independent feasibility review for any allocation large relative to the pool or marginal in its decision.</p>
+        <h3>What it is</h3>
+        <p class="lede" style="margin:0">A staff sketch tool for bonus-density negotiations: order-of-magnitude figures, <b>not an appraisal, pro forma, or legal determination</b>. It prices bonus allocations from the city's two finite pools (195-unit RU, 325-unit TLU) and Large Resort district-cap lodging (added by conditional use, so no pool-scarcity cost applies; the impact floor and developer ceiling still bound the deal). Where added density instead needs a comp-plan amendment or <b>charter referendum</b>, the tool flags that separate approval. Calibrate inputs to local data before relying on any number, and commission an independent feasibility review for any allocation large relative to the pool or marginal in its decision.</p>
       </div>
 
       <div class="card">
-        <h3>The Numbers, in Plain Terms</h3>
-        <p class="lede" style="margin:0 0 8px"><b>Value to developer</b>, the most the bonus units are worth to the developer (discounted residual profit): the walk-away ceiling. A cost-driven range; the decision tests the conservative low end, the high end is the negotiation target.</p>
-        <p class="lede" style="margin:0 0 8px"><b>Pool value used</b>, the value of the finite pool units this bonus consumes (pool pathway only). Near zero when the pool is plentiful, rising toward depletion. Priced on the same conservative per-unit value as the ceiling. Stays zero until the balance falls below projected demand times horizon, then ramps; at full depletion it reaches the units' full value and the tool recommends holding them (Hold).</p>
-        <p class="lede" style="margin:0 0 8px"><b>Impact offset (required by law)</b>, new units add traffic, utility, and service demand; state law lets the city require the developer's fair share, deal or no deal.</p>
-        <p class="lede" style="margin:0 0 8px"><b>Break-even floor</b>, the impact offset plus the pool value consumed. Below it, the public subsidizes the project. <span class="anote">(The lawful mitigation baseline under F.S. §163.3180 and Nollan/Dolan/Koontz.)</span></p>
-        <p class="lede" style="margin:0 0 8px"><b>Developer cost</b>, what the offered package costs the developer to provide.</p>
-        <p class="lede" style="margin:0 0 8px"><b>Public value offered</b>, the city's <b>plain-dollar</b> cost to provide the package (qty × city $/unit, where qty is the amount above what code requires). Benefits are assumed secured as a condition of approval, so they count at full value. This is what the decision tests against the baseline; category multipliers only rank benefits, they don't enter it.</p>
-        <p class="lede" style="margin:0"><b>Value ratio</b>, public value per developer dollar. The amount above 1 is the gain from trade.</p>
+        <h3>The numbers, in plain terms</h3>
+        <ul class="guide-list">
+          <li><b>Value to developer.</b> The most the bonus units are worth to the developer (discounted residual profit): the walk-away ceiling. Test the conservative low end; the high end is the negotiation target. Derived from a per-unit market value — entered as a sale comp or built up from an income approach on <a href="#" class="seclink" onclick="goto(0);return false;">Step&nbsp;1</a> (condo = $/SF; rental = NOI ÷ cap rate; lodging = ADR × occ × ancillary × EBITDA ÷ cap rate) — run through a residual cost build-up.</li>
+          <li><b>Pool value used.</b> Value of the finite pool units the bonus consumes (pool pathway only). Near zero while the pool is plentiful; ramps as the balance falls below projected demand × horizon; at full depletion reaches the units' full value and the tool recommends <b>Hold</b>.</li>
+          <li><b>Impact offset (required by law).</b> The developer's fair share of the traffic, utility, and service demand the new units create. Compellable whether or not a deal closes (F.S. §163.3180; Nollan / Dolan / Koontz).</li>
+          <li><b>Break-even floor.</b> Impact offset plus pool value consumed. Below it, the public subsidizes the project.</li>
+          <li><b>Developer cost.</b> What the offered benefit package costs the developer to provide.</li>
+          <li><b>Public value offered.</b> The city's plain-dollar cost to provide the package (quantity above code × city $/unit). Benefits are credited at full value, secured as a condition of approval before the units release. This is what the decision tests against the floor.</li>
+          <li><b>Value ratio.</b> Public value per developer dollar; the amount above 1 is the gain from trade.</li>
+        </ul>
       </div>
 
       <div class="card">
-        <h3>The Three Inputs That Matter Most</h3>
-        <p class="lede" style="margin:0">Three inputs drive nearly every output: market value (the ceiling), construction cost (the floor), and developer margin (the split). Calibrate these first; other assumptions move results far less. The scarcity exponent matters only near depletion.</p>
+        <h3>The three inputs that matter most</h3>
+        <p class="lede" style="margin:0">Market value (the ceiling), construction cost (the floor), and developer margin (the split) drive nearly every output — calibrate these first, under <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions</a>. The scarcity exponent matters only near depletion.</p>
       </div>
 
       <div class="card">
-        <h3>How the Recommendation Is Reached</h3>
-        <p class="lede" style="margin:0"><b>Worthwhile</b> when public value offered meets the break-even floor; <b>feasible</b> when developer cost stays under the value to developer, tested on its conservative low end. The agreement zone runs from the least satisfying spend up to that ceiling. Fill it with the highest value-ratio benefits first.</p>
+        <h3>How the recommendation is reached</h3>
+        <p class="lede" style="margin:0"><b>Worthwhile</b> when public value offered meets the break-even floor. <b>Feasible</b> when developer cost stays under the value to developer, tested on its conservative low end. The agreement zone runs from the lowest worthwhile spend up to that ceiling — fill it with the highest value-ratio benefits first.</p>
       </div>
 
       <div class="card">
-        <h3>Known Limits, Read Before Relying on It</h3>
-        <p class="lede" style="margin:0 0 8px"><b>Plain-dollar decision.</b> The pass/fail compares the package's plain public value (city cost to provide) to the plain-dollar break-even floor. <b>Category multipliers</b> (resilience 2.5×, etc.) only <i>rank</i> benefits within a package, never inflating the offer on the decision scale. <span class="anote">(Earlier versions weighted the offer first; removed in v1.1.)</span> Category weighting has precedent (Chicago Zoning Ordinance §17-4-1000 et seq.).</p>
-        <p class="lede" style="margin:0 0 8px"><b>Invented curve shapes.</b> The scarcity exponent and value-decline factor are judgment shapes, not empirical (both editable under <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions</a>). At full depletion the floor reaches the units' full value, so the tool reports no agreement zone rather than implying a package could close the gap.</p>
-        <p class="lede" style="margin:0 0 8px"><b>Margin is not a return.</b> Developer margin is a flat percentage of cost, a proxy for a 12–15% target IRR. It ignores financing, hold period, and time value, so a developer's analyst will test feasibility differently. Treat value to developer as an order-of-magnitude ceiling.</p>
-        <p class="lede" style="margin:0 0 8px"><b>Land is held constant.</b> Value to developer prices only the marginal bonus units and does not subtract land (a by-right sunk cost). Right for the increment, but it understates all-in cost and is not a residual land value.</p>
-        <p class="lede" style="margin:0 0 8px"><b>Double-counting trap.</b> Required mitigation also entered as a voluntary benefit gets counted twice. Enter only the quantity above what code already requires, so code-mandated work isn't credited as a concession (cf. Chicago's bonus rules).</p>
-        <p class="lede" style="margin:0 0 8px"><b>Valuations assume delivery.</b> Condition allocations on security (letter of credit or bond), delivery timing, and recalculation if approved density rises (cf. Chicago §17-4-1004).</p>
-        <p class="lede" style="margin:0 0 8px"><b>Single TLU pool.</b> All lodging scarcity is priced against the 325-unit pool; the separate TC-1 (50) and Boutique Hotel-Condo (125) pools are not modeled (Step 1 flags when they apply).</p>
-        <p class="lede" style="margin:0 0 8px"><b>Residential and lodging only.</b> The model prices the bonus residential / lodging increment; commercial components of mixed-use projects do not draw pool units and are out of scope.</p>
-        <p class="lede" style="margin:0 0 8px"><b>Calibration.</b> Hard costs, category multipliers, impact figures, and district densities are placeholders, pending local cost data, a current concurrency study, and the city's adopted priorities before any output is load-bearing.</p>
-        <p class="lede" style="margin:0 0 8px"><b>Tax revenue is excluded.</b> The Fiscal Snapshot shows projected taxable value and tax yield per acre as context only. New taxes fund the services new residents consume, and the impact offset already covers impacts; counting tax yield toward the ask would be fiscalization of land use, which this framework avoids.</p>
-        <p class="lede" style="margin:0"><b>Auto-zoning is best-effort.</b> Confirm the district against the official Future Land Use map.</p>
+        <h3>Known limits, read before relying on it</h3>
+        <ul class="guide-list">
+          <li><b>Plain-dollar decision.</b> Pass/fail compares the package's plain public value to the plain-dollar floor. Category multipliers (resilience 2.5×, etc.) only rank benefits within a package; they do not inflate the offer.</li>
+          <li><b>Invented curve shapes.</b> The scarcity exponent and value-decline factor are judgment shapes, not empirical (both editable under <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions</a>).</li>
+          <li><b>Margin is not a return.</b> A flat percent of cost proxying a 12–15% IRR target; it ignores financing, hold period, and time value. Treat the ceiling as order-of-magnitude.</li>
+          <li><b>Land held constant.</b> Prices only the marginal bonus units; does not subtract land (a by-right sunk cost), so it understates all-in cost and is not a residual land value.</li>
+          <li><b>Double-counting trap.</b> Enter only the quantity above what code already requires, or code-mandated work gets credited as a concession.</li>
+          <li><b>Optional two-tier cost.</b> A construction step-up can be charged to just the marginal bonus units (default 1.00×; set roughly 1.10–1.15× to reflect added density pushing the project into a costlier construction type or structured parking).</li>
+          <li><b>Valuations assume delivery.</b> Condition allocations on security (letter of credit or bond), delivery timing, and recalculation if approved density rises.</li>
+          <li><b>Single TLU pool.</b> All lodging scarcity is priced against the 325-unit pool; the separate TC-1 (50) and Boutique Hotel-Condo (125) pools are not modeled (<a href="#" class="seclink" onclick="goto(0);return false;">Step&nbsp;1</a> flags when they apply).</li>
+          <li><b>Residential and lodging only.</b> Commercial components of mixed-use projects do not draw pool units and are out of scope.</li>
+          <li><b>Tax excluded.</b> The Fiscal Snapshot shows taxable value and yield per acre as context only; counting it toward the ask would be fiscalization of land use.</li>
+          <li><b>Placeholders.</b> Hard costs, category multipliers, impact figures, and district densities are placeholders pending local cost data, a current concurrency study, and adopted priorities. Confirm the district against the official FLU map.</li>
+        </ul>
       </div>
 
       <div class="card">
         <h3>Basis</h3>
-        <p class="lede" style="margin:0 0 8px">Impact figures use St. Pete Beach's actual adopted fees (v1.14.0): the Pinellas <b>Multimodal Impact Fee</b> (Code §150-40), ~<b>$1,248</b>/condo, <b>$1,420</b>/MF, <b>$1,604</b>/hotel room, plus the SPB <b>parks/rec fee</b> (~$843/residential unit, lodging exempt; Ord. 2022-04). Pinellas has no school, parks, fire, or library impact fee, so the § E <b>High</b> end carries a flagged proportionate-share estimate a concurrency study should replace. The resilience weighting stands in for a project benefit-cost ratio. District densities follow the comp plan; Large Resort and Town Center are under city review through 2026.</p>
-        <p class="lede" style="margin:0 0 8px"><b>Codified backing.</b> Added units come only from a finite pool: the 195-unit RU pool (LDC §39.18) and the 325-unit transient-lodging pool for TC-2 / Activity Center / Bayou Residential (Future Land Use element), both from the 2007 down-zoning of Large Resort over 65.16 acres. Each allocation is by Commission ordinance plus conditional use on a "merit basis" (LDC §4.12(d)), with the remaining balance recited per §39.18(c). Qualifying benefits are listed in §4.12(d)(1)–(9): public parking / multimodal, beach access, art, boat slips, workforce housing, green building, Gulf-front easements, and landscaping above code.</p>
-        <p class="lede" style="margin:0 0 8px"><b>What the code does <i>not</i> set.</b> No contribution rate, no benefit-valuation formula, no floor or ceiling; the only statutory weighting is Chapter 163 proportionate-share, the basis for the impact floor. The ZOPA bounds and the 15–25% / 25–50% guardrails are <b>analytic overlays, not adopted code</b>.</p>
-        <p class="lede" style="margin:0"><b>Supporting framework.</b> <i>Coming soon.</i> A fuller write-up of the supporting framework (<i>A Framework for Density Bonus Valuation in St. Pete Beach</i>, Tampa Bay Regional Planning Council, April 2026) will appear here.</p>
-        <p class="lede" style="margin:8px 0 0"><b>Sources &amp; benchmarks.</b> Benchmark figures trace to published sources, cited per row on the Assumptions and Benefit-library pages: construction cost <b>RSMeans</b> / <b>ICC</b>; lodging <b>STR / HVS</b>; soft costs and margin <b>ULI / CBRE</b>; condo comps <b>Redfin</b>; benefit unit costs from <b>SFRPC</b>, <b>FEMA</b>, <b>FDEP</b>, <b>FHWA</b>, <b>WGI</b>, <b>Forward Pinellas</b>, <b>UF Shimberg</b>, and <b>HUD</b>. Value-layer multipliers draw on <b>NIBS</b> (resilience), <b>GASB 34 / FHWA</b> (lifecycle), <b>FL Stat. 255.20</b>, and <b>BEA / RIMS II</b>.</p>
-        <p class="lede" style="margin:8px 0 0"><b>Value to developer (v1.16.0).</b> The bonus is valued from a per-unit market value run through a residual cost build-up. That market value can be entered directly as a sale comparable, or derived on Step 1 from an <b>income / fundamentals approach</b> shown as a cross-check with a one-click "use this": condominium = sellable SF × $/SF; multifamily rental = NOI ÷ cap rate (rent, vacancy, operating expense); lodging = ADR × occupancy × ancillary × EBITDA ÷ cap rate. (Rental previously borrowed the condo sale comp; the income approach now anchors it on its own operating economics.) Inputs are editable in Assumptions § B and § G. The core calculation now runs through a unit-tested engine module.</p>
-        <p class="lede" style="margin:8px 0 0"><b>Two-tier marginal cost (v1.17.0).</b> Optionally charge a construction <b>step-up</b> only to the marginal bonus units (Assumptions § A, "Bonus-unit construction step-up"), reflecting that the added density is what pushes a project into a costlier construction type and structured parking. Default 1.00× leaves the calibrated figures unchanged; set it (e.g. 1.10–1.15×) to apply the two-tier residual-land-value treatment from the supporting analysis. This is a cost-side premium on the bonus units, separate from the value-side decline factor.</p>
+        <p class="lede" style="margin:0 0 8px">Added units come only from finite pools created by the 2007 down-zoning of Large Resort (65.16 ac): the 195-unit RU pool (<a class="seclink" target="_blank" rel="noopener" href="https://library.municode.com/fl/st._pete_beach/codes/land_development_code?nodeId=CO_DIV39COREDIGEST_S39.18GEREUNRUDEPORE">LDC §39.18</a>) and the 325-unit transient-lodging pool for TC-2 / Activity Center / Bayou Residential (FLU element). Each allocation is by Commission ordinance plus conditional use on a "merit basis" (<a class="seclink" target="_blank" rel="noopener" href="https://library.municode.com/fl/st._pete_beach/codes/land_development_code">LDC §4.12(d)</a>), balance recited per §39.18(c); qualifying benefits are listed in §4.12(d)(1)–(9). Impact figures use SPB's adopted fees: the Pinellas <b>Multimodal fee</b> (Code §150-40) ≈ $1,248/condo, $1,420/MF, $1,604/hotel room, plus the <b>parks/rec fee</b> ≈ $843/residential unit (lodging exempt; Ord. 2022-04). Pinellas levies no school, parks, fire, or library impact fee, so the § E <b>High</b> end carries a flagged proportionate-share estimate a concurrency study should replace.</p>
+        <p class="lede" style="margin:0"><b>What code does not set.</b> No contribution rate, benefit-valuation formula, floor, or ceiling. The only statutory weighting is Chapter 163 proportionate-share, the basis for the impact floor. The ZOPA bounds and the 15–25% / 25–50% guardrails are <b>analytic overlays, not adopted code</b>.</p>
+      </div>
+
+      <details class="card diagcard"><summary>Changelog (version history)</summary>
         <p class="lede" style="margin:8px 0 0"><b>Credibility apparatus on (v1.19.0).</b> Two staff-review holds were turned off after a page-by-page / sources review. (1) Per-row <b>Source</b> and <b>Notes</b> columns are visible again on Assumptions and the Benefit Library, with citations re-confirmed against primary sources; rows that are judgment shapes or national placeholders are labeled "Illustrative default — confirm locally" rather than implying a false source. (2) The <b>enforceability haircut</b> (§ I) is active again: an unsecured promise is no longer credited at 100% — name what secures each benefit (covenant, development agreement, condition of approval, bond) for full credit. Re-enabling the haircut lowers the credited public value of any package with unsecured items (expected and correct). <i>(Superseded in v1.19.6 — benefits are now assumed secured; see below.)</i> Also corrected: the condo hard-cost note no longer mislabels ~$301/SF as the ICC R-2 Type IA rate (that rate is $234.59/SF); the bundled Corey Landings case study now uses the calibrated ~$3,146/unit impact floor instead of the retired $28,000 placeholder.</p>
         <p class="lede" style="margin:8px 0 0"><b>Assumptions search &amp; sections (v1.19.1).</b> The Assumptions page now has a search box and Expand&nbsp;all / Collapse&nbsp;all controls, and its A–K sections collapse on click — matching the Benefit Library. Search matches benchmark names, units, notes, and sources.</p>
         <p class="lede" style="margin:8px 0 0"><b>Notes &amp; source as a per-row disclosure (v1.19.2).</b> On both Assumptions and the Benefit Library, Notes and Source are no longer wide table columns that pushed rows off-screen; each row now has a <b>Notes &amp; source</b> toggle that opens a full-width panel below it (Notes then Source, with a ⚠ marker when a row has no cited source). Far more readable on small screens, and editing still works when the table is unlocked.</p>
@@ -813,17 +815,20 @@ th.notecol{font-size:12px;font-weight:400}
         <p class="lede" style="margin:8px 0 0"><b>Cleaner above-code wording (v1.19.19).</b> The summary now omits the "% above code" clause when it's 100% (the whole benefit counts), and only surfaces it for a partial discount — e.g. "…100 linear feet of seawall / bulkhead, of which 50% counts as above what code already requires, …" — since that's the only case where it changes the credited amount.</p>
         <p class="lede" style="margin:8px 0 0"><b>Removed the "% above code" field (v1.19.20).</b> The control was ambiguous — "50% above code" read as "50% more than code requires," when it actually meant "credit only that share." Planners now simply <b>enter the quantity above what code already requires</b> (the whole amount for a fully voluntary benefit). Every line is credited at full value; the math is unchanged (the old field defaulted to 100%).</p>
         <p class="lede" style="margin:8px 0 0"><b>Category icons + cleaner info icon (v1.19.21).</b> Each benefit card now shows a clean line icon (in a teal chip) for its category — a shield for Resilience, buildings for Community Development, a bus for Transportation, a house for Workforce Housing, a leaf for Environmental, a coin for Cash — to the left of the title. The Notes &amp; source column header is now a crisp lowercase-i info icon (inline SVG) instead of the old glyph.</p>
-        <p class="lede" style="margin:8px 0 0"><b>Trimmed footer copy (v1.19.22).</b> Removed the long how-to paragraphs under the Assumptions and Benefit Library tables — the controls are self-explanatory.
-      </div>
+        <p class="lede" style="margin:8px 0 0"><b>Trimmed footer copy (v1.19.22).</b> Removed the long how-to paragraphs under the Assumptions and Benefit Library tables — the controls are self-explanatory.</p>
+        <p class="lede" style="margin:8px 0 0"><b>User Guide rewrite + grammar (v1.20.0).</b> Rewrote the User Guide &amp; Method narrative to a tighter, bulleted form with page/source links; moved this changelog into a collapsible panel. The benefit summary now reads grammatically for every item (renamed "Public art" → "Public art installation" and the parking benefits → "…parking space" so they pluralize). On the Allocation History page, removed the long how-to paragraph and moved the "Enable editing" bar above the table, matching Assumptions and the Benefit Library.</p>
+      </details>
 
       <div class="card" id="legal-card">
-        <h3>Legal &amp; Political Guardrails</h3>
-        <p class="lede" style="margin:0 0 8px">Read before relying on any number. The Basis card above covers the local code; these are the state-law and charter constraints that sit on top of it. They are surfaced as caveats, not enforced in the math, this tool is decision support, not a legal determination.</p>
-        <p class="lede" style="margin:0 0 8px"><b>Charter referendum.</b> The St. Pete Beach charter requires a <b>voter referendum</b> before the Commission can increase height, density, or intensity, or change a land-use category. A recommended bonus may not be grantable by staff or Commission action alone, confirm the charter threshold and process with the City Attorney before treating any number as actionable.</p>
-        <p class="lede" style="margin:0 0 8px"><b>Live Local Act.</b> Florida's Live Local Act (2023, amended 2024) can override local density and height limits for qualifying affordable projects (broadly, 40%+ of units at or below 120% AMI for 30+ years). It is the developer's <b>outside option</b>, and a credible one effectively caps how much public benefit the city can extract for density the developer may be able to obtain by right under state law.</p>
-        <p class="lede" style="margin:0 0 8px"><b>Exactions doctrine, Nollan / Dolan / Koontz / Sheetz.</b> Any required public benefit must satisfy <i>Nollan</i> essential nexus and <i>Dolan</i> rough proportionality, extended to monetary exactions by <i>Koontz</i> (2013) and to legislatively adopted fee schedules by <i>Sheetz v. County of El Dorado</i> (2024). Legal exposure is highest when a benefit is priced off land-value <b>uplift</b> (value capture) rather than the <b>public impacts</b> the added density creates, which is exactly why this tool sizes the compellable floor on the impact-mitigation basis and uses uplift only as a negotiation ceiling. The framing is the City Attorney's call.</p>
-        <p class="lede" style="margin:0 0 8px"><b>State offset rule, §166.04151.</b> If the city ever <b>mandates</b> affordable units, Florida law requires offsetting incentives that <b>fully offset</b> the developer's cost. Voluntary bonus density offered in exchange for public benefit is a different legal posture, but a mandate would change the math.</p>
-        <p class="lede" style="margin:0"><b>Not legal advice.</b> This is a sketch-planning estimate and decision-support aid only, not an appraisal, not adopted policy, and not a legal determination. Confirm density / FAR figures and pool balances against the adopted Comprehensive Plan and the live Municode LDC, and route the exaction framing through the City Attorney.</p>
+        <h3>Legal &amp; political guardrails</h3>
+        <p class="lede" style="margin:0 0 10px">Surfaced as caveats, not enforced in the math. Route the exaction framing through the City Attorney before treating any number as actionable.</p>
+        <ul class="guide-list">
+          <li><b>Charter referendum.</b> The SPB charter requires a <b>voter referendum</b> before the Commission can increase height, density, or intensity, or change a land-use category. A recommended bonus may not be grantable by staff or Commission action alone.</li>
+          <li><b>Live Local Act</b> (2023, amended 2024) can override local density and height for qualifying affordable projects (broadly, 40%+ of units at or below 120% AMI for 30+ years) — the developer's by-right outside option, which caps how much public benefit the city can extract.</li>
+          <li><b>Exactions doctrine</b> (Nollan / Dolan / <a class="seclink" target="_blank" rel="noopener" href="https://supreme.justia.com/cases/federal/us/570/595/">Koontz</a> / <a class="seclink" target="_blank" rel="noopener" href="https://supreme.justia.com/cases/federal/us/601/22-1074/">Sheetz</a>). Any required benefit must satisfy essential nexus and rough proportionality, extended to monetary exactions by Koontz (2013) and to legislative fee schedules by Sheetz (2024). Exposure is highest when a benefit is priced off land-value <b>uplift</b> rather than <b>impacts</b>, which is why the floor is sized on impact mitigation and uplift is used only as a ceiling.</li>
+          <li><b>State offset rule §166.04151.</b> If the city ever <b>mandates</b> affordable units, it must fully offset the developer's cost. Voluntary bonus density is a different posture, but a mandate changes the math.</li>
+        </ul>
+        <p class="lede" style="margin:10px 0 0"><b>Not legal advice.</b> Confirm density / FAR figures and pool balances against the adopted Comprehensive Plan and the live <a class="seclink" target="_blank" rel="noopener" href="https://library.municode.com/fl/st._pete_beach/codes/land_development_code">Municode LDC</a>.</p>
       </div>
       </div>
     </section>
@@ -863,7 +868,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.19.22", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
+const VERSION="1.20.0", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden — a
@@ -934,7 +939,7 @@ function poolBarsHTML(){
   return '<div class="card"><h3>Pool drawdown</h3><div class="sub">Approved allocations against each finite pool — the scarcity the model prices. Only rows with an Approved decision count; Superseded and Other-pool rows are excluded.</div><div id="pooldrawdown">'+poolBarsInner()+'</div></div>';
 }
 function buildHistory(){
-  let h='<fieldset class="lockfs"'+(advUnlocked?'':' disabled')+'>';
+  let h=lockBar("Allocation ledger","The institutional record of pool draws that drives the scarcity calculation.")+'<fieldset class="lockfs"'+(advUnlocked?'':' disabled')+'>';
   h+='<div class="card"><h3>Density pool</h3><div class="sub">Remaining = pool total minus allocations below. This drives the scarcity cost in the model. Calibrate from: official Future Land Use map and LDC §39.18 (pool totals and district base/cap densities).</div><div class="agrid" style="grid-template-columns:repeat(2,1fr)"><div><label>RU pool total</label><input type="number" id="poolRU" value="'+POOL_TOTAL.RU+'"></div><div><label>TLU pool total</label><input type="number" id="poolTLU" value="'+POOL_TOTAL.TLU+'"></div></div><div class="hint" id="pool-summary" style="margin-top:10px">'+poolSummaryText()+'</div><div class="hint" style="margin-top:6px">The modeled TLU pool (325) is the Town Center-2 / Activity Center / Bayou Residential pool. SPB also has separate transient-lodging pools the tool does not total, Boutique Hotel/Condo 125, Town Center Core (TC-1) 50, Upham Beach Village 175. Lodging deals outside the TC-2/AC/Bayou districts draw from those instead.</div></div>';
   h+=poolBarsHTML();
   (function(){const counted=HISTORY.filter(r=>/approv/i.test(r.decision||""));
@@ -946,8 +951,6 @@ function buildHistory(){
     const statusCell=advUnlocked?hsel(i,"status",st,["Approved","Secured","Delivered"]):'<span class="hstatus hstatus-'+st.toLowerCase()+'">'+st+'</span>';
     h+='<tr><td>'+hfld(i,"date",r.date,"text","hdate")+'</td><td>'+htxt(i,"project",r.project)+'</td><td>'+hsel(i,"pool",r.pool,["RU","TLU"])+'</td><td class="r">'+hfld(i,"approved",r.approved,"number","hnum")+'</td><td class="r">'+hfld(i,"requested",r.requested,"number","hnum")+'</td><td>'+hsel(i,"decision",r.decision,["Approved","Denied","Pending","Withdrawn","Superseded","Other pool"])+'</td><td>'+statusCell+'</td><td>'+htxt(i,"source",r.source)+'</td><td>'+htxt(i,"notes",r.notes)+'</td><td>'+(advUnlocked?'<button class="x" data-del="'+i+'">\u00d7</button>':'')+'</td></tr>';});
   h+='</tbody></table></div><button class="addbtn" id="histadd" style="margin-top:12px">+ Add row</button></fieldset>';
-  h+=lockBar("Allocation ledger","The institutional record of pool draws that drives the scarcity calculation.");
-  h+='<p class="lede" style="margin-top:14px">The remaining pool flows into the scarcity cost automatically. Set a decision to anything other than Approved to exclude a row from the allocated total, use <b>Superseded</b> for a returned/divested approval and <b>Other pool</b> for a real allocation that draws from a different pool than the RU 195 / TLU 325 modeled here. The <b>Status</b> column tracks the delivery lifecycle, <b>Approved</b> (passed by ordinance) → <b>Secured</b> (delivery guaranteed by letter of credit, bond, or recorded agreement) → <b>Delivered</b> (constructed or paid); all three still count against the pool.</p>';
   return h;
 }
 
@@ -976,11 +979,11 @@ const LIB=[
  ["Pocket park","Community Development","$/SF",55,70],
  ["Public restroom facility","Community Development","$/each",250000,320000],
  ["Shade structure / pavilion","Community Development","$/each",45000,60000],
- ["Public art","Community Development","$/each",75000,100000],
+ ["Public art installation","Community Development","$/each",75000,100000],
  ["Community / civic facility space","Community Development","$/SF",220,250],
  ["Streetscape / hardscape (above code)","Community Development","$/LF",200,280],
- ["Structured public parking","Transportation","$/space",35000,43500],
- ["Surface public parking","Transportation","$/space",6500,8500],
+ ["Structured public parking space","Transportation","$/space",35000,43500],
+ ["Surface public parking space","Transportation","$/space",6500,8500],
  ["Complete street (sidewalk+)","Transportation","$/LF",1000,1400],
  ["Multi-use trail / bike lane","Transportation","$/LF",350,500],
  ["Traffic-calming device","Transportation","$/each",18000,24000],
@@ -1001,7 +1004,7 @@ const CATS_ORDER=["Resilience","Community Development","Transportation","Workfor
    Seeded per benefit, not per category (an easement and a streetscape share a category but differ here).
    Workforce housing is OFF (no SPB inclusionary requirement; it is a voluntary §4.12(d) benefit).
    Seawall is ON pending verification against the SPB LDC coastal provisions (bulkhead upkeep may be code-required). */
-const CODEMIN_ON=["Seawall / bulkhead","Tree canopy planting (above code)","Streetscape / hardscape (above code)","Structured public parking","Surface public parking"];
+const CODEMIN_ON=["Seawall / bulkhead","Tree canopy planting (above code)","Streetscape / hardscape (above code)","Structured public parking space","Surface public parking space"];
 /* Seed a ±25% sketch range around each catalog point value so Low and High differ; the midpoint
    equals the prior single default (so the model/worked figures are unchanged), and LIBSEED rows below
    override with calibrated ranges where they exist. Uniform band pending per-benefit local cost data. */
@@ -1043,7 +1046,7 @@ const LIBSRC={
  "Public plaza / park":{source:"RSMeans Site Work 2025"},
  "Community / civic facility space":{note:"Finished interior, ADA, HVAC.",source:"Tri-Town Construction FL Cost Guide"},
  "Streetscape / hardscape (above code)":{source:"FHWA Complete Streets"},
- "Structured public parking":{note:"Structured parking; WGI 2025 median.",source:"WGI 2025 Parking Structure Cost Outlook (publications.wginc.com)"},
+ "Structured public parking space":{note:"Structured parking; WGI 2025 median.",source:"WGI 2025 Parking Structure Cost Outlook (publications.wginc.com)"},
  "Complete street (sidewalk+)":{note:"Road diet + bike lanes + sidewalks + street trees.",source:"FHWA Complete Streets"},
  "Multi-use trail / bike lane":{note:"10–12 ft paved trail with drainage.",source:"American Trails / FHWA"},
  "PM peak trip mitigation":{source:"Forward Pinellas MIFO"},
