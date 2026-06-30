@@ -737,7 +737,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
         <p class="lede" style="margin:0 0 8px"><b>Impact offset (required by law)</b>, new units add traffic, utility, and service demand; state law lets the city require the developer's fair share, deal or no deal.</p>
         <p class="lede" style="margin:0 0 8px"><b>Break-even floor</b>, the impact offset plus the pool value consumed. Below it, the public subsidizes the project. <span class="anote">(The lawful mitigation baseline under F.S. §163.3180 and Nollan/Dolan/Koontz.)</span></p>
         <p class="lede" style="margin:0 0 8px"><b>Developer cost</b>, what the offered package costs the developer to provide.</p>
-        <p class="lede" style="margin:0 0 8px"><b>Public value offered</b>, the city's <b>plain-dollar</b> cost to provide the package (qty × city $/unit × % above code), present-valued for recurring benefits and cut by an <b>enforceability credit</b> for the securing instrument (recorded covenant 100%, unsecured far less). This is what the decision tests against the baseline; category multipliers only rank benefits, they don't enter it.</p>
+        <p class="lede" style="margin:0 0 8px"><b>Public value offered</b>, the city's <b>plain-dollar</b> cost to provide the package (qty × city $/unit × % above code). Benefits are assumed secured as a condition of approval, so they count at full value. This is what the decision tests against the baseline; category multipliers only rank benefits, they don't enter it.</p>
         <p class="lede" style="margin:0"><b>Value ratio</b>, public value per developer dollar. The amount above 1 is the gain from trade.</p>
       </div>
 
@@ -775,12 +775,13 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
         <p class="lede" style="margin:8px 0 0"><b>Sources &amp; benchmarks.</b> Benchmark figures trace to published sources, cited per row on the Assumptions and Benefit-library pages: construction cost <b>RSMeans</b> / <b>ICC</b>; lodging <b>STR / HVS</b>; soft costs and margin <b>ULI / CBRE</b>; condo comps <b>Redfin</b>; benefit unit costs from <b>SFRPC</b>, <b>FEMA</b>, <b>FDEP</b>, <b>FHWA</b>, <b>WGI</b>, <b>Forward Pinellas</b>, <b>UF Shimberg</b>, and <b>HUD</b>. Value-layer multipliers draw on <b>NIBS</b> (resilience), <b>GASB 34 / FHWA</b> (lifecycle), <b>FL Stat. 255.20</b>, and <b>BEA / RIMS II</b>.</p>
         <p class="lede" style="margin:8px 0 0"><b>Value to developer (v1.16.0).</b> The bonus is valued from a per-unit market value run through a residual cost build-up. That market value can be entered directly as a sale comparable, or derived on Step 1 from an <b>income / fundamentals approach</b> shown as a cross-check with a one-click "use this": condominium = sellable SF × $/SF; multifamily rental = NOI ÷ cap rate (rent, vacancy, operating expense); lodging = ADR × occupancy × ancillary × EBITDA ÷ cap rate. (Rental previously borrowed the condo sale comp; the income approach now anchors it on its own operating economics.) Inputs are editable in Assumptions § B and § G. The core calculation now runs through a unit-tested engine module.</p>
         <p class="lede" style="margin:8px 0 0"><b>Two-tier marginal cost (v1.17.0).</b> Optionally charge a construction <b>step-up</b> only to the marginal bonus units (Assumptions § A, "Bonus-unit construction step-up"), reflecting that the added density is what pushes a project into a costlier construction type and structured parking. Default 1.00× leaves the calibrated figures unchanged; set it (e.g. 1.10–1.15×) to apply the two-tier residual-land-value treatment from the supporting analysis. This is a cost-side premium on the bonus units, separate from the value-side decline factor.</p>
-        <p class="lede" style="margin:8px 0 0"><b>Credibility apparatus on (v1.19.0).</b> Two staff-review holds were turned off after a page-by-page / sources review. (1) Per-row <b>Source</b> and <b>Notes</b> columns are visible again on Assumptions and the Benefit Library, with citations re-confirmed against primary sources; rows that are judgment shapes or national placeholders are labeled "Illustrative default — confirm locally" rather than implying a false source. (2) The <b>enforceability haircut</b> (§ I) is active again: an unsecured promise is no longer credited at 100% — name what secures each benefit (covenant, development agreement, condition of approval, bond) for full credit. Re-enabling the haircut lowers the credited public value of any package with unsecured items (expected and correct). Also corrected: the condo hard-cost note no longer mislabels ~$301/SF as the ICC R-2 Type IA rate (that rate is $234.59/SF); the bundled Corey Landings case study now uses the calibrated ~$3,146/unit impact floor instead of the retired $28,000 placeholder.</p>
+        <p class="lede" style="margin:8px 0 0"><b>Credibility apparatus on (v1.19.0).</b> Two staff-review holds were turned off after a page-by-page / sources review. (1) Per-row <b>Source</b> and <b>Notes</b> columns are visible again on Assumptions and the Benefit Library, with citations re-confirmed against primary sources; rows that are judgment shapes or national placeholders are labeled "Illustrative default — confirm locally" rather than implying a false source. (2) The <b>enforceability haircut</b> (§ I) is active again: an unsecured promise is no longer credited at 100% — name what secures each benefit (covenant, development agreement, condition of approval, bond) for full credit. Re-enabling the haircut lowers the credited public value of any package with unsecured items (expected and correct). <i>(Superseded in v1.19.6 — benefits are now assumed secured; see below.)</i> Also corrected: the condo hard-cost note no longer mislabels ~$301/SF as the ICC R-2 Type IA rate (that rate is $234.59/SF); the bundled Corey Landings case study now uses the calibrated ~$3,146/unit impact floor instead of the retired $28,000 placeholder.</p>
         <p class="lede" style="margin:8px 0 0"><b>Assumptions search &amp; sections (v1.19.1).</b> The Assumptions page now has a search box and Expand&nbsp;all / Collapse&nbsp;all controls, and its A–K sections collapse on click — matching the Benefit Library. Search matches benchmark names, units, notes, and sources.</p>
         <p class="lede" style="margin:8px 0 0"><b>Notes &amp; source as a per-row disclosure (v1.19.2).</b> On both Assumptions and the Benefit Library, Notes and Source are no longer wide table columns that pushed rows off-screen; each row now has a <b>Notes &amp; source</b> toggle that opens a full-width panel below it (Notes then Source, with a ⚠ marker when a row has no cited source). Far more readable on small screens, and editing still works when the table is unlocked.</p>
         <p class="lede" style="margin:8px 0 0"><b>Pool-drawdown chart &amp; UI polish (v1.19.3).</b> The Allocation History page now shows a horizontal <b>pool-drawdown bar</b> for each pool (approved allocations by project vs the striped remaining balance) — the scarcity the model prices, made visible. Also: fixed the Deal Explorer slider showing a stray colored fill at 0%, and slimmed button heights throughout.</p>
         <p class="lede" style="margin:8px 0 0"><b>Type-scale cleanup (v1.19.4).</b> Normalized text sizes to a consistent integer ladder (23 page title · 15 section/card titles · 14 body · 13 labels · 12 hints · 11–10 micro-labels), removing ad-hoc half-pixel sizes. Body prose dropped from 15→14px so it reads clearly below the 15px card titles (they had been the same size).</p>
-        <p class="lede" style="margin:8px 0 0"><b>Button polish (v1.19.5).</b> Buttons now vertically center their label (tight line-height + flex centering, fixing top-heavy text), and the left-nav step buttons (1–3) are shorter with a smaller number circle (an inherited padding rule had been inflating the circle to ~34px).
+        <p class="lede" style="margin:8px 0 0"><b>Button polish (v1.19.5).</b> Buttons now vertically center their label (tight line-height + flex centering, fixing top-heavy text), and the left-nav step buttons (1–3) are shorter with a smaller number circle (an inherited padding rule had been inflating the circle to ~34px).</p>
+        <p class="lede" style="margin:8px 0 0"><b>Benefits assumed secured (v1.19.6).</b> Simplified the benefit model: every benefit is now credited at <b>100%</b>, since a density bonus is granted as a condition of approval (the city secures the benefits before releasing the units). The per-row <b>Recurring</b> and <b>Secured by</b> controls, the unsecured/above-code caution chips, and the now-inert Assumptions sections H (recurring-benefit present value) and I (enforceability credit) are hidden. This reverses the v1.19.0 enforceability haircut in favor of a simpler, plain-dollar package value. (Restorable in code via the SIMPLE_BENEFITS flag.)
       </div>
 
       <div class="card" id="legal-card">
@@ -830,14 +831,14 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 
 <script>
 "use strict";
-const VERSION="1.19.5", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
-/* Staff-review holds (restorable: flip to true to re-hide). v1.19.0 turned both OFF after the
-   page-by-page / sources review: the credibility apparatus is back on. SIMPLE_BENEFITS, when true,
-   hides the recurring + enforceability controls on the Benefits step and counts every benefit at full
-   credit (no haircut); now false, so unsecured promises take the §I enforceability haircut. HIDE_NOTES_SOURCE,
-   when true, blanks the Notes/Source columns on the Assumptions + Benefit-library pages at runtime; now
-   false, so the per-row citations are visible again. */
-const SIMPLE_BENEFITS=false, HIDE_NOTES_SOURCE=false;
+const VERSION="1.19.6", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
+/* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
+   secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
+   recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden — a
+   density bonus is granted as a condition of approval, so benefits are assumed secured. Flip to false to
+   restore the §I enforceability haircut and the recurring-PV controls. HIDE_NOTES_SOURCE=false keeps the
+   per-row Notes/Source citations visible on the Assumptions + Benefit-library pages. */
+const SIMPLE_BENEFITS=true, HIDE_NOTES_SOURCE=false;
 const K={hardCondo:237500,hardHotel:170000,soft:0.24,margin:0.15,decline:0.80,impact:3146,sales:0.06,scarExp:1.6};
 const CATMULT={"Workforce Housing":1.4,"Community Development":1.5,"Transportation":1.7,"Environmental":2.0,"Resilience":2.5,"Monetary / Cash":1.0};
 const BMULT={"Low-rise (1-3)":1.0,"Mid-rise (4-7)":1.15,"High-rise (8+)":1.35};
@@ -2329,7 +2330,7 @@ function drawZopa(m){
 function solvePackage(m){
   const ceiling=m.Vlow, floor=m.cityMin;
   if(!(ceiling>0)||!(floor>0)) return null;
-  const hc=(ENFORCE.condition!=null)?ENFORCE.condition:0.9;
+  const hc=SIMPLE_BENEFITS?1:((ENFORCE.condition!=null)?ENFORCE.condition:0.9);
   const cands=LIB.map(r=>r[0]).filter(nm=>nm&&(""+nm).trim()).map(nm=>{
     const L=libInfo(nm), mult=CATMULT[L.cat]||1, plainU=L.city*hc;
     return {name:nm,unit:L.unit,cat:L.cat,devU:L.dev,cityU:L.city,mult,plainU,weightedU:plainU*mult,ratio:L.dev>0?plainU/L.dev:0};
@@ -2367,7 +2368,7 @@ function drawSolver(m){
   const status=s.clears?(s.feasible?'<b style="color:var(--pass)">Clears the break-even floor within the developer budget.</b>':'<b style="color:var(--warn)">Clears the floor, but the package cost exceeds the developer budget.</b>'):'<b style="color:var(--warn)">The library cannot clear the floor within the developer budget at current values.</b>';
   el.innerHTML='<div class="atable-wrap"><table class="atable"><thead><tr><th scope="col">Benefit</th><th scope="col" class="r">Qty</th><th scope="col" class="r">Dev cost</th><th scope="col" class="r">Public value</th><th scope="col" class="r">Ratio</th></tr></thead><tbody>'+rows+
     '</tbody><tfoot><tr><td>Totals</td><td class="r"></td><td class="r mono">'+fmt(s.dev)+'</td><td class="r mono">'+fmt(s.plain)+'</td><td class="r"></td></tr></tfoot></table></div>'+
-    '<div class="hint" style="margin-top:8px">'+status+' Break-even floor '+fmt(s.floor)+', developer ceiling '+fmt(s.ceiling)+'. Enforceability assumed at condition-of-approval ('+Math.round(s.hc*100)+'%); securing an item with a stronger instrument lifts its credit. <button class="alink" id="solver-load">Add this package to the Benefits step →</button></div>';
+    '<div class="hint" style="margin-top:8px">'+status+' Break-even floor '+fmt(s.floor)+', developer ceiling '+fmt(s.ceiling)+'.'+(SIMPLE_BENEFITS?'':' Enforceability assumed at condition-of-approval ('+Math.round(s.hc*100)+'%); securing an item with a stronger instrument lifts its credit.')+' <button class="alink" id="solver-load">Add this package to the Benefits step →</button></div>';
   const b=document.getElementById("solver-load"); if(b)b.onclick=()=>loadSolverPackage(s);
 }
 function drawRanks(m){
@@ -3023,6 +3024,7 @@ function buildAssumptions(){
   let h=srcBanner+searchBar+'<fieldset class="lockfs"'+(advUnlocked?'':' disabled')+'><div class="atable-wrap"><table class="atable assumptable"><colgroup>'+cgA+'</colgroup><thead><tr><th scope="col">Benchmark</th><th scope="col">Units</th><th scope="col" class="r">Low</th><th scope="col" class="r">High</th><th scope="col" class="r">Applied</th><th scope="col" class="r">Override</th></tr></thead><tbody>';
   let sec="";
   ASSUMP.forEach((r,i)=>{
+    if(SIMPLE_BENEFITS && /^[HI]\./.test(r.sec)) return;   // recurring-PV (H) + enforceability (I) don't feed the model when benefits are assumed secured — hide them
     if(r.sec!==sec){sec=r.sec;h+='<tr class="asecrow asec-toggle" data-section="'+esc(sec)+'" role="button" tabindex="0" aria-label="Toggle '+esc(sec)+'"><td colspan="'+ncols+'"><span class="asec-caret">▾</span> '+sec+' <span class="anote">('+(secCount[sec]||0)+')</span></td></tr>';}
     const ahay=esc((""+r.label+" "+r.unit+" "+(r.notes||"")+" "+(r.source||"")).toLowerCase());
     const hasBasis=r.basis!==undefined;
@@ -3313,7 +3315,7 @@ const CASES=[{
     ["Pool effect","Allocates 25 RU; divests the 150 vested under Ord. 2022-03 (net 125 returned) → 170 of 195 remaining"],
     ["Outcome","Approved with conditions"]
   ],
-  notes:"The modeled impact-mitigation categories on this project run ≈ $2,091/unit (Pinellas multimodal $1,248 + SPB parks $843); separate sewer/utility connection charges (≈ $3,216) sit outside the floor. The case loads the tool's calibrated condo impact floor of ≈ $3,146/unit (the § E midpoint), editable under Assumptions — replacing the retired $28,000 placeholder the model elsewhere flags as ~10–13× too high. Benefits are loaded as conditions of CUP approval (90% enforceability credit). The package is representative of the staff-report items that map cleanly to the library; refine quantities on the Benefits step.",
+  notes:"The modeled impact-mitigation categories on this project run ≈ $2,091/unit (Pinellas multimodal $1,248 + SPB parks $843); separate sewer/utility connection charges (≈ $3,216) sit outside the floor. The case loads the tool's calibrated condo impact floor of ≈ $3,146/unit (the § E midpoint), editable under Assumptions — replacing the retired $28,000 placeholder the model elsewhere flags as ~10–13× too high. The package is representative of the staff-report items that map cleanly to the library; refine quantities on the Benefits step.",
   state:{pname:"Corey Landings",papp:"KT Corey Ave LLC / Kolter (CUP 25069)",use:"Condominium",btype:"High-rise (8+)",subtype:"Gulf-front",parking:"structured",coastal:"AE",district:"TC2",acres:4.51,byright:108,bonus:25,market:2600000,mktSF:2269,impact:3146},
   benefits:[{name:"Seawall / bulkhead",qty:103,pct:1,instr:"condition"},{name:"Public plaza / park",qty:24500,pct:1,instr:"condition"},{name:"Waterfront boardwalk / promenade",qty:600,pct:1,instr:"condition"},{name:"Public boat slip (Class A)",qty:4,pct:1,instr:"condition"}],
   address:"64 Corey Avenue, Saint Pete Beach",
