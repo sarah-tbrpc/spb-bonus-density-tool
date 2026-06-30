@@ -161,7 +161,7 @@ select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-i
 .bratio{font-variant-numeric:tabular-nums;font-size:12px;font-weight:600;background:var(--public-soft);color:var(--accent-d);padding:3px 11px;border-radius:999px}
 .bdel{margin-left:14px;width:26px;height:26px;border-radius:6px;border:1px solid var(--line);background:none;color:var(--ink3);line-height:1;cursor:pointer;font-size:15px}
 .bdel:hover{color:var(--fail);border-color:currentColor}
-.inputs{display:grid;gap:10px;align-items:start;grid-template-columns:70px 110px 120px 120px;margin-top:12px}
+.inputs{display:grid;gap:10px;align-items:start;grid-template-columns:80px 130px 130px;margin-top:12px}
 .bexchange{margin-top:12px;font-size:12px;color:var(--ink2);line-height:1.5}
 /* Notes & source collapse behind a small disclosure so each benefit card stays compact (matches the Assumptions / Library icon toggle) */
 .benote{margin-top:10px}
@@ -619,8 +619,8 @@ th.notecol{font-size:12px;font-weight:400}
       <div class="card">
       <div class="eyebrow">Step 2 of 3 · Benefits</div>
       <h2 class="step-h">Build the Public Benefit Package</h2>
-      <p class="lede" style="margin-bottom:18px">Add benefits and set quantity and % above code (only the share above what code already requires counts); each line is ranked by public value per developer dollar.</p>
-        <details class="stephelp"><summary>How lines are counted</summary>Each line: quantity × % above code × city value per unit, ranked by the top-right value ratio (public value per developer dollar). % above code scales both sides, so it never changes the ratio — it just stops crediting code-required work. Full method in the <a href="#" class="seclink" onclick="showAux('method');return false;">User&nbsp;Guide</a>; cost factors and multipliers are editable under <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions</a>.</details>
+      <p class="lede" style="margin-bottom:18px">Add benefits and enter the quantity provided <b>above what code already requires</b>; each line is ranked by public value per developer dollar.</p>
+        <details class="stephelp"><summary>How lines are counted</summary>Each line: quantity × city value per unit, ranked by the top-right value ratio (public value per developer dollar). Enter only the amount <b>beyond what code already requires</b> — if code mandates part of a benefit, leave that part out so required work isn't credited as a voluntary concession. Full method in the <a href="#" class="seclink" onclick="showAux('method');return false;">User&nbsp;Guide</a>; cost factors and multipliers are editable under <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions</a>.</details>
         <div id="blist"></div>
         <div id="pkg-summary"></div>
         <div class="btot"><span>Developer cost</span><span class="mono" id="tot-a"></span></div>
@@ -751,7 +751,7 @@ th.notecol{font-size:12px;font-weight:400}
         <p class="lede" style="margin:0 0 8px"><b>Impact offset (required by law)</b>, new units add traffic, utility, and service demand; state law lets the city require the developer's fair share, deal or no deal.</p>
         <p class="lede" style="margin:0 0 8px"><b>Break-even floor</b>, the impact offset plus the pool value consumed. Below it, the public subsidizes the project. <span class="anote">(The lawful mitigation baseline under F.S. §163.3180 and Nollan/Dolan/Koontz.)</span></p>
         <p class="lede" style="margin:0 0 8px"><b>Developer cost</b>, what the offered package costs the developer to provide.</p>
-        <p class="lede" style="margin:0 0 8px"><b>Public value offered</b>, the city's <b>plain-dollar</b> cost to provide the package (qty × city $/unit × % above code). Benefits are assumed secured as a condition of approval, so they count at full value. This is what the decision tests against the baseline; category multipliers only rank benefits, they don't enter it.</p>
+        <p class="lede" style="margin:0 0 8px"><b>Public value offered</b>, the city's <b>plain-dollar</b> cost to provide the package (qty × city $/unit, where qty is the amount above what code requires). Benefits are assumed secured as a condition of approval, so they count at full value. This is what the decision tests against the baseline; category multipliers only rank benefits, they don't enter it.</p>
         <p class="lede" style="margin:0"><b>Value ratio</b>, public value per developer dollar. The amount above 1 is the gain from trade.</p>
       </div>
 
@@ -771,7 +771,7 @@ th.notecol{font-size:12px;font-weight:400}
         <p class="lede" style="margin:0 0 8px"><b>Invented curve shapes.</b> The scarcity exponent and value-decline factor are judgment shapes, not empirical (both editable under <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions</a>). At full depletion the floor reaches the units' full value, so the tool reports no agreement zone rather than implying a package could close the gap.</p>
         <p class="lede" style="margin:0 0 8px"><b>Margin is not a return.</b> Developer margin is a flat percentage of cost, a proxy for a 12–15% target IRR. It ignores financing, hold period, and time value, so a developer's analyst will test feasibility differently. Treat value to developer as an order-of-magnitude ceiling.</p>
         <p class="lede" style="margin:0 0 8px"><b>Land is held constant.</b> Value to developer prices only the marginal bonus units and does not subtract land (a by-right sunk cost). Right for the increment, but it understates all-in cost and is not a residual land value.</p>
-        <p class="lede" style="margin:0 0 8px"><b>Double-counting trap.</b> Required mitigation also entered as a voluntary benefit gets counted twice. Use "% above code" to count only the above-code share, as Chicago's bonus rules require.</p>
+        <p class="lede" style="margin:0 0 8px"><b>Double-counting trap.</b> Required mitigation also entered as a voluntary benefit gets counted twice. Enter only the quantity above what code already requires, so code-mandated work isn't credited as a concession (cf. Chicago's bonus rules).</p>
         <p class="lede" style="margin:0 0 8px"><b>Valuations assume delivery.</b> Condition allocations on security (letter of credit or bond), delivery timing, and recalculation if approved density rises (cf. Chicago §17-4-1004).</p>
         <p class="lede" style="margin:0 0 8px"><b>Single TLU pool.</b> All lodging scarcity is priced against the 325-unit pool; the separate TC-1 (50) and Boutique Hotel-Condo (125) pools are not modeled (Step 1 flags when they apply).</p>
         <p class="lede" style="margin:0 0 8px"><b>Residential and lodging only.</b> The model prices the bonus residential / lodging increment; commercial components of mixed-use projects do not draw pool units and are out of scope.</p>
@@ -806,7 +806,8 @@ th.notecol{font-size:12px;font-weight:400}
         <p class="lede" style="margin:8px 0 0"><b>Library &amp; case-study cleanup (v1.19.16).</b> Removed the "code sets a minimum" checkbox/badge from the Benefit Library (extra detail not needed, especially with benefits assumed secured). In Case Studies, the facts table now uses a narrow label / wide value split (30/70) so values wrap less and the table is shorter.</p>
         <p class="lede" style="margin:8px 0 0"><b>Copy tweaks (v1.19.17).</b> Cross-check card reads "cross-check" (was "sanity check"); the fiscal counterfactual reads "Do Nothing vs. Build" consistently; the Deal Explorer card title is just "Deal Explorer".</p>
         <p class="lede" style="margin:8px 0 0"><b>Sentence-case benefit summary (v1.19.18).</b> The per-benefit summary now reads naturally: small counts are spelled out, units and names are singular or plural to match the quantity, and the benefit name is lower-cased mid-sentence — e.g. "Developer will provide one public restroom facility…" / "…five public restroom facilities…" / "…103 linear feet of seawall / bulkhead…". Trailing qualifiers like "(Class A)" or "@120% AMI" are preserved when pluralizing.</p>
-        <p class="lede" style="margin:8px 0 0"><b>Cleaner above-code wording (v1.19.19).</b> The summary now omits the "% above code" clause when it's 100% (the whole benefit counts), and only surfaces it for a partial discount — e.g. "…100 linear feet of seawall / bulkhead, of which 50% counts as above what code already requires, …" — since that's the only case where it changes the credited amount.
+        <p class="lede" style="margin:8px 0 0"><b>Cleaner above-code wording (v1.19.19).</b> The summary now omits the "% above code" clause when it's 100% (the whole benefit counts), and only surfaces it for a partial discount — e.g. "…100 linear feet of seawall / bulkhead, of which 50% counts as above what code already requires, …" — since that's the only case where it changes the credited amount.</p>
+        <p class="lede" style="margin:8px 0 0"><b>Removed the "% above code" field (v1.19.20).</b> The control was ambiguous — "50% above code" read as "50% more than code requires," when it actually meant "credit only that share." Planners now simply <b>enter the quantity above what code already requires</b> (the whole amount for a fully voluntary benefit). Every line is credited at full value; the math is unchanged (the old field defaulted to 100%).
       </div>
 
       <div class="card" id="legal-card">
@@ -856,7 +857,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.19.19", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
+const VERSION="1.19.20", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden — a
@@ -2025,7 +2026,6 @@ function render(){
       '<button class="bdel" data-x="'+i+'" aria-label="Remove benefit" title="Remove benefit">×</button></div></div>'+
       '<div class="inputs">'+
         '<div><div class="inp-lab">Qty</div><input type="text" inputmode="decimal" value="'+fmtNum(x.qty)+'" data-i="'+i+'" data-f="qty"></div>'+
-        '<div><div class="inp-lab">% above code</div><input type="number" value="'+Math.round(x.pct*100)+'" data-i="'+i+'" data-f="pct"></div>'+
         '<div><div class="inp-lab">Dev $/unit</div><input type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.dev))+'" data-i="'+i+'" data-f="dev"></div>'+
         '<div><div class="inp-lab">City $/unit</div><input type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.city))+'" data-i="'+i+'" data-f="city"></div>'+
       '</div>'+
@@ -2901,8 +2901,8 @@ function derivCM(m){
   return d;
 }
 function derivB(m){
-  let d='<div class="deriv"><div class="step"><b>Public value offered (plain $) = sum of: qty × city $/unit × % above code</b>, the city’s plain-dollar cost to provide the package. This is the figure the decision compares to the baseline.</div>';
-  m.rows.forEach(x=>{ d+='<div class="step">'+x.name+': '+x.qty+' × '+fmtFull(x.city)+' × '+Math.round(x.pct*100)+'% = <b>'+fmtFull(x.cityPlain)+'</b>'+(x.mult!==1?(' <span class="anote">(×'+x.mult+' priority weight → '+fmtFull(x.cityVal)+' for ranking)</span>'):'')+'</div>'; });
+  let d='<div class="deriv"><div class="step"><b>Public value offered (plain $) = sum of: qty × city $/unit</b>, the city’s plain-dollar cost to provide the package (qty = the amount above what code requires). This is the figure the decision compares to the baseline.</div>';
+  m.rows.forEach(x=>{ d+='<div class="step">'+x.name+': '+x.qty+' × '+fmtFull(x.city)+(x.pct<1?(' × '+Math.round(x.pct*100)+'%'):'')+' = <b>'+fmtFull(x.cityPlain)+'</b>'+(x.mult!==1?(' <span class="anote">(×'+x.mult+' priority weight → '+fmtFull(x.cityVal)+' for ranking)</span>'):'')+'</div>'; });
   d+='<div class="step">Offered public value (plain $) = <span class="res">'+fmtFull(m.Bplain)+'</span></div>';
   d+='<div class="step" style="margin-top:8px">Developer cost (qty × dev $/unit × % above) = <b>'+fmtFull(m.A)+'</b>; value ratio = '+(m.gPlain?m.gPlain.toFixed(2):"0")+'× (plain) · '+(m.g?m.g.toFixed(2):"0")+'× (priority-weighted)</div></div>';
   d+='<p class="lede" style="margin-top:14px">The pass/fail test is in <b>plain dollars</b>, the deal is worthwhile when the package’s plain public value meets the break-even floor, and feasible when developer cost stays under the value to developer. The <b>category multipliers</b> (resilience 2.5×, etc.) do <i>not</i> move the decision; they only rank which benefits to prefer within a package. Per-unit costs and values are editable on the '+secLink('Benefits step',"goto(1)")+'; multipliers under '+secLink('Assumptions',"showAux('assumptions')")+'.</p>';
