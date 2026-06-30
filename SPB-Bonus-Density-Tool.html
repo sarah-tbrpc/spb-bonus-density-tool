@@ -77,9 +77,9 @@ nav.steps{position:sticky;top:108px;align-self:start;display:flex;flex-direction
 .navver{font-size:10px;color:var(--ink3);opacity:.75;font-variant-numeric:tabular-nums}
 .navfoot button{display:block;width:100%;text-align:left;background:none;border:none;cursor:pointer;font-family:inherit;font-size:13px;color:var(--ink2);padding:9px 13px;border-radius:var(--r-sm);transition:background .14s,color .14s}
 .navfoot button:hover{background:#e9ecee;color:var(--accent)}
-.step-btn{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid transparent;background:transparent;cursor:pointer;border-radius:var(--r-sm);text-align:left;color:var(--ink2);font-family:inherit;font-size:14px;width:100%;transition:background .14s,color .14s}
+.step-btn{display:flex;align-items:center;gap:9px;padding:6px 11px;border:1px solid transparent;background:transparent;cursor:pointer;border-radius:var(--r-sm);text-align:left;color:var(--ink2);font-family:inherit;font-size:13px;width:100%;transition:background .14s,color .14s}
 .step-btn:hover{background:#e9ecee;color:var(--ink)}
-.step-btn .num{flex:none;width:22px;height:22px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--ink3)}
+.step-btn .num{flex:none;width:18px;height:18px;padding:0;background:none;box-shadow:none;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--ink3)}
 .step-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 .step-btn.active .num{background:#fff;border-color:#fff;color:var(--ink)}
 .step-btn.done .num{background:var(--accent);border-color:var(--accent);color:#fff}
@@ -197,7 +197,7 @@ select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-i
 .btot{display:flex;justify-content:space-between;padding:11px 0 2px;font-weight:700;font-size:14px}
 .addbar{display:flex;gap:8px;margin-top:12px}
 .addbar select{flex:1}
-.addbtn{background:var(--accent);color:#fff;border:none;border-radius:var(--r-sm);padding:0 18px;font-family:inherit;font-weight:600;font-size:13px;cursor:pointer;transition:background .15s,transform .04s}
+.addbtn{display:inline-flex;align-items:center;justify-content:center;line-height:1;background:var(--accent);color:#fff;border:none;border-radius:var(--r-sm);padding:0 18px;font-family:inherit;font-weight:600;font-size:13px;cursor:pointer;transition:background .15s,transform .04s}
 .addbtn:hover{background:var(--accent-d)}
 .addbtn:active{transform:translateY(1px)}
 
@@ -270,7 +270,7 @@ svg.spark{width:100%;height:150px;display:block}
 
 footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);z-index:40}
 .nav-in{max-width:none;margin:0;padding:11px 28px;display:flex;justify-content:space-between;align-items:center}
-.btn{font-family:inherit;font-size:14px;font-weight:600;padding:6px 16px;border-radius:var(--r-sm);cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--ink);transition:background .15s,border-color .15s,box-shadow .15s,transform .04s}
+.btn{display:inline-flex;align-items:center;justify-content:center;line-height:1.1;font-family:inherit;font-size:14px;font-weight:600;padding:6px 16px;border-radius:var(--r-sm);cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--ink);transition:background .15s,border-color .15s,box-shadow .15s,transform .04s}
 .btn:hover{background:#f7f8f9;border-color:#c9cfd4}
 .btn:active{transform:translateY(1px)}
 .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:var(--sh-sm)}
@@ -781,6 +781,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
         <p class="lede" style="margin:8px 0 0"><b>Notes &amp; source as a per-row disclosure (v1.19.2).</b> On both Assumptions and the Benefit Library, Notes and Source are no longer wide table columns that pushed rows off-screen; each row now has a <b>Notes &amp; source</b> toggle that opens a full-width panel below it (Notes then Source, with a ⚠ marker when a row has no cited source). Far more readable on small screens, and editing still works when the table is unlocked.</p>
         <p class="lede" style="margin:8px 0 0"><b>Pool-drawdown chart &amp; UI polish (v1.19.3).</b> The Allocation History page now shows a horizontal <b>pool-drawdown bar</b> for each pool (approved allocations by project vs the striped remaining balance) — the scarcity the model prices, made visible. Also: fixed the Deal Explorer slider showing a stray colored fill at 0%, and slimmed button heights throughout.</p>
         <p class="lede" style="margin:8px 0 0"><b>Type-scale cleanup (v1.19.4).</b> Normalized text sizes to a consistent integer ladder (23 page title · 15 section/card titles · 14 body · 13 labels · 12 hints · 11–10 micro-labels), removing ad-hoc half-pixel sizes. Body prose dropped from 15→14px so it reads clearly below the 15px card titles (they had been the same size).</p>
+        <p class="lede" style="margin:8px 0 0"><b>Button polish (v1.19.5).</b> Buttons now vertically center their label (tight line-height + flex centering, fixing top-heavy text), and the left-nav step buttons (1–3) are shorter with a smaller number circle (an inherited padding rule had been inflating the circle to ~34px).
       </div>
 
       <div class="card" id="legal-card">
@@ -830,7 +831,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 
 <script>
 "use strict";
-const VERSION="1.19.4", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
+const VERSION="1.19.5", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
 /* Staff-review holds (restorable: flip to true to re-hide). v1.19.0 turned both OFF after the
    page-by-page / sources review: the credibility apparatus is back on. SIMPLE_BENEFITS, when true,
    hides the recurring + enforceability controls on the Benefits step and counts every benefit at full
