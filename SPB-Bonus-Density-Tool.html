@@ -327,6 +327,8 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 .cmpline{display:flex;align-items:baseline;gap:8px;font-size:13.5px;margin:6px 0;flex-wrap:wrap}
 .cmpline .cmp-v{font-variant-numeric:tabular-nums;font-weight:700}
 .cmp-tag{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px}
+.memo-text{width:100%;box-sizing:border-box;font:12.5px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--ink);background:#fbfcfc;border:1px solid var(--line);border-radius:8px;padding:12px 14px;resize:vertical;white-space:pre-wrap}
+.memo-actions{display:flex;align-items:center;gap:12px;margin-top:8px}
 .atable-wrap{overflow:auto;max-height:62vh;margin-top:4px;border:1px solid var(--line);border-radius:var(--r-sm);scrollbar-width:thin}
 .atable{width:100%;border-collapse:collapse;font-size:13px}
 .atable th{position:sticky;top:0;z-index:5;text-align:left;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink);background:var(--brand-soft);border-bottom:1px solid #a9c8cb;padding:9px 10px;font-weight:700;white-space:nowrap}
@@ -701,6 +703,12 @@ th.notecol{font-size:12px;font-weight:400}
           <input type="range" id="explore" min="0" max="100" step="1" value="0"></div>
         <div class="hint" id="explore-note"></div>
       </div>
+      <div class="subsec" id="memo-card">
+        <h3>Draft Staff Memo</h3>
+        <div class="sub">An auto-drafted summary for a staff report or Commission packet. Editable; review and adjust before use. <b>Decision support, not legal advice.</b></div>
+        <textarea id="memo-text" class="memo-text" rows="14" spellcheck="false" aria-label="Draft staff memo"></textarea>
+        <div class="memo-actions"><button class="btn primary" id="btn-copymemo">Copy memo</button><span class="anote" id="memo-copied" aria-live="polite"></span></div>
+      </div>
       </div>
 
       <h3 class="diag-h">Diagnostics</h3>
@@ -897,7 +905,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.24.0", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.25.0", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden — a
@@ -2118,7 +2126,7 @@ function render(){
 
   document.getElementById("numgrid").innerHTML=numgridHTML(m);
   paintVerdict(m,v);
-  drawZopa(m);drawRanks(m);drawRobo(m);drawDensity(m);drawXCheck(m);drawValueStack(m);drawSolver(m);drawFiscal();
+  drawZopa(m);drawRanks(m);drawRobo(m);drawDensity(m);drawXCheck(m);drawValueStack(m);drawSolver(m);drawFiscal();drawMemo(m);
 }
 function softRender(){
   const m=compute();
@@ -2134,7 +2142,7 @@ function softRender(){
         : 'cost '+fmt(x.devCost)+' → city value '+fmt(x.cityPlain))+(x.hc<1?' (after '+Math.round(x.hc*100)+'% credit)':'');}});
     if(cur===STEPS.length-1){paintVerdict(m,v);
     document.getElementById("numgrid").innerHTML=numgridHTML(m);
-    drawZopa(m);drawRanks(m);drawRobo(m);drawDensity(m);drawXCheck(m);drawValueStack(m);drawSolver(m);drawFiscal();}
+    drawZopa(m);drawRanks(m);drawRobo(m);drawDensity(m);drawXCheck(m);drawValueStack(m);drawSolver(m);drawFiscal();drawMemo(m);}
 }
 /* ---------- value density + deal explorer ---------- */
 function perOf(val,den){return (den>0)?val/den:null;}
@@ -2294,6 +2302,52 @@ function verdictObj(m){
     body:"The minimum acceptable package costs more than the bonus is worth to the developer. Deny or restructure the request."};
 }
 
+/* auto-drafted staff/Commission memo from the current model + verdict (plain text, editable, copyable) */
+function draftMemo(m){
+  const d=DISTRICTS[S.district]||DISTRICTS.UNK;
+  const distLabel=(S.district&&S.district!=="UNK")?(d.label||S.district):"Not set";
+  const pool=(S.use==="Temporary Lodging")?"transient-lodging (TLU)":"residential (RU)";
+  const v=verdictObj(m);
+  const nm=(S.pname&&(""+S.pname).trim())||"(unnamed project)";
+  const app=(S.papp&&(""+S.papp).trim())||"(applicant not entered)";
+  const worth=m.Bplain>=m.cityMin, feas=m.A<=m.Vlow;
+  const L=[];
+  L.push("DRAFT — DENSITY BONUS VALUATION SUMMARY");
+  L.push("Sketch-grade decision support — not an appraisal, pro forma, or legal determination. v"+VERSION+", "+VERSION_DATE+".");
+  L.push("");
+  L.push("Project:   "+nm);
+  L.push("Applicant: "+app);
+  L.push("District:  "+distLabel);
+  L.push("Request:   "+(S.bonus||0)+" bonus units ("+(S.use||"use not set")+") from the "+pool+" pool; "+(S.byright||0)+" units by-right.");
+  L.push("");
+  L.push("RECOMMENDATION: "+v.head+".");
+  L.push("");
+  L.push("KEY FIGURES");
+  L.push("  Value to developer (ceiling):  "+fmt(m.Vlow)+(m.Vhigh>m.Vlow?(" to "+fmt(m.Vhigh)):""));
+  L.push("  Break-even floor (minimum):    "+fmt(m.cityMin)+"  [impact "+fmt(m.I)+(m.D>0?(" + pool value "+fmt(m.D)):"")+"]");
+  L.push("  Public value offered:          "+fmt(m.Bplain));
+  L.push("  Developer stated contribution: "+fmt(m.A));
+  L.push("");
+  L.push("ASSESSMENT");
+  L.push("  Worthwhile: offered public value "+fmt(m.Bplain)+(worth?" meets":" is below")+" the break-even floor "+fmt(m.cityMin)+".");
+  L.push("  Feasible:   stated contribution "+fmt(m.A)+(feas?" fits within":" exceeds")+" the conservative ceiling "+fmt(m.Vlow)+".");
+  if(worth&&feas&&m.belowCapture) L.push("  The offer captures "+Math.round(m.captureRate*100)+"% of the value to developer, below the "+Math.round(CAPTURE.capLo*100)+"–"+Math.round(CAPTURE.capHi*100)+"% fair-share guideline, so there may be room to request more. The city may compel only the impact-proportional amount ("+fmt(m.I)+"); any benefit above that is a voluntary incentive for the discretionary density.");
+  else if(!worth&&m.room>0) L.push("  The offer is short of the floor by "+fmt(m.cityMin-m.Bplain)+"; "+fmt(m.room)+" of developer budget remains to close the gap with higher value-to-cost benefits.");
+  else if(!feas) L.push("  The package exceeds the value to developer; the applicant would build by-right. Reduce the package or grant more units.");
+  L.push("");
+  L.push("PROPOSED PUBLIC BENEFITS");
+  if(m.rows&&m.rows.length) m.rows.forEach(function(x){
+    const u=(x.unit||"unit").replace(/^\$\s*\/\s*/,"");
+    const tot=(x.devTotal!=null)?x.devTotal:Math.round(x.dev*x.qty);
+    L.push("  - "+x.name+": "+(x.qty||0).toLocaleString()+" "+u+" — stated "+fmt(tot)+"; city value "+fmt(x.cityPlain));
+  }); else L.push("  None entered.");
+  L.push("");
+  L.push("CAVEATS");
+  L.push("  Order-of-magnitude figures pending calibration to local data. The 15–25% / 25–50% guardrails are analytic overlays, not adopted code; the city may compel only the impact-proportional amount (Koontz / F.S. 163.3180). Confirm density and pool balances against the adopted Comprehensive Plan and LDC. Decision support, not legal advice.");
+  return L.join("\n");
+}
+/* refresh the memo textarea (skip while the user is editing it so manual tweaks aren't clobbered) */
+function drawMemo(m){const t=document.getElementById("memo-text"); if(!t||t===document.activeElement)return; t.value=draftMemo(m);}
 function arcPath(cx,cy,rO,rI,a0,a1){
   const x0o=cx+rO*Math.cos(a0),y0o=cy+rO*Math.sin(a0),x1o=cx+rO*Math.cos(a1),y1o=cy+rO*Math.sin(a1);
   const x1i=cx+rI*Math.cos(a1),y1i=cy+rI*Math.sin(a1),x0i=cx+rI*Math.cos(a0),y0i=cy+rI*Math.sin(a0);
@@ -3627,6 +3681,12 @@ document.querySelectorAll(".diagcard").forEach(function(d){d.addEventListener("t
 document.getElementById("btn-print").addEventListener("click",printSummary);
 document.getElementById("btn-savescen").addEventListener("click",()=>{saveScenario();showAux("scenarios");});
 document.getElementById("btn-compare").addEventListener("click",()=>showAux("scenarios"));
+document.getElementById("btn-copymemo").addEventListener("click",function(){
+  const t=document.getElementById("memo-text"),note=document.getElementById("memo-copied"); if(!t)return;
+  const done=()=>{if(note){note.textContent="Copied to clipboard";setTimeout(()=>{note.textContent="";},2500);}};
+  const fallback=()=>{t.focus();t.select();try{document.execCommand("copy");done();}catch(e){if(note)note.textContent="Press Ctrl/Cmd+C to copy";}};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t.value).then(done).catch(fallback);}else{fallback();}
+});
 document.getElementById("aux-scenarios").addEventListener("click",e=>{
   const t=e.target;
   if(t.id==="scen-save"){saveScenario();renderAux("scenarios");}
