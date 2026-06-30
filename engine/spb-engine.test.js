@@ -161,34 +161,6 @@ test("benefitRow — non-SIMPLE: enforceability haircut + recurring PV apply", (
   near(row.cityPlain, 1 * 1000 * 1 * pvf * 0.9, 1e-6);
 });
 
-test("benefitRow — esc >= disc clamps the recurring PV to the bounded esc=disc branch, still flags escViol", () => {
-  // escalation ABOVE the discount rate: the growing-annuity closed form would diverge (PV grows
-  // exponentially in the term). Policy clamps esc → disc so pvFactor uses its bounded n/(1+disc) branch.
-  const PVD = { esc: 0.05, disc: 0.03, term: 30 };
-  const K_consts = { CATMULT, PVD, ENFORCE, SIMPLE_BENEFITS: false };
-  const row = E.benefitRow(
-    { name: "Maint", qty: 1, pct: 1, dev: 100, city: 1000, recurring: true, term: 0, instr: "covenant" },
-    { cat: "Resilience", unit: "$/yr", dev: 0, city: 0 }, false, K_consts);
-  const clamped = 30 / 1.03;                         // n/(1+disc): pvFactor's bounded linear branch
-  const diverged = E.pvFactor(0.05, 0.03, 30);       // what the UNclamped growing-annuity form returns
-  assert.ok(diverged > clamped, "sanity: the unclamped growing-annuity PV is larger / blows up");
-  near(row.pvf, clamped, 1e-12, "pvf is clamped to the esc=disc value");
-  near(row.devCost, 100 * clamped, 1e-9, "developer cost uses the bounded factor");
-  near(row.cityPlain, 1000 * clamped * 1.0, 1e-9, "city value uses the bounded factor (covenant hc=1)");
-  assert.strictEqual(row.escViol, true, "escViol still warns that esc is not below disc");
-});
-
-test("benefitRow — esc < disc is unaffected (normal growing-annuity PV, no escViol)", () => {
-  // guard against over-clamping: when escalation is safely below discount, behavior is unchanged
-  const PVD = { esc: 0.02, disc: 0.05, term: 30 };
-  const K_consts = { CATMULT, PVD, ENFORCE, SIMPLE_BENEFITS: false };
-  const row = E.benefitRow(
-    { name: "Maint", qty: 1, pct: 1, dev: 100, city: 1000, recurring: true, term: 0, instr: "covenant" },
-    { cat: "Resilience", unit: "$/yr", dev: 0, city: 0 }, false, K_consts);
-  near(row.pvf, E.pvFactor(0.02, 0.05, 30), 1e-12, "unchanged when esc < disc");
-  assert.strictEqual(row.escViol, false);
-});
-
 // ---------------------------------------------------------------------------
 // The published worked reconciliation, with the value-to-developer bracket.
 // Corey Landing: Condominium, low-rise, surface, AE, Pool Allocation,
@@ -402,4 +374,34 @@ test("computeModel — bonusStep charges the step-up to bonus units (V and impMa
   near(stepped.impMargin, (1_000_000 - 400_000) / 400_000, 1e-9);
   // omitting bonusStep matches bonusStep 1
   dollar(E.computeModel(Object.assign({}, inp, { bonusStep: 1 })).V, 4_800_000);
+});
+
+// ---------------------------------------------------------------------------
+// Recurring-benefit escalation clamp (numerical safety): esc >= disc must not
+// produce an unbounded growing-annuity PV; it is clamped to the n/(1+disc) branch.
+// The escViol advisory flag still fires; this only bounds its dollar impact.
+test("benefitRow — recurring escalation >= discount is clamped to a bounded PV (escViol still flags)", () => {
+  // esc 0.06 >= disc 0.05 -> growing-annuity branch would explode; clamp esc->disc uses 30/(1.05).
+  // pvf = 30/1.05 = 28.571428...  devCost = 100 x pvf = 2857  cityPlain = 1000 x pvf x hc(covenant 1.0) = 28571
+  const PVD = { esc: 0.06, disc: 0.05, term: 30 };
+  const K_consts = { CATMULT, PVD, ENFORCE, SIMPLE_BENEFITS: false };
+  const row = E.benefitRow(
+    { name: "Maint", qty: 1, pct: 1, dev: 100, city: 1000, recurring: true, term: 0, instr: "covenant" },
+    { cat: "Resilience", unit: "$/yr", dev: 0, city: 0 }, false, K_consts);
+  near(row.pvf, 30 / 1.05, 1e-12);                    // clamped to the n/(1+disc) branch
+  assert.ok(30 / 1.05 < E.pvFactor(0.06, 0.05, 30));  // sanity: clamp is the smaller, bounded value
+  dollar(row.devCost, 2857);                          // 100 x clamped pvf
+  dollar(row.cityPlain, 28571);                       // 1000 x clamped pvf x covenant hc(1.0)
+  assert.strictEqual(row.hc, 1.0);                    // covenant -> full enforceability
+  assert.strictEqual(row.escViol, true);              // violation surfaced, just bounded
+});
+
+test("benefitRow — recurring escalation below discount is untouched (no clamp)", () => {
+  const PVD = { esc: 0.02, disc: 0.05, term: 30 };
+  const K_consts = { CATMULT, PVD, ENFORCE, SIMPLE_BENEFITS: false };
+  const row = E.benefitRow(
+    { name: "Maint", qty: 1, pct: 1, dev: 100, city: 1000, recurring: true, term: 0, instr: "covenant" },
+    { cat: "Resilience", unit: "$/yr", dev: 0, city: 0 }, false, K_consts);
+  near(row.pvf, E.pvFactor(0.02, 0.05, 30), 1e-12);   // exact growing-annuity factor, unchanged
+  assert.strictEqual(row.escViol, false);
 });
