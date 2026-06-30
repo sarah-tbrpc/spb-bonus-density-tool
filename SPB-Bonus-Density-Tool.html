@@ -588,7 +588,7 @@ th.notecol{font-size:12px;font-weight:400}
         <h3>Development Classification and Cost</h3>
         <div class="sub">Enter construction cost and market value directly, or use the estimators to derive them from specs.</div>
         <div class="row2">
-          <div><label class="lab"><span>Use Type <span class="ihint" data-ih="Why: residential draws from the 195-unit RU pool; temporary lodging from the 325-unit TLU pool.|How: it sets the construction-cost basis, the per-unit impact fee, and how market value is estimated."></span></span><span class="val anote" id="utype" title="Residential draws from the RU pool; temporary lodging from the TLU pool"></span></label>
+          <div><label class="lab"><span>Use Type <span class="ihint" data-ih="Why: residential draws from the 195-unit RU pool; temporary lodging from the 325-unit TLU pool.|How: it sets the construction-cost basis, the per-unit impact fee, and how market value is estimated."></span></span><span class="val anote" id="utype"></span></label>
             <select id="use"><option value="">Select…</option><option>Condominium</option><option>Multifamily Rental</option><option>Temporary Lodging</option></select></div>
           <div><label class="lab"><span>Building Type <span class="ihint" data-ih="Why: taller buildings cost more per unit to build.|How: it multiplies the construction cost, which lowers the residual and the value to developer."></span></span></label>
             <select id="btype"><option value="">Select…</option><option>Low-rise (1-3)</option><option>Mid-rise (4-7)</option><option>High-rise (8+)</option></select></div>
@@ -665,7 +665,6 @@ th.notecol{font-size:12px;font-weight:400}
       <div class="eyebrow">Step 2 of 3 · Benefits</div>
       <h2 class="step-h">Build the Public Benefits Package</h2>
       <p class="lede" style="margin-bottom:18px">Add benefits and enter the quantity provided <b>above what code already requires</b>; each line is ranked by priority-weighted public value per developer dollar (the badge).</p>
-        <details class="stephelp"><summary>How lines are counted</summary>Each line has two figures: the developer's <b>stated contribution</b> (the total they propose to provide or pay) and the <b>public value</b> (what it is worth to the city, per unit). Public value offered = quantity × public value per unit. The top-right badge shows public value per dollar of stated contribution; the Results page ranks benefits by that value times each category's priority weight (shown on the line, set in Assumptions § D). Enter only the amount <b>beyond what code already requires</b>, if code mandates part of a benefit, leave that part out so required work isn't credited as a voluntary concession. Full method in the <a href="#" class="seclink" onclick="showAux('method');return false;">User&nbsp;Guide</a>; cost factors are editable under <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions</a>.</details>
         <div id="blist"></div>
         <div id="pkg-summary"></div>
         <div class="btot"><span>Developer contribution (stated) <span class="ihint" data-ih="Why: the total the applicant proposes to provide across all benefits.|How: it is tested against the value-to-developer ceiling; if it exceeds that, the package is over budget (not feasible)."></span></span><span class="mono" id="tot-a"></span></div>
@@ -674,7 +673,7 @@ th.notecol{font-size:12px;font-weight:400}
           <select id="addsel"></select>
           <button class="addbtn" id="addbtn">Add</button>
         </div>
-        <div class="hint">Benefit values come from the library. Add unlisted items by extending the library.</div>
+        <div class="hint">Benefit values come from the <a href="#" class="seclink" onclick="showAux('library');return false;">library</a>; add unlisted items by extending it. Full method in the <a href="#" class="seclink" onclick="showAux('method');return false;">User&nbsp;Guide</a>; cost factors are editable under <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions</a>.</div>
       </div>
     </section>
 
@@ -734,7 +733,7 @@ th.notecol{font-size:12px;font-weight:400}
         <div id="fiscal-figs"></div>
       </details>
       <details class="card diagcard" id="xcheck-card"><summary>Cross-Check: Tampa 10:1 / ICC Construction-Cost Basis</summary>
-        <div class="sub">An optional cross-check against the basis SPB Planning cited (Tampa Code 27-140 and ICC). It compares the developer’s benefit spend to the bonus units' construction cost. <b>Reference only, not part of the decision.</b> Inputs editable under <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions § F</a>.</div>
+        <div class="sub">An optional cross-check against the basis SPB Planning cited (Tampa Code 27-140 and ICC). It compares the developer’s benefit spend to the bonus units' construction cost. <b>Reference only, not part of the decision.</b> Inputs editable under <a href="#" class="seclink" onclick="openAssumpSec('F.');return false;">Assumptions § F</a>.</div>
         <div class="numgrid" id="xcheck"></div>
         <div class="hint" id="xcheck-note"></div>
       </details>
@@ -914,7 +913,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.27.4", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.27.5", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -1956,10 +1955,10 @@ document.getElementById("addbtn").onclick=()=>{if(!addsel.value)return;S.benefit
 
 
 function readoutHTML(m,v){
-  return '<span class="pill" title="'+(v.tip||"")+'" style="background:'+v.bg+';color:'+v.fg+'">'+v.tag+'</span>'+
-    '<div class="rd clk" role="button" tabindex="0" data-aux="explainV" title="how this is calculated"><div class="k">Value to developer</div><div class="v mono">'+fmt(m.V)+'</div></div>'+
-    '<div class="rd clk" role="button" tabindex="0" data-aux="explainCityMin" title="how this is calculated"><div class="k">Break-even floor</div><div class="v mono">'+fmt(m.cityMin)+'</div></div>'+
-    '<div class="rd clk" role="button" tabindex="0" data-aux="explainB" title="how this is calculated"><div class="k">Public value offered</div><div class="v mono">'+fmt(m.Bplain)+'</div></div>';
+  return '<span class="pill" style="background:'+v.bg+';color:'+v.fg+'">'+v.tag+'</span>'+
+    '<div class="rd clk" role="button" tabindex="0" data-aux="explainV"><div class="k">Value to developer</div><div class="v mono">'+fmt(m.V)+'</div></div>'+
+    '<div class="rd clk" role="button" tabindex="0" data-aux="explainCityMin"><div class="k">Break-even floor</div><div class="v mono">'+fmt(m.cityMin)+'</div></div>'+
+    '<div class="rd clk" role="button" tabindex="0" data-aux="explainB"><div class="k">Public value offered</div><div class="v mono">'+fmt(m.Bplain)+'</div></div>';
 }
 /* package-level open-questions rollup; on Results the links jump to the Benefits step, on the
    Benefits step they scroll to the offending line. Renders nothing when there are no open questions. */
@@ -3237,6 +3236,26 @@ function showAux(name){returnStep=cur;
 }
 /* open the User Guide and jump to the Legal & political guardrails card (from the Results pointer) */
 function openLegal(){showAux("method");setTimeout(()=>{const el=document.getElementById("legal-card");if(el)el.scrollIntoView({behavior:"smooth",block:"start"});},140);}
+/* open the Assumptions page, expand the section whose name starts with `prefix` (e.g. "F."), and scroll to it.
+   The table scrolls inside its own `.atable-wrap` container (not the window), so scroll that container,
+   independent of showAux()'s window scroll-to-top. */
+function openAssumpSec(prefix){showAux("assumptions");
+  let full=null;
+  document.querySelectorAll('#aux-assume tr[data-section]').forEach(function(tr){const s=tr.getAttribute("data-section");if(s.indexOf(prefix)===0)full=s;});
+  if(full){assumpCollapsed[full]=false;applyAssumpFilter();}
+  setTimeout(function(){
+    let tr=null;
+    document.querySelectorAll('#aux-assume tr[data-section]').forEach(function(t){if(t.getAttribute("data-section").indexOf(prefix)===0)tr=t;});
+    if(!tr)return;
+    const wrap=tr.closest(".atable-wrap");
+    if(wrap){
+      const thead=wrap.querySelector("thead");
+      const off=(thead?thead.getBoundingClientRect().height:0)+4;   // clear the sticky column-header row
+      const delta=tr.getBoundingClientRect().top-wrap.getBoundingClientRect().top;
+      wrap.scrollTo({top:Math.max(0,wrap.scrollTop+delta-off),behavior:"auto"});
+    } else tr.scrollIntoView({behavior:"auto",block:"start"});
+  },140);
+}
 /* inline link to another section of the tool (for dynamic copy). action is a JS snippet, e.g. "showAux('assumptions')" or "goto(1)". */
 function secLink(label,action){return '<a href="#" class="seclink" onclick="'+action+';return false;">'+label+'</a>';}
 let advUnlocked=false;
@@ -3699,8 +3718,8 @@ function buildScenarios(){
   let h='<div class="card"><div class="sub">'+(scenHosted?"Saved to this browser (localStorage). Browser storage can be cleared at any time and is not shared between machines, <b>the exported .json file is the durable copy</b>. Use Export to keep a file you can re-import later or share.":"Held in memory only, this is not a hosted page, so saved scenarios clear on reload. <b>The exported .json file is the durable copy</b>, use Export to save them to a file and Import to restore them.")+'</div>'+
     '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:stretch">'+
     '<button class="addbtn" id="scen-save">+ Save current scenario</button>'+
-    '<button class="btn" id="scen-export">Export all (.json)</button>'+
-    '<button class="btn" id="scen-import">Import…</button>'+
+    '<button class="btn" id="scen-export" style="font-size:13px">Export all (.json)</button>'+
+    '<button class="btn" id="scen-import" style="font-size:13px">Import…</button>'+
     '<input type="file" id="scen-import-file" accept="application/json,.json" style="display:none" aria-hidden="true" tabindex="-1"></div></div>';
   if(!scenarios.length){
     h+='<p class="lede">No saved scenarios yet. Save snapshots of the current inputs and results to compare alternatives, for example the same project at different bonus counts or benefit packages.</p>';
