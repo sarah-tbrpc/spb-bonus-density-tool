@@ -741,8 +741,9 @@ th.notecol{font-size:12px;font-weight:400}
       <h2 class="step-h">User Guide &amp; Method</h2>
       <p class="lede">How this tool prices a density-bonus deal, what each number means, the limits to keep in mind, and the legal guardrails that sit on top of the local code.</p>
       <div class="card">
-        <h3>What It Is</h3>
-        <p class="lede" style="margin:0">A staff sketch tool for bonus-density negotiations: order-of-magnitude figures, <b>not an appraisal, pro forma, or legal determination</b>. It prices bonus allocations from the city's two finite pools (195-unit RU, 325-unit TLU) and Large Resort district-cap lodging (added by conditional use, so no pool-scarcity cost applies; the impact floor and developer ceiling still bound the deal). Where added density instead needs a comp-plan amendment or <b>charter referendum</b>, the tool flags that separate approval. Calibrate inputs to local data before relying on any number, and commission an independent feasibility review for any allocation large relative to the pool or marginal in its decision.</p>
+        <h3>Purpose</h3>
+        <p class="lede" style="margin:0 0 10px">Bonus density is a negotiation: the city grants units beyond what zoning allows by right — a <b>finite, public asset</b> — in exchange for public benefits. The hard questions are <i>how much that density is worth</i> and <i>what the city should ask for in return</i>. A developer comes to the table with a pro forma; staff usually don't, so the bargaining runs on instinct and the public can end up <b>under-asking</b> (leaving value on the table) or <b>over-asking</b> (killing an otherwise feasible project). This tool gives staff a consistent, transparent, and defensible starting point: it estimates what the bonus is worth to the developer (the walk-away ceiling), the least the city can lawfully accept (the impact-mitigation floor, plus the scarcity cost of drawing down a finite pool), and whether a specific benefit package clears that bar. The aim is to ground the conversation in figures a planner, an applicant, and the Commission can all see and question — not to dictate the answer.</p>
+        <p class="lede" style="margin:0">It is a <b>staff sketch tool</b>, not an appraisal, pro forma, or legal determination — order-of-magnitude figures meant to frame the negotiation, not end it. It prices bonus allocations from the city's two finite pools (195-unit RU, 325-unit TLU) and Large Resort district-cap lodging (added by conditional use, so no pool-scarcity cost applies; the impact floor and developer ceiling still bound the deal). Where added density instead needs a comp-plan amendment or <b>charter referendum</b>, the tool flags that separate approval. Calibrate inputs to local data before relying on any number, and commission an independent feasibility review for any allocation large relative to the pool or marginal in its decision.</p>
 
         <div class="subsec">
         <h3>The Numbers, in Plain Terms</h3>
@@ -840,7 +841,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.20.7", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.20.8", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden — a
