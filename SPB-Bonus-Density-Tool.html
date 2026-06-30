@@ -739,13 +739,12 @@ th.notecol{font-size:12px;font-weight:400}
       <button class="btn auxback" style="margin-bottom:14px">← Back</button>
       <div class="eyebrow">Reference</div>
       <h2 class="step-h">User Guide &amp; Method</h2>
-      <div>
+      <p class="lede">How this tool prices a density-bonus deal, what each number means, the limits to keep in mind, and the legal guardrails that sit on top of the local code.</p>
       <div class="card">
         <h3>What it is</h3>
         <p class="lede" style="margin:0">A staff sketch tool for bonus-density negotiations: order-of-magnitude figures, <b>not an appraisal, pro forma, or legal determination</b>. It prices bonus allocations from the city's two finite pools (195-unit RU, 325-unit TLU) and Large Resort district-cap lodging (added by conditional use, so no pool-scarcity cost applies; the impact floor and developer ceiling still bound the deal). Where added density instead needs a comp-plan amendment or <b>charter referendum</b>, the tool flags that separate approval. Calibrate inputs to local data before relying on any number, and commission an independent feasibility review for any allocation large relative to the pool or marginal in its decision.</p>
-      </div>
 
-      <div class="card">
+        <div class="subsec">
         <h3>The numbers, in plain terms</h3>
         <ul class="guide-list">
           <li><b>Value to developer.</b> The most the bonus units are worth to the developer (discounted residual profit): the walk-away ceiling. Test the conservative low end; the high end is the negotiation target. Derived from a per-unit market value — entered as a sale comp or built up from an income approach on <a href="#" class="seclink" onclick="goto(0);return false;">Step&nbsp;1</a> (condo = $/SF; rental = NOI ÷ cap rate; lodging = ADR × occ × ancillary × EBITDA ÷ cap rate) — run through a residual cost build-up.</li>
@@ -758,17 +757,17 @@ th.notecol{font-size:12px;font-weight:400}
         </ul>
       </div>
 
-      <div class="card">
+      <div class="subsec">
         <h3>The three inputs that matter most</h3>
         <p class="lede" style="margin:0">Market value (the ceiling), construction cost (the floor), and developer margin (the split) drive nearly every output — calibrate these first, under <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions</a>. The scarcity exponent matters only near depletion.</p>
       </div>
 
-      <div class="card">
+      <div class="subsec">
         <h3>How the recommendation is reached</h3>
         <p class="lede" style="margin:0"><b>Worthwhile</b> when public value offered meets the break-even floor. <b>Feasible</b> when developer cost stays under the value to developer, tested on its conservative low end. The agreement zone runs from the lowest worthwhile spend up to that ceiling — fill it with the highest value-ratio benefits first.</p>
       </div>
 
-      <div class="card">
+      <div class="subsec">
         <h3>Known limits, read before relying on it</h3>
         <ul class="guide-list">
           <li><b>Plain-dollar decision.</b> Pass/fail compares the package's plain public value to the plain-dollar floor. Category multipliers (resilience 2.5×, etc.) only rank benefits within a package; they do not inflate the offer.</li>
@@ -785,14 +784,14 @@ th.notecol{font-size:12px;font-weight:400}
         </ul>
       </div>
 
-      <div class="card">
+      <div class="subsec">
         <h3>Basis</h3>
         <p class="lede" style="margin:0 0 8px">Added units come only from finite pools created by the 2007 down-zoning of Large Resort (65.16 ac): the 195-unit RU pool (<a class="seclink" target="_blank" rel="noopener" href="https://library.municode.com/fl/st._pete_beach/codes/land_development_code?nodeId=CO_DIV39COREDIGEST_S39.18GEREUNRUDEPORE">LDC §39.18</a>) and the 325-unit transient-lodging pool for TC-2 / Activity Center / Bayou Residential (FLU element). Each allocation is by Commission ordinance plus conditional use on a "merit basis" (<a class="seclink" target="_blank" rel="noopener" href="https://library.municode.com/fl/st._pete_beach/codes/land_development_code">LDC §4.12(d)</a>), balance recited per §39.18(c); qualifying benefits are listed in §4.12(d)(1)–(9). Impact figures use SPB's adopted fees: the Pinellas <b>Multimodal fee</b> (Code §150-40) ≈ $1,248/condo, $1,420/MF, $1,604/hotel room, plus the <b>parks/rec fee</b> ≈ $843/residential unit (lodging exempt; Ord. 2022-04). Pinellas levies no school, parks, fire, or library impact fee, so the § E <b>High</b> end carries a flagged proportionate-share estimate a concurrency study should replace.</p>
         <p class="lede" style="margin:0"><b>What code does not set.</b> No contribution rate, benefit-valuation formula, floor, or ceiling. The only statutory weighting is Chapter 163 proportionate-share, the basis for the impact floor. The ZOPA bounds and the 15–25% / 25–50% guardrails are <b>analytic overlays, not adopted code</b>.</p>
       </div>
 
 
-      <div class="card" id="legal-card">
+      <div class="subsec" id="legal-card">
         <h3>Legal &amp; political guardrails</h3>
         <p class="lede" style="margin:0 0 10px">Surfaced as caveats, not enforced in the math. Route the exaction framing through the City Attorney before treating any number as actionable.</p>
         <ul class="guide-list">
@@ -841,7 +840,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.20.4", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.20.5", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden — a
