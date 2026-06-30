@@ -802,7 +802,8 @@ th.notecol{font-size:12px;font-weight:400}
         <p class="lede" style="margin:8px 0 0"><b>Layout polish (v1.19.10).</b> The Step 1 pool allocation donut and the scarcity curve now sit side by side (was stacked). Notes/Source text areas auto-grow to fit their text — both as you type and when pre-loaded — instead of clipping. And the Seawall / bulkhead benefit no longer ships a pre-filled $2,000 Override (its Applied is now the Low/High midpoint; the $2,000 City-verified figure remains in the row's note).</p>
         <p class="lede" style="margin:8px 0 0"><b>Editing toggle &amp; pool alignment (v1.19.11).</b> The "Enable editing" bar on Assumptions and the Benefit Library now sits above the search bar (was at the bottom). On Step 1, the pool donut and the scarcity curve are top-aligned so their titles line up, and the curve's height is tuned so its <b>x-axis</b> lines up with the rule above the legend's "Pool total" row (the axis labels sit below it).</p>
         <p class="lede" style="margin:8px 0 0"><b>Plain-English benefit summary (v1.19.14).</b> Each benefit card now shows a one-line summary below the inputs — e.g. "Developer will provide 103 linear feet of Seawall / bulkhead, entered at 100% above code, in exchange for the bonus density" — so a bare quantity reads in its real unit. It updates live as you change the quantity or % above code.</p>
-        <p class="lede" style="margin:8px 0 0"><b>Removed the Unit-Count Sensitivity card (v1.19.15).</b> The net-value-vs-bonus-count sparkline was duplicative of the Step 1 scarcity curve and, in the common slack-pool case, just showed a rising line that read as "more units = more public value" — not the decision the tool makes. The deep-scarcity edge it flagged is already handled by the "Hold" verdict.
+        <p class="lede" style="margin:8px 0 0"><b>Removed the Unit-Count Sensitivity card (v1.19.15).</b> The net-value-vs-bonus-count sparkline was duplicative of the Step 1 scarcity curve and, in the common slack-pool case, just showed a rising line that read as "more units = more public value" — not the decision the tool makes. The deep-scarcity edge it flagged is already handled by the "Hold" verdict.</p>
+        <p class="lede" style="margin:8px 0 0"><b>Library &amp; case-study cleanup (v1.19.16).</b> Removed the "code sets a minimum" checkbox/badge from the Benefit Library (extra detail not needed, especially with benefits assumed secured). In Case Studies, the facts table now uses a narrow label / wide value split (30/70) so values wrap less and the table is shorter.
       </div>
 
       <div class="card" id="legal-card">
@@ -852,7 +853,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.19.15", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
+const VERSION="1.19.16", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden — a
@@ -2927,12 +2928,9 @@ function buildLibrary(){
       const nameInner=custom
         ? '<input type="text" class="libname" data-lib="'+i+'" data-col="name" value="'+esc(r[0])+'" placeholder="Custom benefit name" aria-label="Custom benefit name">'
         : '<span class="libnm">'+esc(r[0])+'</span>';
-      const cmCtrl=advUnlocked
-        ? '<label class="libcm" title="Does the SPB code set a baseline for this benefit? If so, entering 100% above code is flagged as a possible double-count."><input type="checkbox" class="libcmchk" data-lib="'+i+'"'+(c.codeMin?" checked":"")+'> code sets a minimum</label>'
-        : (c.codeMin?'<div class="libcm-badge" title="Code sets a minimum for this benefit; entering 100% above code is flagged on the Benefits step">code min</div>':"");
       const nameCell=(advUnlocked
         ? '<div class="libnamewrap">'+nameInner+'<button class="x libdel" data-libdel="'+i+'" aria-label="Delete benefit" title="Delete this benefit">×</button></div>'
-        : (custom?nameInner:'<span class="libnm">'+esc(r[0])+'</span>'))+cmCtrl;
+        : (custom?nameInner:'<span class="libnm">'+esc(r[0])+'</span>'));
       const unitCell=custom
         ? '<input type="text" class="libunit" data-lib="'+i+'" data-col="unit" value="'+esc(r[2])+'" placeholder="$/unit" aria-label="Unit">'
         : '<span class="anote">'+r[2]+'</span>';
@@ -3352,8 +3350,8 @@ function buildCases(){
   let h='<p class="lede">Real, verified projects worked end-to-end. Load one to populate every input, then review the full breakdown, the four numbers, the ZOPA with its target-capture zone, and the value charts, and adjust it to explore alternatives. Loading replaces the current project inputs; the '+secLink('Assumptions',"showAux('assumptions')")+' and the '+secLink('allocation ledger',"showAux('history')")+' are kept.</p>';
   CASES.forEach((c,i)=>{
     const textCol='<p class="lede" style="margin:10px 0">'+esc(c.blurb)+'</p>'+
-       '<div class="atable-wrap"><table class="atable"><tbody>'+
-       c.facts.map(f=>'<tr><td style="width:1%;white-space:nowrap"><b>'+esc(f[0])+'</b></td><td class="anote" style="max-width:none;white-space:normal">'+esc(f[1])+'</td></tr>').join("")+
+       '<div class="atable-wrap"><table class="atable" style="table-layout:fixed"><colgroup><col style="width:30%"><col style="width:70%"></colgroup><tbody>'+
+       c.facts.map(f=>'<tr><td style="vertical-align:top"><b>'+esc(f[0])+'</b></td><td class="anote" style="white-space:normal;word-break:break-word">'+esc(f[1])+'</td></tr>').join("")+
        '</tbody></table></div>'+
        '<p class="hint" style="margin-top:10px">'+esc(c.notes)+'</p>'+
        '<button class="addbtn" data-loadcase="'+i+'" style="margin-top:10px">Load this case →</button>';
