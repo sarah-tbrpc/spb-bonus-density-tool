@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Public Benefit &amp; Density Bonus Valuation Tool</title>
+<title>Density Bonus Valuation Tool</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -524,7 +524,7 @@ th.notecol{font-size:12px;font-weight:400}
 <div class="stickytop">
 <header class="top">
   <div class="top-in">
-    <div class="brand">Public Benefit &amp; Density Bonus Valuation Tool</div>
+    <div class="brand">Density Bonus Valuation Tool</div>
     <div class="readout" id="readout"></div>
   </div>
 </header>
@@ -652,7 +652,7 @@ th.notecol{font-size:12px;font-weight:400}
     <section class="panel" data-step="1">
       <div class="card">
       <div class="eyebrow">Step 2 of 3 · Benefits</div>
-      <h2 class="step-h">Build the Public Benefit Package</h2>
+      <h2 class="step-h">Build the Public Benefits Package</h2>
       <p class="lede" style="margin-bottom:18px">Add benefits and enter the quantity provided <b>above what code already requires</b>; each line is ranked by priority-weighted public value per developer dollar (the badge).</p>
         <details class="stephelp"><summary>How lines are counted</summary>Each line has two figures: the developer's <b>stated contribution</b> (the total they propose to provide or pay) and the <b>public value</b> (what it is worth to the city, per unit). Public value offered = quantity × public value per unit. The top-right badge shows public value per dollar of stated contribution; the Results page ranks benefits by that value times each category's priority weight (shown on the line, set in Assumptions § D). Enter only the amount <b>beyond what code already requires</b>, if code mandates part of a benefit, leave that part out so required work isn't credited as a voluntary concession. Full method in the <a href="#" class="seclink" onclick="showAux('method');return false;">User&nbsp;Guide</a>; cost factors are editable under <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions</a>.</details>
         <div id="blist"></div>
@@ -903,7 +903,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.26.1", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.26.2", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -1827,7 +1827,7 @@ const navfoot=document.createElement("div");navfoot.className="navfoot";
 navfoot.innerHTML='<div class="navgrp" data-grp="work"><button class="navgrp-h" data-navtoggle="1"><span class="navcaret">▸</span> Workspace</button><div class="navgrp-body">'+
   '<button id="openassume">Assumptions</button><button id="openlibrary">Benefit Library</button><button id="openscenarios">Saved Scenarios</button></div></div>'+
   '<div class="navgrp" data-grp="ref"><button class="navgrp-h" data-navtoggle="1"><span class="navcaret">▸</span> Reference</button><div class="navgrp-body">'+
-  '<button id="openmethod">User Guide</button><button id="openhistory">Allocation History</button><button id="opencases">Test Project</button><button id="opencompare">Comparable Programs</button></div></div>'+
+  '<button id="openhistory">Allocation History</button><button id="opencompare">Comparable Programs</button><button id="opencases">Test Project</button><button id="openmethod">User Guide</button></div></div>'+
   '<button id="resetall" class="rst">Reset All</button>'+
   '<div class="navcredit"><a href="https://www.tbrpc.org" target="_blank" rel="noopener">TBRPC Civic Tech</a> <span class="navver">v'+VERSION+'</span></div>';
 stepnav.appendChild(navfoot);
@@ -2559,7 +2559,7 @@ function drawSolver(m){
   const status=s.clears?(s.feasible?'<b style="color:var(--pass)">Clears the break-even floor within the developer budget.</b>':'<b style="color:var(--warn)">Clears the floor, but the package cost exceeds the developer budget.</b>'):'<b style="color:var(--warn)">The library cannot clear the floor within the developer budget at current values.</b>';
   el.innerHTML='<div class="atable-wrap"><table class="atable"><thead><tr><th scope="col">Benefit</th><th scope="col" class="r">Qty</th><th scope="col" class="r">Dev cost</th><th scope="col" class="r">Public value</th><th scope="col" class="r">Ratio</th></tr></thead><tbody>'+rows+
     '</tbody><tfoot><tr><td>Totals</td><td class="r"></td><td class="r mono">'+fmt(s.dev)+'</td><td class="r mono">'+fmt(s.plain)+'</td><td class="r"></td></tr></tfoot></table></div>'+
-    '<div class="hint" style="margin-top:8px">'+status+' Break-even floor '+fmt(s.floor)+', developer ceiling '+fmt(s.ceiling)+'.'+(SIMPLE_BENEFITS?'':' Enforceability assumed at condition-of-approval ('+Math.round(s.hc*100)+'%); securing an item with a stronger instrument lifts its credit.')+' <button class="alink" id="solver-load">Add this package to the Benefits step →</button></div>';
+    '<div class="hint" style="margin-top:8px">'+status+' Break-even floor '+fmt(s.floor)+', developer ceiling '+fmt(s.ceiling)+'.'+(SIMPLE_BENEFITS?'':' Enforceability assumed at condition-of-approval ('+Math.round(s.hc*100)+'%); securing an item with a stronger instrument lifts its credit.')+'<div style="margin-top:10px"><button class="alink" id="solver-load">Add this package to the Benefits step →</button></div></div>';
   const b=document.getElementById("solver-load"); if(b)b.onclick=()=>loadSolverPackage(s);
 }
 function drawRanks(m){
@@ -3404,7 +3404,7 @@ function buildPrintSheet(){
      '<div class="ps-sign-rows"><div class="ps-sign">Prepared by (staff)<span class="ps-sign-line"></span>/ date<span class="ps-sign-dline"></span></div>'+
        '<div class="ps-sign">Reviewed by (planning director or designee)<span class="ps-sign-line"></span>/ date<span class="ps-sign-dline"></span></div></div>'+
    '</div>'+
-   '<div class="ps-foot">All dollar figures are sketch-grade placeholders pending calibration to local data (RSMeans coastal construction, Redfin comps, SPB / Pinellas impact-fee schedules, and the adopted CUP ledger). Generated by the Public Benefit &amp; Density Bonus Valuation Tool v'+VERSION+' · methodology '+VERSION_DATE+'.</div>';
+   '<div class="ps-foot">All dollar figures are sketch-grade placeholders pending calibration to local data (RSMeans coastal construction, Redfin comps, SPB / Pinellas impact-fee schedules, and the adopted CUP ledger). Generated by the Density Bonus Valuation Tool v'+VERSION+' · methodology '+VERSION_DATE+'.</div>';
 }
 function printSummary(){buildPrintSheet();window.print();}
 
