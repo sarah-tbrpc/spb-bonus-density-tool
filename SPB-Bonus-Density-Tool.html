@@ -804,7 +804,8 @@ th.notecol{font-size:12px;font-weight:400}
         <p class="lede" style="margin:8px 0 0"><b>Plain-English benefit summary (v1.19.14).</b> Each benefit card now shows a one-line summary below the inputs — e.g. "Developer will provide 103 linear feet of Seawall / bulkhead, entered at 100% above code, in exchange for the bonus density" — so a bare quantity reads in its real unit. It updates live as you change the quantity or % above code.</p>
         <p class="lede" style="margin:8px 0 0"><b>Removed the Unit-Count Sensitivity card (v1.19.15).</b> The net-value-vs-bonus-count sparkline was duplicative of the Step 1 scarcity curve and, in the common slack-pool case, just showed a rising line that read as "more units = more public value" — not the decision the tool makes. The deep-scarcity edge it flagged is already handled by the "Hold" verdict.</p>
         <p class="lede" style="margin:8px 0 0"><b>Library &amp; case-study cleanup (v1.19.16).</b> Removed the "code sets a minimum" checkbox/badge from the Benefit Library (extra detail not needed, especially with benefits assumed secured). In Case Studies, the facts table now uses a narrow label / wide value split (30/70) so values wrap less and the table is shorter.</p>
-        <p class="lede" style="margin:8px 0 0"><b>Copy tweaks (v1.19.17).</b> Cross-check card reads "cross-check" (was "sanity check"); the fiscal counterfactual reads "Do Nothing vs. Build" consistently; the Deal Explorer card title is just "Deal Explorer".
+        <p class="lede" style="margin:8px 0 0"><b>Copy tweaks (v1.19.17).</b> Cross-check card reads "cross-check" (was "sanity check"); the fiscal counterfactual reads "Do Nothing vs. Build" consistently; the Deal Explorer card title is just "Deal Explorer".</p>
+        <p class="lede" style="margin:8px 0 0"><b>Sentence-case benefit summary (v1.19.18).</b> The per-benefit summary now reads naturally: small counts are spelled out, units and names are singular or plural to match the quantity, and the benefit name is lower-cased mid-sentence — e.g. "Developer will provide one public restroom facility…" / "…five public restroom facilities…" / "…103 linear feet of seawall / bulkhead…". Trailing qualifiers like "(Class A)" or "@120% AMI" are preserved when pluralizing.
       </div>
 
       <div class="card" id="legal-card">
@@ -854,7 +855,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.19.17", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
+const VERSION="1.19.18", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden — a
@@ -1809,17 +1810,25 @@ document.getElementById("next").onclick=()=>goto(cur+1);
 
 function setP(el){const min=+el.min,max=+el.max;el.style.setProperty("--p",((el.value-min)/(max-min)*100)+"%");}
 function autoGrowTA(ta){ta.style.height="auto";ta.style.height=(ta.scrollHeight+2)+"px";}   // textarea grows to fit its text, no inner scrollbar
-/* plain-English summary of a benefit line, so a bare quantity reads as e.g. "103 linear feet of …" */
+/* small counts spelled out (sentence style), numerals for 10+ and non-integers */
+function numWord(n){const W=["zero","one","two","three","four","five","six","seven","eight","nine"];return (Number.isInteger(n)&&n>=0&&n<=9)?W[n]:fmtNum(n);}
+function pluralWord(w){if(/[^aeiouAEIOU]y$/.test(w))return w.slice(0,-1)+"ies";if(/(s|x|z|ch|sh)$/i.test(w))return w+"es";return w+"s";}
+/* pluralize a benefit name by its head noun, preserving a trailing "(...)" or "@…" qualifier
+   ("Public boat slip (Class A)" -> "Public boat slips (Class A)"; "Workforce unit @120% AMI" -> "Workforce units @120% AMI") */
+function pluralName(name){const i=name.search(/\s*[\(@]/);const base=(i>=0?name.slice(0,i):name).trim();const suf=i>=0?(" "+name.slice(i).trim()):"";const parts=base.split(/\s+/);parts[parts.length-1]=pluralWord(parts[parts.length-1]);return parts.join(" ")+suf;}
+function lcFirst(s){return s?s.charAt(0).toLowerCase()+s.slice(1):s;}
+/* plain-English summary of a benefit line — singular/plural- and case-aware, e.g.
+   "one public restroom facility", "five public restroom facilities", "103 linear feet of seawall / bulkhead" */
 function benefitExchSentence(name,unit,qty,pct){
   const tok=(""+(unit||"")).replace(/^\$\s*\/\s*/,"").trim();   // "$/LF" -> "LF"
-  const MEAS={LF:"linear feet",SF:"square feet",acre:"acres","1K imp SF":"thousand SF of impervious area","PM trip":"PM-peak trips"};
-  const n=fmtNum(+qty||0);
-  let q,of=" of "+esc(name||"this benefit");
-  if(tok==="lump"){q="$"+n+" (lump-sum cash)";of="";}
-  else if(MEAS[tok]){q=n+" "+MEAS[tok];}                       // measurement unit — spell it out
-  else {q=n+" × "+esc(name||"this benefit");of="";}            // countable item / each — the name is the thing
+  const MEAS={LF:["linear foot","linear feet"],SF:["square foot","square feet"],acre:["acre","acres"],"PM trip":["PM-peak trip","PM-peak trips"],"1K imp SF":["thousand SF of impervious area","thousand SF of impervious area"]};
+  const n=+qty||0, one=(n===1), num=numWord(n), nm=name||"this benefit";
+  let phrase;
+  if(tok==="lump"){phrase="$"+fmtNum(n)+" in lump-sum cash";}
+  else if(MEAS[tok]){phrase=num+" "+(one?MEAS[tok][0]:MEAS[tok][1])+" of "+esc(lcFirst(nm));}
+  else{phrase=num+" "+esc(lcFirst(one?nm:pluralName(nm)));}    // countable item — the name is the thing
   const p=Math.round((pct!=null?pct:1)*100);
-  return "Developer will provide <b>"+q+"</b>"+of+", entered at <b>"+p+"%</b> above code, in exchange for the bonus density.";
+  return "Developer will provide <b>"+phrase+"</b>, entered at <b>"+p+"%</b> above code, in exchange for the bonus density.";
 }
 function bindRange(id,key){const el=document.getElementById(id);
   el.addEventListener("input",()=>{S[key]=+el.value;setP(el);render();});setP(el);}
