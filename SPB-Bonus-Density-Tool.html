@@ -903,7 +903,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.26.3", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.26.4", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -3118,16 +3118,17 @@ function buildLibrary(){
         ? '<input type="text" class="libunit" data-lib="'+i+'" data-col="unit" value="'+esc(r[2])+'" placeholder="$/unit" aria-label="Unit">'
         : '<span class="anote">'+r[2]+'</span>';
       const libNoSrc=!(c.source&&String(c.source).trim());
-      const libTog=NS?('<span class="notetog'+(libNoSrc?' nosrc':'')+'" role="button" tabindex="0" aria-expanded="false" title="Notes &amp; source'+(libNoSrc?', no cited source':'')+'" aria-label="'+esc(r[0])+', notes and source"><span class="note-caret">▸</span></span>'):'';
+      const libHasNote=!!(c.note&&String(c.note).trim()), libHasSrc=!libNoSrc, libShowNS=advUnlocked||libHasNote||libHasSrc;
+      const libTog=(NS&&libShowNS)?('<span class="notetog'+(libNoSrc?' nosrc':'')+'" role="button" tabindex="0" aria-expanded="false" title="Notes &amp; source'+(libNoSrc?', no cited source':'')+'" aria-label="'+esc(r[0])+', notes and source"><span class="note-caret">▸</span></span>'):'';
       h+='<tr data-cat="'+esc(cat)+'" data-search="'+hay+'"><td>'+nameCell+'</td><td>'+unitCell+'</td>'+
         '<td class="r">'+libfld(i,"cityLow",c.cityLow,"alow")+'</td>'+
         '<td class="r">'+libfld(i,"cityHigh",c.cityHigh,"ahigh")+'</td>'+
         '<td class="r"><span class="aapplied" id="libcity-'+i+'">'+libApplDisp(i,"city")+'</span></td>'+
         '<td class="r">'+libfld(i,"cityOv",c.cityOv,"ov")+'</td>'+
         (NS?'<td class="notecol">'+libTog+'</td>':'')+'</tr>'+
-        (NS?('<tr class="noterow" style="display:none"><td colspan="'+ncols+'"><div class="notewrap">'+
-          '<div class="noteblk"><span class="notelab">Notes</span> '+libtxt(i,"note",c.note,"Notes")+'</div>'+
-          '<div class="noteblk"><span class="notelab">Source</span> '+libtxt(i,"source",c.source,"Source")+(libNoSrc?'<div class="nosrc">⚠ Uncalibrated, no cited source</div>':'')+'</div>'+
+        ((NS&&libShowNS)?('<tr class="noterow" style="display:none"><td colspan="'+ncols+'"><div class="notewrap">'+
+          ((advUnlocked||libHasNote)?('<div class="noteblk"><span class="notelab">Notes</span> '+libtxt(i,"note",c.note,"Notes")+'</div>'):'')+
+          ((advUnlocked||libHasSrc)?('<div class="noteblk"><span class="notelab">Source</span> '+libtxt(i,"source",c.source,"Source")+((advUnlocked&&libNoSrc)?'<div class="nosrc">⚠ Uncalibrated, no cited source</div>':'')+'</div>'):'')+
           '</div></td></tr>'):'');
     });
     if(advUnlocked)h+='<tr class="libaddrow" data-cat="'+esc(cat)+'"><td colspan="'+ncols+'"><button class="alink" data-libadd="'+esc(cat)+'">+ Add custom benefit to '+cat+'</button></td></tr>';
@@ -3234,19 +3235,19 @@ function buildAssumptions(){
     /* the live "= $X/SF" implied readout (id aimpl-i, updated on edit) sits under the Applied value. */
     const impliedSpan=hasBasis?'<span class="anote" id="aimpl-'+i+'" style="white-space:nowrap;color:var(--accent)">'+aImplied(r)+'</span>':"";
     const noSrc=!(r.source&&String(r.source).trim());
-    const tog=NS?('<span class="notetog'+(noSrc?' nosrc':'')+'" role="button" tabindex="0" aria-expanded="false" title="Notes &amp; source'+(noSrc?', no cited source':'')+'" aria-label="'+esc(r.label)+', notes and source"><span class="note-caret">▸</span></span>'):'';
+    const hasNote=!!(r.notes&&String(r.notes).trim()), hasSrc=!noSrc, showNS=advUnlocked||hasNote||hasSrc;
+    const tog=(NS&&showNS)?('<span class="notetog'+(noSrc?' nosrc':'')+'" role="button" tabindex="0" aria-expanded="false" title="Notes &amp; source'+(noSrc?', no cited source':'')+'" aria-label="'+esc(r.label)+', notes and source"><span class="note-caret">▸</span></span>'):'';
     let noteRow="";
-    if(NS){
+    if(NS&&showNS){
       const noteContent=advUnlocked
         ? '<input type="text" class="asrc" data-i="'+i+'" data-col="notes" value="'+esc(r.notes||"")+'" placeholder="notes…" aria-label="'+esc(r.label)+', notes">'
         : esc(r.notes||"");
       const srcContent=(advUnlocked
         ? '<input type="text" class="asrc" data-i="'+i+'" data-col="source" value="'+esc(r.source||"")+'" placeholder="source…" aria-label="'+esc(r.label)+', source">'
-        : esc(r.source||""))+(noSrc?'<div class="nosrc">⚠ Uncalibrated, no cited source</div>':"");
-      noteRow='<tr class="noterow" style="display:none"><td colspan="'+ncols+'"><div class="notewrap">'+
-        '<div class="noteblk"><span class="notelab">Notes</span> '+noteContent+'</div>'+
-        '<div class="noteblk"><span class="notelab">Source</span> '+srcContent+'</div>'+
-        '</div></td></tr>';
+        : esc(r.source||""))+((advUnlocked&&noSrc)?'<div class="nosrc">⚠ Uncalibrated, no cited source</div>':"");
+      const noteBlk=(advUnlocked||hasNote)?('<div class="noteblk"><span class="notelab">Notes</span> '+noteContent+'</div>'):'';
+      const srcBlk=(advUnlocked||hasSrc)?('<div class="noteblk"><span class="notelab">Source</span> '+srcContent+'</div>'):'';
+      noteRow='<tr class="noterow" style="display:none"><td colspan="'+ncols+'"><div class="notewrap">'+noteBlk+srcBlk+'</div></td></tr>';
     }
     const appliedExtra=impliedSpan?('<div style="margin-top:2px">'+impliedSpan+'</div>'):"";
     h+='<tr data-asec="'+esc(r.sec)+'" data-search="'+ahay+'"><td>'+r.label+'</td><td class="anote">'+unitCell+'</td>'+
