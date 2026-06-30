@@ -501,7 +501,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
             </div>
             <div id="map" style="border:1px solid var(--line);border-radius:6px;background:#e9ecee"></div>
             <div class="hint" id="pin-coords" style="margin-top:8px"></div>
-            <div class="hint" style="margin-top:8px">Density increases outside the CRD boundary require a comprehensive plan amendment.</div>
+            <div class="hint" style="margin-top:8px">Outside the CRD boundary a density or height increase needs a comprehensive-plan amendment — and, per the city charter, generally a <b>voter referendum</b> (narrow ≤5-parcel exception). Confirm the trigger with the City Attorney.</div>
           </div>
         </div>
       </div>
@@ -570,8 +570,8 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
       <div class="card">
       <div class="eyebrow">Step 2 of 3 · Benefits</div>
       <h2 class="step-h">Public Benefit Package</h2>
-      <p class="lede" style="margin-bottom:18px">Add benefits, set quantity and share above code; each is ranked by public value per developer dollar.</p>
-        <details class="stephelp"><summary>How lines are counted</summary>Per line: quantity, percent above code (only that share counts), and optionally the developer's cost and city's value per unit (library defaults). The top-right pill is the value ratio: public value per developer dollar, after the category multiplier (cash 1×). Percent above code scales both sides, so it doesn't change the ratio; it stops crediting code-required work, distinct from the break-even floor (which offsets impacts). Multipliers and cost factors are editable under <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions</a>.</details>
+      <p class="lede" style="margin-bottom:18px">Add benefits and set quantity and % above code (only the share above what code already requires counts); each line is ranked by public value per developer dollar.</p>
+        <details class="stephelp"><summary>How lines are counted</summary>Each line: quantity × % above code × city value per unit, ranked by the top-right value ratio (public value per developer dollar). % above code scales both sides, so it never changes the ratio — it just stops crediting code-required work. Full method in the <a href="#" class="seclink" onclick="showAux('method');return false;">User&nbsp;Guide</a>; cost factors and multipliers are editable under <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions</a>.</details>
         <div id="blist"></div>
         <div id="pkg-summary"></div>
         <div class="btot"><span>Developer cost</span><span class="mono" id="tot-a"></span></div>
@@ -602,7 +602,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
       </div>
       <div class="card">
         <h3>Zone of Possible Agreement (ZOPA)</h3>
-        <div class="sub">Developer benefit spending, from the minimum that satisfies the city up to the value to developer. The shaded band is the <b>target capture zone</b>, a fair-share guideline off the absolute floor and ceiling.</div>
+        <div class="sub">Developer benefit spending, from the minimum that satisfies the city up to the value to developer. The shaded band is the <b>target capture zone</b> — a fair-share <b>guideline, not adopted code</b> (analyst overlay), off the absolute floor and ceiling.</div>
         <div class="zopa-track" id="zopa"></div>
         <div class="hint" id="zopa-note"></div>
       </div>
@@ -2109,7 +2109,7 @@ function verdictObj(m){
     body:capPre+"A package is entered, but without a use type and market value the ceiling and break-even floor are not yet defined, so feasibility can't be judged. Set them on Step 1."+unsecuredNote};
   if(m.worth && m.feas){const gated=m.belowCapture;
     return {tag:"Favorable",bg:C.ok[0],fg:C.ok[1],light:gated?"#d9a400":"#1f9d57",status:gated?"Favorable, below fair-share":"Viable",tip:"Meets the break-even floor and fits within the developer’s budget.",head:gated?"Favorable, but below the fair-share target":"Favorable",
-    body:capPre+"Offered public value ("+fmt(m.Bplain)+") meets the break-even floor ("+fmt(m.cityMin)+"). Package cost ("+fmt(m.A)+") fits within the conservative value to the developer ("+fmt(m.Vlow)+"; negotiation target up to "+fmt(m.Vhigh)+"). Unspent budget "+fmt(Math.max(0,m.room))+". "+(gated?("This offer captures only "+Math.round(m.captureRate*100)+"% of the value to developer, below the "+Math.round(CAPTURE.capLo*100)+" to "+Math.round(CAPTURE.capHi*100)+"% fair-share target; there is room to ask for more."):("The city may require only the impact-proportional amount ("+fmt(m.I)+") as a condition; benefit above that is voluntary incentive for the discretionary density."))+unsecuredNote};}
+    body:capPre+"Offered public value ("+fmt(m.Bplain)+") meets the break-even floor ("+fmt(m.cityMin)+"). Package cost ("+fmt(m.A)+") fits within the conservative value to the developer ("+fmt(m.Vlow)+"; negotiation target up to "+fmt(m.Vhigh)+"). Unspent budget "+fmt(Math.max(0,m.room))+". "+(gated?("This offer captures only "+Math.round(m.captureRate*100)+"% of the value to developer, below the "+Math.round(CAPTURE.capLo*100)+" to "+Math.round(CAPTURE.capHi*100)+"% fair-share target, so there is room to ask for more — but treat that surplus as a <b>voluntary incentive</b> for the discretionary density, not a compellable exaction. The city may compel only the impact-proportional amount ("+fmt(m.I)+"); see the legal guardrails."):("The city may require only the impact-proportional amount ("+fmt(m.I)+") as a condition; benefit above that is voluntary incentive for the discretionary density."))+unsecuredNote};}
   if(!m.worth && m.room>0) return {tag:"Below minimum",bg:C.warn[0],fg:C.warn[1],light:"#d9a400",status:"Keep negotiating",tip:"Public value is below the break-even floor, but the developer still has budget room, add higher-ratio benefits to close the gap.",head:"Below break-even floor, renegotiate",
     body:capPre+"Offered public value is short of the break-even floor by "+fmt(m.cityMin-m.Bplain)+", so the public is subsidizing the project. "+fmt(m.room)+" of developer budget remains, so adding higher value-to-cost benefits can close it."+unsecuredNote};
   if(!m.feas) return {tag:"Over budget",bg:C.bad[0],fg:C.bad[1],light:"#c0392b",status:"Stalled",tip:"The package costs more than the bonus is worth to the developer; they would build by-right. Trim the package or grant more units.",head:"Package exceeds developer budget",
