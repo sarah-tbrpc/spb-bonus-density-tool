@@ -805,7 +805,8 @@ th.notecol{font-size:12px;font-weight:400}
         <p class="lede" style="margin:8px 0 0"><b>Removed the Unit-Count Sensitivity card (v1.19.15).</b> The net-value-vs-bonus-count sparkline was duplicative of the Step 1 scarcity curve and, in the common slack-pool case, just showed a rising line that read as "more units = more public value" — not the decision the tool makes. The deep-scarcity edge it flagged is already handled by the "Hold" verdict.</p>
         <p class="lede" style="margin:8px 0 0"><b>Library &amp; case-study cleanup (v1.19.16).</b> Removed the "code sets a minimum" checkbox/badge from the Benefit Library (extra detail not needed, especially with benefits assumed secured). In Case Studies, the facts table now uses a narrow label / wide value split (30/70) so values wrap less and the table is shorter.</p>
         <p class="lede" style="margin:8px 0 0"><b>Copy tweaks (v1.19.17).</b> Cross-check card reads "cross-check" (was "sanity check"); the fiscal counterfactual reads "Do Nothing vs. Build" consistently; the Deal Explorer card title is just "Deal Explorer".</p>
-        <p class="lede" style="margin:8px 0 0"><b>Sentence-case benefit summary (v1.19.18).</b> The per-benefit summary now reads naturally: small counts are spelled out, units and names are singular or plural to match the quantity, and the benefit name is lower-cased mid-sentence — e.g. "Developer will provide one public restroom facility…" / "…five public restroom facilities…" / "…103 linear feet of seawall / bulkhead…". Trailing qualifiers like "(Class A)" or "@120% AMI" are preserved when pluralizing.
+        <p class="lede" style="margin:8px 0 0"><b>Sentence-case benefit summary (v1.19.18).</b> The per-benefit summary now reads naturally: small counts are spelled out, units and names are singular or plural to match the quantity, and the benefit name is lower-cased mid-sentence — e.g. "Developer will provide one public restroom facility…" / "…five public restroom facilities…" / "…103 linear feet of seawall / bulkhead…". Trailing qualifiers like "(Class A)" or "@120% AMI" are preserved when pluralizing.</p>
+        <p class="lede" style="margin:8px 0 0"><b>Cleaner above-code wording (v1.19.19).</b> The summary now omits the "% above code" clause when it's 100% (the whole benefit counts), and only surfaces it for a partial discount — e.g. "…100 linear feet of seawall / bulkhead, of which 50% counts as above what code already requires, …" — since that's the only case where it changes the credited amount.
       </div>
 
       <div class="card" id="legal-card">
@@ -855,7 +856,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.19.18", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
+const VERSION="1.19.19", VERSION_DATE="2026-06-30";   // bump + add a changelog line whenever a push changes behavior OR methodology copy
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden — a
@@ -1828,7 +1829,10 @@ function benefitExchSentence(name,unit,qty,pct){
   else if(MEAS[tok]){phrase=num+" "+(one?MEAS[tok][0]:MEAS[tok][1])+" of "+esc(lcFirst(nm));}
   else{phrase=num+" "+esc(lcFirst(one?nm:pluralName(nm)));}    // countable item — the name is the thing
   const p=Math.round((pct!=null?pct:1)*100);
-  return "Developer will provide <b>"+phrase+"</b>, entered at <b>"+p+"%</b> above code, in exchange for the bonus density.";
+  // the "% above code" clause only matters when part of the benefit is code-required; at 100% the whole thing counts, so omit it
+  const tail=(p===100)?" in exchange for the bonus density."
+    :", of which <b>"+p+"%</b> counts as above what code already requires, in exchange for the bonus density.";
+  return "Developer will provide <b>"+phrase+"</b>"+tail;
 }
 function bindRange(id,key){const el=document.getElementById(id);
   el.addEventListener("input",()=>{S[key]=+el.value;setP(el);render();});setP(el);}
