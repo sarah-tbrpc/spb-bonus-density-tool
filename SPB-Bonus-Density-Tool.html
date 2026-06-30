@@ -899,7 +899,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.25.5", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.25.6", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -3532,7 +3532,18 @@ function initCaseMaps(){
     if(caseMaps[i]){try{caseMaps[i].remove();}catch(e){}}
     const mp=L.map(el,{scrollWheelZoom:false}).setView([c.lat,c.lon],c.zoom||15);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap contributors"}).addTo(mp);
-    L.marker([c.lat,c.lon]).addTo(mp);
+    /* show every parcel as a numbered marker, matching the Step 1 map after a load */
+    if(c.parcels&&c.parcels.length){
+      const pts=[];
+      c.parcels.forEach(function(p,k){
+        if(p.lat==null)return;
+        pts.push([p.lat,p.lon]);
+        L.circleMarker([p.lat,p.lon],{radius:9,color:"#27576a",weight:2,fillColor:"#86bcb6",fillOpacity:.85}).addTo(mp).bindTooltip(String(k+1),{permanent:true,direction:"center",className:"parcel-num"});
+      });
+      if(pts.length){try{mp.fitBounds(L.latLngBounds(pts).pad(0.45));}catch(e){}}
+    } else {
+      L.marker([c.lat,c.lon]).addTo(mp);
+    }
     caseMaps[i]=mp;
     setTimeout(function(){mp.invalidateSize();},150);
   });
