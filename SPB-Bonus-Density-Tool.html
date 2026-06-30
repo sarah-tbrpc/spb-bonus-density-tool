@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Density Bonus Valuation Tool</title>
-<link rel="icon" type="image/jpeg" href="images/tbrpc.jpg">
+<link rel="icon" type="image/png" href="images/tbrpc.png">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -441,7 +441,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 .poolhead{display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--line)}
 .poolhead-info{flex:1;min-width:200px}
 /* Step 1 pool section: donut/legend and the scarcity curve side by side, wrapping to stacked when narrow */
-.poolviz{display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start}
+.poolviz{display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start;margin-bottom:14px}
 .poolviz .poolhead{flex:1 1 320px;margin:0;padding:0;border:none}
 .poolviz .vchart{flex:1 1 320px;min-width:0}
 .poolwhich{font-weight:700;font-size:15px;margin-bottom:10px;line-height:1.3}
@@ -604,8 +604,8 @@ th.notecol{font-size:12px;font-weight:400}
         </details>
         <div class="field">
           <div class="row2">
-            <div><label class="lab"><span>Avg Unit / Key Size (SF)</span></label><input type="text" inputmode="numeric" id="mkt-sf" value="2,269"></div>
-            <div><label class="lab"><span>$ / SF (optional)</span></label><input type="text" inputmode="numeric" id="mkt-psf" placeholder="$ per SF"></div>
+            <div><label class="lab"><span>Avg Unit / Key Size (SF) <span class="ihint" data-ih="Why: the average sellable size of one unit or key.|How: it converts between the per-unit market value and a price per square foot, and feeds the construction cross-check; it does not change the core verdict."></span></span></label><input type="text" inputmode="numeric" id="mkt-sf" value="2,269"></div>
+            <div><label class="lab"><span>$ / SF (optional) <span class="ihint" data-ih="Why: an optional way to set market value from a price per square foot.|How: price per SF times the average unit size sets the market value per unit below."></span></span></label><input type="text" inputmode="numeric" id="mkt-psf" placeholder="$ per SF"></div>
           </div>
           <div class="hint" style="margin-top:6px">Converts $/unit to $/SF, seeded from the use type. Enter a $/SF to set the market value below.</div>
           <div class="hint" id="progarea" style="margin-top:6px;display:none"></div>
@@ -911,7 +911,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.27.2", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.27.3", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
