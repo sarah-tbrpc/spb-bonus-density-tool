@@ -136,7 +136,10 @@ h2.step-h{font-size:23px;font-weight:700;margin:4px 0 7px;letter-spacing:-.02em}
 .mv-edit .val.anote{font-weight:400;color:var(--ink3);font-size:11.5px;white-space:nowrap}
 /* Step-1 ceiling/floor schematic: previews what the page's inputs produce before the user fills it in */
 .s1-schema{background:#f6f8f9;border:1px solid var(--line);border-radius:8px;padding:10px 13px;margin:0 0 20px;font-size:12.5px;color:var(--ink2);line-height:1.5}
-.s1-end{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin:1px 0}
+.s1-line{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:12px;row-gap:5px}
+.s1-end{display:inline}
+.s1-sep{color:var(--ink3);margin-right:9px}
+@media(max-width:620px){.s1-line{flex-direction:column} .s1-sep{display:none}}
 .s1-cap{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 9px;border-radius:999px;color:#fff;flex:none}
 .s1-cap.ceil{background:var(--developer)}
 .s1-cap.floor{background:var(--public)}
@@ -170,7 +173,9 @@ select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-i
 .vgrid .vchart{position:sticky;top:80px}
 @media(max-width:860px){.vgrid{grid-template-columns:1fr}.vgrid .vchart{position:static}}
 .case-head{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.case-head h3{margin:0}
 .case-head .case-load{flex:none;white-space:nowrap}
+.case-sub{margin-top:3px}
 .case-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,380px);gap:24px;align-items:start;margin-top:4px}
 .case-media{display:flex;flex-direction:column}
 .case-img img{width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;border-radius:8px;border:1px solid var(--line);display:block}
@@ -587,8 +592,10 @@ th.notecol{font-size:12px;font-weight:400}
       <h2 class="step-h">Define the Project and Bonus Request</h2>
       <p class="lede" style="margin-bottom:13px">Name the project, place it on the map to set the district and density pool, classify the use and construction cost, then enter the density request.</p>
       <div class="s1-schema" role="note" aria-label="This step sets the ceiling (value to the developer) and the floor (impact plus pool value); Step 2 fills the room between them with public benefits.">
-        <div class="s1-end"><span class="s1-cap ceil">Ceiling</span> <span>value to the developer <span class="s1-sub">(market value − build cost, × the bonus units)</span></span></div>
-        <div class="s1-end"><span class="s1-cap floor">Floor</span> <span>impact offset + pool value <span class="s1-sub">(the least the city can lawfully accept)</span></span></div>
+        <div class="s1-line">
+          <span class="s1-end"><span class="s1-cap ceil">Ceiling</span> value to the developer <span class="s1-sub">(market value − build cost, × bonus units)</span></span>
+          <span class="s1-end"><span class="s1-sep" aria-hidden="true">|</span><span class="s1-cap floor">Floor</span> impact offset + pool value <span class="s1-sub">(the least the city can lawfully accept)</span></span>
+        </div>
         <div class="s1-foot">This step sets <b>both ends</b> of the deal; Step 2 fills the room between them with public benefits.</div>
       </div>
 
@@ -812,7 +819,7 @@ th.notecol{font-size:12px;font-weight:400}
       <button class="btn auxback" style="margin-bottom:14px">← Back</button>
       <div class="eyebrow">Settings</div>
       <h2 class="step-h">Benefit Library</h2>
-      <p class="lede">The <b>city’s value</b> of each benefit (Low/High/Applied/Override; Applied is the midpoint unless overridden), seeding the city value when you add it. The <b>developer’s cost</b> is not set here, it’s their per-project proposal on the <a href="#" class="seclink" onclick="goto(1);return false;">Benefits step</a>. Placeholders, calibrate to local bids. For <b>resilience</b> benefits (seawall, living shoreline, stormwater, dune), the most defensible public value is the avoided-loss benefit from a FEMA-style benefit-cost analysis (e.g. the SFRPC / AECOM Resilience BCA tool), not a per-unit placeholder.</p>
+      <p class="lede">The <b>city’s value</b> of each benefit (Low/High/Applied/Override; Applied is the midpoint unless overridden), seeding the city value when you add it. The <b>developer’s cost</b> is not set here, it’s their per-project proposal on the <a href="#" class="seclink" onclick="goto(1);return false;">Benefits step</a>. Placeholders, calibrate to local bids.</p>
       <div id="aux-library"></div>
     </section>
 
@@ -892,7 +899,7 @@ th.notecol{font-size:12px;font-weight:400}
       <button class="btn auxback" style="margin-bottom:14px">← Back</button>
       <div class="eyebrow">Ledger</div>
       <h2 class="step-h">Allocation Ledger</h2>
-      <p class="lede">Every conditional-use permit that drew from the pool. Approved allocations reduce the remaining pool and drive the scarcity cost on Results. Add a row per decision.</p>
+      <p class="lede">Every conditional-use permit that drew from the pool. Approved allocations reduce the remaining pool and drive the scarcity cost on <a href="#" class="seclink" onclick="goto(2);return false;">Results</a>. Add a row per decision.</p>
       <div id="aux-history"></div>
     </section>
 
@@ -952,7 +959,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.29.8", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.29.9", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -2428,7 +2435,7 @@ function verdictObj(m){
   if(!m.poolPath && m.zCeil>0 && m.cityMin>m.zCeil) return {tag:"No zone",bg:C.bad[0],fg:C.bad[1],light:"#c0392b",status:"No agreement zone",tip:"The lawful impact offset alone exceeds what the bonus is worth to the developer; no package closes the gap.",head:"No agreement zone, floor exceeds the developer ceiling",
     body:capPre+"The break-even floor ("+fmt(m.cityMin)+", the impact offset alone since no pool draw applies) exceeds the conservative value of the bonus to the developer ("+fmt(m.zCeil)+"). Even an all-cash package can't clear it. Deny, restructure, or revisit the impact figure if miscalibrated."+unsecuredNote};
   if(m.A===0 && m.Bplain===0) return {tag:"No offer yet",bg:C.neu[0],fg:C.neu[1],light:"#9aa3a8",status:"No offer yet",tip:"Add public benefits on the Benefits step to evaluate the request.",head:"No offer entered yet",
-    body:capPre+"No benefits entered yet. The break-even floor is "+fmt(m.cityMin)+" ("+(m.D>0?("pool value used "+fmt(m.D)+" + "):"")+"impact mitigation "+fmt(m.I)+"), and the bonus is worth up to "+fmt(m.V)+" to the developer. Add benefits on the Benefits step to test an offer against that floor."};
+    body:capPre+"No benefits entered yet. The break-even floor is "+fmt(m.cityMin)+" ("+(m.D>0?("pool value used "+fmt(m.D)+" + "):"")+"impact mitigation "+fmt(m.I)+"), and the bonus is worth up to "+fmt(m.V)+" to the developer. Add benefits on the <a href='#' class='seclink' onclick='goto(1);return false;'>Benefits step</a> to test an offer against that floor."};
   if(!(m.zCeil>0)) return {tag:"Incomplete",bg:C.neu[0],fg:C.neu[1],light:"#9aa3a8",status:"Incomplete inputs",tip:"Set a use type and market value on Step 1 so the value to developer and the break-even floor are defined.",head:"Incomplete, set the project basics first",
     body:capPre+"A package is entered, but without a use type and market value the ceiling and break-even floor are not yet defined, so feasibility can't be judged. Set them on Step 1."+unsecuredNote};
   if(m.worth && m.feas){const gated=m.belowCapture;
@@ -3557,9 +3564,9 @@ function verdictHTML(m,v){
   const badge=rb?'<div class="vbadge vbadge-'+rb.tone+'">'+(rb.tone==="ok"?"✓ ":rb.tone==="warn"?"⚠ ":"")+rb.t+' <span class="anote" style="font-weight:400">(details under Diagnostics)</span></div>':'';
   const vd=(S.acres>0&&S.bonus>0&&m.Bplain>0)?'<div class="vdchips"><span class="vdchip"><b>'+fmt(m.Bplain/S.acres)+'</b> public value / acre</span><span class="vdchip"><b>'+fmt(m.Bplain/S.bonus)+'</b> public value / bonus unit</span></div>':'';
   return '<div class="vpill" style="background:'+v.bg+';color:'+v.fg+'"><span class="tlight" style="background:'+v.light+'"></span><span>'+v.head+'</span><span class="vstatus" style="color:'+v.fg+';opacity:.8">'+v.status+'</span></div>'+
-    '<div class="vbody">'+badge+v.body+(empty?' <button class="alink" id="v-goto-benefits">Go to the Benefits step →</button>':'')+packageSummaryHTML(m,true)+vd+'</div>';
+    '<div class="vbody">'+badge+v.body+packageSummaryHTML(m,true)+vd+'</div>';
 }
-function paintVerdict(m,v){const vb=document.getElementById("verdict");if(!vb)return;vb.style.cssText="";vb.innerHTML=verdictHTML(m,v);const gb=document.getElementById("v-goto-benefits");if(gb)gb.onclick=()=>goto(1);wirePkgLinks(vb);}
+function paintVerdict(m,v){const vb=document.getElementById("verdict");if(!vb)return;vb.style.cssText="";vb.innerHTML=verdictHTML(m,v);wirePkgLinks(vb);}
 function drawRobo(m){
   const el=document.getElementById("robo"); if(!el)return;
   const band=x=>'<td class="r mono">'+fmt(x*0.8)+'</td><td class="r mono">'+fmt(x)+'</td><td class="r mono">'+fmt(x*1.2)+'</td>';
@@ -3754,8 +3761,9 @@ function buildCases(){
     const imgPart=c.image?('<div class="case-img"><img src="'+esc(c.image)+'" alt="'+esc(c.name)+' rendering" loading="lazy"></div>'+(c.imgcap?'<div class="anote" style="margin-top:6px;font-size:11px">'+esc(c.imgcap)+'</div>':'')):'';
     const mapPart=(c.lat!=null)?('<div class="case-map" id="case-map-'+i+'" role="img" aria-label="'+esc(c.name)+' location map"></div><div class="anote" style="margin-top:6px;font-size:11px">Corey Circle, St. Pete Beach</div>'):'';
     const mediaCol=imgPart+mapPart;
-    h+='<div class="card"><div class="case-head"><div><h3>'+esc(c.name)+'</h3><div class="sub">'+esc(c.sub)+'</div></div>'+
+    h+='<div class="card"><div class="case-head"><h3>'+esc(c.name)+'</h3>'+
        '<button class="addbtn case-load" data-loadcase="'+i+'">Load this case →</button></div>'+
+       '<div class="sub case-sub">'+esc(c.sub)+'</div>'+
        (mediaCol?('<div class="case-grid"><div>'+textCol+'</div><div class="case-media">'+mediaCol+'</div></div>'):textCol)+
        '</div>';
   });
@@ -3780,9 +3788,14 @@ function initCaseMaps(){
         if(feat&&feat.geometry){try{L.geoJSON(feat,{interactive:false,style:{color:"#27576a",weight:1.2,fillColor:"#86bcb6",fillOpacity:.18}}).addTo(mp);}catch(e){}}
       });
       c.parcels.forEach(function(p,k){
-        if(p.lat==null)return;
-        pts.push([p.lat,p.lon]);
-        L.circleMarker([p.lat,p.lon],{radius:9,color:"#27576a",weight:2,fillColor:"#86bcb6",fillOpacity:.85}).addTo(mp).bindTooltip(String(k+1),{permanent:true,direction:"center",className:"parcel-num"});
+        /* place the marker at the footprint's interior point, exactly like the Step 1 map (loadCaseParcels),
+           so the numbered icons sit in the same spot on both maps */
+        const feat=(typeof parcelFeatById==="function"&&p.pin)?parcelFeatById(dashPin(p.pin)):null;
+        const ip=(feat&&feat.geometry&&typeof interiorPoint==="function")?interiorPoint(feat.geometry):null;
+        const lat=ip?ip[0]:p.lat, lon=ip?ip[1]:p.lon;
+        if(lat==null)return;
+        pts.push([lat,lon]);
+        L.circleMarker([lat,lon],{radius:9,color:"#27576a",weight:2,fillColor:"#86bcb6",fillOpacity:.85}).addTo(mp).bindTooltip(String(k+1),{permanent:true,direction:"center",className:"parcel-num"});
       });
       if(pts.length){try{mp.fitBounds(L.latLngBounds(pts).pad(0.45));}catch(e){}}
     } else {
