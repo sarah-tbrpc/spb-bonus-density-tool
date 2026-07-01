@@ -625,9 +625,6 @@ th.notecol{font-size:12px;font-weight:400}
               <div id="site-intel" class="siteintel"><div class="hint" style="padding:8px 11px;margin-top:0">Drop the pin or search an address to pull site data.</div></div></div>
             <label class="mp-toggle"><input type="checkbox" id="multiparcel"> Multi-parcel project</label>
             <div id="parcel-list" class="siteintel" style="margin-top:6px"></div>
-            <div class="field" style="margin-bottom:0;margin-top:14px"><label class="lab"><span>Nearby County Values <span class="ihint" data-ih="Why: a quick reference of what similar nearby properties carry on the county roll, to sanity-check the Step-1 market value.|How: queries the Pinellas parcel layer for same-use records around the pin and reports the median county taxable value. Assessment-grade (typically well below closed-sale prices), so treat it as a low-side reference, not an appraisal comp. Changes nothing unless you save it as an Assumptions note."></span></span></label>
-              <button class="btn" id="comps-btn" type="button">Generate comps</button>
-              <div id="comps-out" class="siteintel" aria-live="polite" style="margin-top:6px"></div></div>
           </div>
           <div class="locmap">
             <div class="field" style="margin-top:0">
@@ -678,6 +675,9 @@ th.notecol{font-size:12px;font-weight:400}
             <div class="field" style="margin-top:10px"><label class="lab"><span>Market Sub-Type <span class="ihint" data-ih="Why: Gulf-front commands higher prices than inland.|How: it seeds the market-value estimate (and the nightly rate for lodging)."></span></span></label>
               <select id="subtype"><option value="">Select…</option><option>Inland/Non-front</option><option>Gulf-front</option></select></div>
           </details>
+          <div class="field" style="margin-bottom:0;margin-top:16px"><label class="lab"><span>Market Value Reference (County Data) <span class="ihint" data-ih="Why: a reality check on the market value above, from what similar nearby properties carry on the county roll.|How: queries the Pinellas parcel layer for same-use records around the map pin. County values are ASSESSMENT-GRADE (below closed-sale prices); true sale comps live on each linked PCPAO record. Construction cost is not in county data; use the construction estimator above. Changes nothing unless you save it as an Assumptions note."></span></span></label>
+            <button class="btn" id="comps-btn" type="button">Pull county market reference</button>
+            <div id="comps-out" class="siteintel" aria-live="polite" style="margin-top:6px"></div></div>
         </div>
       </div>
 
@@ -941,7 +941,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.31.0", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.31.1", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -3049,7 +3049,7 @@ async function generateComps(){
   const med=cfg.perUnit?_median(rows.map(r=>r.val)):_median(rows.filter(r=>r.perAc).map(r=>r.perAc));
   const unitTxt=cfg.perUnit?"/unit":"/acre";
   const metricName=cfg.perUnit?"county taxable value":"county just value";   // unit rows carry taxable only; whole parcels carry just value (taxable used where just is absent)
-  const mktLine=(cfg.perUnit&&S.market>0)?(' Step-1 market value is <b>'+fmt(S.market)+'</b>/unit; county taxable runs well below closed-sale prices (Save Our Homes, assessment lag), so read the median as a <b>low-side reference</b>, not a comp.'):'';
+  const mktLine=(cfg.perUnit&&S.market>0)?(' The market value entered above is <b>'+fmt(S.market)+'</b>/unit; county taxable runs well below closed-sale prices (Save Our Homes, assessment lag), so read the median as a <b>low-side reference</b>, not a comp.'):'';
   const refLine="County reference (queried "+(function(){try{return new Date().toISOString().slice(0,10);}catch(e){return VERSION_DATE;}})()+"): median "+metricName+" "+fmt(med)+unitTxt+" across "+rows.length+" nearby "+cfg.noun+" within "+radius+" m (Pinellas ParcelPropertyInfo; assessment-grade, below market).";
   const canSave=cfg.perUnit&&ASSUMP.some(r=>/Condo sale price/i.test(r.label));
   const top=rows.slice(0,8).map(r=>{
@@ -3059,7 +3059,7 @@ async function generateComps(){
   out.innerHTML='<div style="padding:9px 11px">'+
     '<div><b>'+rows.length+'</b> '+cfg.noun+' within ~'+radius+' m · median '+metricName+' <b>'+fmt(med)+'</b>'+unitTxt+'.'+mktLine+'</div>'+
     '<div class="atable-wrap" style="margin-top:8px"><table class="atable"><thead><tr><th scope="col">Property</th><th scope="col" class="r">Built</th><th scope="col" class="r">County value</th>'+(cfg.perUnit?'':'<th scope="col" class="r">Value / acre</th>')+'<th scope="col" class="r">Dist</th></tr></thead><tbody>'+top+'</tbody></table></div>'+
-    '<div class="anote" style="margin-top:7px">Assessment-grade reference from the county roll (not closed sales). Property links open the PCPAO record, where the actual sale history is.'+
+    '<div class="anote" style="margin-top:7px">Assessment-grade reference from the county roll, not closed sales; <b>true sale comps are on each linked PCPAO record</b> (open a nearby new building and read its recent unit sales). County data carries no construction-cost information; estimate cost from the $/SF basis in the construction estimator above.'+
     (canSave?' <button class="alink" id="comps-save" type="button">Save as a reference note in Assumptions § B</button>':'')+'</div></div>';
   const sv=document.getElementById("comps-save");
   if(sv)sv.addEventListener("click",function(){
