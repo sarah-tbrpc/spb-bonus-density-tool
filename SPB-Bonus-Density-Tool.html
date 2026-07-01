@@ -962,7 +962,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.29.16", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.29.17", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -3303,8 +3303,7 @@ function drawEligPoly(poly){
   try{
     if(!map.getPane("elig")){map.createPane("elig");map.getPane("elig").style.zIndex=356;}   // above parcels(350), below CCCL(365) + pins(600)
     const lls=poly.map(p=>[p[1],p[0]]);
-    eligLayer=L.polygon(lls,{pane:"elig",color:"#12603f",weight:2,fillColor:"#2fbd7e",fillOpacity:0.42});
-    eligLayer.bindTooltip("Density-eligible area (landward of the CCCL)",{sticky:true,direction:"top",className:"parcel-tip",opacity:0.95});
+    eligLayer=L.polygon(lls,{pane:"elig",interactive:false,color:"#12603f",weight:2,fillColor:"#2fbd7e",fillOpacity:0.42});   // non-interactive overlay: labelled in the legend, no tooltip, and clicks/hover pass through to the parcel beneath
     eligLayer.addTo(map);
     showEligLegend(true);
   }catch(e){}
