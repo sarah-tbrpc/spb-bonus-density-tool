@@ -320,7 +320,6 @@ select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-i
 .zopa-lab.top{top:-22px}.zopa-lab.top.r1{top:-40px}.zopa-lab.bot{top:54px}
 @media(max-width:560px){.zopa-lab{font-size:9px}}
 .zopa-target{position:absolute;top:9px;height:34px;border-radius:4px;background:rgba(227,160,80,.16);border:1px dashed rgba(176,122,46,.75);box-sizing:border-box}
-.zopa-contrib{position:absolute;top:9px;height:34px;border-radius:4px;background:rgba(120,130,138,.10);box-sizing:border-box}
 .zopa-tmark{position:absolute;top:-8px;height:38px;border-left:2px dashed var(--accent)}
 .zopa-tick{position:absolute;top:-8px;width:1px;height:38px;background:#aab3b9}
 .rank{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line2)}
@@ -962,7 +961,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.29.25", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.29.26", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -981,7 +980,7 @@ const XCHK={iccPSF:234.59,tampaRatio:10};
 /* Value-capture "guardrails" from the TBRPC framework (ANALYTIC OVERLAY, not adopted code):
    a 15–25% contribution-rate floor (Koontz / FS 163.3180 basis) and a 25–50% value-capture ceiling.
    Expressed as fractions of the value to developer; drawn as a "target capture zone" on the ZOPA bar. */
-const CAPTURE={contribLo:0.15,contribHi:0.25,capLo:0.25,capHi:0.50};
+const CAPTURE={capLo:0.25,capHi:0.50};
 const POOL_DEFAULTS={RU:{rem:170,dem:8,hor:15},TLU:{rem:311,dem:14,hor:15}};
 const POOL_TOTAL={RU:195,TLU:325};
 /* Allocation ledger. Only rows whose decision matches /approv/ count against the pool,
@@ -1266,8 +1265,6 @@ const ASSUMP=[
  {sec:"E. Impact mitigation ($/unit by use)",label:"Temporary lodging",unit:"$/key",low:1604,high:3200,override:null,notes:"LOW = Pinellas Multimodal Impact Fee $1,604/room (Code §150-40 Sch. A, Hotel use). The SPB parks/rec fee is residential-only and exempts lodging; Pinellas has no other lodging impact fee. HIGH = flagged proportionate-share placeholder (analyst overlay; lodging generates fewer trips and no school demand). Applied midpoint drives the model.",fmt:"$",apply:v=>IMPACT_BY_USE["Temporary Lodging"]=v},
  {sec:"F. Optional cross-check (Tampa 10:1 / ICC)",label:"ICC building valuation, R-2 Type IA",unit:"$/SF",low:234.59,high:234.59,override:null,notes:"ICC Aug-2025 Building Valuation Data, R-2 Group / Type IA, the rate SPB staff used for bonus-unit construction cost. Times the Step-1 average unit size × bonus units. Edit for a different occupancy / type / year",fmt:"$",apply:v=>XCHK.iccPSF=v},
  {sec:"F. Optional cross-check (Tampa 10:1 / ICC)",label:"Benefit return ratio (Tampa basis)",unit:"× dev $ : benefit $",low:10,high:10,override:null,notes:"Tampa Code of Ordinances 27-140: ten development dollars per one benefit dollar outside the Channel District (10:1). Implied benefit floor = bonus construction cost ÷ this ratio",fmt:"x",apply:v=>XCHK.tampaRatio=v},
- {sec:"F. Optional cross-check (Tampa 10:1 / ICC)",label:"Contribution floor, lower bound",unit:"% of value to dev",low:15,high:15,override:null,notes:"TBRPC framework guardrail (ANALYTIC OVERLAY, not adopted code). Lower edge of the lighter 'contribution floor' band on the ZOPA bar, Koontz / FS 163.3180 proportionate-share basis. Set Low and High the same, or use Override.",fmt:"%",apply:v=>CAPTURE.contribLo=v/100},
- {sec:"F. Optional cross-check (Tampa 10:1 / ICC)",label:"Contribution floor, upper bound",unit:"% of value to dev",low:25,high:25,override:null,notes:"Upper edge of the contribution-floor band (where it meets the value-capture zone).",fmt:"%",apply:v=>CAPTURE.contribHi=v/100},
  {sec:"F. Optional cross-check (Tampa 10:1 / ICC)",label:"Value-capture target, lower bound",unit:"% of value to dev",low:25,high:25,override:null,notes:"Lower edge of the shaded 'target capture zone' (the developer-side value-capture range). Analytic overlay, not adopted code.",fmt:"%",apply:v=>CAPTURE.capLo=v/100},
  {sec:"F. Optional cross-check (Tampa 10:1 / ICC)",label:"Value-capture target, upper bound",unit:"% of value to dev",low:50,high:50,override:null,notes:"Upper edge of the target capture zone, the developer walk-away ceiling rate. Analytic overlay, not adopted code.",fmt:"%",apply:v=>CAPTURE.capHi=v/100},
  {sec:"G. Lodging income approach (value per key)",label:"ADR, Gulf-front resort",unit:"$/night",low:340,high:480,override:null,notes:"Full-service barrier-island / Gulf-front resort rate. Used when Market Sub-Type = Gulf-front. Drives value per key for Temporary Lodging.",fmt:"$",apply:v=>LODGE.adrGulf=v},
@@ -1364,8 +1361,6 @@ ASSUMP.forEach(r=>{if(r.source===undefined)r.source="";});
   "Condominium":"Pinellas County Multimodal Impact Fee (Code §150-40, Schedule A) $1,248/condo + St. Pete Beach parks/rec fee $843/unit (Ord. 2022-04). Pinellas levies no school/parks/fire/library impact fee. Confirm the current Pinellas Schedule A rate for the project's fee district, the MIFO is under update. High end is an unsourced proportionate-share placeholder.",
   "Multifamily rental":"Pinellas County Multimodal Impact Fee (Code §150-40, Schedule A) $1,420/MF unit + St. Pete Beach parks/rec fee $843/unit (Ord. 2022-04). Confirm the current Pinellas Schedule A MF rate, the MIFO is under update. High end is an unsourced proportionate-share placeholder.",
   "Temporary lodging":"Pinellas County Multimodal Impact Fee (Code §150-40, Schedule A) $1,604/room; the SPB parks/rec fee is residential-only (lodging exempt). Confirm the current Pinellas Schedule A hotel rate, the MIFO is under update. High end is an unsourced proportionate-share placeholder.",
-  "Contribution floor, lower bound":CAPSRC,
-  "Contribution floor, upper bound":CAPSRC,
   "Value-capture target, lower bound":CAPSRC,
   "Value-capture target, upper bound":CAPSRC,
   "ADR, Gulf-front resort":LODGE,
@@ -2685,7 +2680,7 @@ function drawZopa(m){
   if(tg>=0)tops.push({p:tg,txt:lw[2]+zf(m.Vhigh),x:"color:var(--accent)"});
   tops.sort((a,b)=>a.p-b.p);
   const topHtml=tops.map((L,i)=>zlab(L.p,"top"+(i%2?" r1":""),L.txt,L.x)).join("");
-  t.innerHTML=band(CAPTURE.contribLo,CAPTURE.contribHi,"zopa-contrib")+band(CAPTURE.capLo,CAPTURE.capHi,"zopa-target")+
+  t.innerHTML=band(CAPTURE.capLo,CAPTURE.capHi,"zopa-target")+
     '<div class="zopa-bar"></div>'+
     '<div class="zopa-zone" style="left:'+fl+'%;width:'+Math.max(0,ce-fl)+'%"></div>'+
     '<div class="zopa-mark" style="left:'+of+'%"></div>'+
@@ -2715,7 +2710,6 @@ function drawZopa(m){
     capNote='<div style="margin-top:8px"><span style="display:inline-block;width:11px;height:11px;background:rgba(227,160,80,.5);border:1px dashed rgba(176,122,46,.85);border-radius:2px;vertical-align:-1px;margin-right:6px"></span>'+
       '<b>Target capture zone</b>, the framework’s fair-share band: capturing <b>'+Math.round(CAPTURE.capLo*100)+'–'+Math.round(CAPTURE.capHi*100)+'%</b> of the value to developer ('+fmt(tLo)+'–'+fmt(tHi)+'). '+
       'This offer captures <b style="color:'+wc+'">'+rate+'%</b>, <b style="color:'+wc+'">'+where+'</b> the zone. '+
-      'The lighter band is the '+Math.round(CAPTURE.contribLo*100)+'–'+Math.round(CAPTURE.contribHi*100)+'% contribution floor (Koontz). '+
       '<span class="anote">Analytic overlay from the TBRPC framework, not adopted code.</span></div>';
   }
   document.getElementById("zopa-note").innerHTML = baseNote + floorNote + rangeNote + capNote;
