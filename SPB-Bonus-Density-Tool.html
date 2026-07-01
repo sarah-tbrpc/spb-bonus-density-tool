@@ -962,7 +962,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.29.24", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.29.25", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -2341,7 +2341,7 @@ function updateExplore(m){
   const pct=+sl.value;
   const spend=(m.zCeil>0)?(pct/100)*m.zCeil:0;
   const pubVal=(m.gPlain>0)?spend*m.gPlain:0;
-  const vv=document.getElementById("explore-v"); if(vv)vv.textContent=fmt(spend)+" ("+pct+"% of ceiling)";
+  const vv=document.getElementById("explore-v"); if(vv)vv.textContent=fmt(spend)+" ("+pct+"% of the value to developer)";
   const note=document.getElementById("explore-note"); if(!note)return;
   if(m.gPlain<=0){note.innerHTML="Add benefits first to set the value ratio (public value per developer dollar). The explorer then projects how a larger or smaller package of the same composition would land.";return;}
   const fav=(spend>=m.zFloor-1e-6)&&(spend<=m.zCeil+1e-6)&&(pubVal>=m.cityMin-1e-6);
@@ -2635,7 +2635,7 @@ function drawValueStack(m){
   const benefits=Math.min(m.A,residual), net=Math.max(0,residual-m.A), over=m.A>residual+1;
   const segs=[{l:"Build & sell cost",v:build,c:"#9aa6ad"},{l:"Developer profit",v:profit,c:"#ecc07a"},
     {l:"Public benefits (captured)",v:benefits,c:"#27576a"},{l:"Net kept by developer",v:net,c:"#df9b49"}];
-  const kf=v=>"$"+Math.round(v/1000).toLocaleString()+"k";
+  const kf=v=>"$"+Math.round(v).toLocaleString();
   const W=620,H=300,padT=24,padB=22,chartH=H-padT-padB,baseY=padT+chartH;
   const maxV=Math.max(gdv,1), yOf=v=>baseY-(v/maxV)*chartH;
   const bx=66,bw=120,labX=bx+bw+16;
@@ -3427,7 +3427,7 @@ function waterfallV(){
   if(sales>0)segs.push({l:"Sales & marketing",v:sales,c:"#c7ad86"});
   const resPos=Math.max(0,residual);
   segs.push({l:"Residual, the developer’s gain",v:resPos,c:"#27576a",res:true});
-  const kf=v=>(v<0?"−":"")+"$"+Math.round(Math.abs(v)/1000).toLocaleString()+"k";
+  const kf=v=>(v<0?"−":"")+"$"+Math.round(Math.abs(v)).toLocaleString();
   const total=Math.max(S.market,1), pct=v=>Math.round(v/total*100);
   const bar=segs.filter(s=>s.v>0).map(s=>'<span style="width:'+(s.v/total*100).toFixed(2)+'%;background:'+s.c+'" title="'+esc(s.l)+' '+kf(s.v)+'"></span>').join('');
   const legend=segs.map(s=>'<div class="wlg-item'+(s.res?' res':'')+'"><span class="wlg-sw" style="background:'+s.c+'"></span><span class="wlg-tx">'+esc(s.l)+'</span><span class="wlg-v">'+kf(s.v)+' · '+pct(s.v)+'%</span></div>').join('');
