@@ -963,7 +963,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.29.12", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.29.13", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -1408,6 +1408,7 @@ function resetAll(){
   let ok=true; try{ok=window.confirm("Start a clean analysis? This clears the project inputs and benefit package. The Assumptions and the Allocation Ledger are kept.");}catch(e){ok=true;}
   if(!ok)return;
   Object.assign(S,JSON.parse(JSON.stringify(DEFAULTS)));
+  _lrByrightAuto=true;   // clean slate: LR by-right auto-derives again until the user edits it
   applyAssumptions();   // re-derive margin / decline / impact / multipliers from the CURRENT (kept) Assumptions
   syncInputsFromState();
   if(typeof clearParcels==="function"){clearParcels();multiMode=false;const mpc=document.getElementById("multiparcel");if(mpc)mpc.checked=false;const sif=document.getElementById("siteintel-field");if(sif)sif.style.display="";}
@@ -1760,7 +1761,7 @@ function resetAll(){
     var zFloor = gPlain ? cityMin / gPlain : 0, zCeil = Vlow, room = Vlow - A; // ceiling = conservative (low) end
     var worth = Bplain >= cityMin, feas = A <= Vlow;                          // feasibility on the conservative end
     var total = byright + bonus;
-    var maxUnits = (cap || 0) * (acres || 0);
+    var maxUnits = Math.floor((cap || 0) * (acres || 0));   // a density cap yields WHOLE units; floor so the max is an integer (e.g. 50/ac x 0.69 ac = 34, not 34.5) and never contradicts the rounded display
     var byrightDerived = (base || 0) * (acres || 0);
     var overCap = (cap > 0 && acres > 0) ? (total > maxUnits + 1e-9) : false;
     var headroom = maxUnits - total;
@@ -1997,11 +1998,11 @@ function clampMv(v){const el=document.getElementById("mv");if(!el)return v;retur
   if(sf)sf.addEventListener("change",e=>{e.target.value=S.mktSF?fmtNum(S.mktSF):"";});
   if(psf)psf.addEventListener("input",e=>{const p=parseNum(e.target.value);if(p>0&&S.mktSF>0){S.market=Math.round(p*S.mktSF);const mv=document.getElementById("mv");mv.value=clampMv(S.market);setP(mv);render();}});
 })();
-document.getElementById("byright").addEventListener("input",e=>{S.byright=parseNum(e.target.value);render();});
+document.getElementById("byright").addEventListener("input",e=>{S.byright=parseNum(e.target.value);_lrByrightAuto=false;render();});
 document.getElementById("byright").addEventListener("change",e=>{e.target.value=fmtNum(S.byright);});
 document.getElementById("parking").addEventListener("change",e=>{S.parking=e.target.value;render();});
 document.getElementById("coastal").addEventListener("change",e=>{S.coastal=e.target.value;render();});
-document.getElementById("acres").addEventListener("input",e=>{S.acres=+e.target.value||0;render();});
+document.getElementById("acres").addEventListener("input",e=>{S.acres=+e.target.value||0;syncLRByright();render();});
 document.getElementById("impact").addEventListener("input",e=>{S.impact=parseNum(e.target.value);render();});
 document.getElementById("impact").addEventListener("change",e=>{e.target.value=S.impact?fmtNum(S.impact):"";});
 document.getElementById("hardunit").addEventListener("input",e=>{const v=(""+e.target.value).trim();S.hardOv=(v===""?null:parseNum(v));softRender();});
@@ -2133,6 +2134,7 @@ function setupBenefitDnD(bl){
   });
 }
 function render(){
+  { const _d=DISTRICTS[S.district]||DISTRICTS.UNK; S.cap=districtCapPerAc(_d,S.acres); }   // cap tiers by buildable acres (LR: 50/ac under 3 ac, 75/ac 3+ ac) before compute
   const m=compute();
   updateDealStrip(m);
   const isLodge=S.use==="Temporary Lodging";
@@ -2171,11 +2173,16 @@ function render(){
     usp.innerHTML=small?'Note: this district draws from a smaller separate lodging pool (TC-1: 50 units, max 10 per project; BHC: 125 units), not the main 325-unit pool the tool prices against, so treat the pool and scarcity figures as understated here.':'';}
   document.getElementById("total-v").textContent=(S.byright+S.bonus).toLocaleString()+" units";
   const brh=document.getElementById("byright-hint");
-  if(brh){brh.innerHTML=(S.base>0&&S.acres>0)
-    ? ("District base "+S.base+" du/ac × "+acStr(S.acres)+" ac ≈ <b>"+Math.round(m.byrightDerived).toLocaleString()+"</b> by-right"+(Math.abs(m.byrightDerived-S.byright)>1?", entered "+S.byright.toLocaleString():" ✓")+" Existing recognized units (city property records) may lawfully exceed base × acres on redevelopment sites; enter the recognized figure.")
-    : "Set the district and site area to auto-check this.";}
+  if(brh){const _dd=DISTRICTS[S.district]||DISTRICTS.UNK;
+    if(_dd.deriveByright){ brh.innerHTML=(S.acres>0)
+      ? ("Auto-derived: base "+S.base+" TLU/ac × "+acStr(S.acres)+" buildable ac = <b>"+Math.floor((S.base||0)*S.acres).toLocaleString()+"</b> by-right (editable; type to override).")
+      : "Enter the buildable Site Area to auto-derive by-right from the base density."; }
+    else { brh.innerHTML=(S.base>0&&S.acres>0)
+      ? ("District base "+S.base+" du/ac × "+acStr(S.acres)+" ac ≈ <b>"+Math.round(m.byrightDerived).toLocaleString()+"</b> by-right"+(Math.abs(m.byrightDerived-S.byright)>1?", entered "+S.byright.toLocaleString():" ✓")+" Existing recognized units (city property records) may lawfully exceed base × acres on redevelopment sites; enter the recognized figure.")
+      : "Set the district and site area to auto-check this."; }}
   const cn=document.getElementById("cap-note");
-  if(cn){ if(S.cap>0&&S.acres>0){ cn.innerHTML="Site "+S.acres+" ac \u00d7 base "+S.base+" = "+Math.round(S.base*S.acres).toLocaleString()+" by-right; cap "+S.cap+"/ac = "+Math.round(m.maxUnits).toLocaleString()+" max. Requested total "+m.total.toLocaleString()+(m.overCap?(", <b>exceeds the cap by "+Math.round(m.total-m.maxUnits).toLocaleString()+" units</b>; not grantable as bonus density without a comprehensive plan amendment."):(", within the cap ("+Math.round(m.headroom).toLocaleString()+" units of headroom)."));}
+  if(cn){ if(S.cap>0&&S.acres>0){ const _cd=DISTRICTS[S.district]||DISTRICTS.UNK; const _scale=(_cd.capTierAc&&_cd.capSmall)?(S.acres>=_cd.capTierAc?" (large-scale, "+_cd.capTierAc+"+ ac)":" (small-scale, under "+_cd.capTierAc+" ac)"):""; const _ov=Math.round(m.total-m.maxUnits), _hr=Math.round(m.headroom);
+    cn.innerHTML="Site "+S.acres+" ac \u00d7 base "+S.base+" = "+Math.floor(S.base*S.acres).toLocaleString()+" by-right; cap "+S.cap+"/ac"+_scale+" = "+Math.round(m.maxUnits).toLocaleString()+" max. Requested total "+m.total.toLocaleString()+(m.overCap?(", <b>exceeds the cap by "+_ov.toLocaleString()+" unit"+(_ov===1?"":"s")+"</b>; not grantable as bonus density without a comprehensive plan amendment."):(", within the cap ("+_hr.toLocaleString()+" unit"+(_hr===1?"":"s")+" of headroom)."));}
     else { cn.innerHTML="Enter site area to check the request against the district cap."; } }
   const yrs=S.dem?((S.rem-S.bonus)/S.dem):99;
   const upool=(S.use==="Temporary Lodging")?"TLU":"RU";
@@ -2432,7 +2439,7 @@ function verdictObj(m){
      draw, poolPath is already false here, so no scarcity cost. The impact-mitigation floor and the
      developer ceiling still bound the deal, so LR runs the normal economics with an explanatory note
      instead of being treated as out of scope. */
-  const lrNote=(S.pathway==="LR District Ramp")?"Large Resort adds lodging by conditional use within the district cap (50–75 TLU/ac, LDC Div. 35), not a pool draw, so no pool-scarcity cost applies; the impact-mitigation floor and the developer ceiling still bound the deal. ":"";
+  const lrNote=(S.pathway==="LR District Ramp")?"Large Resort adds lodging by conditional use above the base 30 TLU/ac (up to 50/ac small-scale, or 75/ac large-scale at 3+ ac; LDC Div. 35), not a pool draw, so no pool-scarcity cost applies; the impact-mitigation floor and the developer ceiling still bound the deal. ":"";
   const capPre=lrNote+(m.overCap?"The requested total exceeds the district density cap; as bonus density it would require a comprehensive plan amendment. On the economics: ":"");
   const unsecuredNote=(m.flags&&m.flags.unsecuredShare>=0.25)?(' <b>Caution:</b> '+Math.round(m.flags.unsecuredShare*100)+'% of the offered value rests on unsecured promises (no instrument named, credited at '+Math.round(ENFORCE.none*100)+'%); name what secures them or read the offer as softer than it looks.'):"";
   /* Deep scarcity: when the scarcity-adjusted floor exceeds the developer ceiling, no realistic
@@ -2741,7 +2748,7 @@ function drawRanks(m){
 }
 /* ---------- location -> zoning -> density framework ---------- */
 const DISTRICTS={
- "LR":  {label:"Large Resort (LR)", use:"Temporary Lodging", unit:"TLU", base:50, cap:75, pathway:"LR District Ramp", node:"CO_DIV35LRLAREDI", note:"Residential base 15 du/ac; transient lodging up to 50/ac (small-scale) or 75/ac (large-scale ≥3 ac, min 200 TLU). The LR district is NOT pool-eligible, added lodging density is by conditional use within the district cap, so no pool scarcity cost. (FLU SPA-1; LDC Div. 35. The 2007 reduction of LR from 18→15 du/ac and 80→75 TLU/ac is the source of the 195 RU and 325 TLU pools.)"},
+ "LR":  {label:"Large Resort (LR)", use:"Temporary Lodging", unit:"TLU", base:30, cap:75, capSmall:50, capTierAc:3, deriveByright:true, pathway:"LR District Ramp", node:"CO_DIV35LRLAREDI", note:"Residential base 15 du/ac; transient lodging base 30 TLU/ac by right, with a conditional-use ramp to 50/ac (small-scale, under 3 ac) or 75/ac (large-scale, 3+ ac and min 200 TLU). The LR district is NOT pool-eligible, added lodging density is by conditional use within the district cap, so no pool scarcity cost. (FLU SPA-1; LDC Div. 35. The 2007 reduction of LR from 18→15 du/ac and 80→75 TLU/ac is the source of the 195 RU and 325 TLU pools.)"},
  "TC1": {label:"Town Center Core (TC-1) / Corey Ave", use:"Condominium", unit:"RU", base:15, cap:20, pathway:"Pool Allocation", node:"CO_DIV30TOCECODI", note:"Mixed-use core, residential base 15 du/ac; bonus residential units drawn from the 195-unit RU pool. Separate 50-unit TLU pool (≤10/ac, ≤10/project) governs lodging. (FLU; LDC §30.)"},
  "TC2": {label:"Town Center Corey Circle / Coquina West (TC-2)", use:"Condominium", unit:"RU", base:24, cap:30, pathway:"Pool Allocation", node:"CO_DIV37TOCECOCICOWEDI", note:"Mixed-use, residential base 24 du/ac (min 1.8-ac site); bonus units drawn from the 195-unit RU pool. Lodging is 50 TLU/ac, ≤150 units/project, from the 325 TLU pool. Corey Landings sits here. The real ceiling is the remaining pool balance, not a fixed du/ac cap. (FLU; LDC §37.)"},
  "GBR": {label:"Gulf Boulevard Redevelopment", use:"Temporary Lodging", unit:"TLU", base:40, cap:75, pathway:"Pool Allocation", note:"Corridor spanning Large Resort / Boutique Hotel-Condo / Activity Center / Bayou Residential. Transient lodging 40–75 TLU/ac by district and scale; pool draws come from the applicable TLU pool (Boutique Hotel-Condo 125, or the 325 shared by TC-2 / Activity Center / Bayou). (FLU SPA-1.)"},
@@ -2916,6 +2923,7 @@ async function gatherSiteIntel(lat,lon){
      like an acreage value, not a square-foot figure, and not while building a multi-parcel project. */
   const aNum=(/\d\s*s/i.test(""+d.area))?NaN:parseNum(d.area);   // comma-safe (parseNum strips commas); reject sf-labeled strings (a digit then an s-suffix) so only acreage auto-fills, not "21,780 sf"
   if(isFinite(aNum)&&aNum>0&&aNum<500&&!multiMode){S.acres=Math.round(aNum*100)/100; const ac=document.getElementById("acres"); if(ac)ac.value=acStr(S.acres); filled.push("acres");}
+  syncLRByright();   // LR: re-derive by-right from the (gross) auto-filled acres; the CCCL caveat prompts reducing to buildable, which re-derives again
   /* auto-fill Use type from the parcel's current PAO use code (best-effort, left editable) */
   const ut=useCodeToUse(d.usecode);
   if(ut){S.use=ut; const us=document.getElementById("use"); if(us)us.value=ut; syncUseDerived(); filled.push("use");}
@@ -2969,7 +2977,7 @@ function fmtStatedArea(v){
 }
 function applyParcelArea(){const known=PARCELS.filter(p=>p.area!=null);   // update Site Area only when a parcel carries an area; otherwise leave it untouched
   if(known.length){const sum=Math.round(known.reduce((s,p)=>s+p.area,0)*100)/100;
-    S.acres=sum; const ac=document.getElementById("acres"); if(ac)ac.value=acStr(sum); render();}
+    S.acres=sum; const ac=document.getElementById("acres"); if(ac)ac.value=acStr(sum); syncLRByright(); render();}
   const tk=PARCELS.filter(p=>p.data&&p.data.taxable>0);   // sum county taxable value across the project's parcels into the fiscal snapshot
   if(tk.length){S.taxValue=Math.round(tk.reduce((s,p)=>s+p.data.taxable,0)); const fx=document.getElementById("fiscal-tax"); if(fx)fx.value=fmtNum(S.taxValue); drawFiscal();}}
 function removeParcel(i){const p=PARCELS[i]; if(p&&p.marker&&map)map.removeLayer(p.marker); PARCELS.splice(i,1);
@@ -3013,9 +3021,24 @@ function updateBonusMax(){const el=document.getElementById("bonus");if(!el)retur
   if(typeof setP==="function")setP(el);}
 function setImpactHint(){const ie=document.getElementById("impact"); if(!ie)return;
   ie.placeholder=S.use?("e.g. "+Math.round(IMPACT_BY_USE[S.use]||0).toLocaleString()+", "+S.use+" benchmark"):"$ per bonus unit (see Assumptions)";}
+/* Large Resort by-right + cap derive from BUILDABLE acres (Brandon / LDC Div. 35): LR by-right is
+   base 30 TLU/ac x acres, and the conditional-use cap tiers by site size (50/ac small-scale under
+   3 ac, 75/ac large-scale 3+ ac). Any district flagged deriveByright gets the auto by-right; manual
+   entry (or a restored case/scenario) sets _lrByrightAuto=false so the entered figure is kept. The
+   cap is a pure function of (district, acres) and is recomputed in render() so it always tracks acres. */
+let _lrByrightAuto=true;
+function districtCapPerAc(d,acres){ if(!d)return 0; return (d.capTierAc&&d.capSmall&&(acres||0)<d.capTierAc)?d.capSmall:(d.cap||0); }
+function syncLRByright(){
+  const d=DISTRICTS[S.district]||DISTRICTS.UNK;
+  if(d.deriveByright&&_lrByrightAuto&&S.acres>0){
+    S.byright=Math.floor((d.base||0)*S.acres);   // whole by-right units at the base density (floor: you cannot round up past the entitlement)
+    const bi=document.getElementById("byright"); if(bi)bi.value=fmtNum(S.byright);
+  }
+}
 function applyDistrict(key){
   const d=DISTRICTS[key]||DISTRICTS.UNK;
-  S.district=key; S.pathway=d.pathway; S.use=d.use; S.base=d.base; S.cap=d.cap;
+  S.district=key; S.pathway=d.pathway; S.use=d.use; S.base=d.base; S.cap=districtCapPerAc(d,S.acres);
+  if(d.deriveByright)_lrByrightAuto=true;   // fresh district pick: by-right auto-tracks base x acres until edited
   const sel=document.getElementById("district"); if(sel&&sel.value!==key) sel.value=key;
   const useSel=document.getElementById("use"); if(useSel) useSel.value=d.use;
   syncUseDerived();
@@ -3031,10 +3054,11 @@ function applyDistrict(key){
     const poolMsg=(d.pathway==="Pool Allocation")
       ?"Bonus units draw from the density pool, so a pool scarcity cost applies (shown on the Results page)."
       :((d.pathway==="LR District Ramp")
-        ?"Added lodging is by conditional use within the district cap (50–75 TLU/ac), not a pool draw, so no pool-scarcity cost applies; the impact-mitigation floor and the developer ceiling still apply (shown on the Results page)."
+        ?"Added lodging above the 30 TLU/ac base is by conditional use up to 50/ac (small-scale) or 75/ac (large-scale, 3+ ac), not a pool draw, so no pool-scarcity cost applies; the impact-mitigation floor and the developer ceiling still apply (shown on the Results page)."
         :"Increases require a comprehensive plan amendment; no density pool here.");
     drEl.innerHTML="<b>"+esc(d.label)+"</b>, "+esc(d.pathway)+". "+baseTxt+poolMsg+" "+ldcLink;
   }
+  syncLRByright();   // LR: derive by-right from base x acres (no-op for other districts or after a manual by-right edit)
   render();
 }
 let map=null,marker=null,LAST_FLU=null,pinDropped=false;
@@ -3775,6 +3799,7 @@ function loadScenario(idx){
   const sv=sc.version||"1.0";
   if(sv!==VERSION){try{window.alert("This scenario was saved under v"+sv+". Its inputs are restored, but the figures recompute under the current v"+VERSION+" methodology, the stored decision may change.");}catch(e){}}
   Object.assign(S,JSON.parse(JSON.stringify(st.S)));
+  _lrByrightAuto=false;   // a saved scenario carries its own by-right; keep it (don't auto-derive over the restored figure)
   ASSUMP.forEach(function(r,k){if(st.ASSUMP&&st.ASSUMP[k]){r.low=st.ASSUMP[k].low;r.high=st.ASSUMP[k].high;r.override=st.ASSUMP[k].override;if("source" in st.ASSUMP[k])r.source=st.ASSUMP[k].source;if("notes" in st.ASSUMP[k])r.notes=st.ASSUMP[k].notes;}});
   if(st.LIB&&Array.isArray(st.LIB)){           // name-keyed library (restores custom benefits too)
     st.LIB.forEach(function(e){ let idx=libIndexOf(e.name);
@@ -3892,6 +3917,7 @@ function loadCase(idx){
   if(!("taxValue" in c.state))S.taxValue=null;   // fiscal snapshot input does not carry across a case load
   S.benefits=(c.benefits||[]).map(b=>Object.assign({},b));
   applyDistrict(S.district);     // sets base / cap / pathway / use + dist-rules; honors the case district
+  _lrByrightAuto=false; if("byright" in c.state)S.byright=c.state.byright;   // a case carries its own by-right; don't auto-derive over it
   S.impact=c.state.impact;       // applyDistrict→syncUseDerived leaves impact alone, but be explicit
   buildAddSel();
   loadCaseParcels(c);            // restore the project's parcels (multi-parcel) and the summed Site Area

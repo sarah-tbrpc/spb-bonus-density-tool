@@ -334,7 +334,7 @@
     var zFloor = gPlain ? cityMin / gPlain : 0, zCeil = Vlow, room = Vlow - A; // ceiling = conservative (low) end
     var worth = Bplain >= cityMin, feas = A <= Vlow;                          // feasibility on the conservative end
     var total = byright + bonus;
-    var maxUnits = (cap || 0) * (acres || 0);
+    var maxUnits = Math.floor((cap || 0) * (acres || 0));   // a density cap yields WHOLE units; floor so the max is an integer (e.g. 50/ac x 0.69 ac = 34, not 34.5) and never contradicts the rounded display
     var byrightDerived = (base || 0) * (acres || 0);
     var overCap = (cap > 0 && acres > 0) ? (total > maxUnits + 1e-9) : false;
     var headroom = maxUnits - total;
