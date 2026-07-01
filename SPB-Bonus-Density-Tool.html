@@ -758,11 +758,6 @@ th.notecol{font-size:12px;font-weight:400}
         <div class="sub">The most plain-value-efficient library benefits, sized to clear the break-even floor within the developer's budget. A negotiation aid, not a recommendation; add it to whatever is already on the Benefits step and adjust.</div>
         <div id="solver"></div>
       </div>
-      <div class="subsec" id="vstack-card">
-        <h3>Where the Bonus Value Goes</h3>
-        <div class="sub">The sale value of the bonus units, split into build-and-sell cost, developer profit, public benefits secured, and value kept by the developer.</div>
-        <div id="valuestack"></div>
-      </div>
       <div class="subsec">
         <h3>Benefits Ranked by Priority-Weighted Value</h3>
         <div class="sub">Public value × the category priority weight (shown in parentheses, set in Assumptions § D), per dollar of developer contribution. This orders which benefits to request first; it does not affect the verdict. Size the package with the explorer below.</div>
@@ -943,7 +938,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.30.7", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.30.8", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -2365,7 +2360,7 @@ function render(){
 
   document.getElementById("numgrid").innerHTML=numgridHTML(m);
   paintVerdict(m,v);
-  drawZopa(m);drawRanks(m);drawRobo(m);drawDensity(m);drawXCheck(m);drawValueStack(m);drawSolver(m);drawFiscal();drawMemo(m);
+  drawZopa(m);drawRanks(m);drawRobo(m);drawDensity(m);drawXCheck(m);drawSolver(m);drawFiscal();drawMemo(m);
   buildInfoIcons();
 }
 function softRender(){
@@ -2382,7 +2377,7 @@ function softRender(){
         : 'cost '+fmt(x.devCost)+' → city value '+fmt(x.cityPlain))+(x.hc<1?' (after '+Math.round(x.hc*100)+'% credit)':'');}});
     if(cur===STEPS.length-1){paintVerdict(m,v);
     document.getElementById("numgrid").innerHTML=numgridHTML(m);
-    drawZopa(m);drawRanks(m);drawRobo(m);drawDensity(m);drawXCheck(m);drawValueStack(m);drawSolver(m);drawFiscal();drawMemo(m);
+    drawZopa(m);drawRanks(m);drawRobo(m);drawDensity(m);drawXCheck(m);drawSolver(m);drawFiscal();drawMemo(m);
     buildInfoIcons(document.getElementById("numgrid"));}
 }
 /* ---------- value density + deal explorer ---------- */
@@ -2695,46 +2690,10 @@ function drawScarcity(upool,m){
   g+='<text x="'+cx.toFixed(1)+'" y="'+(cy-8).toFixed(1)+'" text-anchor="middle" font-size="10" font-weight="600" fill="#1b1f23">'+fmt(curCost)+'</text>';
   el.innerHTML='<div style="font-size:12px;color:#54616c;margin-bottom:4px">Pool value used vs. remaining supply</div><svg viewBox="0 0 '+W+' '+H+'" width="100%" style="max-width:420px;display:block" role="img" aria-label="Pool value used rises as remaining supply falls; at '+curRem+' units remaining the cost is '+fmt(curCost)+'">'+g+'</svg>';
 }
-/* Results: stacked "where the bonus value goes" bar (Parvin land-value-capture style, adapted, 
-   land held constant). Sale value of the bonus units split into build cost, profit, public benefits
-   (the city's capture), and net kept by the developer. Project total of the bonus units. */
-function drawValueStack(m){
-  const el=document.getElementById("valuestack"); if(!el)return;
-  if(!S.use||!(S.market>0)||S.bonus<=0){el.innerHTML='<div class="hint">Enter a use type, market value, and a bonus request to see how the bonus value is split.</div>';return;}
-  const base=(S.use==="Temporary Lodging")?K.hardHotel:K.hardCondo;
-  const hard=base*(BMULT[S.btype]||1)*(PMULT[S.parking]||1)*(FMULT[S.coastal]||1);
-  const soft=hard*K.soft, marginC=hard*(1+K.soft)*S.margin, sales=(S.use==="Condominium")?S.market*K.sales:0;
-  const bonus=S.bonus, gdv=S.market*bonus;
-  const build=(hard+soft+sales)*bonus, profit=marginC*bonus;
-  const residual=Math.max(0,(S.market-(hard*(1+K.soft)*(1+S.margin)+sales)))*bonus;
-  const postureA=m.impactPosture==="A";
-  const fees=postureA?Math.min(m.I,residual):0;   // posture A: adopted impact fees paid at permit come out of the residual before the package
-  const avail=Math.max(0,residual-fees);
-  const benefits=Math.min(m.A,avail), net=Math.max(0,avail-m.A), over=m.A>avail+1;
-  const segs=[{l:"Build & sell cost",v:build,c:"#9aa6ad"},{l:"Developer profit",v:profit,c:"#ecc07a"}]
-    .concat(fees>0?[{l:"Impact fees (permit)",v:fees,c:"#b98a86"}]:[])
-    .concat([{l:"Public benefits (captured)",v:benefits,c:"#27576a"},{l:"Net kept by developer",v:net,c:"#df9b49"}]);
-  const kf=v=>"$"+Math.round(v).toLocaleString();
-  const W=620,H=300,padT=24,padB=22,chartH=H-padT-padB,baseY=padT+chartH;
-  const maxV=Math.max(gdv,1), yOf=v=>baseY-(v/maxV)*chartH;
-  const bx=66,bw=120,labX=bx+bw+16;
-  let g='<line x1="40" y1="'+baseY+'" x2="'+(W-8)+'" y2="'+baseY+'" stroke="#d6dbde"/>';
-  let cum=0; const labs=[];
-  segs.forEach(s=>{if(s.v<=0)return;const yb=yOf(cum),yt=yOf(cum+s.v),h=Math.max(1,yb-yt),mid=(yb+yt)/2;
-    g+='<rect x="'+bx+'" y="'+yt.toFixed(1)+'" width="'+bw+'" height="'+h.toFixed(1)+'" fill="'+s.c+'"/>';
-    labs.push({s:s,mid:mid,y:mid}); cum+=s.v;});
-  /* every non-zero slice gets a label; stagger them so thin slices (e.g. public benefits) aren't dropped */
-  labs.sort((a,b)=>a.y-b.y);
-  const MIN=16; for(let i=1;i<labs.length;i++){if(labs[i].y-labs[i-1].y<MIN)labs[i].y=labs[i-1].y+MIN;}
-  const ov=labs.length?(labs[labs.length-1].y-(baseY-2)):0; if(ov>0)labs.forEach(l=>l.y-=ov);
-  labs.forEach(l=>{g+='<line x1="'+(bx+bw)+'" y1="'+l.mid.toFixed(1)+'" x2="'+(labX-4)+'" y2="'+l.y.toFixed(1)+'" stroke="#cdd3d7"/>'+
-    '<text x="'+labX+'" y="'+(l.y+3.5).toFixed(1)+'" font-size="11" fill="#1b1f23"><tspan font-weight="600">'+esc(l.s.l)+'</tspan> '+kf(l.s.v)+'</text>';});
-  g+='<text x="'+(bx+bw/2)+'" y="'+(yOf(gdv)-7).toFixed(1)+'" text-anchor="middle" font-size="12" font-weight="700" fill="#1b1f23">'+kf(gdv)+'</text>';
-  g+='<text x="'+(bx+bw/2)+'" y="'+(baseY+15)+'" text-anchor="middle" font-size="9.5" fill="#54616c">'+bonus+' bonus units</text>';
-  el.innerHTML='<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="max-width:640px;display:block;margin:4px 0 6px" role="img" aria-label="Stacked bar: sale value of the bonus units '+kf(gdv)+' split into build cost, developer profit, public benefits '+kf(benefits)+', and net kept by developer '+kf(net)+'">'+g+'</svg>'+
-    (over?'<div class="hint" style="color:#b4453c;margin-top:2px">The public-benefit package costs more than the developer’s residual room, this proposal is over budget (see the decision).</div>'
-        :'<div class="hint" style="margin-top:2px">The teal <b>Public benefits</b> slice is value captured for the city; <b>Net kept</b> is the developer’s gain after providing them. Shifting value from Net to Public benefits is the negotiation.</div>');
-}
+/* The "where the bonus value goes" gross-revenue stack was removed (v1.30.8): it led with gross sale
+   value and a land-excluded mid-estimate residual, inconsistent with the conservative decision figures
+   and framed as value-capture from developer revenue. The capture share lives on the ZOPA (offer vs
+   ceiling + target band); the per-unit cost/profit anatomy stays on the Value-to-developer derivation. */
 function drawZopa(m){
   const t=document.getElementById("zopa");
   if(!(m.zCeil>0)){
