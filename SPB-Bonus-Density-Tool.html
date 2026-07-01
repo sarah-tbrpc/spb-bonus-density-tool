@@ -943,7 +943,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.30.6", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.30.7", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -2086,7 +2086,7 @@ document.getElementById("addbtn").onclick=()=>{if(!addsel.value)return;S.benefit
 
 function readoutHTML(m,v){
   return '<span class="pill" style="background:'+v.bg+';color:'+v.fg+'">'+v.tag+'</span>'+
-    '<div class="rd clk" role="button" tabindex="0" data-aux="explainV"><div class="k">Minimum value to developer</div><div class="v mono">'+fmt(m.Vlow)+'</div></div>'+
+    '<div class="rd clk" role="button" tabindex="0" data-aux="explainV"><div class="k">Value to developer (conservative)</div><div class="v mono">'+fmt(m.Vlow)+'</div></div>'+
     '<div class="rd clk" role="button" tabindex="0" data-aux="explainCityMin"><div class="k">Break-even floor</div><div class="v mono">'+fmt(m.cityMin)+'</div></div>'+
     '<div class="rd clk" role="button" tabindex="0" data-aux="explainB"><div class="k">Public value offered</div><div class="v mono">'+fmt(m.Bplain)+'</div></div>';
 }
@@ -2117,7 +2117,7 @@ function numgridHTML(m){
   const mp=Math.round(m.impMargin*100);
   const flag=m.impMargin<0.05?', <span style="color:var(--fail)">residual near zero</span>':(m.impMargin>0.45?', <span style="color:var(--ink3)">high (land excluded)</span>':'');
   const postureA=m.impactPosture==="A";
-  const dev=["Minimum value to developer",m.Vlow,"the conservative estimate of what the bonus is worth to the developer"+flag,"dev","Why: the conservative (low) end of what the bonus is worth to the developer, the cap on what they could hand back.|How: per-unit residual (market minus build, sell and profit) times bonus units times a decline factor, taken on the high build-cost (conservative) end."+(postureA?" Under posture A the package is tested against this value less the impact fees paid at permit ("+fmt(m.zCeil)+" available for the package).":"")];
+  const dev=["Value to developer (conservative)",m.Vlow,"the conservative estimate of what the bonus is worth to the developer"+flag,"dev","Why: the conservative (low) end of what the bonus is worth to the developer, the cap on what they could hand back.|How: per-unit residual (market minus build, sell and profit) times bonus units times a decline factor, taken on the high build-cost (conservative) end."+(postureA?" Under posture A the package is tested against this value less the impact fees paid at permit ("+fmt(m.zCeil)+" available for the package).":"")];
   const floor=["Break-even floor",m.cityMin,"the least public value the deal must return","city",postureA?"Why: the least public value the deal must return; below it the public subsidizes the project.|How: pool value used only. Adopted impact fees are paid separately at building permit (posture A), so they are not part of this floor.":"Why: the least public value the deal must return; below it the public subsidizes the project.|How: impact offset plus pool value used. The offered public value must reach it to be worthwhile."];
   const imp=postureA?["Impact fees (paid at permit)",m.I,"paid at permit, outside this package","city","Why: the developer's fair share of the traffic, utility and service impact the new units create, collected as adopted impact fees at building permit.|How: impact per unit times bonus units. Under posture A these are paid outside the benefit package and reduce the value available for it (the ceiling nets them out)."]:["Impact offset",m.I,"the developer's fair share of impacts","city","Why: the developer fair-share of the traffic, utility and service impact the new units create.|How: impact per unit times bonus units; compellable under Koontz / F.S. 163.3180, and part of the floor under posture B (credited in-kind)."];
   const pool=["Pool value used",m.D,m.D<5000?"pool not scarce":"scarcity binding","city","Why: the value of the scarce pool units the bonus consumes (pool pathway only).|How: residual times scarcity (to an exponent) times bonus units; near zero while the pool is plentiful, rising as it depletes."];
@@ -3930,7 +3930,7 @@ function buildPrintSheet(){
    '<tr><td><b>By-right</b><br>'+S.byright+' '+unit+'</td><td><b>Bonus requested</b><br>'+S.bonus+' '+unit+'</td><td><b>Total / district max</b><br>'+m.total+' / '+capCell+'</td></tr></table>'+
    '<div class="ps-verdict" style="border-left:4px solid '+v.fg+'"><b>'+v.head+'</b><br>'+v.body+postureBCaution(m)+
      (m.flags&&m.flags.any?'<br><b>Open questions:</b> '+[m.flags.nUnsecured?(m.flags.nUnsecured+' unsecured ('+Math.round(m.flags.unsecuredShare*100)+'% of value)'):"",m.flags.nAboveCode?(m.flags.nAboveCode+' at 100% above a code minimum'):"",m.flags.nEsc?(m.flags.nEsc+' with escalation not below discount'):""].filter(Boolean).join(' · '):'')+'</div>'+
-   '<table class="ps-fig"><tr><th>Minimum value to developer</th><th>Pool value used</th><th>'+(m.impactPosture==="A"?"Impact fees (permit)":"Impact offset")+'</th><th>Break-even floor</th></tr>'+
+   '<table class="ps-fig"><tr><th>Value to developer (conservative)</th><th>Pool value used</th><th>'+(m.impactPosture==="A"?"Impact fees (permit)":"Impact offset")+'</th><th>Break-even floor</th></tr>'+
    '<tr><td>'+fmt(m.Vlow)+'</td><td>'+fmt(m.D)+'</td><td>'+fmt(m.I)+'</td><td>'+fmt(m.cityMin)+'</td></tr></table>'+
    '<div class="ps-sec">Public benefit package</div>'+
    '<table class="ps-ben"><thead><tr><th>Benefit</th><th>Category</th><th class="r">Qty</th><th class="r">% above</th><th class="r">Dev cost</th><th class="r">City value</th><th class="r">Ratio</th></tr></thead><tbody>'+rows+'</tbody>'+
