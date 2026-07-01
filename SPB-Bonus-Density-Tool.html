@@ -138,9 +138,8 @@ h2.step-h{font-size:23px;font-weight:700;margin:4px 0 7px;letter-spacing:-.02em}
 .s1-schema{background:#f6f8f9;border:1px solid var(--line);border-radius:8px;padding:10px 13px;margin:0 0 20px;font-size:12.5px;color:var(--ink2);line-height:1.5}
 .s1-line{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:12px;row-gap:5px}
 .s1-end{display:inline}
-.s1-sep{color:var(--ink3);margin-right:9px}
-@media(max-width:620px){.s1-line{flex-direction:column} .s1-sep{display:none}}
-.s1-cap{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 9px;border-radius:999px;color:#fff;flex:none}
+@media(max-width:620px){.s1-line{flex-direction:column}}
+.s1-cap{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 9px;border-radius:999px;color:#fff;flex:none;margin-right:6px}
 .s1-cap.ceil{background:var(--developer)}
 .s1-cap.floor{background:var(--public)}
 .s1-sub{color:var(--ink3);font-size:11.5px}
@@ -596,8 +595,8 @@ th.notecol{font-size:12px;font-weight:400}
       <p class="lede" style="margin-bottom:13px">Name the project, place it on the map to set the district and density pool, classify the use and construction cost, then enter the density request.</p>
       <div class="s1-schema" role="note" aria-label="This step sets the ceiling (value to the developer) and the floor (impact plus pool value); Step 2 fills the room between them with public benefits.">
         <div class="s1-line">
-          <span class="s1-end"><span class="s1-cap ceil">Ceiling</span> value to the developer <span class="s1-sub">(market value − build cost, × bonus units)</span></span>
-          <span class="s1-end"><span class="s1-sep" aria-hidden="true">|</span><span class="s1-cap floor">Floor</span> impact offset + pool value <span class="s1-sub">(the least the city can lawfully accept)</span></span>
+          <span class="s1-end"><span class="s1-cap ceil">Ceiling</span>Value to the developer <span class="s1-sub">(market value − build cost, × bonus units)</span></span>
+          <span class="s1-end"><span class="s1-cap floor">Floor</span>Impact offset + pool value <span class="s1-sub">(the least the city can lawfully accept)</span></span>
         </div>
         <div class="s1-foot">This step sets <b>both ends</b> of the deal; Step 2 fills the room between them with public benefits.</div>
       </div>
@@ -963,7 +962,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.29.13", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.29.14", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
