@@ -604,7 +604,7 @@ th.notecol{font-size:12px;font-weight:400}
       <div class="s1-schema" role="note" aria-label="This step sets the ceiling (value to the developer) and the floor (impact plus pool value); Step 2 fills the room between them with public benefits.">
         <div class="s1-line">
           <span class="s1-end"><span class="s1-cap ceil">Ceiling</span>Value to the developer <span class="s1-sub">(market value − build cost, × bonus units)</span></span>
-          <span class="s1-end"><span class="s1-cap floor">Floor</span>Impact offset + pool value <span class="s1-sub">(the least the city can lawfully accept)</span></span>
+          <span class="s1-end"><span class="s1-cap floor">Floor</span><span id="s1-floor-desc">Pool value (impact fees paid at permit)</span> <span class="s1-sub">(the least the city can lawfully accept)</span></span>
         </div>
         <div class="s1-foot">This step sets <b>both ends</b> of the deal; Step 2 fills the room between them with public benefits.</div>
       </div>
@@ -938,7 +938,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.30.8", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.30.9", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -2190,6 +2190,10 @@ function render(){
   { const _d=DISTRICTS[S.district]||DISTRICTS.UNK; S.cap=districtCapPerAc(_d,eligAc()); }   // cap tiers by density-eligible acres (LR: 50/ac under 3 ac, 75/ac 3+ ac) before compute
   const m=compute();
   updateDealStrip(m);
+  /* Step-1 framing chip tracks the impact-offset posture: under A the floor is pool value only
+     (adopted fees are paid at permit); under B the credited offset is part of the floor. */
+  const s1f=document.getElementById("s1-floor-desc");
+  if(s1f)s1f.textContent=(m.impactPosture==="A")?"Pool value (impact fees paid at permit)":"Impact offset + pool value";
   const isLodge=S.use==="Temporary Lodging";
   /* the editable box now carries the dollar figure; the readout beside it shows only the per-unit / $-per-SF
      context. Skip overwriting the box while it is being typed in (avoids cursor jumps). */
@@ -2389,15 +2393,15 @@ function updateExplore(m){
   const pct=+sl.value;
   const spend=(m.zCeil>0)?(pct/100)*m.zCeil:0;
   const pubVal=(m.gPlain>0)?spend*m.gPlain:0;
-  const vv=document.getElementById("explore-v"); if(vv)vv.textContent=fmt(spend)+" ("+pct+"% of the value to developer)";
+  const vv=document.getElementById("explore-v"); if(vv)vv.textContent=fmt(spend)+" ("+pct+"% of the conservative ceiling)";
   const note=document.getElementById("explore-note"); if(!note)return;
   if(m.gPlain<=0){note.innerHTML="Add benefits first to set the value ratio (public value per developer dollar). The explorer then projects how a larger or smaller package of the same composition would land.";return;}
   const fav=(spend>=m.zFloor-1e-6)&&(spend<=m.zCeil+1e-6)&&(pubVal>=m.cityMin-1e-6);
   const pa=(S.acres>0)?(" Public value would be "+fmt(pubVal/S.acres)+"/acre."):"";
   let tag;
-  if(fav)tag='<b style="color:var(--pass)">Favorable</b>, clears the break-even floor and stays within the value to developer.';
+  if(fav)tag='<b style="color:var(--pass)">Favorable</b>, clears the break-even floor and stays within the ceiling.';
   else if(spend<m.zFloor)tag='<b style="color:var(--warn)">Below minimum</b>, raise spend to about '+fmt(m.zFloor)+' to clear the city floor.';
-  else tag='<b style="color:var(--fail)">Over the ceiling</b>, exceeds the conservative value to developer ('+fmt(m.zCeil)+'); the applicant would build by-right.';
+  else tag='<b style="color:var(--fail)">Over the ceiling</b>, exceeds the conservative ceiling ('+fmt(m.zCeil)+'); the by-right alternative would dominate.';
   note.innerHTML="At <b>"+fmt(spend)+"</b> of developer spend, a package of this composition (ratio "+m.gPlain.toFixed(2)+"×) delivers <b>"+fmt(pubVal)+"</b> in public value."+pa+" "+tag+' <span class="anote">What-if only, your entered package is unchanged.</span>';
 }
 function drawDensity(m){
