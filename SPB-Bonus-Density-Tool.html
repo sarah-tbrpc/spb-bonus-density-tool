@@ -673,7 +673,7 @@ th.notecol{font-size:12px;font-weight:400}
         <h3>Density Request and Value</h3>
         <div class="row2">
           <div><label class="lab"><span>Total Site Area (acres) <span class="ihint" data-ih="Why: the gross parcel area; it gives value-per-acre and fiscal context.|How: auto-summed from the parcels you pick on the map; type to override. Density is counted on the density-eligible area below, not this total."></span></span></label><input type="number" id="acres" value="0" step="0.1">
-            <div class="hint" style="margin-top:6px">Gross parcel. Auto-summed from your map selection; type to override.</div></div>
+            <div class="hint" id="acres-hint" style="margin-top:6px">Gross parcel. Auto-summed from your map selection; type to override.</div></div>
           <div><label class="lab"><span>Density-Eligible Area (acres) <span class="ihint" data-ih="Why: St. Pete Beach counts density only on land landward of the Coastal Construction Control Line, so a coastal parcel's buildable area is less than its gross parcel.|How: this area (not the total site) drives by-right, the district cap, and the bonus headroom. GIS-estimated from the CCCL; type to override."></span></span></label><input type="number" id="elig-acres" value="0" step="0.1">
             <div class="hint" id="elig-note" style="margin-top:6px"></div></div>
         </div>
@@ -962,7 +962,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.29.19", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.29.20", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -2194,12 +2194,16 @@ function render(){
   /* density-eligible field + note (GIS estimate of land landward of the CCCL; overridable) */
   const eaNow=eligAc(), eaEl=document.getElementById("elig-acres");
   if(eaEl&&eaEl!==document.activeElement)eaEl.value=(eaNow>0)?acStr(eaNow):0;
+  /* pluralize the Site Area + eligible notes by how many parcels make up the site */
+  const _nP=(typeof PARCELS!=="undefined"&&multiMode)?PARCELS.length:0, _multiP=_nP>1;
+  const ahint=document.getElementById("acres-hint");
+  if(ahint)ahint.textContent=_multiP?("Gross area, summed across "+_nP+" selected parcels; type to override."):"Gross parcel area; auto-filled from your map selection; type to override.";
   const enote=document.getElementById("elig-note");
   if(enote){
     if(S.eligOv!=null)enote.innerHTML="Overridden. Density basis for by-right, the cap, and the bonus headroom.";
-    else if(S.eligFrac!=null&&S.acres>0){ const pct=Math.round(S.eligFrac*100), unit=(multiMode?"site":"parcel");
+    else if(S.eligFrac!=null&&S.acres>0){ const pct=Math.round(S.eligFrac*100), unit=(_multiP?"site":"parcel"), shaded="buildable area"+(_multiP?"s":"")+" shaded on the map";
       enote.innerHTML=(S.eligMethod==="clip")
-        ? ("GIS clip: "+pct+"% of the "+acStr(S.acres)+"-ac "+unit+" is landward of the CCCL (buildable area shaded on the map). Verify and override.")
+        ? ("GIS clip: "+pct+"% of the "+acStr(S.acres)+"-ac "+unit+" is landward of the CCCL ("+shaded+"). Verify and override.")
         : ("GIS estimate: about "+pct+"% of the "+acStr(S.acres)+"-ac "+unit+" is landward of the CCCL. Verify and override."); }
     else enote.innerHTML="Land landward of the CCCL, the density basis. Defaults to the site area; override if part is seaward of the CCCL.";
   }
@@ -3145,7 +3149,7 @@ function fluAt(lat,lon){if(typeof FLU_GEO==="undefined"||!FLU_GEO)return null;co
 let parcelLayer=null, parcelsOn=true, _selParcels=[], _lastParcelClick=0;
 const PARCEL_BASE={color:"#5c6975",weight:0.9,fill:true,fillColor:"#9fb0bf",fillOpacity:0.06};
 const PARCEL_HOVER={color:"#27576a",weight:1.6,fill:true,fillColor:"#86bcb6",fillOpacity:0.22};
-const PARCEL_SEL={color:"#1f6f6a",weight:2,fill:true,fillColor:"#86bcb6",fillOpacity:0.36};
+const PARCEL_SEL={color:"#1f6f6a",weight:2.5,fill:false};   // selected parcels = teal OUTLINE only, so the green density-eligible clip is the only fill (the whole footprint is not shaded)
 function addParcelLayer(map){
   if(typeof PARCELS_GEO==="undefined"||!PARCELS_GEO||typeof L==="undefined")return;
   try{
