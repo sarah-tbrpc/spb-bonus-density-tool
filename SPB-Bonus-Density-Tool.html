@@ -202,7 +202,7 @@ select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-i
 .bratio{font-variant-numeric:tabular-nums;font-size:12px;font-weight:600;background:var(--public-soft);color:var(--accent-d);padding:3px 11px;border-radius:999px}
 .bdel{margin-left:14px;width:26px;height:26px;border-radius:6px;border:1px solid var(--line);background:none;color:var(--ink3);line-height:1;cursor:pointer;font-size:15px}
 .bdel:hover{color:var(--fail);border-color:currentColor}
-.inputs{display:grid;gap:10px;align-items:start;grid-template-columns:72px 160px 160px;margin-top:12px}
+.inputs{display:grid;gap:12px 14px;align-items:start;grid-template-columns:76px minmax(0,1fr) minmax(0,1fr);margin-top:12px}
 .bexchange{margin-top:12px;font-size:12px;color:var(--ink2);line-height:1.5}
 /* Notes & source collapse behind a small disclosure so each benefit card stays compact (matches the Assumptions / Library icon toggle) */
 .benote{margin-top:10px}
@@ -216,9 +216,11 @@ select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-i
 .benote-body textarea:focus,.inputs textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(39,87,106,.14)}
 .inp-lab{font-size:10px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink3);margin-bottom:3px;white-space:nowrap}
 .inp-sub{font-size:10px;color:var(--ink3);margin-top:4px;font-variant-numeric:tabular-nums}
-.inp-perunit{display:flex;align-items:center;gap:5px;margin-top:5px}
-.inp-perunit input{font-size:12px;padding:5px 8px;min-height:0}
-.inp-perunit span{font-size:10px;color:var(--ink3);white-space:nowrap}
+/* total and per-unit sit on one row so each benefit column is a single line (compact cards) */
+.inp-row{display:flex;align-items:center;gap:6px}
+.inp-row .inp-tot{flex:1 1 0;min-width:0;width:auto}
+.inp-row .inp-peru{flex:none;width:58px;font-size:12px;color:var(--ink2)}
+.inp-unit{font-size:10px;color:var(--ink3);white-space:nowrap;flex:none}
 .inputs input{padding:6px 8px;font-size:13px;width:100%;height:38px;text-align:right;font-variant-numeric:tabular-nums}
 .browcalc{margin-top:8px}
 .bchips{display:flex;flex-wrap:wrap}
@@ -246,7 +248,7 @@ select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-i
 .stephelp{font-size:12px;color:var(--ink3);margin:0 0 16px}
 .stephelp summary{cursor:pointer;color:var(--ink2);font-weight:600}
 .stephelp[open] summary{margin-bottom:6px}
-@media(max-width:620px){.inputs{grid-template-columns:repeat(2,1fr)}.bmeta .deriv{margin-left:0}}
+@media(max-width:620px){.inputs{grid-template-columns:1fr}.bmeta .deriv{margin-left:0}}
 .brow .x{border:none;background:transparent;color:var(--ink3);cursor:pointer;font-size:16px;padding:0 4px}
 .btot{display:flex;justify-content:space-between;padding:11px 0 2px;font-weight:700;font-size:14px}
 .addbar{display:flex;gap:8px;margin-top:12px}
@@ -699,7 +701,7 @@ th.notecol{font-size:12px;font-weight:400}
       <div class="card">
       <div class="eyebrow">Step 2 of 3 · Benefits</div>
       <h2 class="step-h">Build the Public Benefits Package</h2>
-      <p class="lede" style="margin-bottom:18px">Add benefits and enter the quantity provided <b>above what code already requires</b>; each line is ranked by priority-weighted public value per developer dollar (the badge).</p>
+      <p class="lede" style="margin-bottom:18px">Add each benefit the developer offers <b>in exchange for the bonus</b>, entering the quantity <b>above what code already requires</b>. The badge shows public value per developer dollar; <b>Results</b> ranks the package by it. Drag the <span aria-hidden="true">⠿</span> handle to set your own order.</p>
         <div id="blist"></div>
         <div id="pkg-summary"></div>
         <div class="btot"><span>Developer contribution (stated) <span class="ihint" data-ih="Why: the total the applicant proposes to provide across all benefits.|How: it is tested against the value-to-developer ceiling; if it exceeds that, the package is over budget (not feasible)."></span></span><span class="mono" id="tot-a"></span></div>
@@ -948,7 +950,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.29.3", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.29.4", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -1940,8 +1942,8 @@ function benefitExchSentence(name,unit,qty,pct){
   else{phrase=num+" "+esc(lcFirst(one?nm:pluralName(nm)));}    // countable item, the name is the thing
   const p=Math.round((pct!=null?pct:1)*100);
   // the "% above code" clause only matters when part of the benefit is code-required; at 100% the whole thing counts, so omit it
-  const tail=(p===100)?" in exchange for the bonus density."
-    :", of which <b>"+p+"%</b> counts as above what code already requires, in exchange for the bonus density.";
+  const tail=(p===100)?"."
+    :", of which <b>"+p+"%</b> counts as above what code already requires.";
   return "Developer will provide <b>"+phrase+"</b>"+tail;
 }
 function bindRange(id,key){const el=document.getElementById(id);
@@ -2200,8 +2202,8 @@ function render(){
       '<button class="bdel" data-x="'+i+'" aria-label="Remove benefit" title="Remove benefit">×</button></div></div>'+
       '<div class="inputs">'+
         '<div><div class="inp-lab">Qty <span class="ihint" data-ih="Why: how much of this benefit is provided (linear feet, square feet, slips, etc.).|How: total = quantity x per-unit, so it scales both the developer contribution and the public value."></span></div><input type="text" inputmode="decimal" value="'+fmtNum(x.qty)+'" data-i="'+i+'" data-f="qty"></div>'+
-        '<div><div class="inp-lab">Stated contribution <span class="ihint" data-ih="Why: what the applicant proposes to provide or pay for this benefit (their claim, not a verified cost).|How: summed across all benefits, it is the developer contribution tested against the value-to-developer ceiling (is it feasible?)."></span></div><input type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.dev*x.qty))+'" data-i="'+i+'" data-f="devtot"><div class="inp-perunit"><input type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.dev))+'" data-i="'+i+'" data-f="devper" aria-label="'+esc(x.name)+', stated contribution per unit"><span>/ '+esc((x.unit||"unit").replace(/^\$\s*\/\s*/,""))+'</span></div></div>'+
-        '<div><div class="inp-lab">Public value <span class="ihint" data-ih="Why: what this benefit is worth to the city (replacement or avoided cost).|How: summed across all benefits, it is the public value offered, tested against the break-even floor (is it worthwhile?)."></span></div><input type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.city*x.qty))+'" data-i="'+i+'" data-f="citytot"><div class="inp-perunit"><input type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.city))+'" data-i="'+i+'" data-f="cityper" aria-label="'+esc(x.name)+', public value per unit"><span>/ '+esc((x.unit||"unit").replace(/^\$\s*\/\s*/,""))+'</span></div></div>'+
+        '<div><div class="inp-lab">Stated contribution <span class="ihint" data-ih="Why: what the applicant proposes to provide or pay for this benefit (their claim, not a verified cost).|How: summed across all benefits, it is the developer contribution tested against the value-to-developer ceiling (is it feasible?)."></span></div><div class="inp-row"><input class="inp-tot" type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.dev*x.qty))+'" data-i="'+i+'" data-f="devtot" aria-label="'+esc(x.name)+', stated contribution total"><input class="inp-peru" type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.dev))+'" data-i="'+i+'" data-f="devper" aria-label="'+esc(x.name)+', stated contribution per unit"><span class="inp-unit">/ '+esc((x.unit||"unit").replace(/^\$\s*\/\s*/,""))+'</span></div></div>'+
+        '<div><div class="inp-lab">Public value <span class="ihint" data-ih="Why: what this benefit is worth to the city (replacement or avoided cost).|How: summed across all benefits, it is the public value offered, tested against the break-even floor (is it worthwhile?)."></span></div><div class="inp-row"><input class="inp-tot" type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.city*x.qty))+'" data-i="'+i+'" data-f="citytot" aria-label="'+esc(x.name)+', public value total"><input class="inp-peru" type="text" inputmode="numeric" value="'+fmtNum(Math.round(x.city))+'" data-i="'+i+'" data-f="cityper" aria-label="'+esc(x.name)+', public value per unit"><span class="inp-unit">/ '+esc((x.unit||"unit").replace(/^\$\s*\/\s*/,""))+'</span></div></div>'+
       '</div>'+
       '<div class="bexchange" id="bexch-'+i+'" data-unit="'+esc(x.unit||'')+'">'+benefitExchSentence(x.name,x.unit,x.qty,x.pct)+'</div>'+
       '<details class="benote"><summary><span class="note-caret">▸</span> Notes &amp; source</summary><div class="benote-body">'+
