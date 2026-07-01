@@ -319,15 +319,15 @@ select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-i
 .lockbar button{flex:none}
 .lockfs{border:0;margin:0;padding:0;min-width:0}
 .lockfs[disabled] input,.lockfs[disabled] select{background:#f1f2f3;color:#6b7378;cursor:not-allowed}
-.zopa-track{position:relative;height:52px;margin:44px 0 48px}
+.zopa-track{position:relative;height:52px;margin:56px 0 48px}
 .zopa-bar{position:absolute;top:22px;left:0;right:0;height:8px;border-radius:4px;background:#e2e6e8}
 .zopa-zone{position:absolute;top:22px;height:8px;border-radius:4px;background:var(--accent)}
 .zopa-mark{position:absolute;top:22px;width:2px;height:30px;background:var(--ink)}
-.zopa-lab{position:absolute;font-size:11px;color:var(--ink2);white-space:nowrap;transform:translateX(-50%)}
-.zopa-lab.top{top:-22px}.zopa-lab.top.r1{top:-40px}.zopa-lab.bot{top:54px}.zopa-lab.bot.b1{top:72px}
+.zopa-lab{position:absolute;font-size:11px;line-height:1.2;color:var(--ink2);white-space:nowrap;transform:translateX(-50%)}
+.zopa-lab.top{top:-32px}.zopa-lab.top.r1{top:-50px}.zopa-lab.bot{top:54px}.zopa-lab.bot.b1{top:72px}
 @media(max-width:560px){.zopa-lab{font-size:9px}}
 .zopa-target{position:absolute;top:9px;height:34px;border-radius:4px;background:rgba(227,160,80,.16);border:1px dashed rgba(176,122,46,.75);box-sizing:border-box}
-.zopa-tzlab{position:absolute;top:-6px;font-size:10.5px;font-weight:600;color:#8a6116;white-space:nowrap}   /* target-zone $ range, centered above the gold band */
+.zopa-tzlab{position:absolute;top:-13px;font-size:10.5px;line-height:1.2;font-weight:600;color:#8a6116;white-space:nowrap}   /* target-zone $ range, centered above the gold band; top rows sit higher (-32/-50) so this keeps clear air above and below */
 @media(max-width:560px){.zopa-tzlab{font-size:9px}}
 .zopa-tmark{position:absolute;top:-8px;height:38px;border-left:2px dashed var(--accent)}
 .zopa-tick{position:absolute;top:-8px;width:1px;height:38px;background:#aab3b9}
@@ -943,7 +943,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.30.5", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.30.6", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
