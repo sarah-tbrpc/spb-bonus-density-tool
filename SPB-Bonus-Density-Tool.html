@@ -962,7 +962,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.29.18", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.29.19", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -3152,7 +3152,7 @@ function addParcelLayer(map){
     if(!map.getPane("parcels")){map.createPane("parcels");map.getPane("parcels").style.zIndex=350;}   // below overlayPane(400)=CRA/city + markerPane(600)=pins
     const rend=L.canvas({pane:"parcels",padding:0.4});
     parcelLayer=L.geoJSON(PARCELS_GEO,{pane:"parcels",renderer:rend,style:()=>PARCEL_BASE,onEachFeature:(f,lyr)=>{
-      const p=f.properties||{}; const lab=(p.ad?esc(p.ad):"")+(p.a?((p.ad?" · ":"")+p.a+" ac"):"");
+      const p=f.properties||{}; const lab=(p.ad?esc(p.ad):"");   // address only; gross acreage is omitted to avoid confusion with the density-eligible area
       lyr.bindTooltip(lab||esc(p.id||"parcel"),{sticky:true,direction:"top",className:"parcel-tip",opacity:0.95});
       lyr.on("mouseover",()=>{if(_selParcels.indexOf(lyr)<0)lyr.setStyle(PARCEL_HOVER);});
       lyr.on("mouseout",()=>{if(_selParcels.indexOf(lyr)<0)lyr.setStyle(PARCEL_BASE);});
@@ -3227,8 +3227,7 @@ function drawCCCL(cc){
   try{
     if(!map.getPane("cccl")){map.createPane("cccl");map.getPane("cccl").style.zIndex=365;}   // above parcels(350), below CRA/city(400) + pins(600)
     const lls=cc.paths.map(function(p){return p.map(function(pt){return [pt[1],pt[0]];});});
-    ccclLayer=L.polyline(lls,{pane:"cccl",color:"#e8791a",weight:3,opacity:0.95,dashArray:"7 4"});
-    ccclLayer.bindTooltip("Coastal Construction Control Line"+(cc.year?" ("+esc(""+cc.year)+")":"")+". Density counts on land landward of this line.",{sticky:true,direction:"top",className:"parcel-tip",opacity:0.95});
+    ccclLayer=L.polyline(lls,{pane:"cccl",interactive:false,color:"#e8791a",weight:3,opacity:0.95,dashArray:"7 4"});   // non-interactive: labelled in the legend, no tooltip, hover/clicks pass through
     ccclLayer.addTo(map);
     showCCCLLegend(true,cc.year);
   }catch(e){}
