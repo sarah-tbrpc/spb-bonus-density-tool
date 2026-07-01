@@ -460,6 +460,8 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 #parcel-list{background:#f3f4f5}
 #parcel-list:empty{display:none}
 .siteintel .si-auto{color:var(--ink)}
+.cccl-note{margin-top:6px;font-size:11.5px;line-height:1.5;color:#7a4a12;background:#fbf1e2;border-left:3px solid #e8791a;padding:6px 9px;border-radius:0 4px 4px 0}
+.cccl-note b{color:#5f3a0e}
 .siteintel .si-link{font-weight:600;font-size:11px;color:var(--accent);text-decoration:none;white-space:nowrap}
 .siteintel .si-link:hover{text-decoration:underline}
 #dist-rules .dr-link{font-weight:600;color:var(--accent);text-decoration:none}
@@ -474,6 +476,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 .flu-legend .sw-cra{width:14px;height:0;border-top:2px dashed #d11;flex:none;align-self:center;display:inline-block}
 .flu-legend .sw-city{width:14px;height:0;border-top:2px solid #14366e;flex:none;align-self:center;display:inline-block}
 .flu-legend .sw-parcel{width:12px;height:9px;border:1.5px solid #6b7a88;background:rgba(159,176,191,.3);border-radius:2px;flex:none;align-self:center;display:inline-block}
+.flu-legend .sw-cccl{width:14px;height:0;border-top:2px dashed #e8791a;flex:none;align-self:center;display:inline-block}
 .flu-legend .flu-lg-toggle{cursor:pointer;margin-bottom:2px}
 .flu-legend .flu-lg-toggle input{margin:0 2px 0 0;vertical-align:middle;cursor:pointer}
 .leaflet-tooltip.parcel-tip{font-size:11px;padding:2px 7px;font-weight:600}
@@ -672,7 +675,8 @@ th.notecol{font-size:12px;font-weight:400}
         <h3>Density Request and Value</h3>
         <div class="row2">
           <div><label class="lab"><span>Site Area (acres) <span class="ihint" data-ih="Why: checks the request against the district density cap and gives value-per-acre context.|How: it does not change the worthwhile or feasible verdict; it bounds the allowable units and informs the fiscal snapshot."></span></span></label><input type="number" id="acres" value="0" step="0.1">
-            <div class="hint" style="margin-top:6px">Auto-summed from your map parcel selection; type to override.</div></div>
+            <div class="hint" style="margin-top:6px">Auto-summed from your map parcel selection; type to override.</div>
+            <div class="cccl-note" id="acres-cccl" style="display:none"></div></div>
           <div><label class="lab"><span>By-Right Entitlement (units/keys) <span class="ihint" data-ih="Why: the units already allowed without a bonus.|How: these are not valued; only the bonus units above this baseline are priced."></span></span></label><input type="text" inputmode="numeric" id="byright" value="0">
             <div class="hint" id="byright-hint" style="margin-top:6px"></div></div>
         </div>
@@ -959,7 +963,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.29.11", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.29.12", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -1413,6 +1417,8 @@ function resetAll(){
   const si=document.getElementById("site-intel"); if(si)si.innerHTML='<div class="hint" style="padding:8px 11px;margin-top:0">Drop the pin or search an address to pull site data.</div>';
   const pa=document.getElementById("paddr"); if(pa)pa.value="";
   if(typeof map!=="undefined"&&map){if(marker&&map.hasLayer(marker))map.removeLayer(marker);pinDropped=false;map.setView([27.7256,-82.7426],14);const pc=document.getElementById("pin-coords");if(pc)pc.textContent="Click the map or search an address to drop a pin.";}
+  if(typeof clearCCCL==="function")clearCCCL();   // remove the live control line + legend row
+  const _acN=document.getElementById("acres-cccl"); if(_acN){_acN.style.display="none";_acN.innerHTML="";}
   applyDistrict(S.district);
   goto(0);
 }
@@ -2855,6 +2861,15 @@ async function fetchSiteData(lat,lon){
 /* render the Property & Site Data rows from a fetchSiteData result. `filled` marks rows auto-filled
    into the form (highlighted, with the Site Area note); pass [] for a plain per-parcel readout. */
 function siteIntelRows(d,filled){filled=filled||[];
+  /* CCCL coastal caveat: the density basis is land landward of the control line, so a close CCCL means
+     the gross (PCPAO) stated area overstates the buildable acreage. Falls back to a VE-zone note if the
+     live CCCL layer could not be loaded. d.cccl is set only on the primary-pin path (undefined elsewhere). */
+  const nearCCCL=d.cccl&&d.cccl.distM!=null&&d.cccl.distM<CCCL_NEAR_M;
+  const ccclCav=nearCCCL
+    ? '<div class="cccl-note" style="margin:6px 8px 2px">Coastal parcel'+(d.cccl.year?' (CCCL '+esc(""+d.cccl.year)+')':'')+'. The stated area is the <b>gross parcel</b>; St. Pete Beach counts density only on land <b>landward of the CCCL</b> (orange line on the map). Reduce <b>Site Area</b> to the buildable acreage before sizing the request.</div>'
+    : (d.cccl===null&&d.cz==="VE"
+      ? '<div class="cccl-note" style="margin:6px 8px 2px">Coastal (VE) parcel. If it lies seaward of the Coastal Construction Control Line, its <b>buildable acreage is less than the gross</b> stated area (the CCCL layer could not be loaded to confirm).</div>'
+      : '');
   const row=(label,val,auto)=>'<div class="si-row"><span>'+label+'</span><b'+(auto?' class="si-auto"':'')+'>'+((val==null||val==="")?"-":esc(""+val))+'</b></div>';
   const rowRaw=(label,html)=>'<div class="si-row"><span>'+label+'</span><b>'+html+'</b></div>';
   /* PCPAO quick-search deep link. The PIN is RG-TW-SC-SUB-BLK-LOT; the public parcel number is
@@ -2881,6 +2896,7 @@ function siteIntelRows(d,filled){filled=filled||[];
     +rowRaw("Future Land Use District",fluHtml)
     +rowRaw("Parcel ID",pinHtml)
     +row("Parcel Stated Area",fmtStatedArea(d.area),filled.indexOf("acres")>-1)
+    +ccclCav
     +row("Current Use",d.usecode?(d.usecode+(useCodeDesc(d.usecode)?", "+titleCase(useCodeDesc(d.usecode)):"")):null,filled.indexOf("use")>-1)
     +rowRaw("County Taxable Value",d.taxable!=null?('$'+Math.round(d.taxable).toLocaleString()+(d.taxParcels>1?' <span class="anote" style="font-weight:400">('+d.taxParcels+' records summed)</span>':'')+(filled.indexOf("tax")>-1?' <span class="si-auto">→ fiscal snapshot</span>':'')):"-")
     +rowRaw("Flood Risk",frHtml)
@@ -2890,8 +2906,10 @@ let _siteIntelGen=0;
 async function gatherSiteIntel(lat,lon){
   const gen=++_siteIntelGen;   // invalidation token: a newer pin drop or a Reset All bumps this
   const el=document.getElementById("site-intel"); if(el)el.innerHTML='<div class="hint" style="padding:8px 11px">Reading parcel, flood, and evacuation data…</div>';
-  const d=await fetchSiteData(lat,lon), filled=[];
+  const parts=await Promise.all([fetchSiteData(lat,lon),fetchCCCLNear(lat,lon)]);
+  const d=parts[0], cc=parts[1], filled=[];
   if(gen!==_siteIntelGen)return;   // superseded while the fetch was in flight; don't clobber the panel or re-fill state
+  d.cccl=cc; drawCCCL(cc);   // attach the live CCCL result for the coastal caveat, and draw the control line on the map
   /* auto-fill Coastal construction from the flood zone */
   if(d.cz){S.coastal=d.cz; const cs=document.getElementById("coastal"); if(cs)cs.value=d.cz; filled.push("coastal");}
   /* auto-fill Site area from the parcel's stated area (best-effort, left editable). Only if it looks
@@ -2903,6 +2921,11 @@ async function gatherSiteIntel(lat,lon){
   if(ut){S.use=ut; const us=document.getElementById("use"); if(us)us.value=ut; syncUseDerived(); filled.push("use");}
   /* auto-fill the fiscal snapshot's current taxable value from the county property layer (best-effort, editable) */
   if(!multiMode&&d.taxable>0){S.taxValue=Math.round(d.taxable); const fx=document.getElementById("fiscal-tax"); if(fx)fx.value=fmtNum(S.taxValue); drawFiscal(); filled.push("tax");}
+  /* CCCL caveat under Site Area: the density basis is land landward of the control line, so a coastal
+     parcel's buildable acreage is less than its gross stated area (Site Area stays editable) */
+  const nearC=!!(cc&&cc.distM!=null&&cc.distM<CCCL_NEAR_M);
+  const acN=document.getElementById("acres-cccl");
+  if(acN){ if(nearC){acN.style.display="";acN.innerHTML='This parcel abuts the CCCL. The stated area is gross; enter the <b>buildable acreage landward of the CCCL</b> (orange line on the map).';} else {acN.style.display="none";acN.innerHTML="";} }
   if(filled.length)render();
   if(el)el.innerHTML=siteIntelRows(d,filled);
   if(map)setTimeout(()=>{if(map)map.invalidateSize();},0);
@@ -3123,6 +3146,57 @@ function addCraLayers(map){
       L.geoJSON(CRA_GEO,{style:{color:"#d11",weight:2.5,fill:false,dashArray:"4 3"}}).addTo(map).bringToFront();
     }
   }catch(e){}
+}
+/* ---------- Coastal Construction Control Line (live from Florida DEP) ----------
+   SPB counts density only on land LANDWARD of the CCCL, so a parcel's gross (PCPAO) area can
+   overstate its buildable acreage. We pull the state DEP control line live per pin (JSONP, best-
+   effort, ~1KB), draw it on the map, and flag the parcel when the line runs close. We deliberately
+   do NOT auto-clip the parcel to compute buildable acres: that is a legal density determination
+   staff make by hand; the tool surfaces the line + the caveat and keeps Site Area editable. */
+const CCCL_SVC="https://ca.dep.state.fl.us/arcgis/rest/services/OpenData/COASTAL_ENV_PERM/MapServer/2";
+const CCCL_NEAR_M=250;   // if the line runs within this many metres of the pin, treat the parcel as CCCL-affected (gross overstates buildable)
+let ccclLayer=null;
+/* min distance (metres, planar approx at this latitude) from a point to a set of polyline paths */
+function ptToPathM(lon,lat,paths){
+  const kx=111320*Math.cos(lat*Math.PI/180), ky=110540; let min=Infinity;
+  (paths||[]).forEach(function(path){ for(let i=0;i<path.length-1;i++){
+    const ax=(path[i][0]-lon)*kx, ay=(path[i][1]-lat)*ky, bx=(path[i+1][0]-lon)*kx, by=(path[i+1][1]-lat)*ky;
+    const dx=bx-ax, dy=by-ay, L2=dx*dx+dy*dy; let t=L2?-(ax*dx+ay*dy)/L2:0; t=t<0?0:t>1?1:t;
+    const cx=ax+t*dx, cy=ay+t*dy, d=Math.sqrt(cx*cx+cy*cy); if(d<min)min=d;
+  }});
+  return isFinite(min)?min:null;
+}
+/* live CCCL near a point: simplified line paths (for the map), establishing YEAR, and pin->line distance */
+async function fetchCCCLNear(lat,lon){
+  const H=0.03;   // ~3 km half-box: enough line to draw, tiny payload
+  const env=JSON.stringify({xmin:lon-H,ymin:lat-H,xmax:lon+H,ymax:lat+H,spatialReference:{wkid:4326}});
+  const q=CCCL_SVC+"/query?where=1%3D1&geometry="+encodeURIComponent(env)+"&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelIntersects&inSR=4326&outSR=4326&outFields=COUNTY,YEAR&returnGeometry=true&geometryPrecision=5&maxAllowableOffset=0.00008";
+  try{
+    const d=await jsonp(q); const fs=(d&&d.features)||[]; if(!fs.length)return null;
+    let paths=[], year=null;
+    fs.forEach(function(f){ if(f.geometry&&f.geometry.paths)paths=paths.concat(f.geometry.paths); if(!year&&f.attributes)year=f.attributes.YEAR; });
+    if(!paths.length)return null;
+    return {paths:paths, year:year, distM:ptToPathM(lon,lat,paths)};
+  }catch(e){return null;}
+}
+function drawCCCL(cc){
+  clearCCCL();
+  if(!map||typeof L==="undefined"||!cc||!cc.paths||!cc.paths.length)return;
+  try{
+    if(!map.getPane("cccl")){map.createPane("cccl");map.getPane("cccl").style.zIndex=365;}   // above parcels(350), below CRA/city(400) + pins(600)
+    const lls=cc.paths.map(function(p){return p.map(function(pt){return [pt[1],pt[0]];});});
+    ccclLayer=L.polyline(lls,{pane:"cccl",color:"#e8791a",weight:3,opacity:0.95,dashArray:"7 4"});
+    ccclLayer.bindTooltip("Coastal Construction Control Line"+(cc.year?" ("+esc(""+cc.year)+")":"")+". Density counts on land landward of this line.",{sticky:true,direction:"top",className:"parcel-tip",opacity:0.95});
+    ccclLayer.addTo(map);
+    showCCCLLegend(true,cc.year);
+  }catch(e){}
+}
+function clearCCCL(){ try{if(ccclLayer&&map)map.removeLayer(ccclLayer);}catch(e){} ccclLayer=null; showCCCLLegend(false); }
+function showCCCLLegend(on,year){
+  const lg=document.querySelector(".flu-legend"); if(!lg)return;
+  let row=document.getElementById("cccl-lg");
+  if(on){ if(!row){row=document.createElement("div");row.className="flu-lg";row.id="cccl-lg";lg.appendChild(row);} row.innerHTML='<span class="sw-cccl"></span>CCCL'+(year?" "+esc(""+year):""); }
+  else if(row){ row.remove(); }
 }
 /* turn any <span class="ihint" data-ih="..."> placeholder into an accessible info icon with a
    hover/focus tooltip; supports a "Why:" / "How:" split using a | separator in the text */
