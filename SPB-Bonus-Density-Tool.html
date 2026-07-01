@@ -959,7 +959,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.29.10", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.29.11", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -2022,7 +2022,7 @@ document.getElementById("addbtn").onclick=()=>{if(!addsel.value)return;S.benefit
 
 function readoutHTML(m,v){
   return '<span class="pill" style="background:'+v.bg+';color:'+v.fg+'">'+v.tag+'</span>'+
-    '<div class="rd clk" role="button" tabindex="0" data-aux="explainV"><div class="k">Value to developer</div><div class="v mono">'+fmt(m.V)+'</div></div>'+
+    '<div class="rd clk" role="button" tabindex="0" data-aux="explainV"><div class="k">Value to developer</div><div class="v mono">'+fmt(m.zCeil)+'</div></div>'+
     '<div class="rd clk" role="button" tabindex="0" data-aux="explainCityMin"><div class="k">Break-even floor</div><div class="v mono">'+fmt(m.cityMin)+'</div></div>'+
     '<div class="rd clk" role="button" tabindex="0" data-aux="explainB"><div class="k">Public value offered</div><div class="v mono">'+fmt(m.Bplain)+'</div></div>';
 }
@@ -2045,11 +2045,15 @@ function wirePkgLinks(scope){
     if(b.dataset.results){goto(1);setTimeout(jump,260);} else jump();
   });
 }
+/* One canonical way to render "value to developer": the cost-uncertainty range Vlow–Vhigh (or a single
+   figure when they don't bracket). The DECISION always uses the conservative low end (zCeil = Vlow) as the
+   ceiling; the mid estimate V is only shown in the derivation ("midpoint") and the ±20% robustness band. */
+function vdevStr(m){return (m.Vlow<m.Vhigh)?(fmt(m.Vlow)+" – "+fmt(m.Vhigh)):fmt(m.V);}
 function numgridHTML(m){
   const mp=Math.round(m.impMargin*100);
   const flag=m.impMargin<0.05?', <span style="color:var(--fail)">residual near zero</span>':(m.impMargin>0.45?', <span style="color:var(--ink3)">high (land excluded)</span>':'');
   return [
-    ["Value to developer",(m.Vlow<m.Vhigh?fmt(m.Vlow)+" – "+fmt(m.Vhigh):fmt(m.V)),"what the bonus is worth to the developer (the ceiling)"+flag,"dev","Why: the most the bonus is worth to the developer, the ceiling on what they could hand back.|How: per-unit residual (market minus build, sell and profit) times bonus units times a decline factor; used as the feasibility ceiling."],
+    ["Value to developer",vdevStr(m),"what the bonus is worth to the developer (the ceiling)"+flag,"dev","Why: what the bonus is worth to the developer, the cap on what they could hand back. Shown as a range because construction cost is uncertain.|How: per-unit residual (market minus build, sell and profit) times bonus units times a decline factor. The deal uses the conservative low end as the feasibility ceiling."],
     ["Break-even floor",m.cityMin,"the least public value the deal must return","city","Why: the least public value the deal must return; below it the public subsidizes the project.|How: impact offset plus pool value used. The offered public value must reach it to be worthwhile."],
     ["Impact offset (required by law)",m.I,"the developer's fair share of impacts","city","Why: the developer fair-share of the traffic, utility and service impact the new units create.|How: impact per unit times bonus units; compellable under Koontz / F.S. 163.3180, and part of the floor."],
     ["Pool value used",m.D,m.D<5000?"pool not scarce":"scarcity binding","city","Why: the value of the scarce pool units the bonus consumes (pool pathway only).|How: residual times scarcity (to an exponent) times bonus units; near zero while the pool is plentiful, rising as it depletes."]
@@ -2436,7 +2440,7 @@ function verdictObj(m){
   if(!m.poolPath && m.zCeil>0 && m.cityMin>m.zCeil) return {tag:"No zone",bg:C.bad[0],fg:C.bad[1],light:"#c0392b",status:"No agreement zone",tip:"The lawful impact offset alone exceeds what the bonus is worth to the developer; no package closes the gap.",head:"No agreement zone, floor exceeds the developer ceiling",
     body:capPre+"The break-even floor ("+fmt(m.cityMin)+", the impact offset alone since no pool draw applies) exceeds the conservative value of the bonus to the developer ("+fmt(m.zCeil)+"). Even an all-cash package can't clear it. Deny, restructure, or revisit the impact figure if miscalibrated."+unsecuredNote};
   if(m.A===0 && m.Bplain===0) return {tag:"No offer yet",bg:C.neu[0],fg:C.neu[1],light:"#9aa3a8",status:"No offer yet",tip:"Add public benefits on the Benefits step to evaluate the request.",head:"No offer entered yet",
-    body:capPre+"No benefits entered yet. The break-even floor is "+fmt(m.cityMin)+" ("+(m.D>0?("pool value used "+fmt(m.D)+" + "):"")+"impact mitigation "+fmt(m.I)+"), and the bonus is worth up to "+fmt(m.V)+" to the developer. Add benefits on the <a href='#' class='seclink' onclick='goto(1);return false;'>Benefits step</a> to test an offer against that floor."};
+    body:capPre+"No benefits entered yet. The break-even floor is "+fmt(m.cityMin)+" ("+(m.D>0?("pool value used "+fmt(m.D)+" + "):"")+"impact mitigation "+fmt(m.I)+"), and the bonus is worth "+vdevStr(m)+" to the developer"+(m.Vlow<m.Vhigh?" (the deal is tested against the conservative "+fmt(m.Vlow)+" end)":"")+". Add benefits on the <a href='#' class='seclink' onclick='goto(1);return false;'>Benefits step</a> to test an offer against that floor."};
   if(!(m.zCeil>0)) return {tag:"Incomplete",bg:C.neu[0],fg:C.neu[1],light:"#9aa3a8",status:"Incomplete inputs",tip:"Set a use type and market value on Step 1 so the value to developer and the break-even floor are defined.",head:"Incomplete, set the project basics first",
     body:capPre+"A package is entered, but without a use type and market value the ceiling and break-even floor are not yet defined, so feasibility can't be judged. Set them on Step 1."+unsecuredNote};
   if(m.worth && m.feas){const gated=m.belowCapture;
@@ -3618,7 +3622,7 @@ function buildPrintSheet(){
    '<div class="ps-verdict" style="border-left:4px solid '+v.fg+'"><b>'+v.head+'</b><br>'+v.body+
      (m.flags&&m.flags.any?'<br><b>Open questions:</b> '+[m.flags.nUnsecured?(m.flags.nUnsecured+' unsecured ('+Math.round(m.flags.unsecuredShare*100)+'% of value)'):"",m.flags.nAboveCode?(m.flags.nAboveCode+' at 100% above a code minimum'):"",m.flags.nEsc?(m.flags.nEsc+' with escalation not below discount'):""].filter(Boolean).join(' · '):'')+'</div>'+
    '<table class="ps-fig"><tr><th>Value to developer</th><th>Pool value used</th><th>Impact offset</th><th>Break-even floor</th></tr>'+
-   '<tr><td>'+fmt(m.V)+'</td><td>'+fmt(m.D)+'</td><td>'+fmt(m.I)+'</td><td>'+fmt(m.cityMin)+'</td></tr></table>'+
+   '<tr><td>'+vdevStr(m)+'</td><td>'+fmt(m.D)+'</td><td>'+fmt(m.I)+'</td><td>'+fmt(m.cityMin)+'</td></tr></table>'+
    '<div class="ps-sec">Public benefit package</div>'+
    '<table class="ps-ben"><thead><tr><th>Benefit</th><th>Category</th><th class="r">Qty</th><th class="r">% above</th><th class="r">Dev cost</th><th class="r">City value</th><th class="r">Ratio</th></tr></thead><tbody>'+rows+'</tbody>'+
    '<tfoot><tr><td colspan="4">Totals</td><td class="r">'+fmt(m.A)+'</td><td class="r">'+fmt(m.Bplain)+'</td><td class="r">'+(m.gPlain?m.gPlain.toFixed(2)+'×':'-')+'</td></tr></tfoot></table>'+
