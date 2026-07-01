@@ -202,7 +202,7 @@ select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-i
 .bratio{font-variant-numeric:tabular-nums;font-size:12px;font-weight:600;background:var(--public-soft);color:var(--accent-d);padding:3px 11px;border-radius:999px}
 .bdel{margin-left:14px;width:26px;height:26px;border-radius:6px;border:1px solid var(--line);background:none;color:var(--ink3);line-height:1;cursor:pointer;font-size:15px}
 .bdel:hover{color:var(--fail);border-color:currentColor}
-.inputs{display:grid;gap:12px 14px;align-items:start;grid-template-columns:76px minmax(0,1fr) minmax(0,1fr);margin-top:12px}
+.inputs{display:grid;gap:12px 14px;align-items:start;justify-content:start;grid-template-columns:76px minmax(0,248px) minmax(0,248px);margin-top:12px}
 .bexchange{margin-top:12px;font-size:12px;color:var(--ink2);line-height:1.5}
 /* Notes & source collapse behind a small disclosure so each benefit card stays compact (matches the Assumptions / Library icon toggle) */
 .benote{margin-top:10px}
@@ -473,7 +473,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 .poolhead{display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--line)}
 .poolhead-info{flex:1;min-width:200px}
 /* Step 1 pool section: donut/legend and the scarcity curve side by side, wrapping to stacked when narrow */
-.poolviz{display:flex;gap:22px;flex-wrap:nowrap;align-items:flex-start;margin-bottom:18px}
+.poolviz{display:flex;gap:22px;flex-wrap:nowrap;align-items:center;margin-bottom:18px}
 .poolviz .poolhead{flex:1 1 360px;flex-wrap:nowrap;gap:16px;min-width:0;margin:0;padding:0;border:none}
 .poolviz .poolhead>svg{flex:none}
 .poolviz .poolhead .poolhead-info{flex:1 1 auto;min-width:0}
@@ -950,7 +950,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.29.5", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.29.6", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -2157,12 +2157,12 @@ function render(){
   const threshLine=(m.scar>0)
     ? " Scarcity pricing is active: "+S.rem+" units remaining against a "+scarThresh+"-unit demand horizon (scarcity = "+m.scar.toFixed(2)+")."
     : " Scarcity pricing activates when the pool falls below "+scarThresh+" units ("+S.rem+" remaining now).";
-  document.getElementById("scar-note").innerHTML = !m.poolPath
+  document.getElementById("scar-note").innerHTML = !S.use ? ""
+    : !m.poolPath
     ? "Pathway \""+S.pathway+"\" does not draw from the density pool. Pool value used does not apply (D = $0); scarcity for this pathway is governed by the district density cap or legislative discretion."
     : (m.scar<0.05
       ? lb+"Approximately "+Math.max(0,Math.round(yrs))+" years of supply remain after this allocation. Pool value used is "+fmt(m.D)+"."+threshLine
       : lb+"Pool value used is "+fmt(m.D)+". Approximately "+Math.max(0,Math.round(yrs))+" years of supply remain after this allocation."+threshLine);
-  const poolName=(upool==="TLU")?"Temporary Lodging Unit (TLU) pool":"Residential Unit (RU) pool";
   const poolTitle=(upool==="TLU")?"Temporary Lodging Unit (TLU) Pool":"Residential Unit (RU) Pool";
   const rl=document.getElementById("rem-lab"); if(rl)rl.textContent="Units remaining in the "+upool+" pool";
   /* cap the remaining-units slider at the pool total so "remaining" can't exceed the pool */
@@ -2171,9 +2171,9 @@ function render(){
     if(S.rem>poolTot){S.rem=poolTot;remEl.value=poolTot;}
     setP(remEl); document.getElementById("rem-v").textContent=S.rem+" units"; }
   const pw=document.getElementById("pool-which");
-  if(pw)pw.innerHTML=m.poolPath
-    ? poolTitle
-    : 'Pathway "'+S.pathway+'" does not draw from a density pool<span class="sub">No pool scarcity cost applies here (D = $0). The chart shows the '+poolName+" for context."+'</span>';
+  /* only title the pool once it is actually set (a use type chosen AND a pool-drawing pathway); otherwise
+     drawPoolPie() shows a placeholder instead of a chart, so the title stays blank to avoid confusion */
+  if(pw)pw.innerHTML=(S.use && m.poolPath) ? poolTitle : "";
   drawPoolPie(upool,m);
   drawScarcity(upool,m);
   drawPoolLedger(upool);
@@ -2489,6 +2489,17 @@ function arcPath(cx,cy,rO,rI,a0,a1){
 }
 function drawPoolPie(upool,m){
   const svg=document.getElementById("poolpie"); if(!svg)return;
+  const leg=document.getElementById("poolpie-legend");
+  /* pool not set yet (no use type) or a pathway that doesn't draw from a pool: show a placeholder
+     instead of a chart, so a fresh/blank project doesn't imply an active pool draw */
+  if(!S.use || !m.poolPath){
+    svg.style.display="none";
+    if(leg)leg.innerHTML='<div class="hint" style="margin:0">'+(!S.use
+      ? "Select a use type on Step 1 to see which density pool applies and how the bonus draws from it."
+      : "This pathway doesn’t draw from a density pool, so there’s no allocation to chart.")+'</div>';
+    return;
+  }
+  svg.style.display="";
   /* slider-driven: "remaining" follows the Units-remaining slider (S.rem), allocated is the rest */
   const total=POOL_TOTAL[upool]||0, remaining=Math.max(0,Math.min(S.rem,total)), allocated=Math.max(0,total-remaining);
   const req=m.poolPath?Math.min(S.bonus,remaining):0, after=Math.max(0,remaining-req);
@@ -2505,7 +2516,7 @@ function drawPoolPie(upool,m){
   }
   svg.innerHTML=paths+'<text x="60" y="57" text-anchor="middle" font-size="16" font-weight="700" fill="#1b1f23">'+remaining+'</text>'+
     '<text x="60" y="72" text-anchor="middle" font-size="8.5" fill="#54616c">remaining</text>';
-  const leg=document.getElementById("poolpie-legend"); if(!leg)return;
+  if(!leg)return;
   const items=[["Already allocated",COL.alloc,allocated],["This request",COL.req,req],["Remaining after",COL.after,after]];
   leg.innerHTML=items.map(it=>'<div class="lg"><span class="sw" style="background:'+it[1]+'"></span>'+it[0]+'<span class="ct">'+it[2]+'</span></div>').join("")+
     '<div class="lg" style="border-top:1px solid var(--line);padding-top:6px;margin-top:2px"><span class="sw" style="background:none"></span>Pool total<span class="ct">'+total+'</span></div>';
