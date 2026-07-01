@@ -962,7 +962,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.29.17", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.29.18", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -2197,10 +2197,10 @@ function render(){
   const enote=document.getElementById("elig-note");
   if(enote){
     if(S.eligOv!=null)enote.innerHTML="Overridden. Density basis for by-right, the cap, and the bonus headroom.";
-    else if(S.eligFrac!=null&&S.acres>0){ const pct=Math.round(S.eligFrac*100);
+    else if(S.eligFrac!=null&&S.acres>0){ const pct=Math.round(S.eligFrac*100), unit=(multiMode?"site":"parcel");
       enote.innerHTML=(S.eligMethod==="clip")
-        ? ("GIS clip: "+pct+"% of the "+acStr(S.acres)+"-ac parcel is landward of the CCCL (buildable area shaded on the map). Verify and override.")
-        : ("GIS estimate: about "+pct+"% of the "+acStr(S.acres)+"-ac parcel is landward of the CCCL. Verify and override."); }
+        ? ("GIS clip: "+pct+"% of the "+acStr(S.acres)+"-ac "+unit+" is landward of the CCCL (buildable area shaded on the map). Verify and override.")
+        : ("GIS estimate: about "+pct+"% of the "+acStr(S.acres)+"-ac "+unit+" is landward of the CCCL. Verify and override."); }
     else enote.innerHTML="Land landward of the CCCL, the density basis. Defaults to the site area; override if part is seaward of the CCCL.";
   }
   const yrs=S.dem?((S.rem-S.bonus)/S.dem):99;
@@ -2936,7 +2936,7 @@ async function gatherSiteIntel(lat,lon){
      buildable polygon shaded on the map. New parcel, so drop any prior override. Single-parcel only;
      multi-parcel leaves eligible = gross (overridable). */
   if(!multiMode){ S.eligOv=null; const _eg=computeElig(lat,lon,cc); S.eligFrac=_eg.frac; S.eligMethod=_eg.method; drawEligPoly(_eg.poly); }
-  else clearEligPoly();
+  // multi-parcel: applyParcelArea() owns the summed eligible area and the per-parcel buildable polygons
   syncLRByright();   // LR: derive by-right from the density-eligible area (eligAc)
   /* auto-fill Use type from the parcel's current PAO use code (best-effort, left editable) */
   const ut=useCodeToUse(d.usecode);
@@ -2966,10 +2966,12 @@ async function addParcel(lat,lon,local){
   let an=(/\d\s*s/i.test(""+d.area))?NaN:parseNum(d.area), area=(isFinite(an)&&an>0&&an<500)?Math.round(an*100)/100:null;   // comma-safe (parseNum strips commas); reject sf-labeled strings (a digit then an s-suffix) so only acreage auto-fills
   if(area==null&&local&&local.properties&&local.properties.a>0)area=local.properties.a;   // fall back to the embedded parcel acreage
   if(lid?PARCELS.some(p=>p.localId===lid):(pin!=null&&PARCELS.some(p=>p.pin===pin))){renderParcelList();return;}   // dedup (footprint id when clicked, else county pin); re-checked after the async fetch
+  const cc=await fetchCCCLNear(lat,lon);   // live CCCL near this parcel, for its own density-eligible clip
+  const eg=computeElig(lat,lon,cc);
   const first=PARCELS.length===0;
   let mk=null;
   if(map&&typeof L!=="undefined"){mk=L.circleMarker([lat,lon],{radius:10,color:"#27576a",weight:2,fillColor:"#86bcb6",fillOpacity:.85}).addTo(map).bindTooltip(String(PARCELS.length+1),{permanent:true,direction:"center",className:"parcel-num"});}
-  PARCELS.push({lat,lon,pin,area,data:d,marker:mk,localId:lid,localAddr:laddr});
+  PARCELS.push({lat,lon,pin,area,data:d,marker:mk,localId:lid,localAddr:laddr,eligFrac:eg.frac,eligPoly:eg.poly});
   if(first){setPin(lat,lon);reverseGeocode(lat,lon);}   // parcel 1 resolves district + flood + address
   applyParcelArea(); renderParcelList(); syncParcelHighlights();
 }
@@ -2986,14 +2988,22 @@ function fmtStatedArea(v){
 }
 function applyParcelArea(){const known=PARCELS.filter(p=>p.area!=null);   // update Site Area only when a parcel carries an area; otherwise leave it untouched
   if(known.length){const sum=Math.round(known.reduce((s,p)=>s+p.area,0)*100)/100;
-    S.acres=sum; const ac=document.getElementById("acres"); if(ac)ac.value=acStr(sum); syncLRByright(); render();}
+    S.acres=sum; const ac=document.getElementById("acres"); if(ac)ac.value=acStr(sum);
+    /* sum the density-eligible area across parcels: each parcel's landward fraction x its gross (a parcel
+       the CCCL does not cross counts fully). Store the aggregate landward fraction so eligAc() returns the
+       summed eligible acres. Adding / removing a parcel drops any manual override. */
+    const elig=known.reduce((s,p)=>s+((p.eligFrac!=null?p.eligFrac:1)*p.area),0), reduced=elig<sum-0.005;
+    const anyPoly=PARCELS.some(p=>p.eligPoly);
+    S.eligOv=null; S.eligFrac=reduced?(elig/sum):null; S.eligMethod=anyPoly?"clip":(reduced?"grid":null);
+    syncLRByright(); render();}
+  drawEligPolys(PARCELS.map(p=>p.eligPoly).filter(Boolean));   // shade every parcel's buildable area
   const tk=PARCELS.filter(p=>p.data&&p.data.taxable>0);   // sum county taxable value across the project's parcels into the fiscal snapshot
   if(tk.length){S.taxValue=Math.round(tk.reduce((s,p)=>s+p.data.taxable,0)); const fx=document.getElementById("fiscal-tax"); if(fx)fx.value=fmtNum(S.taxValue); drawFiscal();}}
 function removeParcel(i){const p=PARCELS[i]; if(p&&p.marker&&map)map.removeLayer(p.marker); PARCELS.splice(i,1);
   PARCELS.forEach((q,k)=>{if(q.marker)q.marker.setTooltipContent(String(k+1));});
   if(i===0&&PARCELS.length>0){setPin(PARCELS[0].lat,PARCELS[0].lon);reverseGeocode(PARCELS[0].lat,PARCELS[0].lon);}   // the new parcel 1 drives district + flood + address
   applyParcelArea(); renderParcelList(); syncParcelHighlights();}
-function clearParcels(){PARCELS.forEach(p=>{if(p.marker&&map)map.removeLayer(p.marker);}); PARCELS=[]; renderParcelList(); if(typeof syncParcelHighlights==="function")syncParcelHighlights();}
+function clearParcels(){PARCELS.forEach(p=>{if(p.marker&&map)map.removeLayer(p.marker);}); PARCELS=[]; if(typeof clearEligPoly==="function")clearEligPoly(); renderParcelList(); if(typeof syncParcelHighlights==="function")syncParcelHighlights();}
 function renderParcelList(){const el=document.getElementById("parcel-list"); if(!el)return;
   if(!multiMode){el.innerHTML="";return;}
   if(!PARCELS.length){el.innerHTML='<div class="hint" style="padding:8px 11px">Click each parcel on the map to add it to the project (zoom in to see the lot lines; toggle them in the map legend). Parcel 1 sets the district and flood data; property and site data are collected for each, and stated areas are summed into Site Area.</div>';return;}
@@ -3295,19 +3305,23 @@ function computeElig(lat,lon,cc){
   const gf=_gridEligFrac(g, cc);
   return {frac:gf, poly:null, method:(gf!=null?"grid":null)};
 }
-/* shade the buildable (density-eligible) polygon on the map, above the parcels and below the CCCL line */
 let eligLayer=null;
-function drawEligPoly(poly){
+/* shade one or more buildable (density-eligible) polygons on the map, above the parcels and below the
+   CCCL line. Non-interactive: labelled in the legend, no tooltip, hover/clicks pass through to the parcel
+   beneath. Used for the single pinned parcel and for every parcel of a multi-parcel site. */
+function drawEligPolys(polys){
   clearEligPoly();
-  if(!map||typeof L==="undefined"||!poly||poly.length<3)return;
+  polys=(polys||[]).filter(p=>p&&p.length>=3);
+  if(!map||typeof L==="undefined"||!polys.length)return;
   try{
     if(!map.getPane("elig")){map.createPane("elig");map.getPane("elig").style.zIndex=356;}   // above parcels(350), below CCCL(365) + pins(600)
-    const lls=poly.map(p=>[p[1],p[0]]);
-    eligLayer=L.polygon(lls,{pane:"elig",interactive:false,color:"#12603f",weight:2,fillColor:"#2fbd7e",fillOpacity:0.42});   // non-interactive overlay: labelled in the legend, no tooltip, and clicks/hover pass through to the parcel beneath
+    eligLayer=L.layerGroup();
+    polys.forEach(poly=>{ const lls=poly.map(p=>[p[1],p[0]]); L.polygon(lls,{pane:"elig",interactive:false,color:"#12603f",weight:2,fillColor:"#2fbd7e",fillOpacity:0.42}).addTo(eligLayer); });
     eligLayer.addTo(map);
     showEligLegend(true);
   }catch(e){}
 }
+function drawEligPoly(poly){ drawEligPolys(poly?[poly]:[]); }   // single-polygon convenience (the single pinned parcel)
 function clearEligPoly(){ try{if(eligLayer&&map)map.removeLayer(eligLayer);}catch(e){} eligLayer=null; showEligLegend(false); }
 function showEligLegend(on){
   const lg=document.querySelector(".flu-legend"); if(!lg)return;
@@ -3367,10 +3381,11 @@ function initMap(){
     if(multiMode){addParcel(e.latlng.lat,e.latlng.lng);}else{dropPin(e.latlng.lat,e.latlng.lng);setPin(e.latlng.lat,e.latlng.lng);reverseGeocode(e.latlng.lat,e.latlng.lng);}});
   const mpc=document.getElementById("multiparcel");
   if(mpc)mpc.addEventListener("change",e=>{multiMode=e.target.checked;
+    S.eligFrac=null; S.eligOv=null; S.eligMethod=null; if(typeof clearEligPoly==="function")clearEligPoly();   // redefining the site: reset the density-eligible area + shading
     if(multiMode){if(marker&&map)map.removeLayer(marker);}
     else{clearParcels();if(marker&&map&&pinDropped)marker.addTo(map);}
     const sif=document.getElementById("siteintel-field"); if(sif)sif.style.display=multiMode?"none":"";   // single-parcel panel repeats parcel 1, hide it in multi-parcel mode
-    renderParcelList();});
+    renderParcelList(); render();});
   document.getElementById("pin-coords").textContent="Click the map or search an address to drop a pin.";
   setTimeout(()=>{if(map)map.invalidateSize();},200);
 }
