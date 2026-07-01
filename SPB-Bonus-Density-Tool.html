@@ -950,7 +950,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.29.4", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.29.5", VERSION_DATE="2026-06-30";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -2164,7 +2164,6 @@ function render(){
       : lb+"Pool value used is "+fmt(m.D)+". Approximately "+Math.max(0,Math.round(yrs))+" years of supply remain after this allocation."+threshLine);
   const poolName=(upool==="TLU")?"Temporary Lodging Unit (TLU) pool":"Residential Unit (RU) pool";
   const poolTitle=(upool==="TLU")?"Temporary Lodging Unit (TLU) Pool":"Residential Unit (RU) Pool";
-  const useNote=(upool==="TLU")?"Drawn for temporary-lodging (hotel / resort) projects.":"Drawn for residential (condominium / multifamily) projects.";
   const rl=document.getElementById("rem-lab"); if(rl)rl.textContent="Units remaining in the "+upool+" pool";
   /* cap the remaining-units slider at the pool total so "remaining" can't exceed the pool */
   const remEl=document.getElementById("rem"), poolTot=POOL_TOTAL[upool]||0;
@@ -2173,7 +2172,7 @@ function render(){
     setP(remEl); document.getElementById("rem-v").textContent=S.rem+" units"; }
   const pw=document.getElementById("pool-which");
   if(pw)pw.innerHTML=m.poolPath
-    ? poolTitle+'<span class="sub">'+useNote+" Pool total "+(POOL_TOTAL[upool]||0)+" units."+'</span>'
+    ? poolTitle
     : 'Pathway "'+S.pathway+'" does not draw from a density pool<span class="sub">No pool scarcity cost applies here (D = $0). The chart shows the '+poolName+" for context."+'</span>';
   drawPoolPie(upool,m);
   drawScarcity(upool,m);
