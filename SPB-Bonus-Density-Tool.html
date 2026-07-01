@@ -879,7 +879,7 @@ th.notecol{font-size:12px;font-weight:400}
       <div class="subsec">
         <h3>Basis</h3>
         <p class="lede" style="margin:0 0 8px">Added units come only from the city's two finite pools: the 195-unit residential pool (<a class="seclink" target="_blank" rel="noopener" href="https://library.municode.com/fl/st._pete_beach/codes/land_development_code?nodeId=CO_DIV39COREDIGEST_S39.18GEREUNRUDEPORE">LDC §39.18</a>) and the 325-unit transient-lodging pool (Future Land Use element). Each allocation is by Commission ordinance plus conditional use on a "merit basis" (<a class="seclink" target="_blank" rel="noopener" href="https://library.municode.com/fl/st._pete_beach/codes/land_development_code">LDC §4.12(d)</a>), whose benefit menu (1)–(9) maps to the categories here. Impact figures use SPB's adopted Pinellas multimodal and parks/rec fees, itemized under <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions § E</a>.</p>
-        <p class="lede" style="margin:0"><b>What code does not set.</b> No contribution rate, benefit-valuation formula, floor, or ceiling. The only statutory weighting is Chapter 163 proportionate-share, the basis for the impact floor. The ZOPA bounds and the 15–25% / 25–50% guardrails are <b>analytic overlays, not adopted code</b>. The 15–25% floor reflects that proportional-share tools typically recover one-tenth to one-third of per-unit impacts (F.S. §163.3180; Nollan / Dolan / Koontz); the 25–50% ceiling reflects value-capture practice of sharing 20–60% of the land-value uplift while leaving feasibility intact (Lincoln Institute; ULI; World Bank).</p>
+        <p class="lede" style="margin:0"><b>What code does not set.</b> No contribution rate, benefit-valuation formula, floor, or ceiling. The only statutory weighting is Chapter 163 proportionate-share, the basis for the impact floor. The ZOPA bounds and the 15–25% / 25–50% guardrails are the TBRPC framework's <b>judgment bands, not rates adopted in code or drawn from a specific study</b>. The floor is anchored to the impact mitigation the city can compel (Chapter 163 proportionate-share; Nollan / Dolan / Koontz); the ceiling reflects the general land-value-capture principle that a jurisdiction can share in part of the density-driven land-value uplift while leaving the project feasible. Treat both as editable starting points to calibrate against local practice, not empirical constants.</p>
       </div>
 
 
@@ -888,7 +888,7 @@ th.notecol{font-size:12px;font-weight:400}
         <h3>Legal &amp; Political Guardrails</h3>
         <p class="lede" style="margin:0 0 10px">Surfaced as caveats, not enforced in the math. Route the exaction framing through the City Attorney before treating any number as actionable.</p>
         <ul class="guide-list">
-          <li><b>Charter referendum.</b> The SPB charter requires a <b>voter referendum</b> before the Commission can increase height, density, or intensity, or change a land-use category. A recommended bonus may not be grantable by staff or Commission action alone.</li>
+          <li><b>Charter referendum.</b> A 2006 voter-approved charter amendment requires a <b>referendum to amend the Comprehensive Plan</b>. An increase in density, height, or intensity, or a land-use category change, that needs a plan amendment therefore needs voter approval; allocations within the adopted plan (the density pools this tool prices) do not. A recommended bonus that would exceed the plan may not be grantable by Commission action alone. Confirm the trigger with the City Attorney and the current charter.</li>
           <li><b>Live Local Act</b> (2023, amended 2024) can override local density and height for qualifying affordable projects (broadly, 40%+ of units at or below 120% AMI for 30+ years), the developer's by-right outside option, which caps how much public benefit the city can extract.</li>
           <li><b>Exactions doctrine</b> (Nollan / Dolan / <a class="seclink" target="_blank" rel="noopener" href="https://supreme.justia.com/cases/federal/us/570/595/">Koontz</a> / <a class="seclink" target="_blank" rel="noopener" href="https://supreme.justia.com/cases/federal/us/601/22-1074/">Sheetz</a>). Any required benefit must satisfy essential nexus and rough proportionality, extended to monetary exactions by Koontz (2013) and to legislative fee schedules by Sheetz (2024). Exposure is highest when a benefit is priced off land-value <b>uplift</b> rather than <b>impacts</b>, which is why the floor is sized on impact mitigation and uplift is used only as a ceiling.</li>
           <li><b>State offset rule §166.04151.</b> If the city ever <b>mandates</b> affordable units, it must fully offset the developer's cost. Voluntary bonus density is a different posture, but a mandate changes the math.</li>
@@ -962,7 +962,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.29.21", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.29.22", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -2204,7 +2204,7 @@ function render(){
       enote.innerHTML=(S.eligMethod==="clip")
         ? ("GIS clip: "+pct+"% of the "+acStr(S.acres)+"-ac "+unit+" is landward of the CCCL ("+shaded+"). Verify and override.")
         : ("GIS estimate: about "+pct+"% of the "+acStr(S.acres)+"-ac "+unit+" is landward of the CCCL. Verify and override."); }
-    else enote.innerHTML="Land landward of the CCCL, the density basis. Defaults to the site area; override if part is seaward of the CCCL.";
+    else enote.innerHTML="Area landward of the CCCL, the density basis. Defaults to the site area; override if part is seaward of the CCCL.";
   }
   const yrs=S.dem?((S.rem-S.bonus)/S.dem):99;
   const upool=(S.use==="Temporary Lodging")?"TLU":"RU";
