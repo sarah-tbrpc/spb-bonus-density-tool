@@ -327,6 +327,8 @@ select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-i
 .zopa-lab.top{top:-22px}.zopa-lab.top.r1{top:-40px}.zopa-lab.bot{top:54px}.zopa-lab.bot.b1{top:72px}
 @media(max-width:560px){.zopa-lab{font-size:9px}}
 .zopa-target{position:absolute;top:9px;height:34px;border-radius:4px;background:rgba(227,160,80,.16);border:1px dashed rgba(176,122,46,.75);box-sizing:border-box}
+.zopa-tzlab{position:absolute;top:-6px;font-size:10.5px;font-weight:600;color:#8a6116;white-space:nowrap}   /* target-zone $ range, centered above the gold band */
+@media(max-width:560px){.zopa-tzlab{font-size:9px}}
 .zopa-tmark{position:absolute;top:-8px;height:38px;border-left:2px dashed var(--accent)}
 .zopa-tick{position:absolute;top:-8px;width:1px;height:38px;background:#aab3b9}
 .zopa-tickd{position:absolute;top:22px;width:1px;height:34px;background:#aab3b9}
@@ -941,7 +943,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.30.4", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.30.5", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -2741,7 +2743,7 @@ function drawZopa(m){
     return;
   }
   t.style.display="";
-  t.setAttribute("role","img");t.setAttribute("aria-label","Deal zone from the minimum spend "+fmt(m.zFloor)+" (the least the package must cost to clear the break-even floor at its current efficiency) up to the developer ceiling "+fmt(m.zCeil)+"; current offer "+fmt(m.A)+".");
+  t.setAttribute("role","img");t.setAttribute("aria-label","Deal zone from the minimum spend "+fmt(m.zFloor)+" (the least the package must cost to clear the break-even floor at its current efficiency) up to the developer ceiling "+fmt(m.zCeil)+"; current offer "+fmt(m.A)+". Fair-share target zone "+fmt(CAPTURE.capLo*m.zCeil)+" to "+fmt(CAPTURE.capHi*m.zCeil)+".");
   const postureA=m.impactPosture==="A", vHi=postureA?Math.max(0,m.Vhigh-m.I):m.Vhigh;   // posture A nets impact fees from the optimistic target too
   const max=Math.max(m.zCeil,vHi||0,m.A,m.zFloor)*1.08||1;
   const pct=x=>Math.max(0,Math.min(100,x/max*100));
@@ -2767,7 +2769,11 @@ function drawZopa(m){
     return zlab(lo.p,base,lo.txt,lo.x||"")+zlab(hi.p,(Math.abs(a.p-b.p)<34?alt:base),hi.txt,hi.x||""); };
   const topHtml=pairRow({p:fl,txt:lw[0]+zf(m.zFloor)}, (tg>=0?{p:tg,txt:lw[2]+zf(vHi),x:"color:var(--accent)"}:null), "top");
   const botHtml=pairRow({p:of,txt:"offer "+zf(m.A)}, {p:ce,txt:lw[1]+zf(m.zCeil)}, "bot");
-  t.innerHTML=band(CAPTURE.capLo,CAPTURE.capHi,"zopa-target")+
+  /* target-zone $ range, centered above the gold band (edge-aware so it never bleeds off the track) */
+  const tzC=(V>0)?(pct(CAPTURE.capLo*V)+pct(CAPTURE.capHi*V))/2:-1;
+  const tzTx=tzC<12?'0':tzC>88?'-100%':'-50%';
+  const tzLab=(tzC>=0)?'<div class="zopa-tzlab" style="left:'+tzC+'%;transform:translateX('+tzTx+')">'+zf(CAPTURE.capLo*V)+' – '+zf(CAPTURE.capHi*V)+'</div>':'';
+  t.innerHTML=band(CAPTURE.capLo,CAPTURE.capHi,"zopa-target")+tzLab+
     '<div class="zopa-bar"></div>'+
     '<div class="zopa-zone" style="left:'+fl+'%;width:'+Math.max(0,ce-fl)+'%"></div>'+
     '<div class="zopa-mark" style="left:'+of+'%"></div>'+
