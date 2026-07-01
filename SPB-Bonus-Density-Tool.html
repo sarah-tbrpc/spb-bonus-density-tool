@@ -474,6 +474,7 @@ footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-
 .flu-legend .sw-city{width:14px;height:0;border-top:2px solid #14366e;flex:none;align-self:center;display:inline-block}
 .flu-legend .sw-parcel{width:12px;height:9px;border:1.5px solid #6b7a88;background:rgba(159,176,191,.3);border-radius:2px;flex:none;align-self:center;display:inline-block}
 .flu-legend .sw-cccl{width:14px;height:0;border-top:2px dashed #e8791a;flex:none;align-self:center;display:inline-block}
+.flu-legend .sw-elig{width:12px;height:9px;border:1.5px solid #12603f;background:rgba(47,189,126,.5);border-radius:2px;flex:none;align-self:center;display:inline-block}
 .flu-legend .flu-lg-toggle{cursor:pointer;margin-bottom:2px}
 .flu-legend .flu-lg-toggle input{margin:0 2px 0 0;vertical-align:middle;cursor:pointer}
 .leaflet-tooltip.parcel-tip{font-size:11px;padding:2px 7px;font-weight:600}
@@ -961,7 +962,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.29.15", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.29.16", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -1184,7 +1185,7 @@ const S={
   pname:"", papp:"",
   paddr:"",
   use:"", btype:"", subtype:"", pathway:"Pool Allocation", district:"UNK",
-  parking:"", coastal:"", acres:0, eligFrac:null, eligOv:null, base:0, cap:0,
+  parking:"", coastal:"", acres:0, eligFrac:null, eligOv:null, eligMethod:null, base:0, cap:0,
   market:1800000, mktSF:0, bonus:0, byright:0, hardOv:null, taxValue:null,
   rem:170, dem:8, hor:15, impact:0, margin:0.15, decline:0.80, bonusStep:1,
   benefits:[]
@@ -1423,6 +1424,7 @@ function resetAll(){
   const pa=document.getElementById("paddr"); if(pa)pa.value="";
   if(typeof map!=="undefined"&&map){if(marker&&map.hasLayer(marker))map.removeLayer(marker);pinDropped=false;map.setView([27.7256,-82.7426],14);const pc=document.getElementById("pin-coords");if(pc)pc.textContent="Click the map or search an address to drop a pin.";}
   if(typeof clearCCCL==="function")clearCCCL();   // remove the live control line + legend row
+  if(typeof clearEligPoly==="function")clearEligPoly();   // remove the shaded buildable-area polygon
   applyDistrict(S.district);
   goto(0);
 }
@@ -2195,7 +2197,10 @@ function render(){
   const enote=document.getElementById("elig-note");
   if(enote){
     if(S.eligOv!=null)enote.innerHTML="Overridden. Density basis for by-right, the cap, and the bonus headroom.";
-    else if(S.eligFrac!=null&&S.acres>0)enote.innerHTML="GIS estimate: about "+Math.round(S.eligFrac*100)+"% of the "+acStr(S.acres)+"-ac parcel is landward of the CCCL. Verify and override.";
+    else if(S.eligFrac!=null&&S.acres>0){ const pct=Math.round(S.eligFrac*100);
+      enote.innerHTML=(S.eligMethod==="clip")
+        ? ("GIS clip: "+pct+"% of the "+acStr(S.acres)+"-ac parcel is landward of the CCCL (buildable area shaded on the map). Verify and override.")
+        : ("GIS estimate: about "+pct+"% of the "+acStr(S.acres)+"-ac parcel is landward of the CCCL. Verify and override."); }
     else enote.innerHTML="Land landward of the CCCL, the density basis. Defaults to the site area; override if part is seaward of the CCCL.";
   }
   const yrs=S.dem?((S.rem-S.bonus)/S.dem):99;
@@ -2927,9 +2932,11 @@ async function gatherSiteIntel(lat,lon){
      like an acreage value, not a square-foot figure, and not while building a multi-parcel project. */
   const aNum=(/\d\s*s/i.test(""+d.area))?NaN:parseNum(d.area);   // comma-safe (parseNum strips commas); reject sf-labeled strings (a digit then an s-suffix) so only acreage auto-fills, not "21,780 sf"
   if(isFinite(aNum)&&aNum>0&&aNum<500&&!multiMode){S.acres=Math.round(aNum*100)/100; const ac=document.getElementById("acres"); if(ac)ac.value=acStr(S.acres); filled.push("acres");}
-  /* GIS estimate of the density-eligible area (share of the footprint landward of the CCCL). New parcel,
-     so drop any prior override. Single-parcel only; multi-parcel leaves eligible = gross (overridable). */
-  if(!multiMode){ S.eligOv=null; S.eligFrac=estimateEligFrac(lat,lon,cc); }
+  /* Density-eligible area from the CCCL (exact clip of the footprint, or grid fallback), plus the
+     buildable polygon shaded on the map. New parcel, so drop any prior override. Single-parcel only;
+     multi-parcel leaves eligible = gross (overridable). */
+  if(!multiMode){ S.eligOv=null; const _eg=computeElig(lat,lon,cc); S.eligFrac=_eg.frac; S.eligMethod=_eg.method; drawEligPoly(_eg.poly); }
+  else clearEligPoly();
   syncLRByright();   // LR: derive by-right from the density-eligible area (eligAc)
   /* auto-fill Use type from the parcel's current PAO use code (best-effort, left editable) */
   const ut=useCodeToUse(d.usecode);
@@ -3223,34 +3230,91 @@ function showCCCLLegend(on,year){
   if(on){ if(!row){row=document.createElement("div");row.className="flu-lg";row.id="cccl-lg";lg.appendChild(row);} row.innerHTML='<span class="sw-cccl"></span>CCCL'+(year?" "+esc(""+year):""); }
   else if(row){ row.remove(); }
 }
-/* GIS estimate of the density-eligible FRACTION: the share of the parcel footprint that lies LANDWARD
-   of the CCCL. Finds the embedded footprint containing the point, grid-samples it, and classifies each
-   sample by the side of the nearest CCCL segment (landward = the inland / EAST side, since the Gulf is
-   west of St. Pete Beach). Returns land/total, or null when there is no footprint, no CCCL, or the line
-   does not split the parcel (fully landward -> caller uses the gross area). Best-effort ESTIMATE only:
-   the result is flagged and stays overridable; it is not a density determination. */
-function estimateEligFrac(lat,lon,cc){
-  if(!cc||!cc.paths||!cc.paths.length||typeof PARCELS_GEO==="undefined"||!PARCELS_GEO)return null;
-  let foot=null; for(let i=0;i<PARCELS_GEO.features.length;i++){ const f=PARCELS_GEO.features[i]; if(f.geometry&&pointInGeom(lon,lat,f.geometry)){foot=f;break;} }
-  if(!foot)return null;
-  const g=foot.geometry;
+/* ---- Density-eligible area: land landward of the CCCL ----
+   Preferred method (clipLandwardByCCCL) is an EXACT geometric clip of the parcel footprint by the live
+   CCCL polyline: split the footprint at the two points where the control line crosses its boundary,
+   keep the landward (EAST) piece, and take its exact area share. This also yields the buildable polygon,
+   which is shaded on the map. Falls back to grid-sampling the landward share (_gridEligFrac) for anything
+   that is not a clean single crossing. Landward = EAST, since the Gulf is west of St. Pete Beach.
+   Best-effort against surveyed data: flagged and overridable, never a density determination. */
+function _segInt(p1,p2,p3,p4){   // interior intersection of CCCL segment p1p2 with ring edge p3p4; t along p1p2, u along p3p4
+  const x1=p1[0],y1=p1[1],x2=p2[0],y2=p2[1],x3=p3[0],y3=p3[1],x4=p4[0],y4=p4[1];
+  const d=(x2-x1)*(y4-y3)-(y2-y1)*(x4-x3); if(Math.abs(d)<1e-15)return null;
+  const t=((x3-x1)*(y4-y3)-(y3-y1)*(x4-x3))/d, u=((x3-x1)*(y2-y1)-(y3-y1)*(x2-x1))/d;
+  if(t<1e-9||t>1-1e-9||u<1e-9||u>1-1e-9)return null;
+  return {pt:[x1+t*(x2-x1),y1+t*(y2-y1)],t:t,u:u};
+}
+function _ringAreaM2(r,lat){ const ky=110540,kx=111320*Math.cos(lat*Math.PI/180); let a=0; for(let i=0,j=r.length-1;i<r.length;j=i++){ a+=(r[j][0]*kx)*(r[i][1]*ky)-(r[i][0]*kx)*(r[j][1]*ky); } return Math.abs(a/2); }
+function _footprintAt(lat,lon){ if(typeof PARCELS_GEO==="undefined"||!PARCELS_GEO)return null; for(let i=0;i<PARCELS_GEO.features.length;i++){ const f=PARCELS_GEO.features[i]; if(f.geometry&&pointInGeom(lon,lat,f.geometry))return f; } return null; }
+/* exact clip of an outer ring by the CCCL; returns {frac, poly} for the landward piece, or null when
+   the line does not make a clean single (2-intersection, single-path) cut across the ring. Validated by
+   an area sum-check: the two pieces must sum to the whole ring. */
+function clipLandwardByCCCL(ring, cc){
+  let R=ring.slice(); if(R.length>1&&R[0][0]===R[R.length-1][0]&&R[0][1]===R[R.length-1][1])R.pop();
+  const n=R.length; if(n<3)return null;
+  const lat0=R.reduce((s,p)=>s+p[1],0)/n;
+  const all=[];
+  cc.paths.forEach((P,pi)=>{ for(let ci=0;ci<P.length-1;ci++)for(let e=0;e<n;e++){ const x=_segInt(P[ci],P[ci+1],R[e],R[(e+1)%n]); if(x)all.push({pt:x.pt,edge:e,edgeT:x.u,cc:ci+x.t,pi:pi,P:P}); } });
+  if(all.length!==2)return null;
+  const E=all[0].cc<=all[1].cc?all[0]:all[1], X=all[0].cc<=all[1].cc?all[1]:all[0];
+  if(E.pi!==X.pi)return null;   // both crossings must lie on the same CCCL path
+  const P=E.P;
+  const cut=[E.pt]; for(let ci=Math.ceil(E.cc-1e-9);ci<=Math.floor(X.cc+1e-9);ci++){ if(ci>E.cc+1e-9&&ci<X.cc-1e-9)cut.push(P[ci]); } cut.push(X.pt);
+  const aug=[]; for(let e=0;e<n;e++){ aug.push({pt:R[e]}); all.filter(z=>z.edge===e).sort((a,b)=>a.edgeT-b.edgeT).forEach(z=>aug.push({pt:z.pt,ref:z})); }
+  const iE=aug.findIndex(z=>z.ref===E), iX=aug.findIndex(z=>z.ref===X); if(iE<0||iX<0)return null;
+  const lo=Math.min(iE,iX), hi=Math.max(iE,iX);
+  const arc1=aug.slice(lo,hi+1).map(z=>z.pt), arc2=aug.slice(hi).concat(aug.slice(0,lo+1)).map(z=>z.pt), inner=cut.slice(1,-1);
+  const polyA=arc1.concat(inner.slice().reverse()), polyB=arc2.concat(inner.slice());
+  const aA=_ringAreaM2(polyA,lat0), aB=_ringAreaM2(polyB,lat0), aG=_ringAreaM2(R,lat0);
+  if(aG<=0||Math.abs((aA+aB)/aG-1)>0.03)return null;   // the split failed its area sanity check -> fall back
+  const cA=polyA.reduce((s,p)=>s+p[0],0)/polyA.length, cB=polyB.reduce((s,p)=>s+p[0],0)/polyB.length;
+  const landPoly=cA>cB?polyA:polyB, landA=cA>cB?aA:aB;   // landward = the easternmost-centroid piece (Gulf is west)
+  return {frac:Math.max(0,Math.min(1,landA/aG)), poly:landPoly};
+}
+/* grid-sample fallback: share of the footprint landward (east) of its nearest point on the CCCL */
+function _gridEligFrac(g, cc){
   let minx=1e9,miny=1e9,maxx=-1e9,maxy=-1e9;
   const eat=c=>{if(c[0]<minx)minx=c[0];if(c[0]>maxx)maxx=c[0];if(c[1]<miny)miny=c[1];if(c[1]>maxy)maxy=c[1];};
   (g.type==="Polygon"?[g.coordinates]:g.coordinates).forEach(p=>p.forEach(r=>r.forEach(eat)));
   const N=46, inside=[];
   for(let i=0;i<N;i++)for(let j=0;j<N;j++){ const x=minx+(maxx-minx)*(i+0.5)/N, y=miny+(maxy-miny)*(j+0.5)/N; if(pointInGeom(x,y,g))inside.push([x,y]); }
   if(inside.length<25)return null;
-  /* classify each sample by whether it is landward (EAST) of its own nearest point on the CCCL polyline.
-     Per-point (not one global line) so it follows a curving control line; EAST = landward, since the
-     Gulf is west of St. Pete Beach. */
   let land=0, sea=0;
-  inside.forEach(p=>{
-    let bd=1e18, qx=p[0];
-    cc.paths.forEach(path=>{ for(let k=0;k<path.length-1;k++){ const a=path[k],b=path[k+1],ex=b[0]-a[0],ey=b[1]-a[1],L2=ex*ex+ey*ey; let t=L2?((p[0]-a[0])*ex+(p[1]-a[1])*ey)/L2:0; t=t<0?0:t>1?1:t; const fx=a[0]+t*ex,fy=a[1]+t*ey,dd=(p[0]-fx)*(p[0]-fx)+(p[1]-fy)*(p[1]-fy); if(dd<bd){bd=dd;qx=fx;} } });
-    if(p[0]>qx)land++; else sea++;
-  });
-  if(land===0||sea===0)return null;   // the CCCL does not split this parcel -> treat as fully landward (use gross)
+  inside.forEach(p=>{ let bd=1e18, qx=p[0]; cc.paths.forEach(path=>{ for(let k=0;k<path.length-1;k++){ const a=path[k],b=path[k+1],ex=b[0]-a[0],ey=b[1]-a[1],L2=ex*ex+ey*ey; let t=L2?((p[0]-a[0])*ex+(p[1]-a[1])*ey)/L2:0; t=t<0?0:t>1?1:t; const fx=a[0]+t*ex,fy=a[1]+t*ey,dd=(p[0]-fx)*(p[0]-fx)+(p[1]-fy)*(p[1]-fy); if(dd<bd){bd=dd;qx=fx;} } }); if(p[0]>qx)land++; else sea++; });
+  if(land===0||sea===0)return null;
   return Math.max(0,Math.min(1, land/inside.length));
+}
+/* density-eligible result for a point: {frac, poly, method}. Exact clip first (also gives the buildable
+   polygon), then grid fallback. frac null = no footprint / no CCCL / line does not split the parcel. */
+function computeElig(lat,lon,cc){
+  if(!cc||!cc.paths||!cc.paths.length)return {frac:null,poly:null,method:null};
+  const foot=_footprintAt(lat,lon); if(!foot)return {frac:null,poly:null,method:null};
+  const g=foot.geometry, outer=(g.type==="Polygon")?g.coordinates[0]:g.coordinates[0][0];
+  const clip=clipLandwardByCCCL(outer, cc);
+  if(clip)return {frac:clip.frac, poly:clip.poly, method:"clip"};
+  const gf=_gridEligFrac(g, cc);
+  return {frac:gf, poly:null, method:(gf!=null?"grid":null)};
+}
+/* shade the buildable (density-eligible) polygon on the map, above the parcels and below the CCCL line */
+let eligLayer=null;
+function drawEligPoly(poly){
+  clearEligPoly();
+  if(!map||typeof L==="undefined"||!poly||poly.length<3)return;
+  try{
+    if(!map.getPane("elig")){map.createPane("elig");map.getPane("elig").style.zIndex=356;}   // above parcels(350), below CCCL(365) + pins(600)
+    const lls=poly.map(p=>[p[1],p[0]]);
+    eligLayer=L.polygon(lls,{pane:"elig",color:"#12603f",weight:2,fillColor:"#2fbd7e",fillOpacity:0.42});
+    eligLayer.bindTooltip("Density-eligible area (landward of the CCCL)",{sticky:true,direction:"top",className:"parcel-tip",opacity:0.95});
+    eligLayer.addTo(map);
+    showEligLegend(true);
+  }catch(e){}
+}
+function clearEligPoly(){ try{if(eligLayer&&map)map.removeLayer(eligLayer);}catch(e){} eligLayer=null; showEligLegend(false); }
+function showEligLegend(on){
+  const lg=document.querySelector(".flu-legend"); if(!lg)return;
+  let row=document.getElementById("elig-lg");
+  if(on){ if(!row){row=document.createElement("div");row.className="flu-lg";row.id="elig-lg";lg.appendChild(row);} row.innerHTML='<span class="sw-elig"></span>Density-eligible'; }
+  else if(row){ row.remove(); }
 }
 /* turn any <span class="ihint" data-ih="..."> placeholder into an accessible info icon with a
    hover/focus tooltip; supports a "Why:" / "How:" split using a | separator in the text */
@@ -3830,7 +3894,8 @@ function loadScenario(idx){
   if(sv!==VERSION){try{window.alert("This scenario was saved under v"+sv+". Its inputs are restored, but the figures recompute under the current v"+VERSION+" methodology, the stored decision may change.");}catch(e){}}
   Object.assign(S,JSON.parse(JSON.stringify(st.S)));
   _lrByrightAuto=false;   // a saved scenario carries its own by-right; keep it (don't auto-derive over the restored figure)
-  if(!("eligFrac" in st.S))S.eligFrac=null; if(!("eligOv" in st.S))S.eligOv=null;   // older snapshots predate the density-eligible field
+  if(!("eligFrac" in st.S))S.eligFrac=null; if(!("eligOv" in st.S))S.eligOv=null; if(!("eligMethod" in st.S))S.eligMethod=null;   // older snapshots predate the density-eligible field
+  if(typeof clearEligPoly==="function")clearEligPoly();
   ASSUMP.forEach(function(r,k){if(st.ASSUMP&&st.ASSUMP[k]){r.low=st.ASSUMP[k].low;r.high=st.ASSUMP[k].high;r.override=st.ASSUMP[k].override;if("source" in st.ASSUMP[k])r.source=st.ASSUMP[k].source;if("notes" in st.ASSUMP[k])r.notes=st.ASSUMP[k].notes;}});
   if(st.LIB&&Array.isArray(st.LIB)){           // name-keyed library (restores custom benefits too)
     st.LIB.forEach(function(e){ let idx=libIndexOf(e.name);
@@ -3945,7 +4010,8 @@ function loadCase(idx){
   const c=CASES[idx]; if(!c)return;
   Object.assign(S,JSON.parse(JSON.stringify(c.state)));
   if(!("hardOv" in c.state))S.hardOv=null;   // case uses the spec estimate unless it sets a cost
-  if(!("eligFrac" in c.state))S.eligFrac=null; if(!("eligOv" in c.state))S.eligOv=null;   // density-eligible resets per case unless it carries one
+  if(!("eligFrac" in c.state))S.eligFrac=null; if(!("eligOv" in c.state))S.eligOv=null; if(!("eligMethod" in c.state))S.eligMethod=null;   // density-eligible resets per case unless it carries one
+  if(typeof clearEligPoly==="function")clearEligPoly();
   if(!("taxValue" in c.state))S.taxValue=null;   // fiscal snapshot input does not carry across a case load
   S.benefits=(c.benefits||[]).map(b=>Object.assign({},b));
   applyDistrict(S.district);     // sets base / cap / pathway / use + dist-rules; honors the case district
