@@ -171,7 +171,8 @@ select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-i
 .vgrid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:26px;align-items:start;margin-top:6px}
 .vgrid .vchart{position:sticky;top:80px}
 @media(max-width:860px){.vgrid{grid-template-columns:1fr}.vgrid .vchart{position:static}}
-.case-head{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.case-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.case-head .case-headtext{flex:1 1 auto;min-width:0}
 .case-head h3{margin:0}
 .case-head .case-load{flex:none;white-space:nowrap}
 .case-sub{margin-top:3px}
@@ -962,7 +963,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.29.27", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.29.28", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -1027,7 +1028,7 @@ function poolBarsInner(){
     h+='<div class="poolbar-row"><div class="poolbar-head"><b>'+pl.label+'</b><span class="anote">'+alloc+' of '+total+' allocated · <b>'+rem+' remaining</b></span></div>'+
        '<div class="poolbar" role="img" aria-label="'+pl.label+': '+alloc+' of '+total+' '+pl.p+' allocated, '+rem+' remaining">'+segs+'</div></div>';
   });
-  h+='<div class="poolbar-legend"><span><i style="background:var(--accent-d)"></i> Approved allocation (by project)</span><span><i class="pbseg-rem" style="border:1px solid var(--line)"></i> Remaining pool</span></div>';
+  h+='<div class="poolbar-legend"><span><i style="background:var(--accent-d)"></i><i style="background:var(--accent);margin-left:-2px"></i> Approved allocations (shades alternate by project)</span><span><i class="pbseg-rem" style="border:1px solid var(--line)"></i> Remaining pool</span></div>';
   return h;
 }
 function buildHistory(){
@@ -2031,7 +2032,7 @@ document.getElementById("addbtn").onclick=()=>{if(!addsel.value)return;S.benefit
 
 function readoutHTML(m,v){
   return '<span class="pill" style="background:'+v.bg+';color:'+v.fg+'">'+v.tag+'</span>'+
-    '<div class="rd clk" role="button" tabindex="0" data-aux="explainV"><div class="k">Value to developer</div><div class="v mono">'+fmt(m.zCeil)+'</div></div>'+
+    '<div class="rd clk" role="button" tabindex="0" data-aux="explainV"><div class="k">Minimum value to developer</div><div class="v mono">'+fmt(m.zCeil)+'</div></div>'+
     '<div class="rd clk" role="button" tabindex="0" data-aux="explainCityMin"><div class="k">Break-even floor</div><div class="v mono">'+fmt(m.cityMin)+'</div></div>'+
     '<div class="rd clk" role="button" tabindex="0" data-aux="explainB"><div class="k">Public value offered</div><div class="v mono">'+fmt(m.Bplain)+'</div></div>';
 }
@@ -2062,9 +2063,9 @@ function numgridHTML(m){
   const mp=Math.round(m.impMargin*100);
   const flag=m.impMargin<0.05?', <span style="color:var(--fail)">residual near zero</span>':(m.impMargin>0.45?', <span style="color:var(--ink3)">high (land excluded)</span>':'');
   return [
-    ["Value to developer",vdevStr(m),"what the bonus is worth to the developer (the ceiling)"+flag,"dev","Why: what the bonus is worth to the developer, the cap on what they could hand back. Shown as a range because construction cost is uncertain.|How: per-unit residual (market minus build, sell and profit) times bonus units times a decline factor. The deal uses the conservative low end as the feasibility ceiling."],
+    ["Minimum value to developer",m.zCeil,"the conservative floor of what the bonus is worth to the developer, the ceiling the decision is tested against"+flag,"dev","Why: the conservative (low) end of what the bonus is worth to the developer, the cap on what they could hand back and the feasibility ceiling the deal is tested against.|How: per-unit residual (market minus build, sell and profit) times bonus units times a decline factor, taken on the high build-cost (conservative) end."],
     ["Break-even floor",m.cityMin,"the least public value the deal must return","city","Why: the least public value the deal must return; below it the public subsidizes the project.|How: impact offset plus pool value used. The offered public value must reach it to be worthwhile."],
-    ["Impact offset (required by law)",m.I,"the developer's fair share of impacts","city","Why: the developer fair-share of the traffic, utility and service impact the new units create.|How: impact per unit times bonus units; compellable under Koontz / F.S. 163.3180, and part of the floor."],
+    ["Impact offset",m.I,"the developer's fair share of impacts","city","Why: the developer fair-share of the traffic, utility and service impact the new units create.|How: impact per unit times bonus units; compellable under Koontz / F.S. 163.3180, and part of the floor."],
     ["Pool value used",m.D,m.D<5000?"pool not scarce":"scarcity binding","city","Why: the value of the scarce pool units the bonus consumes (pool pathway only).|How: residual times scarcity (to an exponent) times bonus units; near zero while the pool is plentiful, rising as it depletes."]
   /* description line (c[2]) intentionally not rendered: the per-title info icon (c[4]) already carries it */
   ].map(c=>'<div class="num num--'+c[3]+'"><div class="k">'+c[0]+(c[4]?' <span class="ihint" data-ih="'+c[4].replace(/"/g,"&quot;")+'"></span>':"")+'</div><div class="v">'+(typeof c[1]==="string"?c[1]:fmt(c[1]))+'</div></div>').join("");}
@@ -3828,8 +3829,8 @@ function buildPrintSheet(){
    '<tr><td><b>By-right</b><br>'+S.byright+' '+unit+'</td><td><b>Bonus requested</b><br>'+S.bonus+' '+unit+'</td><td><b>Total / district max</b><br>'+m.total+' / '+capCell+'</td></tr></table>'+
    '<div class="ps-verdict" style="border-left:4px solid '+v.fg+'"><b>'+v.head+'</b><br>'+v.body+
      (m.flags&&m.flags.any?'<br><b>Open questions:</b> '+[m.flags.nUnsecured?(m.flags.nUnsecured+' unsecured ('+Math.round(m.flags.unsecuredShare*100)+'% of value)'):"",m.flags.nAboveCode?(m.flags.nAboveCode+' at 100% above a code minimum'):"",m.flags.nEsc?(m.flags.nEsc+' with escalation not below discount'):""].filter(Boolean).join(' · '):'')+'</div>'+
-   '<table class="ps-fig"><tr><th>Value to developer</th><th>Pool value used</th><th>Impact offset</th><th>Break-even floor</th></tr>'+
-   '<tr><td>'+vdevStr(m)+'</td><td>'+fmt(m.D)+'</td><td>'+fmt(m.I)+'</td><td>'+fmt(m.cityMin)+'</td></tr></table>'+
+   '<table class="ps-fig"><tr><th>Minimum value to developer</th><th>Pool value used</th><th>Impact offset</th><th>Break-even floor</th></tr>'+
+   '<tr><td>'+fmt(m.zCeil)+'</td><td>'+fmt(m.D)+'</td><td>'+fmt(m.I)+'</td><td>'+fmt(m.cityMin)+'</td></tr></table>'+
    '<div class="ps-sec">Public benefit package</div>'+
    '<table class="ps-ben"><thead><tr><th>Benefit</th><th>Category</th><th class="r">Qty</th><th class="r">% above</th><th class="r">Dev cost</th><th class="r">City value</th><th class="r">Ratio</th></tr></thead><tbody>'+rows+'</tbody>'+
    '<tfoot><tr><td colspan="4">Totals</td><td class="r">'+fmt(m.A)+'</td><td class="r">'+fmt(m.Bplain)+'</td><td class="r">'+(m.gPlain?m.gPlain.toFixed(2)+'×':'-')+'</td></tr></tfoot></table>'+
@@ -3977,9 +3978,9 @@ function buildCases(){
     const imgPart=c.image?('<div class="case-img"><img src="'+esc(c.image)+'" alt="'+esc(c.name)+' rendering" loading="lazy"></div>'+(c.imgcap?'<div class="anote" style="margin-top:6px;font-size:11px">'+esc(c.imgcap)+'</div>':'')):'';
     const mapPart=(c.lat!=null)?('<div class="case-map" id="case-map-'+i+'" role="img" aria-label="'+esc(c.name)+' location map"></div><div class="anote" style="margin-top:6px;font-size:11px">Corey Circle, St. Pete Beach</div>'):'';
     const mediaCol=imgPart+mapPart;
-    h+='<div class="card"><div class="case-head"><h3>'+esc(c.name)+'</h3>'+
+    h+='<div class="card"><div class="case-head"><div class="case-headtext"><h3>'+esc(c.name)+'</h3>'+
+       '<div class="sub case-sub">'+esc(c.sub)+'</div></div>'+
        '<button class="addbtn case-load" data-loadcase="'+i+'">Load this case →</button></div>'+
-       '<div class="sub case-sub">'+esc(c.sub)+'</div>'+
        (mediaCol?('<div class="case-grid"><div>'+textCol+'</div><div class="case-media">'+mediaCol+'</div></div>'):textCol)+
        '</div>';
   });
