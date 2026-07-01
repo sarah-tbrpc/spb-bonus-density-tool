@@ -76,7 +76,7 @@ nav.steps{align-self:stretch;display:flex;flex-direction:column;gap:2px}   /* st
 .navgrp.open .navgrp-body{display:flex}
 .navfoot .rst{color:var(--fail);padding-left:21px;margin-top:6px;border-top:1px solid var(--line);border-radius:0;padding-top:11px}
 .navfoot .rst:hover{background:#f6e2e4;color:var(--fail)}
-.navcredit{margin-top:auto;padding:14px 13px 4px;border-top:1px solid var(--line);display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink3)}
+.navcredit{margin-top:auto;padding:14px 13px 22px;border-top:1px solid var(--line);display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink3)}
 .navcredit a{color:var(--accent);font-weight:600;text-decoration:none}
 .navcredit a:hover{text-decoration:underline}
 .navver{font-size:10px;color:var(--ink3);opacity:.75;font-variant-numeric:tabular-nums}
@@ -176,7 +176,7 @@ select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-i
 .vgrid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:26px;align-items:start;margin-top:6px}
 .vgrid .vchart{position:sticky;top:80px}
 @media(max-width:860px){.vgrid{grid-template-columns:1fr}.vgrid .vchart{position:static}}
-.case-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.case-head{display:flex;justify-content:space-between;align-items:center;gap:16px}
 .case-head .case-headtext{flex:1 1 auto;min-width:0}
 .case-head h3{margin:0}
 .case-head .case-load{flex:none;white-space:nowrap}
@@ -941,7 +941,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.30.2", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.30.3", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -3747,8 +3747,8 @@ function buildAssumptions(){
       if(/^E\./.test(sec)){const pA=S.impactPosture!=="B";
         h+='<tr data-asec="'+esc(sec)+'" data-search="impact offset treatment posture adopted fees permit in-kind creditable"><td colspan="'+ncols+'">'+
           '<div style="padding:4px 2px"><div style="font-weight:600;margin-bottom:5px">Impact offset treatment <span class="anote" style="font-weight:400">(how adopted impact fees interact with the package)</span></div>'+
-          '<label style="display:flex;align-items:flex-start;gap:9px;margin:6px 0;font-weight:400;line-height:1.45"><input type="radio" name="impactposture" value="A" style="flex:0 0 auto;margin:3px 0 0"'+(pA?' checked':'')+' onchange="setPosture(this.value)"><span><b>Adopted fees paid at permit</b> (default): fees are collected at building permit, outside the package, so the break-even floor is pool value only and the ceiling nets the fees out.</span></label>'+
-          '<label style="display:flex;align-items:flex-start;gap:9px;margin:6px 0;font-weight:400;line-height:1.45"><input type="radio" name="impactposture" value="B" style="flex:0 0 auto;margin:3px 0 0"'+(!pA?' checked':'')+' onchange="setPosture(this.value)"><span><b>In-kind creditable against fees</b>: the package delivers the impact offset, so it is part of the floor and the full residual is available. Requires an impact-fee credit mechanism (F.S. 163.31801) and category nexus; confirm with the City Attorney.</span></label>'+
+          '<label style="display:flex;align-items:flex-start;gap:7px;margin:7px 0;font-weight:400;line-height:1.45"><input type="radio" name="impactposture" value="A" style="flex:0 0 auto;width:auto;margin:2px 0 0"'+(pA?' checked':'')+' onchange="setPosture(this.value)"><span><b>Adopted fees paid at permit</b> (default): fees are collected at building permit, outside the package, so the break-even floor is pool value only and the ceiling nets the fees out.</span></label>'+
+          '<label style="display:flex;align-items:flex-start;gap:7px;margin:7px 0;font-weight:400;line-height:1.45"><input type="radio" name="impactposture" value="B" style="flex:0 0 auto;width:auto;margin:2px 0 0"'+(!pA?' checked':'')+' onchange="setPosture(this.value)"><span><b>In-kind creditable against fees</b>: the package delivers the impact offset, so it is part of the floor and the full residual is available. Requires an impact-fee credit mechanism (F.S. 163.31801) and category nexus; confirm with the City Attorney.</span></label>'+
           '</div></td></tr>';}
     }
     const ahay=esc((""+r.label+" "+r.unit+" "+(r.notes||"")+" "+(r.source||"")).toLowerCase());
