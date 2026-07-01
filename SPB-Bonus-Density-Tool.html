@@ -283,7 +283,7 @@ select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-i
 .num .v{font-variant-numeric:tabular-nums;font-size:21px;font-weight:600;margin-top:4px;letter-spacing:-.02em}
 .num .d{font-size:11px;color:var(--ink3);margin-top:3px;line-height:1.4}
 .verdict{margin-bottom:16px}
-.vpill{display:flex;align-items:center;gap:10px;font-size:17px;font-weight:700;line-height:1.3;padding:14px 20px;border-radius:var(--r) var(--r) 0 0}
+.vpill{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700;line-height:1.3;padding:14px 20px;border-radius:var(--r) var(--r) 0 0}
 .vbody{font-size:14px;line-height:1.6;padding:14px 20px;background:var(--card);border:1px solid var(--line);border-top:none;border-radius:0 0 var(--r) var(--r);box-shadow:var(--sh-sm)}
 .vbadge{display:block;width:fit-content;max-width:100%;font-size:12px;font-weight:700;padding:4px 11px;border-radius:999px;margin:0 0 10px}
 .vbadge-ok{color:var(--pass);background:#e7f1ea}
@@ -736,7 +736,7 @@ th.notecol{font-size:12px;font-weight:400}
     <section class="panel" data-step="2">
       <div class="card">
       <div class="eyebrow">Step 3 of 3 · Results</div>
-      <h2 class="step-h">Decision &amp; Negotiation Range</h2>
+      <h2 class="step-h">Decision and Negotiation Range</h2>
       <div class="verdict" id="verdict"></div>
       <div class="numgrid" id="numgrid"></div>
       <div class="actbar">
@@ -836,7 +836,7 @@ th.notecol{font-size:12px;font-weight:400}
     <section class="panel" data-aux="method">
       <button class="btn auxback" style="margin-bottom:14px">← Back</button>
       <div class="eyebrow">Reference</div>
-      <h2 class="step-h">User Guide &amp; Method</h2>
+      <h2 class="step-h">User Guide and Method</h2>
       <p class="lede">How this tool prices a density-bonus deal, what each number means, the limits to keep in mind, and the legal guardrails that sit on top of the local code.</p>
       <div class="card">
         <h3>Purpose</h3>
@@ -941,7 +941,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.30.3", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.30.4", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
