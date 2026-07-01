@@ -312,16 +312,17 @@ select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-i
 .lockbar button{flex:none}
 .lockfs{border:0;margin:0;padding:0;min-width:0}
 .lockfs[disabled] input,.lockfs[disabled] select{background:#f1f2f3;color:#6b7378;cursor:not-allowed}
-.zopa-track{position:relative;height:52px;margin:58px 0 30px}
+.zopa-track{position:relative;height:52px;margin:44px 0 48px}
 .zopa-bar{position:absolute;top:22px;left:0;right:0;height:8px;border-radius:4px;background:#e2e6e8}
 .zopa-zone{position:absolute;top:22px;height:8px;border-radius:4px;background:var(--accent)}
 .zopa-mark{position:absolute;top:22px;width:2px;height:30px;background:var(--ink)}
 .zopa-lab{position:absolute;font-size:11px;color:var(--ink2);white-space:nowrap;transform:translateX(-50%)}
-.zopa-lab.top{top:-22px}.zopa-lab.top.r1{top:-40px}.zopa-lab.bot{top:54px}
+.zopa-lab.top{top:-22px}.zopa-lab.top.r1{top:-40px}.zopa-lab.bot{top:54px}.zopa-lab.bot.b1{top:72px}
 @media(max-width:560px){.zopa-lab{font-size:9px}}
 .zopa-target{position:absolute;top:9px;height:34px;border-radius:4px;background:rgba(227,160,80,.16);border:1px dashed rgba(176,122,46,.75);box-sizing:border-box}
 .zopa-tmark{position:absolute;top:-8px;height:38px;border-left:2px dashed var(--accent)}
 .zopa-tick{position:absolute;top:-8px;width:1px;height:38px;background:#aab3b9}
+.zopa-tickd{position:absolute;top:22px;width:1px;height:34px;background:#aab3b9}
 .rank{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line2)}
 .rank .bar{height:7px;border-radius:3px;background:var(--public);min-width:0}
 /* name column shrinks (equally across rows, so bars stay aligned) and truncates rather than
@@ -961,7 +962,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.29.26", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.29.27", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -2676,43 +2677,35 @@ function drawZopa(m){
   /* top labels can crowd where the floor / ceilings sit close together; shorten the wording on narrow
      screens and put them on alternating rows (by position) so adjacent labels never overlap. */
   const lw=narrow?["min ","low ","high "]:["min spend ","ceiling, low ","ceiling, high "];
-  const tops=[{p:fl,txt:lw[0]+zf(m.zFloor),x:""},{p:ce,txt:lw[1]+zf(m.zCeil),x:""}];
-  if(tg>=0)tops.push({p:tg,txt:lw[2]+zf(m.Vhigh),x:"color:var(--accent)"});
-  tops.sort((a,b)=>a.p-b.p);
-  const topHtml=tops.map((L,i)=>zlab(L.p,"top"+(i%2?" r1":""),L.txt,L.x)).join("");
+  /* labels: min spend (left) and ceiling-high (right) sit ABOVE the bar at opposite ends; the offer and the
+     low ceiling sit BELOW it, aligned together. A label drops to a second row only if it would crowd its
+     row-mate, so the two ceiling marks are never stacked one directly above the other. */
+  const pairRow=(a,b,base)=>{ if(!b)return zlab(a.p,base,a.txt,a.x||"");
+    const lo=a.p<=b.p?a:b, hi=a.p<=b.p?b:a, alt=base+(base==="top"?" r1":" b1");
+    return zlab(lo.p,base,lo.txt,lo.x||"")+zlab(hi.p,(Math.abs(a.p-b.p)<34?alt:base),hi.txt,hi.x||""); };
+  const topHtml=pairRow({p:fl,txt:lw[0]+zf(m.zFloor)}, (tg>=0?{p:tg,txt:lw[2]+zf(m.Vhigh),x:"color:var(--accent)"}:null), "top");
+  const botHtml=pairRow({p:of,txt:"offer "+zf(m.A)}, {p:ce,txt:lw[1]+zf(m.zCeil)}, "bot");
   t.innerHTML=band(CAPTURE.capLo,CAPTURE.capHi,"zopa-target")+
     '<div class="zopa-bar"></div>'+
     '<div class="zopa-zone" style="left:'+fl+'%;width:'+Math.max(0,ce-fl)+'%"></div>'+
     '<div class="zopa-mark" style="left:'+of+'%"></div>'+
     '<div class="zopa-tick" style="left:'+fl+'%"></div>'+
-    '<div class="zopa-tick" style="left:'+ce+'%"></div>'+
+    '<div class="zopa-tickd" style="left:'+ce+'%"></div>'+
     (tg>=0?'<div class="zopa-tmark" style="left:'+tg+'%"></div>':'')+
-    topHtml+
-    zlab(of,'bot','offer '+zf(m.A));
-  const baseNote = m.A>m.zCeil
-    ? "Offer exceeds the ceiling; the package is infeasible for the developer."
-    : (m.A<m.zFloor ? "Offer is below the minimum for this package: its public value falls short of the break-even floor. Raise spend to about "+fmt(m.zFloor)+", or improve the mix to lower that threshold."
-    : "Offer is within the agreement zone. Unspent developer budget between the offer and the ceiling: "+fmt(m.room)+".");
-  /* The lower bound is zFloor = break-even floor / gPlain: a SPEND threshold that depends on the current
-     package's public-value efficiency, not a fixed dollar floor. Spell that out so it is not misread, and
-     so it is clear it re-sizes when the mix changes or the suggested counter-package is loaded. */
-  const floorNote = (m.gPlain>0)
-    ? ' The lower bound is a <b>minimum spend at this package’s current efficiency</b>, not a fixed dollar floor: it is the break-even floor ('+fmt(m.cityMin)+') divided by the package’s public-value efficiency (about $'+(Math.round(m.gPlain*100)/100).toFixed(2)+' of public value per $1 spent). A more efficient or larger mix lowers it, so it moves whenever you change the benefit mix or apply the suggested counter-package.'
-    : '';
-  const rangeNote = (m.Vhigh>m.zCeil+1)
-    ? ' The two ceiling marks are the <b>low (conservative)</b> and <b>high</b> estimates of the value to the developer; the bonus is worth somewhere in that range to them. The decision and the agreement zone use the conservative (low) ceiling; the high mark is the optimistic end, not a spending target. The shaded fair-share band below is a separate concept (a share of value, not the value itself), so it does not line up with either ceiling mark.'
-    : '';
+    topHtml+botHtml;
+  /* Only the target-capture-zone note lives under the chart now; the offer status, the efficiency-dependent
+     lower bound, and the low/high ceiling range are already stated in the verdict above (Decision heading). */
   let capNote="";
   if(V>0){
     const tLo=CAPTURE.capLo*V, tHi=CAPTURE.capHi*V, rate=Math.round(m.A/V*100);
     const where=m.A<tLo-1?"below":(m.A>tHi+1?"above":"within");
     const wc=where==="within"?"var(--pass)":"var(--warn)";
-    capNote='<div style="margin-top:8px"><span style="display:inline-block;width:11px;height:11px;background:rgba(227,160,80,.5);border:1px dashed rgba(176,122,46,.85);border-radius:2px;vertical-align:-1px;margin-right:6px"></span>'+
+    capNote='<div><span style="display:inline-block;width:11px;height:11px;background:rgba(227,160,80,.5);border:1px dashed rgba(176,122,46,.85);border-radius:2px;vertical-align:-1px;margin-right:6px"></span>'+
       '<b>Target capture zone</b>, the framework’s fair-share band: capturing <b>'+Math.round(CAPTURE.capLo*100)+'–'+Math.round(CAPTURE.capHi*100)+'%</b> of the value to developer ('+fmt(tLo)+'–'+fmt(tHi)+'). '+
       'This offer captures <b style="color:'+wc+'">'+rate+'%</b>, <b style="color:'+wc+'">'+where+'</b> the zone. '+
       '<span class="anote">Analytic overlay from the TBRPC framework, not adopted code.</span></div>';
   }
-  document.getElementById("zopa-note").innerHTML = baseNote + floorNote + rangeNote + capNote;
+  document.getElementById("zopa-note").innerHTML = capNote;
 }
 /* counter-package solver: greedily pick the most plain-value-efficient library benefits to clear the
    break-even floor within the developer budget. Constraint is the PLAIN value (decision basis), objective
