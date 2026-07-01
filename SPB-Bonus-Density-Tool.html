@@ -60,9 +60,10 @@ header.top{background:rgba(255,255,255,.92);backdrop-filter:saturate(1.15) blur(
 /* let the main column shrink to the available space so a wide table (e.g. the 14-column scenario
    compare) scrolls inside its .atable-wrap instead of stretching the grid and the whole page */
 .layout>main{min-width:0}
-nav.steps{position:sticky;top:108px;align-self:start;display:flex;flex-direction:column;gap:2px;min-height:calc(100vh - 190px)}
+nav.steps{align-self:stretch;display:flex;flex-direction:column;gap:2px}   /* stretches to page-content height; .navtop is the sticky part, the credit sits at the content bottom */
+.navtop{position:sticky;top:108px;display:flex;flex-direction:column;gap:2px}
 .stepbtns{display:flex;flex-direction:column;gap:2px}
-.navfoot{margin-top:24px;display:flex;flex-direction:column;gap:2px;padding-top:14px;border-top:1px solid var(--line);flex:1}
+.navfoot{margin-top:24px;display:flex;flex-direction:column;gap:2px;padding-top:14px;border-top:1px solid var(--line);flex:none}
 .navgrp{display:flex;flex-direction:column;gap:2px;margin-bottom:4px}
 /* .navfoot .navgrp-h (specificity 0,2,0) so it beats .navfoot button (0,1,1); padding-left 21 puts the
    WORD at the same left edge as the page links below (body pad 8 + button pad 13 = 21) and Reset All. */
@@ -91,6 +92,7 @@ nav.steps{position:sticky;top:108px;align-self:start;display:flex;flex-direction
 @media(max-width:820px){
   .layout{display:flex;flex-direction:column;gap:16px;padding:18px 0 68px}
   nav.steps{position:static;top:auto;align-self:stretch;flex-direction:column;gap:12px;min-height:auto}
+  .navtop{position:static;gap:12px}
   .stepbtns{flex-direction:row;gap:8px;width:100%}
   .step-btn{flex:1 1 0;min-width:0;width:auto;justify-content:center;border-color:var(--line);background:var(--card)}
   .navfoot{margin-top:0;flex-direction:row;flex-wrap:wrap;align-items:flex-start;gap:14px;width:100%;padding-top:12px;border-top:1px solid var(--line);flex:none}
@@ -270,6 +272,7 @@ select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-i
 .numgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
 @media(max-width:680px){.numgrid{grid-template-columns:repeat(2,1fr)}}
 .num{background:var(--card);border:1px solid var(--line);border-top-width:3px;border-radius:var(--r);padding:15px 16px;box-shadow:var(--sh-sm)}
+.numgrid .num{display:flex;flex-direction:column;justify-content:center}   /* center the label + value block vertically so values align across cards despite 1- vs 2-line titles */
 .num--dev{border-top-color:var(--developer)}
 .num--city{border-top-color:var(--public)}
 .projid{padding:12px 16px;background:#fafbfb}
@@ -938,7 +941,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.30.1", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.30.2", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -1897,18 +1900,25 @@ function fmtNum(v){if(v==null||v==="")return"";const n=parseFloat((""+v).replace
 const STEPS=["Project","Benefits","Results"];
 let cur=0;
 const stepnav=document.getElementById("stepnav");
+/* .navtop (step buttons + workspace/reference/reset) stays sticky-pinned; the credit is a separate
+   child of the content-height #stepnav so it aligns with the BOTTOM OF THE PAGE CONTENT, not the
+   viewport (robust across window heights, and it sits just above the fixed footer bar). */
+const navtop=document.createElement("div");navtop.className="navtop";
 const stepbtns=document.createElement("div");stepbtns.className="stepbtns";
 STEPS.forEach((t,i)=>{const b=document.createElement("button");b.className="step-btn";
   b.innerHTML='<span class="num">'+(i+1)+'</span><span>'+t+'</span>';b.onclick=()=>goto(i);stepbtns.appendChild(b);});
-stepnav.appendChild(stepbtns);
+navtop.appendChild(stepbtns);
 const navfoot=document.createElement("div");navfoot.className="navfoot";
 navfoot.innerHTML='<div class="navgrp" data-grp="work"><button class="navgrp-h" data-navtoggle="1"><span class="navcaret">▸</span> Workspace</button><div class="navgrp-body">'+
   '<button id="openassume">Assumptions</button><button id="openlibrary">Benefit Library</button><button id="openscenarios">Saved Scenarios</button></div></div>'+
   '<div class="navgrp" data-grp="ref"><button class="navgrp-h" data-navtoggle="1"><span class="navcaret">▸</span> Reference</button><div class="navgrp-body">'+
   '<button id="openhistory">Allocation Ledger</button><button id="opencases">Test Project</button><button id="openmethod">User Guide</button></div></div>'+
-  '<button id="resetall" class="rst">Reset All</button>'+
-  '<div class="navcredit"><a href="https://www.tbrpc.org" target="_blank" rel="noopener">TBRPC Civic Tech</a> <span class="navver">v'+VERSION+'</span></div>';
-stepnav.appendChild(navfoot);
+  '<button id="resetall" class="rst">Reset All</button>';
+navtop.appendChild(navfoot);
+stepnav.appendChild(navtop);
+const navcredit=document.createElement("div");navcredit.className="navcredit";
+navcredit.innerHTML='<a href="https://www.tbrpc.org" target="_blank" rel="noopener">TBRPC Civic Tech</a> <span class="navver">v'+VERSION+'</span>';
+stepnav.appendChild(navcredit);
 navfoot.querySelectorAll("[data-navtoggle]").forEach(b=>b.addEventListener("click",()=>{const g=b.closest(".navgrp");const open=g.classList.toggle("open");b.setAttribute("aria-expanded",open?"true":"false");}));
 navfoot.querySelectorAll(".navgrp-h").forEach(b=>b.setAttribute("aria-expanded","false"));
 const NEXT_DEST=["Project","Public benefits","Results"];
@@ -4018,28 +4028,39 @@ function loadScenario(idx){
 }
 /* ---------- worked case studies ---------- */
 const CASES=[{
-  name:"Worked example: gulf-front condo tower",
-  sub:"Illustrative TC-2 Town Center condominium · representative figures, not a specific application",
-  image:"",
-  imgcap:"",
-  lat:null, lon:null, zoom:16,
-  blurb:"An illustrative 8-story concrete-tower coastal condominium: 133 units, 108 by-right plus a 25-unit bonus drawn from St. Pete Beach's 195-unit residential (RU) density pool, on 4.51 buildable acres in the TC-2 Town Center Corey Circle district (AE flood zone). Representative figures for testing the model, not a specific application.",
+  name:"Corey Landings",
+  sub:"KT Corey Ave LLC / Kolter · CUP 25069 · Ord. 2025-20 / Res. 2025-23 (City Commission, Oct 14 & 28 2025)",
+  image:"images/corey-landings-kolter.png",
+  imgcap:"Corey Landings, rendering (Kolter Urban)",
+  lat:27.74454, lon:-82.74593, zoom:16,
+  blurb:"A 133-unit luxury condominium redevelopment on Corey Avenue, 108 units by-right plus a 25-unit bonus drawn from St. Pete Beach's 195-unit residential (RU) density pool. Three towers at 86 ft on 4.51 buildable acres in the TC-2 Town Center Corey Circle district (AE flood zone).",
   facts:[
     ["Use","Condominium, 133 units"],
     ["By-right / bonus","108 by-right + 25 bonus (RU pool)"],
     ["District","TC-2 Corey Circle, 24 du/ac base"],
     ["Site","4.51 acres · AE coastal"],
-    ["Current site (no-action baseline)","Vacant-commercial parcels, ≈$9.4M county taxable (representative)"],
+    ["Current site (no-action baseline)","8 vacant-commercial parcels, ≈$9.39M county taxable (Pinellas, 2026)"],
     ["Market","≈ $2.6M/unit (~$1,100–1,250/SF × 2,269 SF)"],
-    ["Public benefits (applicant est.)","≈ $3.0M, seawall, public park, roundabout plaza, promenade, streetscape / public parking, boat slips"],
-    ["Pool effect","Allocates 25 RU; a prior vested approval on the site was divested (net 125 returned) → 170 of 195 remaining"],
-    ["Outcome","Representative: clears the break-even floor within the developer ceiling"]
+    ["Public benefits (applicant est.)","≈ $3.0M, seawall, public park, roundabout plaza, promenade, streetscape / 53 public parking spaces, boat slips"],
+    ["Pool effect","Allocates 25 RU; divests the 150 vested under Ord. 2022-03 (net 125 returned) → 170 of 195 remaining"],
+    ["Outcome","Approved with conditions"]
   ],
   notes:"",
-  state:{pname:"Worked example (gulf-front condo tower)",papp:"",use:"Condominium",btype:"High-rise (8+)",subtype:"Gulf-front",parking:"structured",coastal:"AE",district:"TC2",acres:4.51,byright:108,bonus:25,market:2600000,mktSF:2269,impact:3146,taxValue:9388710},
+  state:{pname:"Corey Landings",papp:"KT Corey Ave LLC / Kolter (CUP 25069)",use:"Condominium",btype:"High-rise (8+)",subtype:"Gulf-front",parking:"structured",coastal:"AE",district:"TC2",acres:4.51,byright:108,bonus:25,market:2600000,mktSF:2269,impact:3146,taxValue:9388710},
   benefits:[{name:"Seawall / bulkhead",qty:103,pct:1,instr:"condition"},{name:"Public plaza / park",qty:24500,pct:1,instr:"condition"},{name:"Waterfront boardwalk / promenade",qty:600,pct:1,instr:"condition"},{name:"Public boat slip (Class A)",qty:4,pct:1,instr:"condition"}],
-  address:"",
-  parcels:[]
+  address:"64 Corey Avenue, Saint Pete Beach",
+  /* the real 8-parcel assembly (PINs in raw 18-digit form so dashPin renders the public number);
+     areas sum to 4.50 ac. Marker lat/lon are the footprint centroids from the embedded parcel layer. */
+  parcels:[
+    {pin:"153136000001400400",area:1.61,lat:27.74371,lon:-82.74587},  // 36-31-15-00000-140-0400
+    {pin:"153136000001400300",area:0.38,lat:27.74410,lon:-82.74556},  // 36-31-15-00000-140-0300
+    {pin:"153136000001400100",area:1.07,lat:27.74459,lon:-82.74547},  // 36-31-15-00000-140-0100
+    {pin:"153125780840000143",area:0.24,lat:27.74528,lon:-82.74603},  // 25-31-15-78084-000-0143
+    {pin:"153125780840000142",area:0.4,lat:27.74502,lon:-82.74618},   // 25-31-15-78084-000-0142
+    {pin:"153125780840000141",area:0.2,lat:27.74493,lon:-82.74653},   // 25-31-15-78084-000-0141
+    {pin:"153136135900000010",area:0.23,lat:27.74480,lon:-82.74683},  // 36-31-15-13590-000-0010
+    {pin:"153136306720630230",area:0.37,lat:27.74431,lon:-82.74648}   // 36-31-15-30672-063-0230
+  ]
 }];
 function buildCases(){
   let h='<p class="lede">A verified project, pre-filled for reference. Loading populates every input and replaces the current Project and Benefits; the '+secLink('Assumptions',"showAux('assumptions')")+' and the '+secLink('Allocation Ledger',"showAux('history')")+' are kept. Adjust any input to test alternatives.</p>';
@@ -4050,7 +4071,7 @@ function buildCases(){
        '</tbody></table></div>'+
        (c.notes?'<p class="hint" style="margin-top:10px">'+esc(c.notes)+'</p>':'');
     const imgPart=c.image?('<div class="case-img"><img src="'+esc(c.image)+'" alt="'+esc(c.name)+' rendering" loading="lazy"></div>'+(c.imgcap?'<div class="anote" style="margin-top:6px;font-size:11px">'+esc(c.imgcap)+'</div>':'')):'';
-    const mapPart=(c.lat!=null)?('<div class="case-map" id="case-map-'+i+'" role="img" aria-label="'+esc(c.name)+' location map"></div><div class="anote" style="margin-top:6px;font-size:11px">St. Pete Beach</div>'):'';
+    const mapPart=(c.lat!=null)?('<div class="case-map" id="case-map-'+i+'" role="img" aria-label="'+esc(c.name)+' location map"></div><div class="anote" style="margin-top:6px;font-size:11px">Corey Circle, St. Pete Beach</div>'):'';
     const mediaCol=imgPart+mapPart;
     h+='<div class="card"><div class="case-head"><div class="case-headtext"><h3>'+esc(c.name)+'</h3>'+
        '<div class="sub case-sub">'+esc(c.sub)+'</div></div>'+
