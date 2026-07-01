@@ -7,7 +7,7 @@
  * GOAL: lock in the CURRENT numeric behavior of the extracted math so nothing
  * changes silently. Expected values are hand-computed from the documented
  * formulas (not snapshotted from the code), with the published worked
- * reconciliation (Corey Landing → value-to-developer $5,681,500) as the anchor.
+ * reconciliation (worked example → value-to-developer $5,681,500) as the anchor.
  * ========================================================================== */
 const test = require("node:test");
 const assert = require("node:assert/strict");
@@ -124,7 +124,7 @@ test("recurringGuardOK — strict (esc must be below disc)", () => {
 
 // ---------------------------------------------------------------------------
 test("benefitRow — SIMPLE mode: full credit, weighted by category", () => {
-  const K_consts = { CATMULT, PVD: { esc: 0.02, disc: 0.03, term: 30 }, ENFORCE, SIMPLE_BENEFITS: true };
+  const K_consts = { CATMULT, PVD: { esc: 0.02, disc: 0.03, term: 30 }, ENFORCE, SIMPLE_BENEFITS: true, impactPosture: "B" };
   const row = E.benefitRow(
     { name: "Seawall / bulkhead", qty: 100, pct: 1, dev: 2000, city: 2000 },
     { cat: "Resilience", unit: "$/LF", dev: 0, city: 0 }, false, K_consts);
@@ -137,7 +137,7 @@ test("benefitRow — SIMPLE mode: full credit, weighted by category", () => {
 });
 
 test("benefitRow — falls back to library dev/city when not overridden", () => {
-  const K_consts = { CATMULT, PVD: { esc: 0.02, disc: 0.03, term: 30 }, ENFORCE, SIMPLE_BENEFITS: true };
+  const K_consts = { CATMULT, PVD: { esc: 0.02, disc: 0.03, term: 30 }, ENFORCE, SIMPLE_BENEFITS: true, impactPosture: "B" };
   const row = E.benefitRow(
     { name: "X", qty: 2, pct: 1 },
     { cat: "Monetary / Cash", unit: "$/lump", dev: 300, city: 400 }, false, K_consts);
@@ -163,12 +163,12 @@ test("benefitRow — non-SIMPLE: enforceability haircut + recurring PV apply", (
 
 // ---------------------------------------------------------------------------
 // The published worked reconciliation, with the value-to-developer bracket.
-// Corey Landing: Condominium, low-rise, surface, AE, Pool Allocation,
+// Worked example: Condominium, low-rise, surface, AE, Pool Allocation,
 //   market $662,500/u, bonus 25, impact $28,000/u, remaining 152.
 // Original-era hard cost (hardCondo 237,500; soft 0.24; margin 0.15; sales 0.06).
 // Documented outputs: value-to-developer $5,681,500; pool cost $0; impact floor
 //   $700,000; baseline $700,000.
-test("computeModel — worked reconciliation (Corey Landing) + value bracket", () => {
+test("computeModel — worked reconciliation + value bracket", () => {
   const K = { hardCondo: 237500, hardHotel: 170000, soft: 0.24, margin: 0.15, decline: 0.80, sales: 0.06, scarExp: 1.6 };
   const m = E.computeModel({
     use: "Condominium", btype: "Low-rise (1-3)", parking: "surface", coastal: "AE",
@@ -178,7 +178,7 @@ test("computeModel — worked reconciliation (Corey Landing) + value bracket", (
     hcLow: 175000, hcHigh: 300000, hcOverride: null,   // original-era ±placeholder bracket
     benefits: [],
     K, CATMULT, BMULT: ID_B, PMULT: ID_P, FMULT: ID_F,
-    CAPTURE: { capLo: 0.25 }, PVD: { disc: 0.03, esc: 0.02, term: 30 }, ENFORCE, SIMPLE_BENEFITS: true
+    CAPTURE: { capLo: 0.25 }, PVD: { disc: 0.03, esc: 0.02, term: 30 }, ENFORCE, SIMPLE_BENEFITS: true, impactPosture: "B"
   });
   dollar(m.V, 5_681_500, "value to developer (mid)");      // the published anchor
   dollar(m.Vlow, 3_899_000, "conservative ceiling (high cost)");
@@ -207,7 +207,7 @@ test("computeModel — golden: slack pool, favorable-but-below-fair-share", () =
     hcLow: null, hcHigh: null, hcOverride: null,   // no bracket → V = Vlow = Vhigh
     benefits,
     K, CATMULT, BMULT: ID_B, PMULT: ID_P, FMULT: ID_F,
-    CAPTURE: { capLo: 0.25 }, PVD: { disc: 0.03, esc: 0.02, term: 30 }, ENFORCE, SIMPLE_BENEFITS: true
+    CAPTURE: { capLo: 0.25 }, PVD: { disc: 0.03, esc: 0.02, term: 30 }, ENFORCE, SIMPLE_BENEFITS: true, impactPosture: "B"
   });
   // value to developer
   dollar(m.r, 600_000);
@@ -260,7 +260,7 @@ test("computeModel — deep scarcity prices a non-zero pool opportunity cost", (
     hcLow: null, hcHigh: null, hcOverride: null,
     benefits: [],
     K, CATMULT, BMULT: ID_B, PMULT: ID_P, FMULT: ID_F,
-    CAPTURE: { capLo: 0.25 }, PVD: { disc: 0.03, esc: 0.02, term: 30 }, ENFORCE, SIMPLE_BENEFITS: true
+    CAPTURE: { capLo: 0.25 }, PVD: { disc: 0.03, esc: 0.02, term: 30 }, ENFORCE, SIMPLE_BENEFITS: true, impactPosture: "B"
   });
   // remAfter 40 → (40/10)/15 = 0.26667 → scar = 0.73333
   near(m.scar, 1 - (40 / 10) / 15, 1e-12);
@@ -283,12 +283,51 @@ test("computeModel — non-pool pathway zeroes the pool opportunity cost", () =>
     hcLow: null, hcHigh: null, hcOverride: null,
     benefits: [],
     K, CATMULT, BMULT: ID_B, PMULT: ID_P, FMULT: ID_F,
-    CAPTURE: { capLo: 0.25 }, PVD: { disc: 0.03, esc: 0.02, term: 30 }, ENFORCE, SIMPLE_BENEFITS: true
+    CAPTURE: { capLo: 0.25 }, PVD: { disc: 0.03, esc: 0.02, term: 30 }, ENFORCE, SIMPLE_BENEFITS: true, impactPosture: "B"
   });
   assert.strictEqual(m.poolPath, false);
   assert.strictEqual(m.scar, 0);
   assert.strictEqual(m.D, 0);
   dollar(m.cityMin, 30_000);   // impact floor only
+});
+
+// ---------------------------------------------------------------------------
+// Impact-offset posture (v1.30.0). A (default) = adopted fees paid at permit:
+// floor excludes I, ceiling nets I. B = in-kind creditable: floor includes I.
+const POSTURE_BASE = {
+  use: "Condominium", btype: "Low-rise (1-3)", parking: "surface", coastal: "AE",
+  market: 1_000_000, margin: 0.20, decline: 0.80, bonus: 10, byright: 100,
+  hardOv: null, pathway: "Pool Allocation", acres: 0, base: 0, cap: 0,
+  rem: 200, dem: 10, hor: 15, impact: 3000,   // slack pool -> D 0; I = 3000*10 = 30,000; Vlow 4,800,000
+  hcLow: null, hcHigh: null, hcOverride: null, benefits: [],
+  K: { hardCondo: 200000, hardHotel: 400000, soft: 0.25, margin: 0.20, decline: 0.80, sales: 0.10, scarExp: 1.6 },
+  CATMULT, BMULT: ID_B, PMULT: ID_P, FMULT: ID_F,
+  CAPTURE: { capLo: 0.25 }, PVD: { disc: 0.03, esc: 0.02, term: 30 }, ENFORCE, SIMPLE_BENEFITS: true
+};
+test("computeModel — posture A excludes I from the floor and nets I from the ceiling", () => {
+  const a = E.computeModel(Object.assign({}, POSTURE_BASE, { impactPosture: "A" }));
+  const b = E.computeModel(Object.assign({}, POSTURE_BASE, { impactPosture: "B" }));
+  dollar(a.I, 30_000);
+  dollar(a.D, 0);
+  dollar(a.cityMin, 0, "posture A floor = D only (fees paid at permit)");
+  dollar(a.zCeil, 4_770_000, "posture A ceiling = Vlow - I");
+  dollar(a.room, 4_770_000, "no package entered -> room = ceiling");
+  assert.strictEqual(a.impactPosture, "A");
+  dollar(b.cityMin, 30_000, "posture B floor = D + I");
+  dollar(b.zCeil, 4_800_000, "posture B ceiling = Vlow");
+  assert.strictEqual(b.impactPosture, "B");
+});
+test("computeModel — posture A: fees exceeding the residual leave no room for a package", () => {
+  // impact 500,000 * 10 = 5,000,000 > Vlow 4,800,000
+  const a = E.computeModel(Object.assign({}, POSTURE_BASE, { impactPosture: "A", impact: 500_000 }));
+  dollar(a.I, 5_000_000);
+  assert.ok(a.zCeil <= 0, "ceiling net of fees is non-positive -> no package possible");
+  assert.strictEqual(a.feas, false, "no package is feasible when fees consume the residual");
+});
+test("computeModel — default posture is A", () => {
+  const d = E.computeModel(POSTURE_BASE);   // no impactPosture set
+  assert.strictEqual(d.impactPosture, "A");
+  dollar(d.cityMin, 0);   // floor excludes I by default
 });
 
 // ---------------------------------------------------------------------------
@@ -363,7 +402,7 @@ test("computeModel — bonusStep charges the step-up to bonus units (V and impMa
     rem: 200, dem: 10, hor: 15, impact: 3000, hcLow: null, hcHigh: null, hcOverride: null,
     benefits: [],
     K, CATMULT, BMULT: ID_B, PMULT: ID_P, FMULT: ID_F,
-    CAPTURE: { capLo: 0.25 }, PVD: { disc: 0.03, esc: 0.02, term: 30 }, ENFORCE, SIMPLE_BENEFITS: true
+    CAPTURE: { capLo: 0.25 }, PVD: { disc: 0.03, esc: 0.02, term: 30 }, ENFORCE, SIMPLE_BENEFITS: true, impactPosture: "B"
   };
   const plain = E.computeModel(inp);
   const stepped = E.computeModel(Object.assign({}, inp, { bonusStep: 1.2 }));

@@ -27,7 +27,7 @@
  * IMPORTANT: the formulas here are a faithful, behavior-preserving extraction of
  *   the v1.15.0 logic. The characterization tests (engine/spb-engine.test.js)
  *   lock in the current numeric outputs, including the documented worked
- *   reconciliation (Corey Landing → value-to-developer $5,681,500), so any
+ *   reconciliation (worked example → value-to-developer $5,681,500), so any
  *   accidental change to the math fails a test rather than shipping silently.
  * ========================================================================== */
 ;(function (root, factory) {
@@ -250,6 +250,7 @@
    * @property {number} dem             projected annual demand
    * @property {number} hor             planning horizon (yrs)
    * @property {number} impact          impact $/unit (mitigation floor basis)
+   * @property {?string} impactPosture  "A" (default, adopted fees paid at permit; floor excludes I, ceiling nets I) or "B" (in-kind creditable; floor includes I, full ceiling)
    * --- hard-cost bracket (resolved from the Assumptions hard-cost row) ---
    * @property {?number} hcLow
    * @property {?number} hcHigh
@@ -320,8 +321,14 @@
        high-cost) per-unit value, not the gross mid-cost residual r. */
     var vLowUnit = bonus > 0 ? Vlow / bonus : 0;
     var D = poolPath ? Math.max(0, vLowUnit) * Math.pow(scar, K.scarExp) * bonus : 0;
-    var I = use ? (impact * bonus) : 0; // no use type selected yet → no impact floor
-    var cityMin = D + I;
+    var I = use ? (impact * bonus) : 0; // adopted impact fees for the bonus units (no use type yet -> 0)
+    /* Impact-offset posture (input.impactPosture). A (DEFAULT, "adopted fees paid at permit"): the fees
+       are collected at building permit outside any deal, so they are NOT part of the package floor and
+       they reduce the value available for the package (ceiling = Vlow - I). B ("in-kind creditable
+       against fees"): the package delivers the offset, so it is part of the floor and the full residual
+       is available (the pre-1.30 behavior). */
+    var posture = (input.impactPosture === "B") ? "B" : "A";
+    var cityMin = (posture === "B") ? (D + I) : D;
 
     var K_consts = { CATMULT: CATMULT, PVD: PVD, ENFORCE: ENFORCE, SIMPLE_BENEFITS: SIMPLE_BENEFITS };
     var rows = input.benefits.map(function (item) {
@@ -331,8 +338,9 @@
     var Bplain = rows.reduce(function (s, x) { return s + x.cityPlain; }, 0); // PLAIN public value vs baseline
     var B = rows.reduce(function (s, x) { return s + x.cityVal; }, 0);        // WEIGHTED, ranking only
     var gPlain = A ? Bplain / A : 0, g = A ? B / A : 0;
-    var zFloor = gPlain ? cityMin / gPlain : 0, zCeil = Vlow, room = Vlow - A; // ceiling = conservative (low) end
-    var worth = Bplain >= cityMin, feas = A <= Vlow;                          // feasibility on the conservative end
+    var zCeil = (posture === "B") ? Vlow : (Vlow - I);   // conservative value available for the package (posture A nets out the fees paid at permit)
+    var zFloor = gPlain ? cityMin / gPlain : 0, room = zCeil - A;
+    var worth = Bplain >= cityMin, feas = A <= zCeil;                         // feasibility on the conservative (low) ceiling
     var total = byright + bonus;
     var maxUnits = Math.floor((cap || 0) * (acres || 0));   // a density cap yields WHOLE units; floor so the max is an integer (e.g. 50/ac x 0.69 ac = 34, not 34.5) and never contradicts the rounded display
     var byrightDerived = (base || 0) * (acres || 0);
@@ -348,15 +356,15 @@
     var flags = { nUnsecured: nUnsecured, nAboveCode: nAboveCode, nEsc: nEsc, unsecuredValue: unsecuredValue, unsecuredShare: unsecuredShare, any: (nUnsecured + nAboveCode + nEsc) > 0 };
 
     /* capture gate: even a feasible, floor-clearing offer below the fair-share target is left on the table */
-    var captureRate = Vlow > 0 ? A / Vlow : 0;
-    var belowCapture = worth && feas && Vlow > 0 && (A < CAPTURE.capLo * Vlow);
+    var captureRate = zCeil > 0 ? A / zCeil : 0;
+    var belowCapture = worth && feas && zCeil > 0 && (A < CAPTURE.capLo * zCeil);
 
     return {
       r: r, V: V, Vlow: Vlow, Vhigh: Vhigh, scar: scar, D: D, I: I, cityMin: cityMin, rows: rows,
       A: A, B: B, Bplain: Bplain, g: g, gPlain: gPlain, zFloor: zFloor, zCeil: zCeil, room: room,
       worth: worth, feas: feas, poolPath: poolPath, total: total, maxUnits: maxUnits,
       byrightDerived: byrightDerived, overCap: overCap, headroom: headroom, tc: tc, impMargin: impMargin,
-      flags: flags, captureRate: captureRate, belowCapture: belowCapture
+      flags: flags, captureRate: captureRate, belowCapture: belowCapture, impactPosture: posture
     };
   }
 

@@ -835,7 +835,7 @@ th.notecol{font-size:12px;font-weight:400}
       <div class="card">
         <h3>Purpose</h3>
         <p class="lede" style="margin:0 0 10px">Bonus density is a negotiation: the city grants units beyond what zoning allows by right, a <b>finite public asset</b>, in exchange for public benefits. The questions are how much that density is worth and what the city should require in return. Developers bring a pro forma to that discussion; staff usually do not. This tool gives both sides a consistent starting point: the bonus's value to the developer (the walk-away ceiling), the least the city can lawfully require (the impact floor plus the scarcity cost of drawing down a finite pool), and whether a benefit package clears that bar.</p>
-        <p class="lede" style="margin:0">It is a <b>staff sketch tool</b>, not an appraisal, pro forma, or legal determination. It prices allocations from the city's two finite pools (195-unit RU, 325-unit TLU) and Large Resort district-cap lodging; where added density instead needs a comp-plan amendment or <b>charter referendum</b>, it flags that separate approval. Calibrate inputs under <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions</a> before relying on any number.</p>
+        <p class="lede" style="margin:0">It is a <b>staff sketch tool</b>, not an appraisal, pro forma, or legal determination. It prices allocations from the city's two finite pools (195-unit RU, 325-unit TLU) and Large Resort district-cap lodging; where added density instead needs a <b>comprehensive plan amendment</b>, it flags that separate approval. Calibrate inputs under <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions</a> before relying on any number.</p>
 
         <div class="subsec">
         <h3>The Numbers, in Plain Terms</h3>
@@ -843,7 +843,8 @@ th.notecol{font-size:12px;font-weight:400}
           <li><b>Value to developer.</b> The most the bonus units are worth to the developer (discounted residual profit): the walk-away ceiling. Test the conservative low end; the high end is the negotiation target. Derived from a per-unit market value, entered as a sale comp or built up from an income approach on <a href="#" class="seclink" onclick="goto(0);return false;">Step&nbsp;1</a> (condo = $/SF; rental = NOI ÷ cap rate; lodging = ADR × occ × ancillary × EBITDA ÷ cap rate). Run through a residual cost build-up.</li>
           <li><b>Pool value used.</b> Value of the finite pool units the bonus consumes (pool pathway only). Near zero while the pool is plentiful; ramps as the balance falls below projected demand × horizon; at full depletion reaches the units' full value and the tool recommends <b>Hold</b>.</li>
           <li><b>Impact offset (required by law).</b> The developer's fair share of the traffic, utility, and service demand the new units create. Compellable whether or not a deal closes (F.S. §163.3180; Nollan / Dolan / Koontz).</li>
-          <li><b>Break-even floor.</b> Impact offset plus pool value consumed. Below it, the public subsidizes the project.</li>
+          <li><b>Impact offset treatment (posture).</b> How those adopted fees interact with the package, chosen under <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions § E</a>. <b>Default, adopted fees paid at permit:</b> collected at building permit outside any deal, so they are not part of the break-even floor and they reduce the value available for the package (the ceiling nets them out). <b>In-kind creditable against fees:</b> the package itself delivers the offset, so it counts toward the floor and the full residual is available, but crediting in-kind benefits against adopted fees requires an impact-fee credit mechanism (F.S. 163.31801) and category nexus, and needs City Attorney review.</li>
+          <li><b>Break-even floor.</b> The least public value the package must return. Under the default posture it is the pool value consumed (the impact fees are paid separately at permit); under the in-kind posture it also includes the impact offset. Below it, the public subsidizes the project.</li>
           <li><b>Developer's stated contribution.</b> What the applicant proposes to provide or pay for the package (their claim, not a verified cost); entered per benefit on the <a href="#" class="seclink" onclick="goto(1);return false;">Benefits step</a>.</li>
           <li><b>Public value offered.</b> The city's plain-dollar cost to provide the package (quantity above code × city $/unit). Benefits are credited at full value, secured as a condition of approval before the units release. This is what the decision tests against the floor.</li>
           <li><b>Value ratio</b> (the badge on each benefit). Public value to the city per dollar of the developer's stated contribution, unweighted, so equal figures read 1.0×. Separately, the Results page <b>ranks</b> benefits by this value times a <b>category priority weight</b> (resilience, environmental, etc., set in <a href="#" class="seclink" onclick="showAux('assumptions');return false;">Assumptions</a> § D and shown on each benefit line); the weighting orders what to request first but does <b>not</b> enter the pass/fail verdict, which compares public value to the floor in plain dollars.</li>
@@ -857,7 +858,7 @@ th.notecol{font-size:12px;font-weight:400}
 
       <div class="subsec">
         <h3>How the Recommendation Is Reached</h3>
-        <p class="lede" style="margin:0"><b>Worthwhile</b> when public value offered meets the break-even floor. <b>Feasible</b> when developer cost stays under the value to developer, tested on its conservative low end. The agreement zone runs from the lowest worthwhile spend up to that ceiling. Fill it with the highest value-ratio benefits first.</p>
+        <p class="lede" style="margin:0"><b>Worthwhile</b> when public value offered meets the break-even floor. <b>Feasible</b> when developer cost stays under the value to developer, tested on its conservative low end. The agreement zone runs from the lowest worthwhile spend up to that ceiling. The floor of that band is denominated in developer spend at the current package's value ratio, so it shifts as you edit the benefits; this is intentional. Fill it with the highest value-ratio benefits first.</p>
       </div>
 
       <div class="subsec">
@@ -886,10 +887,10 @@ th.notecol{font-size:12px;font-weight:400}
 
 
       <div class="subsec" id="legal-card">
-        <h3>Legal &amp; Political Guardrails</h3>
+        <h3>Legal Guardrails</h3>
         <p class="lede" style="margin:0 0 10px">Surfaced as caveats, not enforced in the math. Route the exaction framing through the City Attorney before treating any number as actionable.</p>
         <ul class="guide-list">
-          <li><b>Charter referendum.</b> A 2006 voter-approved charter amendment requires a <b>referendum to amend the Comprehensive Plan</b>. An increase in density, height, or intensity, or a land-use category change, that needs a plan amendment therefore needs voter approval; allocations within the adopted plan (the density pools this tool prices) do not. A recommended bonus that would exceed the plan may not be grantable by Commission action alone. Confirm the trigger with the City Attorney and the current charter.</li>
+          <li><b>Charter history.</b> The 2006 citizen-initiated charter amendments requiring voter approval of comprehensive plan amendments, community redevelopment plans, and height increases were repealed by referendum in March 2011; related litigation over the comprehensive plan continued for years after. This tool assumes no charter referendum trigger applies to pool allocations within the adopted plan. Confirm the current charter with the City Attorney before relying on this assumption, and before pursuing anything that requires a plan amendment.</li>
           <li><b>Live Local Act</b> (2023, amended 2024) can override local density and height for qualifying affordable projects (broadly, 40%+ of units at or below 120% AMI for 30+ years), the developer's by-right outside option, which caps how much public benefit the city can extract.</li>
           <li><b>Exactions doctrine</b> (Nollan / Dolan / <a class="seclink" target="_blank" rel="noopener" href="https://supreme.justia.com/cases/federal/us/570/595/">Koontz</a> / <a class="seclink" target="_blank" rel="noopener" href="https://supreme.justia.com/cases/federal/us/601/22-1074/">Sheetz</a>). Any required benefit must satisfy essential nexus and rough proportionality, extended to monetary exactions by Koontz (2013) and to legislative fee schedules by Sheetz (2024). Exposure is highest when a benefit is priced off land-value <b>uplift</b> rather than <b>impacts</b>, which is why the floor is sized on impact mitigation and uplift is used only as a ceiling.</li>
           <li><b>State offset rule §166.04151.</b> If the city ever <b>mandates</b> affordable units, it must fully offset the developer's cost. Voluntary bonus density is a different posture, but a mandate changes the math.</li>
@@ -922,35 +923,6 @@ th.notecol{font-size:12px;font-weight:400}
       <div id="aux-cases"></div>
     </section>
 
-    <section class="panel" data-aux="comparables">
-      <button class="btn auxback" style="margin-bottom:14px">← Back</button>
-      <div class="eyebrow">Reference</div>
-      <h2 class="step-h">Comparable Programs</h2>
-      <p class="lede">How other jurisdictions structure density-bonus and value-capture programs, and why none transfers cleanly to a barrier island allocating a fixed, non-renewing supply of units. Reference only; it does not feed the calculation.</p>
-      <div class="card">
-        <p class="lede" style="margin:0 0 14px">Density-bonus programs nationally fall into three broad families. Each works in its own context, but none fully fits St. Pete Beach, where the population ceiling is set by evacuation clearance and infrastructure capacity, not market demand, and a small, finite pool is allocated case by case through quasi-judicial review.</p>
-        <div class="atable-wrap"><table class="atable" style="table-layout:fixed"><colgroup><col style="width:20%"><col style="width:30%"><col style="width:24%"><col style="width:26%"></colgroup>
-          <thead><tr><th scope="col">Model family</th><th scope="col">Examples</th><th scope="col">How it works</th><th scope="col">Why it doesn’t fit SPB</th></tr></thead>
-          <tbody>
-            <tr><td><b>Predictable / formulaic</b></td><td class="anote" style="white-space:normal">Tampa (10:1 bonus-cost ratio), Sarasota (4× base, 15% attainable set-aside), California (statewide 20–50%)</td><td class="anote" style="white-space:normal">A fixed exchange rate, $/SF, % affordable units, or a density multiplier</td><td class="anote" style="white-space:normal">Assumes added density is absorbable as long as the project pencils. SPB’s ceiling is physical (evacuation / infrastructure), not market-driven.</td></tr>
-            <tr><td><b>Hybrid / menu-based</b></td><td class="anote" style="white-space:normal">Clearwater (amenity pool + payment-in-lieu), Austin (fee-in-lieu), Montgomery County MD (points menu), Hollywood (affordable ratios), Portland (10-yr tax exemption)</td><td class="anote" style="white-space:normal">Developers choose from a benefit menu in exchange for added density</td><td class="anote" style="white-space:normal">Tuned to a single goal (usually housing / TOD). SPB needs a broader coastal-resilience, infrastructure and visitor-management mix.</td></tr>
-            <tr><td><b>Cap-based growth management</b></td><td class="anote" style="white-space:normal">Key West &amp; Monroe County (ROGO points), Sanibel (carrying-capacity caps), Longboat Key (voter approval), Fort Lauderdale (caps + indexed payment-in-lieu)</td><td class="anote" style="white-space:normal">Hard caps / annual allocations tied to infrastructure or environmental capacity</td><td class="anote" style="white-space:normal">Closest parallels, strict caps, but they <i>allocate</i> units; they don’t <i>value</i> an individual allocation from a small, high-value pool.</td></tr>
-          </tbody></table></div>
-        <p class="lede" style="margin:14px 0 0">St. Pete Beach sits between these: a fixed, non-renewable pool (195 residential units, 325 temporary-lodging units) allocated case by case without a formula or points system. No directly transferable model was identified, which is why this tool estimates a defensible <i>value per allocation</i> rather than applying a fixed rate.</p>
-        <details class="stephelp" style="margin-top:12px"><summary>Selected mechanisms (formulas)</summary>
-          <ul class="guide-list" style="margin:8px 0 0">
-            <li><b>Tampa, FL</b>. Bonus-cost ratio 10:1: $1 of contribution buys $10 of bonus development value, converted to FAR/units via code worksheets.</li>
-            <li><b>Sarasota, FL</b>. Up to 4× base density; 15% of the bonus units must be attainable.</li>
-            <li><b>California (statewide)</b>. 20–50% density increase (up to 80% for 100%-affordable) by prescribed affordable percentages.</li>
-            <li><b>Fort Lauderdale, FL</b>. Affordable payment-in-lieu = $10,000 × 1.03^(years since 2023) × bonus units.</li>
-            <li><b>Miami-Dade, FL</b>. Workforce-housing payment-in-lieu estimates the gap between market cost and what 60–140% AMI households can afford; plus a 10-yr county-millage tax exemption on improvement value for qualifying historic work.</li>
-            <li><b>Key West / Monroe County, FL</b>. ROGO/BPAS award a fixed number of permits annually by points tied to evacuation capacity and infrastructure.</li>
-          </ul>
-        </details>
-        <p class="anote" style="margin:12px 0 0">Compiled from municipal / county codes and plan documents (2024–2026) for the TBRPC framework draft. <b>AI-assisted research, verify specifics against each jurisdiction’s current adopted code before relying on or citing them.</b></p>
-      </div>
-    </section>
-
   </main>
 </div>
 </div>
@@ -963,7 +935,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.29.28", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.30.0", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -978,6 +950,8 @@ const PMULT={surface:1.0,podium:1.12,structured:1.18};
 const FMULT={AE:1.0,VE:1.08,X:0.97};
 const IMPACT_BY_USE={"Condominium":3146,"Multifamily Rental":3382,"Temporary Lodging":2402};
 /* Optional Results cross-check: Tampa 10:1 (Code 27-140) + ICC bonus-unit construction cost. Not in the decision. */
+/* TODO(calibration): verify iccPSF 234.59 against the published ICC Aug-2025 Building Valuation Data table
+   (R-2 Group, Type IA). It is transcribed from staff use, not yet confirmed against the source BVD row. */
 const XCHK={iccPSF:234.59,tampaRatio:10};
 /* Value-capture "guardrails" from the TBRPC framework (ANALYTIC OVERLAY, not adopted code):
    a 15–25% contribution-rate floor (Koontz / FS 163.3180 basis) and a 25–50% value-capture ceiling.
@@ -1108,21 +1082,21 @@ function libIndexOf(name){for(let i=0;i<LIB.length;i++){if(LIB[i][0]===name)retu
 /* Seed Notes/Source, and, where the unit cleanly maps, the city Low/High/Override, 
    from verified local data. Where units don't map cleanly (no length/area given), only the
    Notes carry the dollar figure; the range stays a sketch placeholder. Override (cityOv) pins
-   Applied to a City-verified number. Source: SPB Planning staff report, Corey Landings CUP 25069 (Oct 2025). */
-const SRC="SPB Staff Report, Corey Landings CUP 25069 (Oct 2025)";
+   Applied to a City-verified number. Source: a recent SPB Planning staff report for a Town Center condominium CUP (2025). */
+const SRC="SPB Planning staff report, recent Town Center condominium CUP (2025)";
 const LIBSEED={
  "Seawall / bulkhead":{note:"City-verified ≈ $205,600 for ~103 LF (≈ $2,000/LF). Applicant claimed $795,000 (≈ $7,700/LF), which staff could not replicate.",source:SRC},
- "Public plaza / park":{cityLow:24,cityHigh:130,note:"Corey Landings: applicant est. $452,680 park (≈19,000 SF ≈ $24/SF, landscaped greenspace) and $716,400 roundabout plaza (≈5,500 SF ≈ $130/SF, hardscape). Range now brackets greenspace→hardscape.",source:SRC},
- "Waterfront boardwalk / promenade":{note:"Corey Landings: applicant est. $471,360 for the Corey Causeway pedestrian-detour promenade (counted as a new benefit; length not stated, so $/LF range left as placeholder).",source:SRC},
- "Streetscape / hardscape (above code)":{note:"Corey Landings: applicant est. $1,060,225 for 53 public parking spaces + landscaping islands (streetscape package, not a clean $/LF, left as placeholder).",source:SRC},
- "Public boat slip (Class A)":{note:"Transient/public slips count as a benefit (private slips do not). Corey Landings reduced public slips 8→4; adjacent ICW is a slow-speed manatee zone Apr 1–Oct 31.",source:SRC},
- "PM peak trip mitigation":{note:"Corey Landings net new PM-peak external trips = 82 (vs 157 for the vested 2022 project). City retains 54% of the county transportation impact fee.",source:SRC}
+ "Public plaza / park":{cityLow:24,cityHigh:130,note:"Recent Town Center condo application: applicant est. $452,680 park (≈19,000 SF ≈ $24/SF, landscaped greenspace) and $716,400 roundabout plaza (≈5,500 SF ≈ $130/SF, hardscape). Range now brackets greenspace→hardscape.",source:SRC},
+ "Waterfront boardwalk / promenade":{note:"Recent Town Center condo application: applicant est. $471,360 for a causeway pedestrian-detour promenade (counted as a new benefit; length not stated, so $/LF range left as placeholder).",source:SRC},
+ "Streetscape / hardscape (above code)":{note:"Recent Town Center condo application: applicant est. $1,060,225 for 53 public parking spaces + landscaping islands (streetscape package, not a clean $/LF, left as placeholder).",source:SRC},
+ "Public boat slip (Class A)":{note:"Transient/public slips count as a benefit (private slips do not). A recent application reduced public slips 8→4; adjacent ICW is a slow-speed manatee zone Apr 1–Oct 31.",source:SRC},
+ "PM peak trip mitigation":{note:"Recent Town Center condo application: net new PM-peak external trips = 82 (vs 157 for its earlier vested version). City retains 54% of the county transportation impact fee.",source:SRC}
 };
 Object.keys(LIBSEED).forEach(function(nm){const i=libIndexOf(nm);if(i<0)return;const s=LIBSEED[nm],c=LIBCAL[i];
  if(s.note!=null)c.note=s.note; if(s.source!=null)c.source=s.source;
  if(s.cityLow!=null)c.cityLow=s.cityLow; if(s.cityHigh!=null)c.cityHigh=s.cityHigh; if(s.cityOv!=null)c.cityOv=s.cityOv;});
 /* General benchmark Source/Notes from the TBRPC valuation template (sourced benchmark library).
-   Non-destructive: fills a Note only if empty (keeps Corey-specific notes), and appends the benchmark
+   Non-destructive: fills a Note only if empty (keeps project-specific seeded notes), and appends the benchmark
    source where a project-specific source already exists. */
 const LIBSRC={
  "Workforce unit @120% AMI":{note:"Affordability gap/subsidy per unit, not construction cost. Valued per unit as the affordability gap: market price or rent minus the maximum price/rent affordable at the target % of AMI (HUD income limits, 30% housing-cost standard, 1 person per bedroom plus one). See the Grounded Solutions Inclusionary Housing Calculator methodology for the full pricing approach.",source:"UF Shimberg Center"},
@@ -1188,7 +1162,7 @@ const S={
   use:"", btype:"", subtype:"", pathway:"Pool Allocation", district:"UNK",
   parking:"", coastal:"", acres:0, eligFrac:null, eligOv:null, eligMethod:null, base:0, cap:0,
   market:1800000, mktSF:0, bonus:0, byright:0, hardOv:null, taxValue:null,
-  rem:170, dem:8, hor:15, impact:0, margin:0.15, decline:0.80, bonusStep:1,
+  rem:170, dem:8, hor:15, impact:0, margin:0.15, decline:0.80, bonusStep:1, impactPosture:"A",
   benefits:[]
 };
 /* Density-eligible area (acres): the land landward of the CCCL, which is the basis for density in SPB.
@@ -1221,13 +1195,16 @@ function pvFactor(g,r,n){return SPBEngine.pvFactor(g,r,n);}            // delega
 /* enforceability haircut: a promised benefit is only worth what the city can actually compel.
    The instrument securing it sets a credit factor applied to the public value (plain and weighted).
    A line with no instrument named is treated as unsecured and credited at the §I unsecured factor (v1.8.0), the developer's cost is never haircut. */
-const ENFORCE={covenant:1.00,devagreement:0.95,bond:0.95,condition:0.90,loi:0.50,none:0.40};
+const ENFORCE={covenant:1.00,devagreement:0.95,bond:0.95,condition:0.95,loi:0.50,none:0.40};
 const ENFORCE_LABEL={covenant:"Recorded covenant / deed restriction",devagreement:"Recorded development agreement",bond:"Performance bond / surety",condition:"Condition of approval (CUP / ordinance)",loi:"Letter of intent / unsecured promise",none:"No instrument / unspecified commitment"};
 const ENFORCE_ORDER=["covenant","devagreement","bond","condition","loi","none"];
 function enforceFactor(instr){return SPBEngine.enforceFactor(instr,ENFORCE);}   // delegates to engine/spb-engine.js (single source of truth)
 /* Fiscal Snapshot + counterfactual (revenue context only, never feeds the decision / ZOPA / break-even floor).
    millageTotal = all taxing authorities (city+county+school+EMS+special); servicePerUnit = marginal annual
    city general-fund cost per new unit; bedTax = county tourist tax on lodging room revenue. */
+/* TODO(calibration): pin millage / millageCounty / millageSchool / millageTotal to the adopted FY26 TRIM
+   rates (city, county, school, and total). Current values are FY25/26 placeholders (city ~ the adopted
+   3.0913); confirm each against an actual SPB TRIM notice before relying on the fiscal snapshot. */
 const FISCAL={assessRatio:0.88,millage:3.15,millageCounty:5.30,millageSchool:6.40,millageTotal:15.9,servicePerUnit:600,bedTax:0.06,salesTax:0.07,benchmarkVPA:2746946};
 const ASSUMP=[
  {sec:"A. Marginal cost assumptions",label:"Hard cost, condo / multifamily",unit:"$/unit",basis:"unit",sf:2269,low:380000,high:630000,override:null,notes:"Range ≈ $167–278/SF on a 2,269-SF unit. The base midpoint (~$223/SF) brackets the ICC Aug-2025 R-2 multiple-family Type IA figure of $234.59/SF; applying the model's High-rise (8+) multiplier lands near $301/SF, above the ICC base, consistent with a concrete-tower coastal/structured premium for an 8-story project like Corey Landings. Localizing national ICC/RSMeans by the St. Petersburg RSMeans City Cost Index (~0.85) and adding the VE-zone pile/flood/wind coastal premium roughly cancel, so the range is kept. Enter as $/unit, or switch the basis to $/SF. Regional cross-check: a South Florida RSMeans-derived BCA dataset (SFRPC / AECOM) puts apartment replacement cost at ≈$171–194/SF (structure only, excludes land, soft costs and margin), within this range. Calibrate from: ICC Building Valuation Data; confirm against 2–3 recent local concrete-construction bids.",fmt:"$",apply:v=>K.hardCondo=v},
@@ -1239,7 +1216,7 @@ const ASSUMP=[
  {sec:"A. Marginal cost assumptions",label:"Bonus-unit construction step-up",unit:"× hard cost",low:1.00,high:1.00,override:null,notes:"Optional two-tier marginal-cost treatment: the bonus units can cost more to build than the by-right baseline when the added density is what pushes the project into a costlier construction type or structured parking, so the step-up is charged only to the marginal bonus units this tool already values. DEFAULT 1.00 = no step-up. Set an Override (e.g. 1.10–1.15) when the bonus forces low-rise→mid/high-rise or surface→structured parking. This is a cost premium, distinct from the value-side decline factor above.",fmt:"x",apply:v=>S.bonusStep=v},
  {sec:"B. Market valuations",label:"Condo sale price, inland / non-front",unit:"$/unit",low:1200000,high:2000000,override:null,notes:"Seeds market slider. Recalibrated down (v1.14.0): documented CLOSED barrier-island upscale condo sales run $525–720/SF (Boca Sands 5301 Gulf Blvd, Envoy Point, St. Pete Beach, 2024–25) ≈ $1.2–1.6M on a 2,269-SF unit, well below earlier $1,000+/SF assumptions (which hold only off-island in downtown St. Pete towers, or as pre-construction asking). HIGH carries a new-construction premium, new product has sold well above resale, but NO barrier-island new-construction has closed yet (flagged; verify on the first Corey Landings closings). Calibrate from PCPAO sales records / MLS.",fmt:"$",apply:v=>MKT.inland=v},
  {sec:"B. Market valuations",label:"Condo sale price, gulf / waterfront",unit:"$/unit",low:1600000,high:2800000,override:null,notes:"Seeds market slider. Recalibrated down (v1.14.0): closed gulf/bay-front barrier-island condos ≈ $675–740/SF (Boca Sands; Mandalay Beach Club, Clearwater Beach). The $1,000–1,250/SF tier appears only as new-construction ASKING (Viceroy Clearwater Beach ~$1,200/SF) or off-island. LOW ≈ closed gulf-front; HIGH = new gulf-front asking + new-construction premium (flagged, unproven on-island). Calibrate from PCPAO / MLS closings.",fmt:"$",apply:v=>MKT.gulf=v},
- {sec:"B. Market valuations",label:"Avg unit size, condominium",unit:"SF",low:1900,high:2600,override:null,notes:"Average sellable unit size, used for the $/unit to $/SF bridge and the construction cross-check (not the decision). Luxury barrier-island for-sale; Corey Landings about 2,269 SF. Calibrate from: project plans; recent SPB condo comps. Editing this row re-seeds the live Step 1 size field when this use is selected.",fmt:"",apply:v=>UNITSF["Condominium"]=v},
+ {sec:"B. Market valuations",label:"Avg unit size, condominium",unit:"SF",low:1900,high:2600,override:null,notes:"Average sellable unit size, used for the $/unit to $/SF bridge and the construction cross-check (not the decision). Luxury barrier-island for-sale; a recent 8-story concrete-tower coastal project about 2,269 SF. Calibrate from: project plans; recent SPB condo comps. Editing this row re-seeds the live Step 1 size field when this use is selected.",fmt:"",apply:v=>UNITSF["Condominium"]=v},
  {sec:"B. Market valuations",label:"Avg unit size, multifamily rental",unit:"SF",low:700,high:1100,override:null,notes:"Average rentable unit size. St. Petersburg market blend (studio 498, 1-BR 716, 2-BR 1,050 SF). Townhomes run larger, about 1,400 to 1,800 SF, so override for a townhome project. Calibrate from: project plans; RentCafe / appraiser. Editing this row re-seeds the live Step 1 size field when this use is selected.",fmt:"",apply:v=>UNITSF["Multifamily Rental"]=v},
  {sec:"B. Market valuations",label:"Avg key size, temporary lodging",unit:"SF",low:600,high:900,override:null,notes:"Average gross size per key (net room 300 to 500 SF plus corridors, lobby, back-of-house and amenities). Midpoint 750 matches the lodging construction-cost basis. Calibrate from: project plans; STR / HVS. Editing this row re-seeds the live Step 1 size field when this use is selected.",fmt:"",apply:v=>UNITSF["Temporary Lodging"]=v},
  {sec:"B. Market valuations",label:"Condo sale price per SF (income/sales approach)",unit:"$/SF",low:525,high:740,override:null,notes:"Sales-comparison $/SF for the Step-1 income-approach CROSS-CHECK (value/unit = avg SF × $/SF), an alternative anchor to the entered $/unit comp. Range = documented CLOSED barrier-island upscale condo sales ($525–720/SF inland, $675–740/SF gulf; Boca Sands, Envoy Point, Mandalay Beach Club, 2024–25). Below the $1,000+/SF new-construction asking tier. Calibrate from PCPAO/MLS closings.",fmt:"$",apply:v=>INCOME.condoPSF=v},
@@ -1281,7 +1258,7 @@ const ASSUMP=[
  {sec:"I. Enforceability credit (× of public value)",label:"Recorded covenant / deed restriction",unit:"×",low:1.00,high:1.00,override:null,notes:"Runs with the land, most enforceable. No haircut.",fmt:"x",apply:v=>ENFORCE.covenant=v},
  {sec:"I. Enforceability credit (× of public value)",label:"Recorded development agreement",unit:"×",low:0.90,high:1.00,override:null,notes:"Binding contract, recorded. Small haircut for amendment / performance risk.",fmt:"x",apply:v=>ENFORCE.devagreement=v},
  {sec:"I. Enforceability credit (× of public value)",label:"Performance bond / surety",unit:"×",low:0.90,high:1.00,override:null,notes:"Cash / surety backs delivery. Small haircut for claims friction.",fmt:"x",apply:v=>ENFORCE.bond=v},
- {sec:"I. Enforceability credit (× of public value)",label:"Condition of approval (CUP / ordinance)",unit:"×",low:0.85,high:0.95,override:null,notes:"Enforceable through the approval, but depends on monitoring / code enforcement.",fmt:"x",apply:v=>ENFORCE.condition=v},
+ {sec:"I. Enforceability credit (× of public value)",label:"Condition of approval (CUP / ordinance)",unit:"×",low:0.90,high:1.00,override:null,notes:"A condition precedent in the CUP / ordinance (e.g., no certificate of occupancy until delivered) is near-covenant strength; a lighter reporting condition depends on monitoring. Midpoint 0.95.",fmt:"x",apply:v=>ENFORCE.condition=v},
  {sec:"I. Enforceability credit (× of public value)",label:"Letter of intent / unsecured promise",unit:"×",low:0.40,high:0.60,override:null,notes:"Not independently enforceable, heavy haircut.",fmt:"x",apply:v=>ENFORCE.loi=v},
  {sec:"I. Enforceability credit (× of public value)",label:"No instrument / unspecified",unit:"×",low:0.30,high:0.50,override:null,notes:"The credit applied to any benefit line left unspecified (treated as unsecured) or named 'none'. Full credit requires naming a real instrument.",fmt:"x",apply:v=>ENFORCE.none=v},
  {sec:"J. Pool scarcity",label:"Projected demand",unit:"units/yr",low:6,high:16,override:null,notes:"Annual pace of bonus-density requests against the pool. With the remaining balance (from the Allocation Ledger), this sets how soon the pool depletes and how steep the scarcity cost becomes. Calibrate from: Allocation Ledger trend; building permit history.",fmt:"",apply:v=>S.dem=v},
@@ -1336,8 +1313,8 @@ ASSUMP.forEach(r=>{if(r.source===undefined)r.source="";});
   "Value decline factor":ILLUS+"Judgment shape (discount on later / marginal bonus units), not empirical.",
   "Bonus-unit construction step-up":"Optional cost premium charged to bonus units only; default 1.00× = off.",
   "Condo sale price, inland / non-front":"Closed SPB barrier-island upscale condo sales $525–720/SF (Boca Sands 5301 Gulf Blvd, Envoy Point, 2024–25). High adds an unproven on-island new-construction premium. Verify against PCPAO closed sales (cite parcel / date).",
-  "Condo sale price, gulf / waterfront":"Closed gulf/bay-front barrier-island condos $675–740/SF (Boca Sands; Mandalay Beach Club, Clearwater Beach). High = new gulf-front asking (Viceroy Clearwater ~$1,200/SF, flagged). Verify against PCPAO closed sales (cite parcel / date).",
-  "Avg unit size, condominium":"Project plans / recent SPB condo comps; Corey Landings ≈ 2,269 SF. Calibrate per project.",
+  "Condo sale price, gulf / waterfront":"Closed gulf/bay-front barrier-island condos $675–740/SF (Boca Sands; Mandalay Beach Club, Clearwater Beach). High = new-construction gulf-front asking prices (~$1,200/SF, flagged). Verify against PCPAO closed sales (cite parcel / date).",
+  "Avg unit size, condominium":"Project plans / recent SPB condo comps ≈ 2,269 SF. Calibrate per project.",
   "Avg unit size, multifamily rental":"Project plans / RentCafe; St. Petersburg market blend. Calibrate per project.",
   "Avg key size, temporary lodging":"Project plans / STR-HVS. Calibrate per project.",
   "Condo sale price per SF (income/sales approach)":"Closed SPB barrier-island upscale condo sales $525–740/SF. Pull the actual PCPAO/MLS closed sales and cite parcel / date.",
@@ -1455,7 +1432,7 @@ function resetAll(){
  * IMPORTANT: the formulas here are a faithful, behavior-preserving extraction of
  *   the v1.15.0 logic. The characterization tests (engine/spb-engine.test.js)
  *   lock in the current numeric outputs, including the documented worked
- *   reconciliation (Corey Landing → value-to-developer $5,681,500), so any
+ *   reconciliation (worked example → value-to-developer $5,681,500), so any
  *   accidental change to the math fails a test rather than shipping silently.
  * ========================================================================== */
 ;(function (root, factory) {
@@ -1678,6 +1655,7 @@ function resetAll(){
    * @property {number} dem             projected annual demand
    * @property {number} hor             planning horizon (yrs)
    * @property {number} impact          impact $/unit (mitigation floor basis)
+   * @property {?string} impactPosture  "A" (default, adopted fees paid at permit; floor excludes I, ceiling nets I) or "B" (in-kind creditable; floor includes I, full ceiling)
    * --- hard-cost bracket (resolved from the Assumptions hard-cost row) ---
    * @property {?number} hcLow
    * @property {?number} hcHigh
@@ -1748,8 +1726,14 @@ function resetAll(){
        high-cost) per-unit value, not the gross mid-cost residual r. */
     var vLowUnit = bonus > 0 ? Vlow / bonus : 0;
     var D = poolPath ? Math.max(0, vLowUnit) * Math.pow(scar, K.scarExp) * bonus : 0;
-    var I = use ? (impact * bonus) : 0; // no use type selected yet → no impact floor
-    var cityMin = D + I;
+    var I = use ? (impact * bonus) : 0; // adopted impact fees for the bonus units (no use type yet -> 0)
+    /* Impact-offset posture (input.impactPosture). A (DEFAULT, "adopted fees paid at permit"): the fees
+       are collected at building permit outside any deal, so they are NOT part of the package floor and
+       they reduce the value available for the package (ceiling = Vlow - I). B ("in-kind creditable
+       against fees"): the package delivers the offset, so it is part of the floor and the full residual
+       is available (the pre-1.30 behavior). */
+    var posture = (input.impactPosture === "B") ? "B" : "A";
+    var cityMin = (posture === "B") ? (D + I) : D;
 
     var K_consts = { CATMULT: CATMULT, PVD: PVD, ENFORCE: ENFORCE, SIMPLE_BENEFITS: SIMPLE_BENEFITS };
     var rows = input.benefits.map(function (item) {
@@ -1759,8 +1743,9 @@ function resetAll(){
     var Bplain = rows.reduce(function (s, x) { return s + x.cityPlain; }, 0); // PLAIN public value vs baseline
     var B = rows.reduce(function (s, x) { return s + x.cityVal; }, 0);        // WEIGHTED, ranking only
     var gPlain = A ? Bplain / A : 0, g = A ? B / A : 0;
-    var zFloor = gPlain ? cityMin / gPlain : 0, zCeil = Vlow, room = Vlow - A; // ceiling = conservative (low) end
-    var worth = Bplain >= cityMin, feas = A <= Vlow;                          // feasibility on the conservative end
+    var zCeil = (posture === "B") ? Vlow : (Vlow - I);   // conservative value available for the package (posture A nets out the fees paid at permit)
+    var zFloor = gPlain ? cityMin / gPlain : 0, room = zCeil - A;
+    var worth = Bplain >= cityMin, feas = A <= zCeil;                         // feasibility on the conservative (low) ceiling
     var total = byright + bonus;
     var maxUnits = Math.floor((cap || 0) * (acres || 0));   // a density cap yields WHOLE units; floor so the max is an integer (e.g. 50/ac x 0.69 ac = 34, not 34.5) and never contradicts the rounded display
     var byrightDerived = (base || 0) * (acres || 0);
@@ -1776,15 +1761,15 @@ function resetAll(){
     var flags = { nUnsecured: nUnsecured, nAboveCode: nAboveCode, nEsc: nEsc, unsecuredValue: unsecuredValue, unsecuredShare: unsecuredShare, any: (nUnsecured + nAboveCode + nEsc) > 0 };
 
     /* capture gate: even a feasible, floor-clearing offer below the fair-share target is left on the table */
-    var captureRate = Vlow > 0 ? A / Vlow : 0;
-    var belowCapture = worth && feas && Vlow > 0 && (A < CAPTURE.capLo * Vlow);
+    var captureRate = zCeil > 0 ? A / zCeil : 0;
+    var belowCapture = worth && feas && zCeil > 0 && (A < CAPTURE.capLo * zCeil);
 
     return {
       r: r, V: V, Vlow: Vlow, Vhigh: Vhigh, scar: scar, D: D, I: I, cityMin: cityMin, rows: rows,
       A: A, B: B, Bplain: Bplain, g: g, gPlain: gPlain, zFloor: zFloor, zCeil: zCeil, room: room,
       worth: worth, feas: feas, poolPath: poolPath, total: total, maxUnits: maxUnits,
       byrightDerived: byrightDerived, overCap: overCap, headroom: headroom, tc: tc, impMargin: impMargin,
-      flags: flags, captureRate: captureRate, belowCapture: belowCapture
+      flags: flags, captureRate: captureRate, belowCapture: belowCapture, impactPosture: posture
     };
   }
 
@@ -1880,7 +1865,7 @@ function compute(){
   return SPBEngine.computeModel({
     use:S.use,btype:S.btype,parking:S.parking,coastal:S.coastal,
     market:S.market,margin:S.margin,decline:S.decline,bonus:S.bonus,byright:S.byright,
-    hardOv:S.hardOv,pathway:S.pathway,acres:eligAc(),base:S.base,cap:S.cap,bonusStep:S.bonusStep,
+    hardOv:S.hardOv,pathway:S.pathway,acres:eligAc(),base:S.base,cap:S.cap,bonusStep:S.bonusStep,impactPosture:S.impactPosture,
     rem:S.rem,dem:S.dem,hor:S.hor,impact:S.impact,
     hcLow:hcRow?hcRow.low:null,hcHigh:hcRow?hcRow.high:null,hcOverride:hcRow?hcRow.override:null,
     benefits,
@@ -1903,7 +1888,7 @@ const navfoot=document.createElement("div");navfoot.className="navfoot";
 navfoot.innerHTML='<div class="navgrp" data-grp="work"><button class="navgrp-h" data-navtoggle="1"><span class="navcaret">▸</span> Workspace</button><div class="navgrp-body">'+
   '<button id="openassume">Assumptions</button><button id="openlibrary">Benefit Library</button><button id="openscenarios">Saved Scenarios</button></div></div>'+
   '<div class="navgrp" data-grp="ref"><button class="navgrp-h" data-navtoggle="1"><span class="navcaret">▸</span> Reference</button><div class="navgrp-body">'+
-  '<button id="openhistory">Allocation Ledger</button><button id="opencompare">Comparable Programs</button><button id="opencases">Test Project</button><button id="openmethod">User Guide</button></div></div>'+
+  '<button id="openhistory">Allocation Ledger</button><button id="opencases">Test Project</button><button id="openmethod">User Guide</button></div></div>'+
   '<button id="resetall" class="rst">Reset All</button>'+
   '<div class="navcredit"><a href="https://www.tbrpc.org" target="_blank" rel="noopener">TBRPC Civic Tech</a> <span class="navver">v'+VERSION+'</span></div>';
 stepnav.appendChild(navfoot);
@@ -2032,7 +2017,7 @@ document.getElementById("addbtn").onclick=()=>{if(!addsel.value)return;S.benefit
 
 function readoutHTML(m,v){
   return '<span class="pill" style="background:'+v.bg+';color:'+v.fg+'">'+v.tag+'</span>'+
-    '<div class="rd clk" role="button" tabindex="0" data-aux="explainV"><div class="k">Minimum value to developer</div><div class="v mono">'+fmt(m.zCeil)+'</div></div>'+
+    '<div class="rd clk" role="button" tabindex="0" data-aux="explainV"><div class="k">Minimum value to developer</div><div class="v mono">'+fmt(m.Vlow)+'</div></div>'+
     '<div class="rd clk" role="button" tabindex="0" data-aux="explainCityMin"><div class="k">Break-even floor</div><div class="v mono">'+fmt(m.cityMin)+'</div></div>'+
     '<div class="rd clk" role="button" tabindex="0" data-aux="explainB"><div class="k">Public value offered</div><div class="v mono">'+fmt(m.Bplain)+'</div></div>';
 }
@@ -2062,13 +2047,14 @@ function vdevStr(m){return (m.Vlow<m.Vhigh)?(fmt(m.Vlow)+" – "+fmt(m.Vhigh)):f
 function numgridHTML(m){
   const mp=Math.round(m.impMargin*100);
   const flag=m.impMargin<0.05?', <span style="color:var(--fail)">residual near zero</span>':(m.impMargin>0.45?', <span style="color:var(--ink3)">high (land excluded)</span>':'');
-  return [
-    ["Minimum value to developer",m.zCeil,"the conservative floor of what the bonus is worth to the developer, the ceiling the decision is tested against"+flag,"dev","Why: the conservative (low) end of what the bonus is worth to the developer, the cap on what they could hand back and the feasibility ceiling the deal is tested against.|How: per-unit residual (market minus build, sell and profit) times bonus units times a decline factor, taken on the high build-cost (conservative) end."],
-    ["Break-even floor",m.cityMin,"the least public value the deal must return","city","Why: the least public value the deal must return; below it the public subsidizes the project.|How: impact offset plus pool value used. The offered public value must reach it to be worthwhile."],
-    ["Impact offset",m.I,"the developer's fair share of impacts","city","Why: the developer fair-share of the traffic, utility and service impact the new units create.|How: impact per unit times bonus units; compellable under Koontz / F.S. 163.3180, and part of the floor."],
-    ["Pool value used",m.D,m.D<5000?"pool not scarce":"scarcity binding","city","Why: the value of the scarce pool units the bonus consumes (pool pathway only).|How: residual times scarcity (to an exponent) times bonus units; near zero while the pool is plentiful, rising as it depletes."]
+  const postureA=m.impactPosture==="A";
+  const dev=["Minimum value to developer",m.Vlow,"the conservative estimate of what the bonus is worth to the developer"+flag,"dev","Why: the conservative (low) end of what the bonus is worth to the developer, the cap on what they could hand back.|How: per-unit residual (market minus build, sell and profit) times bonus units times a decline factor, taken on the high build-cost (conservative) end."+(postureA?" Under posture A the package is tested against this value less the impact fees paid at permit ("+fmt(m.zCeil)+" available for the package).":"")];
+  const floor=["Break-even floor",m.cityMin,"the least public value the deal must return","city",postureA?"Why: the least public value the deal must return; below it the public subsidizes the project.|How: pool value used only. Adopted impact fees are paid separately at building permit (posture A), so they are not part of this floor.":"Why: the least public value the deal must return; below it the public subsidizes the project.|How: impact offset plus pool value used. The offered public value must reach it to be worthwhile."];
+  const imp=postureA?["Impact fees (paid at permit)",m.I,"paid at permit, outside this package","city","Why: the developer's fair share of the traffic, utility and service impact the new units create, collected as adopted impact fees at building permit.|How: impact per unit times bonus units. Under posture A these are paid outside the benefit package and reduce the value available for it (the ceiling nets them out)."]:["Impact offset",m.I,"the developer's fair share of impacts","city","Why: the developer fair-share of the traffic, utility and service impact the new units create.|How: impact per unit times bonus units; compellable under Koontz / F.S. 163.3180, and part of the floor under posture B (credited in-kind)."];
+  const pool=["Pool value used",m.D,m.D<5000?"pool not scarce":"scarcity binding","city","Why: the value of the scarce pool units the bonus consumes (pool pathway only).|How: residual times scarcity (to an exponent) times bonus units; near zero while the pool is plentiful, rising as it depletes."];
+  return [dev,floor,imp,pool]
   /* description line (c[2]) intentionally not rendered: the per-title info icon (c[4]) already carries it */
-  ].map(c=>'<div class="num num--'+c[3]+'"><div class="k">'+c[0]+(c[4]?' <span class="ihint" data-ih="'+c[4].replace(/"/g,"&quot;")+'"></span>':"")+'</div><div class="v">'+(typeof c[1]==="string"?c[1]:fmt(c[1]))+'</div></div>').join("");}
+  .map(c=>'<div class="num num--'+c[3]+'"><div class="k">'+c[0]+(c[4]?' <span class="ihint" data-ih="'+c[4].replace(/"/g,"&quot;")+'"></span>':"")+'</div><div class="v">'+(typeof c[1]==="string"?c[1]:fmt(c[1]))+'</div></div>').join("");}
 
 function updateDealStrip(m){
   const el=document.getElementById("dealstrip"); if(!el)return;
@@ -2449,9 +2435,13 @@ function drawXCheck(m){
   if(constCost<=0){note.innerHTML="Enter bonus units and an average unit size on Step 1 to compute the bonus-unit construction cost.";return;}
   const meets=m.A>=tampaFloor-1e-6;
   const tag=meets?'<b style="color:var(--pass)">at or above</b>':'<b style="color:var(--warn)">below</b>';
-  note.innerHTML="The package is "+tag+" the Tampa "+ratio+":1 floor of <b>"+fmt(tampaFloor)+"</b>, returning <b>"+(Math.round(pct*10)/10)+"%</b> of the bonus units’ construction cost in public benefit. SPB staff tabulated 10% (~"+fmt(constCost*0.10)+") to 40% (~"+fmt(constCost*0.40)+"); Corey Landings’ ~$3.0M package was ≈21–22%. "+'<span class="anote">Reference only; the decision above uses the ZOPA / city-minimum model, not this ratio.</span>';
+  note.innerHTML="The package is "+tag+" the Tampa "+ratio+":1 floor of <b>"+fmt(tampaFloor)+"</b>, returning <b>"+(Math.round(pct*10)/10)+"%</b> of the bonus units’ construction cost in public benefit. SPB staff tabulated 10% (~"+fmt(constCost*0.10)+") to 40% (~"+fmt(constCost*0.40)+"); a recent ~$3.0M package landed at ≈21–22%. "+'<span class="anote">Reference only; the decision above uses the ZOPA / city-minimum model, not this ratio.</span>';
 }
 
+/* Impact-fee credit caution: shown on the verdict and memo ONLY when posture B (in-kind benefits
+   credited against adopted impact fees) is active. An addition to, not a softening of, the Koontz /
+   nexus cautions. */
+function postureBCaution(m){ return (m&&m.impactPosture==="B")?' <b>Impact-fee credit caution:</b> crediting in-kind benefits against adopted impact fees requires an impact-fee credit mechanism consistent with F.S. 163.31801 and category nexus (for example, a resilience covenant does not offset a multimodal fee). Confirm with the City Attorney.':''; }
 function verdictObj(m){
   const C={ok:["#e7f1ea","#1f5c3c"],warn:["#f6efde","#7a5a12"],bad:["#f6e2e4","#8a2832"],neu:["#eef0f2","#54616c"]};
   /* Large Resort: lodging added by conditional use within the district cap (LDC Div. 35), NOT a pool
@@ -2461,30 +2451,40 @@ function verdictObj(m){
   const lrNote=(S.pathway==="LR District Ramp")?"Large Resort adds lodging by conditional use above the base 30 TLU/ac (up to 50/ac small-scale, or 75/ac large-scale at 3+ ac; LDC Div. 35), not a pool draw, so no pool-scarcity cost applies; the impact-mitigation floor and the developer ceiling still bound the deal. ":"";
   const capPre=lrNote+(m.overCap?"The requested total exceeds the district density cap; as bonus density it would require a comprehensive plan amendment. On the economics: ":"");
   const unsecuredNote=(m.flags&&m.flags.unsecuredShare>=0.25)?(' <b>Caution:</b> '+Math.round(m.flags.unsecuredShare*100)+'% of the offered value rests on unsecured promises (no instrument named, credited at '+Math.round(ENFORCE.none*100)+'%); name what secures them or read the offer as softer than it looks.'):"";
+  /* impact-offset posture. A: the package is tested against the residual NET of the impact fees paid at
+     permit; B: against the full conservative value (fees credited in-kind into the floor). */
+  const postureA=m.impactPosture==="A";
+  const ceilFit=postureA?("fits within the residual net of impact fees ("+fmt(m.zCeil)+")"):("fits within the conservative value to the developer ("+fmt(m.Vlow)+"; negotiation target up to "+fmt(m.Vhigh)+")");
+  const ceilOver=postureA?("exceeds the residual net of impact fees ("+fmt(m.zCeil)+"; the conservative value "+fmt(m.Vlow)+" less "+fmt(m.I)+" in fees)"):("exceeds the conservative value to the developer ("+fmt(m.Vlow)+"; even the high end is "+fmt(m.Vhigh)+")");
+  const feeNote=(postureA&&m.I>0)?(" Impact fees ("+fmt(m.I)+") are paid at building permit, outside this package."):"";
   /* Deep scarcity: when the scarcity-adjusted floor exceeds the developer ceiling, no realistic
      package can close the gap. Report it as Hold (the pool's option value beats this request)
      rather than the misleading "renegotiate" path. Fires before everything else so it is robust to
      whether a package is entered; guarded to the pool pathway with a defined ceiling. */
-  if(m.poolPath && m.zCeil>0 && m.cityMin>m.zCeil) return {tag:"Hold",bg:C.bad[0],fg:C.bad[1],light:"#c0392b",status:"Recommend deferring allocation",tip:"At this level of pool depletion the option value of the remaining units exceeds what this project can pay. No realistic package clears the floor.",head:"Pool too depleted, recommend holding the units",
-    body:capPre+"With "+S.rem+" units remaining, the scarcity-adjusted break-even floor ("+fmt(m.cityMin)+") exceeds a full-budget package against the conservative value to the developer ("+fmt(m.zCeil)+"). Holding the remaining pool units for a future, higher-value use is worth more than this request can return. Deny or defer, or treat any allocation as an extraordinary decision outside this model."+unsecuredNote};
+  if(m.poolPath && m.zCeil>0 && m.cityMin>m.zCeil) return {tag:"Hold",bg:C.bad[0],fg:C.bad[1],light:"#c0392b",status:"Scarcity floor exceeds estimated ceiling",tip:"At this level of pool depletion the option value of the remaining units exceeds what this project can pay. No realistic package clears the floor.",head:"Scarcity floor exceeds the estimated ceiling",
+    body:capPre+"With "+S.rem+" units remaining, the scarcity-adjusted break-even floor ("+fmt(m.cityMin)+") exceeds a full-budget package against the conservative value to the developer ("+fmt(m.zCeil)+"). The analysis indicates the remaining pool units carry more option value than this request returns; any allocation at this depletion level falls outside the model's framework."+unsecuredNote};
   /* Structural no-zone off the pool pathway: the impact offset alone exceeds the developer ceiling,
      so even an all-cash (1x) package cannot clear the floor within the developer's budget. */
   if(!m.poolPath && m.zCeil>0 && m.cityMin>m.zCeil) return {tag:"No zone",bg:C.bad[0],fg:C.bad[1],light:"#c0392b",status:"No agreement zone",tip:"The lawful impact offset alone exceeds what the bonus is worth to the developer; no package closes the gap.",head:"No agreement zone, floor exceeds the developer ceiling",
-    body:capPre+"The break-even floor ("+fmt(m.cityMin)+", the impact offset alone since no pool draw applies) exceeds the conservative value of the bonus to the developer ("+fmt(m.zCeil)+"). Even an all-cash package can't clear it. Deny, restructure, or revisit the impact figure if miscalibrated."+unsecuredNote};
+    body:capPre+"The break-even floor ("+fmt(m.cityMin)+", the impact offset alone since no pool draw applies) exceeds the conservative value of the bonus to the developer ("+fmt(m.zCeil)+"). No package configuration clears the floor within the estimated ceiling under current inputs; verify the impact calibration."+unsecuredNote};
+  /* Posture A structural no-zone: adopted impact fees paid at permit equal or exceed the residual, so
+     no benefit package is possible (the fees alone leave nothing). Distinct from Incomplete (basics unset). */
+  if(postureA && S.use && m.Vlow>0 && m.zCeil<=0) return {tag:"No zone",bg:C.bad[0],fg:C.bad[1],light:"#c0392b",status:"Fees exceed the estimated residual",tip:"With fees paid at permit, the adopted impact fees equal or exceed the estimated value of the bonus, so no residual remains for a benefit package.",head:"Adopted impact fees consume the residual",
+    body:capPre+"With impact fees treated as paid at permit, the adopted fees for the bonus units ("+fmt(m.I)+") equal or exceed the conservative value of the bonus to the developer ("+fmt(m.Vlow)+"), so no residual remains to fund a public-benefit package. No package configuration is possible at these inputs; verify the impact calibration and the market value."+unsecuredNote};
   if(m.A===0 && m.Bplain===0) return {tag:"No offer yet",bg:C.neu[0],fg:C.neu[1],light:"#9aa3a8",status:"No offer yet",tip:"Add public benefits on the Benefits step to evaluate the request.",head:"No offer entered yet",
     body:capPre+"No benefits entered yet. The break-even floor is "+fmt(m.cityMin)+" ("+(m.D>0?("pool value used "+fmt(m.D)+" + "):"")+"impact mitigation "+fmt(m.I)+"), and the bonus is worth "+vdevStr(m)+" to the developer"+(m.Vlow<m.Vhigh?" (the deal is tested against the conservative "+fmt(m.Vlow)+" end)":"")+". Add benefits on the <a href='#' class='seclink' onclick='goto(1);return false;'>Benefits step</a> to test an offer against that floor."};
   if(!(m.zCeil>0)) return {tag:"Incomplete",bg:C.neu[0],fg:C.neu[1],light:"#9aa3a8",status:"Incomplete inputs",tip:"Set a use type and market value on Step 1 so the value to developer and the break-even floor are defined.",head:"Incomplete, set the project basics first",
     body:capPre+"A package is entered, but without a use type and market value the ceiling and break-even floor are not yet defined, so feasibility can't be judged. Set them on Step 1."+unsecuredNote};
   if(m.worth && m.feas){const gated=m.belowCapture;
     return {tag:"Favorable",bg:C.ok[0],fg:C.ok[1],light:gated?"#d9a400":"#1f9d57",status:gated?"Favorable, below fair-share":"Viable",tip:"Meets the break-even floor and fits within the developer’s budget.",head:gated?"Favorable, but below the fair-share target":"Favorable",
-    body:capPre+"Offered public value ("+fmt(m.Bplain)+") meets the break-even floor ("+fmt(m.cityMin)+"). Package cost ("+fmt(m.A)+") fits within the conservative value to the developer ("+fmt(m.Vlow)+"; negotiation target up to "+fmt(m.Vhigh)+"). Unspent budget "+fmt(Math.max(0,m.room))+". "+(gated?("This offer captures only "+Math.round(m.captureRate*100)+"% of the value to developer, below the "+Math.round(CAPTURE.capLo*100)+" to "+Math.round(CAPTURE.capHi*100)+"% fair-share target, so there is room to ask for more, but treat that surplus as a <b>voluntary incentive</b> for the discretionary density, not a compellable exaction. The city may compel only the impact-proportional amount ("+fmt(m.I)+"); see the legal guardrails."):("The city may require only the impact-proportional amount ("+fmt(m.I)+") as a condition; benefit above that is voluntary incentive for the discretionary density."))+unsecuredNote};}
+    body:capPre+"Offered public value ("+fmt(m.Bplain)+") meets the break-even floor ("+fmt(m.cityMin)+"). Package cost ("+fmt(m.A)+") "+ceilFit+". Unspent budget "+fmt(Math.max(0,m.room))+"."+feeNote+" "+(gated?("This offer captures only "+Math.round(m.captureRate*100)+"% of the value to developer, below the "+Math.round(CAPTURE.capLo*100)+" to "+Math.round(CAPTURE.capHi*100)+"% fair-share target, so the offer sits below the fair-share reference band, but treat that surplus as a <b>voluntary incentive</b> for the discretionary density, not a compellable exaction. The city may compel only the impact-proportional amount ("+fmt(m.I)+"); see the legal guardrails."):(postureA?("The adopted impact fees ("+fmt(m.I)+") are collected at permit; the benefit package is voluntary incentive for the discretionary density."):("The city may require only the impact-proportional amount ("+fmt(m.I)+") as a condition; benefit above that is voluntary incentive for the discretionary density.")))+unsecuredNote};}
   if(!m.worth && m.room>0) return {tag:"Below minimum",bg:C.warn[0],fg:C.warn[1],light:"#d9a400",status:"Keep negotiating",tip:"Public value is below the break-even floor, but the developer still has budget room, add higher-ratio benefits to close the gap.",head:"Below break-even floor, renegotiate",
     body:capPre+"Offered public value is short of the break-even floor by "+fmt(m.cityMin-m.Bplain)+", so the public is subsidizing the project. "+fmt(m.room)+" of developer budget remains, so adding higher value-to-cost benefits can close it."+unsecuredNote};
-  if(!m.feas) return {tag:"Over budget",bg:C.bad[0],fg:C.bad[1],light:"#c0392b",status:"Stalled",tip:"The package costs more than the bonus is worth to the developer; they would build by-right. Trim the package or grant more units.",head:"Package exceeds developer budget",
-    body:capPre+"Package cost ("+fmt(m.A)+") exceeds the conservative value to the developer ("+fmt(m.Vlow)+"; even the high end is "+fmt(m.Vhigh)+"). The applicant would build by-right. Reduce the package or grant more units."};
+  if(!m.feas) return {tag:"Over budget",bg:C.bad[0],fg:C.bad[1],light:"#c0392b",status:"Over estimated budget",tip:"The package costs more than the estimated value of the bonus to the applicant; the by-right alternative would dominate.",head:"Package exceeds developer budget",
+    body:capPre+"Package cost ("+fmt(m.A)+") sits above the conservative ceiling ("+fmt(m.zCeil)+(postureA?", the value "+fmt(m.Vlow)+" net of impact fees "+fmt(m.I):"; even the optimistic ceiling is "+fmt(m.Vhigh))+"). The package cost exceeds the estimated value of the bonus to the applicant; the by-right alternative would dominate."};
   /* reachable only at A exactly = Vlow; retained as a safe fallback */
-  return {tag:"No zone",bg:C.bad[0],fg:C.bad[1],light:"#c0392b",status:"No agreement zone",tip:"Even a minimal acceptable package costs more than the bonus is worth, deny or restructure.",head:"No agreement zone",
-    body:"The minimum acceptable package costs more than the bonus is worth to the developer. Deny or restructure the request."};
+  return {tag:"No zone",bg:C.bad[0],fg:C.bad[1],light:"#c0392b",status:"No agreement zone",tip:"Even a minimal acceptable package costs more than the estimated value of the bonus; no agreement zone exists under current inputs.",head:"No agreement zone",
+    body:"The minimum acceptable package costs more than the bonus is worth to the developer. No agreement zone exists under current inputs."};
 }
 
 /* auto-drafted staff/Commission memo from the current model + verdict (plain text, editable, copyable) */
@@ -2495,7 +2495,7 @@ function draftMemo(m){
   const v=verdictObj(m);
   const nm=(S.pname&&(""+S.pname).trim())||"(unnamed project)";
   const app=(S.papp&&(""+S.papp).trim())||"(applicant not entered)";
-  const worth=m.Bplain>=m.cityMin, feas=m.A<=m.Vlow;
+  const worth=m.Bplain>=m.cityMin, feas=m.feas, postureA=m.impactPosture==="A";
   const L=[];
   L.push("DRAFT, DENSITY BONUS VALUATION SUMMARY");
   L.push("Sketch-grade decision support, not an appraisal, pro forma, or legal determination. v"+VERSION+", "+VERSION_DATE+".");
@@ -2505,20 +2505,27 @@ function draftMemo(m){
   L.push("District:  "+distLabel);
   L.push("Request:   "+(S.bonus||0)+" bonus units ("+(S.use||"use not set")+") from the "+pool+" pool; "+(S.byright||0)+" units by-right.");
   L.push("");
-  L.push("RECOMMENDATION: "+v.head+".");
+  L.push("MODEL RESULT: "+v.head+".");
   L.push("");
   L.push("KEY FIGURES");
-  L.push("  Value to developer (ceiling):  "+fmt(m.Vlow)+(m.Vhigh>m.Vlow?(" to "+fmt(m.Vhigh)):""));
-  L.push("  Break-even floor (minimum):    "+fmt(m.cityMin)+"  [impact "+fmt(m.I)+(m.D>0?(" + pool value "+fmt(m.D)):"")+"]");
-  L.push("  Public value offered:          "+fmt(m.Bplain));
-  L.push("  Developer stated contribution: "+fmt(m.A));
+  L.push("  Value to developer (conservative):   "+fmt(m.Vlow)+(m.Vhigh>m.Vlow?(" to "+fmt(m.Vhigh)):""));
+  if(postureA){
+    L.push("  Impact fees (paid at permit):        "+fmt(m.I)+"  [outside the benefit package]");
+    L.push("  Available for package (net of fees): "+fmt(m.zCeil));
+    L.push("  Break-even floor (minimum):          "+fmt(m.cityMin)+"  [pool value "+fmt(m.D)+"; impact fees excluded]");
+  } else {
+    L.push("  Break-even floor (minimum):          "+fmt(m.cityMin)+"  [impact "+fmt(m.I)+(m.D>0?(" + pool value "+fmt(m.D)):"")+"]");
+  }
+  L.push("  Public value offered:                "+fmt(m.Bplain));
+  L.push("  Developer stated contribution:       "+fmt(m.A));
+  L.push("  Impact-fee treatment:                "+(postureA?"adopted fees paid at permit, outside this package (posture A)":"in-kind benefits credited against adopted fees (posture B)"));
   L.push("");
   L.push("ASSESSMENT");
   L.push("  Worthwhile: offered public value "+fmt(m.Bplain)+(worth?" meets":" is below")+" the break-even floor "+fmt(m.cityMin)+".");
-  L.push("  Feasible:   stated contribution "+fmt(m.A)+(feas?" fits within":" exceeds")+" the conservative ceiling "+fmt(m.Vlow)+".");
-  if(worth&&feas&&m.belowCapture) L.push("  The offer captures "+Math.round(m.captureRate*100)+"% of the value to developer, below the "+Math.round(CAPTURE.capLo*100)+"–"+Math.round(CAPTURE.capHi*100)+"% fair-share guideline, so there may be room to request more. The city may compel only the impact-proportional amount ("+fmt(m.I)+"); any benefit above that is a voluntary incentive for the discretionary density.");
+  L.push("  Feasible:   stated contribution "+fmt(m.A)+(feas?" fits within":" exceeds")+" the "+(postureA?"residual net of impact fees ":"conservative ceiling ")+fmt(m.zCeil)+".");
+  if(worth&&feas&&m.belowCapture) L.push("  The offer captures "+Math.round(m.captureRate*100)+"% of the value available for the package, below the "+Math.round(CAPTURE.capLo*100)+"–"+Math.round(CAPTURE.capHi*100)+"% fair-share guideline, so the offer sits below the fair-share reference band. The city may compel only the impact-proportional amount ("+fmt(m.I)+"); any benefit above that is a voluntary incentive for the discretionary density.");
   else if(!worth&&m.room>0) L.push("  The offer is short of the floor by "+fmt(m.cityMin-m.Bplain)+"; "+fmt(m.room)+" of developer budget remains to close the gap with higher value-to-cost benefits.");
-  else if(!feas) L.push("  The package exceeds the value to developer; the applicant would build by-right. Reduce the package or grant more units.");
+  else if(!feas) L.push("  The package cost exceeds the estimated value of the bonus to the applicant; the by-right alternative would dominate.");
   L.push("");
   L.push("PROPOSED PUBLIC BENEFITS");
   if(m.rows&&m.rows.length) m.rows.forEach(function(x){
@@ -2529,6 +2536,7 @@ function draftMemo(m){
   L.push("");
   L.push("CAVEATS");
   L.push("  Order-of-magnitude figures pending calibration to local data. The 15–25% / 25–50% guardrails are analytic overlays, not adopted code; the city may compel only the impact-proportional amount (Koontz / F.S. 163.3180). Confirm density and pool balances against the adopted Comprehensive Plan and LDC. Decision support, not legal advice.");
+  if(!postureA) L.push("  Impact-fee credit caution: crediting in-kind benefits against adopted impact fees requires an impact-fee credit mechanism consistent with F.S. 163.31801 and category nexus (for example, a resilience covenant does not offset a multimodal fee). Confirm with the City Attorney.");
   return L.join("\n");
 }
 /* refresh the memo textarea (skip while the user is editing it so manual tweaks aren't clobbered) */
@@ -2629,9 +2637,13 @@ function drawValueStack(m){
   const bonus=S.bonus, gdv=S.market*bonus;
   const build=(hard+soft+sales)*bonus, profit=marginC*bonus;
   const residual=Math.max(0,(S.market-(hard*(1+K.soft)*(1+S.margin)+sales)))*bonus;
-  const benefits=Math.min(m.A,residual), net=Math.max(0,residual-m.A), over=m.A>residual+1;
-  const segs=[{l:"Build & sell cost",v:build,c:"#9aa6ad"},{l:"Developer profit",v:profit,c:"#ecc07a"},
-    {l:"Public benefits (captured)",v:benefits,c:"#27576a"},{l:"Net kept by developer",v:net,c:"#df9b49"}];
+  const postureA=m.impactPosture==="A";
+  const fees=postureA?Math.min(m.I,residual):0;   // posture A: adopted impact fees paid at permit come out of the residual before the package
+  const avail=Math.max(0,residual-fees);
+  const benefits=Math.min(m.A,avail), net=Math.max(0,avail-m.A), over=m.A>avail+1;
+  const segs=[{l:"Build & sell cost",v:build,c:"#9aa6ad"},{l:"Developer profit",v:profit,c:"#ecc07a"}]
+    .concat(fees>0?[{l:"Impact fees (permit)",v:fees,c:"#b98a86"}]:[])
+    .concat([{l:"Public benefits (captured)",v:benefits,c:"#27576a"},{l:"Net kept by developer",v:net,c:"#df9b49"}]);
   const kf=v=>"$"+Math.round(v).toLocaleString();
   const W=620,H=300,padT=24,padB=22,chartH=H-padT-padB,baseY=padT+chartH;
   const maxV=Math.max(gdv,1), yOf=v=>baseY-(v/maxV)*chartH;
@@ -2662,10 +2674,11 @@ function drawZopa(m){
   }
   t.style.display="";
   t.setAttribute("role","img");t.setAttribute("aria-label","Deal zone from the minimum spend "+fmt(m.zFloor)+" (the least the package must cost to clear the break-even floor at its current efficiency) up to the developer ceiling "+fmt(m.zCeil)+"; current offer "+fmt(m.A)+".");
-  const max=Math.max(m.zCeil,m.Vhigh||0,m.A,m.zFloor)*1.08||1;
+  const postureA=m.impactPosture==="A", vHi=postureA?Math.max(0,m.Vhigh-m.I):m.Vhigh;   // posture A nets impact fees from the optimistic target too
+  const max=Math.max(m.zCeil,vHi||0,m.A,m.zFloor)*1.08||1;
   const pct=x=>Math.max(0,Math.min(100,x/max*100));
   const fl=pct(m.zFloor),ce=pct(m.zCeil),of=pct(m.A);
-  const tg=(m.Vhigh>m.zCeil+1)?pct(m.Vhigh):-1;   // negotiation-target tick (high end of the value range)
+  const tg=(vHi>m.zCeil+1)?pct(vHi):-1;   // negotiation-target tick (high end of the value range, net of fees under posture A)
   const V=m.zCeil;
   const band=(lo,hi,cls)=>{if(!(V>0))return"";const a=pct(lo*V),b=pct(hi*V);return '<div class="'+cls+'" style="left:'+a+'%;width:'+Math.max(0,b-a)+'%"></div>';};
   /* edge-aware label: left-align near 0%, right-align near 100%, else centered, so the dollar
@@ -2684,7 +2697,7 @@ function drawZopa(m){
   const pairRow=(a,b,base)=>{ if(!b)return zlab(a.p,base,a.txt,a.x||"");
     const lo=a.p<=b.p?a:b, hi=a.p<=b.p?b:a, alt=base+(base==="top"?" r1":" b1");
     return zlab(lo.p,base,lo.txt,lo.x||"")+zlab(hi.p,(Math.abs(a.p-b.p)<34?alt:base),hi.txt,hi.x||""); };
-  const topHtml=pairRow({p:fl,txt:lw[0]+zf(m.zFloor)}, (tg>=0?{p:tg,txt:lw[2]+zf(m.Vhigh),x:"color:var(--accent)"}:null), "top");
+  const topHtml=pairRow({p:fl,txt:lw[0]+zf(m.zFloor)}, (tg>=0?{p:tg,txt:lw[2]+zf(vHi),x:"color:var(--accent)"}:null), "top");
   const botHtml=pairRow({p:of,txt:"offer "+zf(m.A)}, {p:ce,txt:lw[1]+zf(m.zCeil)}, "bot");
   t.innerHTML=band(CAPTURE.capLo,CAPTURE.capHi,"zopa-target")+
     '<div class="zopa-bar"></div>'+
@@ -2712,9 +2725,9 @@ function drawZopa(m){
    break-even floor within the developer budget. Constraint is the PLAIN value (decision basis), objective
    leans on the same efficiency; enforceability haircut is applied to both, assumed at condition-of-approval. */
 function solvePackage(m){
-  const ceiling=m.Vlow, floor=m.cityMin;
+  const ceiling=m.zCeil, floor=m.cityMin;   // posture-aware: zCeil nets out impact fees under posture A
   if(!(ceiling>0)||!(floor>0)) return null;
-  const hc=SIMPLE_BENEFITS?1:((ENFORCE.condition!=null)?ENFORCE.condition:0.9);
+  const hc=SIMPLE_BENEFITS?1:((ENFORCE.condition!=null)?ENFORCE.condition:0.95);
   const cands=LIB.map(r=>r[0]).filter(nm=>nm&&(""+nm).trim()).map(nm=>{
     const L=libInfo(nm), mult=CATMULT[L.cat]||1, plainU=L.city*hc;
     return {name:nm,unit:L.unit,cat:L.cat,devU:L.dev,cityU:L.city,mult,plainU,weightedU:plainU*mult,ratio:L.dev>0?plainU/L.dev:0};
@@ -2766,7 +2779,7 @@ function drawRanks(m){
 const DISTRICTS={
  "LR":  {label:"Large Resort (LR)", use:"Temporary Lodging", unit:"TLU", base:30, cap:75, capSmall:50, capTierAc:3, deriveByright:true, pathway:"LR District Ramp", node:"CO_DIV35LRLAREDI", note:"Residential base 15 du/ac; transient lodging base 30 TLU/ac by right, with a conditional-use ramp to 50/ac (small-scale, under 3 ac) or 75/ac (large-scale, 3+ ac and min 200 TLU). The LR district is NOT pool-eligible, added lodging density is by conditional use within the district cap, so no pool scarcity cost. (FLU SPA-1; LDC Div. 35. The 2007 reduction of LR from 18→15 du/ac and 80→75 TLU/ac is the source of the 195 RU and 325 TLU pools.)"},
  "TC1": {label:"Town Center Core (TC-1) / Corey Ave", use:"Condominium", unit:"RU", base:15, cap:20, pathway:"Pool Allocation", node:"CO_DIV30TOCECODI", note:"Mixed-use core, residential base 15 du/ac; bonus residential units drawn from the 195-unit RU pool. Separate 50-unit TLU pool (≤10/ac, ≤10/project) governs lodging. (FLU; LDC §30.)"},
- "TC2": {label:"Town Center Corey Circle / Coquina West (TC-2)", use:"Condominium", unit:"RU", base:24, cap:30, pathway:"Pool Allocation", node:"CO_DIV37TOCECOCICOWEDI", note:"Mixed-use, residential base 24 du/ac (min 1.8-ac site); bonus units drawn from the 195-unit RU pool. Lodging is 50 TLU/ac, ≤150 units/project, from the 325 TLU pool. Corey Landings sits here. The real ceiling is the remaining pool balance, not a fixed du/ac cap. (FLU; LDC §37.)"},
+ "TC2": {label:"Town Center Corey Circle / Coquina West (TC-2)", use:"Condominium", unit:"RU", base:24, cap:30, pathway:"Pool Allocation", node:"CO_DIV37TOCECOCICOWEDI", note:"Mixed-use, residential base 24 du/ac (min 1.8-ac site); bonus units drawn from the 195-unit RU pool. Lodging is 50 TLU/ac, ≤150 units/project, from the 325 TLU pool. The real ceiling is the remaining pool balance, not a fixed du/ac cap. (FLU; LDC §37.)"},
  "GBR": {label:"Gulf Boulevard Redevelopment", use:"Temporary Lodging", unit:"TLU", base:40, cap:75, pathway:"Pool Allocation", note:"Corridor spanning Large Resort / Boutique Hotel-Condo / Activity Center / Bayou Residential. Transient lodging 40–75 TLU/ac by district and scale; pool draws come from the applicable TLU pool (Boutique Hotel-Condo 125, or the 325 shared by TC-2 / Activity Center / Bayou). (FLU SPA-1.)"},
  "CRD": {label:"Community Redevelopment District (other)", use:"Condominium", unit:"RU", base:15, cap:18, pathway:"Pool Allocation", note:"Other SPA-1 character districts; residential base typically 15–18 du/ac. Bonus residential units drawn from the 195-unit RU pool. (FLU SPA-1.)"},
  "PAG": {label:"Pass-a-Grille Historic", use:"Condominium", unit:"RU", base:15, cap:15, pathway:"Comp Plan Amendment", note:"Historic district, low density, no bonus pool. Increases require a plan amendment and are strongly constrained."},
@@ -3450,26 +3463,27 @@ function derivV(m){
    '</div>';
 }
 function derivCM(m){
+  const postureA=m.impactPosture==="A";
   let d='<div class="card">'+derivMap('CM')+
-   '<p class="lede" style="margin:0 0 16px"><b>The question:</b> what is the least public value the deal must return? Two pieces the city can lawfully require: the developer’s fair share of the impact the new units create, plus the value of the scarce pool units the bonus consumes. Below this floor, the public is subsidizing the project.</p>';
+   '<p class="lede" style="margin:0 0 16px"><b>The question:</b> what is the least public value the deal must return? '+(postureA?'Under the current posture (adopted impact fees paid at permit), the floor is the value of the scarce pool units the bonus consumes; the developer’s impact fair share is collected separately as impact fees at building permit, outside this package.':'Two pieces the city can lawfully require: the developer’s fair share of the impact the new units create, plus the value of the scarce pool units the bonus consumes.')+' Below this floor, the public is subsidizing the project.</p>';
   if(m.cityMin>0){
-    const segs=[{l:"Impact offset",v:m.I,c:"#7c9aa6"},{l:"Pool value used",v:m.D,c:"#cf8a7d"}].filter(s=>s.v>0);
+    const segs=(postureA?[{l:"Pool value used",v:m.D,c:"#cf8a7d"}]:[{l:"Impact offset",v:m.I,c:"#7c9aa6"},{l:"Pool value used",v:m.D,c:"#cf8a7d"}]).filter(s=>s.v>0);
     const tot=Math.max(m.cityMin,1), kf=v=>"$"+Math.round(v/1000).toLocaleString()+"k";
     d+='<div class="wbar" style="height:30px">'+segs.map(s=>'<span style="width:'+(s.v/tot*100).toFixed(2)+'%;background:'+s.c+'" title="'+s.l+'"></span>').join('')+'</div>'+
        '<div class="wlg">'+segs.map(s=>'<div class="wlg-item"><span class="wlg-sw" style="background:'+s.c+'"></span><span class="wlg-tx">'+s.l+'</span><span class="wlg-v">'+kf(s.v)+'</span></div>').join('')+
        '<div class="wlg-item res"><span class="wlg-sw" style="background:transparent"></span><span class="wlg-tx">Break-even floor (total)</span><span class="wlg-v">'+kf(m.cityMin)+'</span></div></div>';
   }
   d+='<div class="deriv deriv-flat" style="margin-top:18px">';
-  d+='<div class="step"><b>1. Impact offset</b> = impact $/unit × bonus units <span class="anote">(compellable under F.S. §163.3180; Nollan / Dolan / Koontz)</span></div>';
+  d+='<div class="step"><b>1. '+(postureA?'Impact fees (paid at permit)':'Impact offset')+'</b> = impact $/unit × bonus units <span class="anote">(compellable under F.S. §163.3180; Nollan / Dolan / Koontz'+(postureA?'; collected at permit, not part of this floor':'')+')</span></div>';
   d+='<div class="step">'+fmtFull(S.impact)+' × '+S.bonus+' = <b>'+fmtFull(m.I)+'</b></div>';
   d+='<div class="step" style="margin-top:8px"><b>2. Pool value used</b>'+(m.poolPath?' = residual × scarcity^'+K.scarExp+' × bonus units':'')+'</div>';
   if(m.poolPath){const ra=S.rem-S.bonus;
     d+='<div class="step">units left after grant = '+S.rem+' − '+S.bonus+' = '+ra+'; scarcity = 1 − min(1, ('+ra+' ÷ demand '+S.dem+'/yr) ÷ horizon '+S.hor+' yr) = '+m.scar.toFixed(3)+'</div>';
     d+='<div class="step">residual '+fmtFull(m.r)+' × '+Math.pow(m.scar,K.scarExp).toFixed(3)+' × '+S.bonus+' = <b>'+fmtFull(m.D)+'</b></div>';
   } else { d+='<div class="step">pathway “'+S.pathway+'” does not draw from the pool → <b>$0</b></div>'; }
-  d+='<div class="step" style="margin-top:8px"><b>Break-even floor</b> = impact offset + pool value used</div>';
-  d+='<div class="step">'+fmtFull(m.I)+' + '+fmtFull(m.D)+' = <span class="res">'+fmtFull(m.cityMin)+'</span></div></div>';
-  d+='<p class="lede" style="margin-top:16px">This is the <b>floor</b>: the impact the city can lawfully require plus the value of the scarce pool units consumed. Impact is editable under '+secLink('Assumptions',"showAux('assumptions')")+'; pool figures on '+secLink('Step 1',"goto(0)")+', under Density Pool and Scarcity.</p>';
+  d+='<div class="step" style="margin-top:8px"><b>Break-even floor</b> = '+(postureA?'pool value used <span class="anote">(impact fees are paid at permit, outside this floor)</span>':'impact offset + pool value used')+'</div>';
+  d+='<div class="step">'+(postureA?fmtFull(m.D):(fmtFull(m.I)+' + '+fmtFull(m.D)))+' = <span class="res">'+fmtFull(m.cityMin)+'</span></div></div>';
+  d+='<p class="lede" style="margin-top:16px">This is the <b>floor</b>: '+(postureA?'the value of the scarce pool units consumed; the developer’s impact fair share is collected separately as impact fees at permit':'the impact the city can lawfully require plus the value of the scarce pool units consumed')+'. Impact is editable under '+secLink('Assumptions',"showAux('assumptions')")+'; pool figures on '+secLink('Step 1',"goto(0)")+', under Density Pool and Scarcity.</p>';
   d+='</div>';
   return d;
 }
@@ -3481,11 +3495,11 @@ function derivB(m){
   else d+='<div class="step"><span class="anote">No benefits added yet. Add them on the Benefits step.</span></div>';
   d+='<div class="step" style="margin-top:6px"><b>Total offered public value</b> = <span class="res">'+fmtFull(m.Bplain)+'</span></div>';
   d+='<div class="step" style="margin-top:8px"><b>Developer contribution (stated)</b> = Σ each benefit’s stated total = <b>'+fmtFull(m.A)+'</b>, value ratio '+(m.gPlain?m.gPlain.toFixed(2):"0")+'× <span class="anote">(what the applicant proposes to provide, not a verified pro-forma cost)</span></div></div>';
-  const passW=m.Bplain>=m.cityMin, passF=m.A<=m.Vlow;
+  const passW=m.Bplain>=m.cityMin, passF=m.feas;
   const tag=(ok,t)=>'<span class="cmp-tag" style="background:'+(ok?'#e3f0e8':'#fbecd9')+';color:'+(ok?'var(--pass)':'var(--warn)')+'">'+t+'</span>';
   d+='<div style="margin-top:16px">'+
      '<div class="cmpline"><b>Worthwhile?</b> Offered <span class="cmp-v">'+fmtFull(m.Bplain)+'</span> vs floor <span class="cmp-v">'+fmtFull(m.cityMin)+'</span> '+tag(passW,passW?'meets the floor':'below the floor')+'</div>'+
-     '<div class="cmpline"><b>Feasible?</b> Developer contribution <span class="cmp-v">'+fmtFull(m.A)+'</span> vs ceiling <span class="cmp-v">'+fmtFull(m.Vlow)+'</span> <span class="anote">(conservative)</span> '+tag(passF,passF?'within the ceiling':'over the ceiling')+'</div></div>';
+     '<div class="cmpline"><b>Feasible?</b> Developer contribution <span class="cmp-v">'+fmtFull(m.A)+'</span> vs ceiling <span class="cmp-v">'+fmtFull(m.zCeil)+'</span> <span class="anote">('+(m.impactPosture==="A"?"conservative, net of impact fees":"conservative")+')</span> '+tag(passF,passF?'within the ceiling':'over the ceiling')+'</div></div>';
   d+='<p class="lede" style="margin-top:16px">The pass/fail test is in <b>plain dollars</b>. Category <b>priority weights</b> (set in '+secLink('Assumptions',"showAux('assumptions')")+' § D) reorder which benefits to prefer within a package but do not move the decision. Per-unit costs and values are editable on the '+secLink('Benefits step',"goto(1)")+'.</p>';
   d+='</div>';
   return d;
@@ -3642,6 +3656,9 @@ function lockBar(title,note){
     ? '<span>🔓 <b>Editing enabled.</b> '+note+' Changes apply across all projects, lock when done.</span><button class="btn" data-lock="1">🔒 Lock</button>'
     : '<span>🔒 <b>'+title+'</b>, '+note+'</span><button class="btn" data-lock="1">Enable editing</button>')+'</div>';
 }
+/* impact-offset posture (Assumptions section E). A = adopted fees paid at permit (default); B = in-kind
+   creditable against fees. Changes the floor/ceiling treatment across the model, so re-render everything. */
+function setPosture(p){ S.impactPosture=(p==="B")?"B":"A"; render(); }
 function buildAssumptions(){
   const NS=!HIDE_NOTES_SOURCE, ncols=NS?7:6;   // Notes/Source open from a compact icon in their own column (rightmost) into a full-width sub-row, so rows stay single-line. NS gates whether that column renders.
   const nNoSrc=ASSUMP.filter(r=>!(r.source&&String(r.source).trim())).length;
@@ -3655,7 +3672,14 @@ function buildAssumptions(){
   let sec="";
   ASSUMP.forEach((r,i)=>{
     if(SIMPLE_BENEFITS && /^[HI]\./.test(r.sec)) return;   // recurring-PV (H) + enforceability (I) don't feed the model when benefits are assumed secured, hide them
-    if(r.sec!==sec){sec=r.sec;h+='<tr class="asecrow asec-toggle" data-section="'+esc(sec)+'" role="button" tabindex="0" aria-label="Toggle '+esc(sec)+'"><td colspan="'+ncols+'"><span class="asec-caret">▾</span> '+sec+' <span class="anote">('+(secCount[sec]||0)+')</span></td></tr>';}
+    if(r.sec!==sec){sec=r.sec;h+='<tr class="asecrow asec-toggle" data-section="'+esc(sec)+'" role="button" tabindex="0" aria-label="Toggle '+esc(sec)+'"><td colspan="'+ncols+'"><span class="asec-caret">▾</span> '+sec+' <span class="anote">('+(secCount[sec]||0)+')</span></td></tr>';
+      if(/^E\./.test(sec)){const pA=S.impactPosture!=="B";
+        h+='<tr data-asec="'+esc(sec)+'" data-search="impact offset treatment posture adopted fees permit in-kind creditable"><td colspan="'+ncols+'">'+
+          '<div style="padding:4px 2px"><div style="font-weight:600;margin-bottom:5px">Impact offset treatment <span class="anote" style="font-weight:400">(how adopted impact fees interact with the package)</span></div>'+
+          '<label style="display:block;margin:4px 0;font-weight:400;line-height:1.45"><input type="radio" name="impactposture" value="A"'+(pA?' checked':'')+' onchange="setPosture(this.value)"> <b>Adopted fees paid at permit</b> (default): fees are collected at building permit, outside the package, so the break-even floor is pool value only and the ceiling nets the fees out.</label>'+
+          '<label style="display:block;margin:4px 0;font-weight:400;line-height:1.45"><input type="radio" name="impactposture" value="B"'+(!pA?' checked':'')+' onchange="setPosture(this.value)"> <b>In-kind creditable against fees</b>: the package delivers the impact offset, so it is part of the floor and the full residual is available. Requires an impact-fee credit mechanism (F.S. 163.31801) and category nexus; confirm with the City Attorney.</label>'+
+          '</div></td></tr>';}
+    }
     const ahay=esc((""+r.label+" "+r.unit+" "+(r.notes||"")+" "+(r.source||"")).toLowerCase());
     const hasBasis=r.basis!==undefined;
     let unitCell=r.unit;
@@ -3734,9 +3758,9 @@ function toggleNoteRow(tog){
 /* ---------- robustness band ---------- */
 function roboNote(m){
   if(m.A===0&&m.Bplain===0) return "<b>No offer yet.</b> Add benefits to stress-test a package, with nothing offered there is no decision to test.";
-  const baseFav=m.worth&&m.feas;
+  const baseFav=m.worth&&m.feas, feeOff=(m.impactPosture==="A")?m.I:0;   // posture A: fees paid at permit are fixed, so they reduce the value available for the package but do not scale in the stress
   const worthWorst=(m.Bplain*0.8)>=(m.cityMin*1.2);
-  const feasWorst=(m.A*1.2)<=(m.V*0.8);
+  const feasWorst=(m.A*1.2)<=(m.V*0.8-feeOff);
   if(baseFav){
     if(worthWorst&&feasWorst) return "<b>Robust.</b> The Favorable decision holds even when offered public value and value to developer run 20% low while the break-even floor and package cost run 20% high, all at once. The recommendation survives sketch-grade error.";
     const c=[];
@@ -3745,30 +3769,30 @@ function roboNote(m){
     return "<b>Sensitive.</b> Favorable at the applied figures, but the decision could flip if "+c.join(", or if ")+". Tighten these inputs before relying on the margin.";
   }
   const worthBest=(m.Bplain*1.2)>=(m.cityMin*0.8);
-  const feasBest=(m.A*0.8)<=(m.V*1.2);
+  const feasBest=(m.A*0.8)<=(m.V*1.2-feeOff);
   if(worthBest&&feasBest) return "<b>Near the line.</b> Not Favorable at the applied figures, but a favorable corner exists within ±20%, the result is within sketch error of clearing. Refine the inputs before deciding.";
   return "<b>Clear.</b> Not Favorable, and it stays that way across the full ±20% band, the gap is larger than sketch-grade error.";
 }
 /* one-line durability clause folded into the decision */
 function roboShort(m){
   if(m.A===0&&m.Bplain===0) return "";
-  const baseFav=m.worth&&m.feas;
+  const baseFav=m.worth&&m.feas, feeOff=(m.impactPosture==="A")?m.I:0;   // posture A: fees paid at permit are fixed, so they reduce the value available for the package but do not scale in the stress
   const worthWorst=(m.Bplain*0.8)>=(m.cityMin*1.2);
-  const feasWorst=(m.A*1.2)<=(m.V*0.8);
+  const feasWorst=(m.A*1.2)<=(m.V*0.8-feeOff);
   if(baseFav) return (worthWorst&&feasWorst)?"The decision survives a ±20% stress test.":"But it is fragile: a ±20% swing could flip it.";
   const worthBest=(m.Bplain*1.2)>=(m.cityMin*0.8);
-  const feasBest=(m.A*0.8)<=(m.V*1.2);
+  const feasBest=(m.A*0.8)<=(m.V*1.2-feeOff);
   return (worthBest&&feasBest)?"It is within ±20% of clearing.":"It stays short across the full ±20% band.";
 }
 /* one-line durability badge for the decision box */
 function roboBadge(m){
   if(m.A===0&&m.Bplain===0) return null;
-  const baseFav=m.worth&&m.feas;
+  const baseFav=m.worth&&m.feas, feeOff=(m.impactPosture==="A")?m.I:0;   // posture A: fees paid at permit are fixed, so they reduce the value available for the package but do not scale in the stress
   const worthWorst=(m.Bplain*0.8)>=(m.cityMin*1.2);
-  const feasWorst=(m.A*1.2)<=(m.V*0.8);
+  const feasWorst=(m.A*1.2)<=(m.V*0.8-feeOff);
   if(baseFav) return (worthWorst&&feasWorst)?{t:"Survives ±20% adverse stress",tone:"ok"}:{t:"Fragile: a ±20% swing could flip it",tone:"warn"};
   const worthBest=(m.Bplain*1.2)>=(m.cityMin*0.8);
-  const feasBest=(m.A*0.8)<=(m.V*1.2);
+  const feasBest=(m.A*0.8)<=(m.V*1.2-feeOff);
   return (worthBest&&feasBest)?{t:"Within ±20% of clearing",tone:"warn"}:{t:"Stays short across the full ±20% band",tone:"neu"};
 }
 function verdictHTML(m,v){
@@ -3777,7 +3801,7 @@ function verdictHTML(m,v){
   const badge=rb?'<div class="vbadge vbadge-'+rb.tone+'">'+(rb.tone==="ok"?"✓ ":rb.tone==="warn"?"⚠ ":"")+rb.t+' <span class="anote" style="font-weight:400">(details under Diagnostics)</span></div>':'';
   const vd=(S.acres>0&&S.bonus>0&&m.Bplain>0)?'<div class="vdchips"><span class="vdchip"><b>'+fmt(m.Bplain/S.acres)+'</b> public value / acre</span><span class="vdchip"><b>'+fmt(m.Bplain/S.bonus)+'</b> public value / bonus unit</span></div>':'';
   return '<div class="vpill" style="background:'+v.bg+';color:'+v.fg+'"><span class="tlight" style="background:'+v.light+'"></span><span>'+v.head+'</span><span class="vstatus" style="color:'+v.fg+';opacity:.8">'+v.status+'</span></div>'+
-    '<div class="vbody">'+badge+v.body+packageSummaryHTML(m,true)+vd+'</div>';
+    '<div class="vbody">'+badge+v.body+postureBCaution(m)+packageSummaryHTML(m,true)+vd+'</div>';
 }
 function paintVerdict(m,v){const vb=document.getElementById("verdict");if(!vb)return;vb.style.cssText="";vb.innerHTML=verdictHTML(m,v);wirePkgLinks(vb);}
 function drawRobo(m){
@@ -3827,14 +3851,14 @@ function buildPrintSheet(){
    '<table class="ps-meta"><tr><td><b>Project</b><br>'+esc(S.pname)+'</td><td><b>Applicant</b><br>'+esc(S.papp)+'</td><td><b>Location</b><br>'+esc(S.paddr)+'</td></tr>'+
    '<tr><td><b>District</b><br>'+esc(d.label)+'</td><td><b>Pathway</b><br>'+esc(S.pathway)+'</td><td><b>Use type</b><br>'+esc(S.use)+'</td></tr>'+
    '<tr><td><b>By-right</b><br>'+S.byright+' '+unit+'</td><td><b>Bonus requested</b><br>'+S.bonus+' '+unit+'</td><td><b>Total / district max</b><br>'+m.total+' / '+capCell+'</td></tr></table>'+
-   '<div class="ps-verdict" style="border-left:4px solid '+v.fg+'"><b>'+v.head+'</b><br>'+v.body+
+   '<div class="ps-verdict" style="border-left:4px solid '+v.fg+'"><b>'+v.head+'</b><br>'+v.body+postureBCaution(m)+
      (m.flags&&m.flags.any?'<br><b>Open questions:</b> '+[m.flags.nUnsecured?(m.flags.nUnsecured+' unsecured ('+Math.round(m.flags.unsecuredShare*100)+'% of value)'):"",m.flags.nAboveCode?(m.flags.nAboveCode+' at 100% above a code minimum'):"",m.flags.nEsc?(m.flags.nEsc+' with escalation not below discount'):""].filter(Boolean).join(' · '):'')+'</div>'+
-   '<table class="ps-fig"><tr><th>Minimum value to developer</th><th>Pool value used</th><th>Impact offset</th><th>Break-even floor</th></tr>'+
-   '<tr><td>'+fmt(m.zCeil)+'</td><td>'+fmt(m.D)+'</td><td>'+fmt(m.I)+'</td><td>'+fmt(m.cityMin)+'</td></tr></table>'+
+   '<table class="ps-fig"><tr><th>Minimum value to developer</th><th>Pool value used</th><th>'+(m.impactPosture==="A"?"Impact fees (permit)":"Impact offset")+'</th><th>Break-even floor</th></tr>'+
+   '<tr><td>'+fmt(m.Vlow)+'</td><td>'+fmt(m.D)+'</td><td>'+fmt(m.I)+'</td><td>'+fmt(m.cityMin)+'</td></tr></table>'+
    '<div class="ps-sec">Public benefit package</div>'+
    '<table class="ps-ben"><thead><tr><th>Benefit</th><th>Category</th><th class="r">Qty</th><th class="r">% above</th><th class="r">Dev cost</th><th class="r">City value</th><th class="r">Ratio</th></tr></thead><tbody>'+rows+'</tbody>'+
    '<tfoot><tr><td colspan="4">Totals</td><td class="r">'+fmt(m.A)+'</td><td class="r">'+fmt(m.Bplain)+'</td><td class="r">'+(m.gPlain?m.gPlain.toFixed(2)+'×':'-')+'</td></tr></tfoot></table>'+
-   '<table class="ps-meta"><tr><td><b>ZOPA floor</b><br>'+fmt(m.zFloor)+'</td><td><b>Ceiling (value to developer)</b><br>'+fmt(m.zCeil)+'</td><td><b>Unspent budget room</b><br>'+fmt(Math.max(0,m.room))+'</td></tr></table>'+
+   '<table class="ps-meta"><tr><td><b>ZOPA floor</b><br>'+fmt(m.zFloor)+'</td><td><b>Ceiling ('+(m.impactPosture==="A"?"net of impact fees":"value to developer")+')</b><br>'+fmt(m.zCeil)+'</td><td><b>Unspent budget room</b><br>'+fmt(Math.max(0,m.room))+'</td></tr></table>'+
    '<div class="ps-robo"><b>Robustness (±20%):</b> '+roboNote(m).replace(/<\/?b>/g,"")+'</div>'+
    (function(){const f=fiscalFigures();return f.projTaxable>0?('<div class="ps-robo"><b>Fiscal snapshot (context only):</b> projected taxable value '+fmt(f.projTaxable)+(f.projPerAcre!=null?(' ('+fmt(f.projPerAcre)+' / acre)'):'')+', annual city tax '+fmt(f.annualTax)+' at '+(Math.round(f.mills*1000)/1000)+' mills; bonus-unit increment '+fmt(f.bonusIncrement)+'. Gross revenue, not net of service costs, and excluded from the decision.</div>'):'';})()+
    (function(){if(HIDE_NOTES_SOURCE)return"";const aN=ASSUMP.filter(r=>!(r.source&&String(r.source).trim())).length,lN=LIBCAL.filter(c=>c&&!(c.source&&String(c.source).trim())).length;return (aN||lN)?'<div class="ps-robo"><b>Calibration:</b> '+aN+' of '+ASSUMP.length+' model benchmarks and '+lN+' of '+LIBCAL.length+' benefit-library values carry no cited source and remain sketch-grade placeholders.</div>':'<div class="ps-robo"><b>Calibration:</b> all model benchmarks and benefit-library values carry a cited source.</div>';})()+
@@ -3933,39 +3957,28 @@ function loadScenario(idx){
 }
 /* ---------- worked case studies ---------- */
 const CASES=[{
-  name:"Corey Landings",
-  sub:"KT Corey Ave LLC / Kolter · CUP 25069 · Ord. 2025-20 / Res. 2025-23 (City Commission, Oct 14 & 28 2025)",
-  image:"images/corey-landings-kolter.png",
-  imgcap:"Corey Landings, rendering (Kolter Urban)",
-  lat:27.74454, lon:-82.74593, zoom:16,
-  blurb:"A 133-unit luxury condominium redevelopment on Corey Avenue, 108 units by-right plus a 25-unit bonus drawn from St. Pete Beach's 195-unit residential (RU) density pool. Three towers at 86 ft on 4.51 buildable acres in the TC-2 Town Center Corey Circle district (AE flood zone).",
+  name:"Worked example: gulf-front condo tower",
+  sub:"Illustrative TC-2 Town Center condominium · representative figures, not a specific application",
+  image:"",
+  imgcap:"",
+  lat:null, lon:null, zoom:16,
+  blurb:"An illustrative 8-story concrete-tower coastal condominium: 133 units, 108 by-right plus a 25-unit bonus drawn from St. Pete Beach's 195-unit residential (RU) density pool, on 4.51 buildable acres in the TC-2 Town Center Corey Circle district (AE flood zone). Representative figures for testing the model, not a specific application.",
   facts:[
     ["Use","Condominium, 133 units"],
     ["By-right / bonus","108 by-right + 25 bonus (RU pool)"],
     ["District","TC-2 Corey Circle, 24 du/ac base"],
     ["Site","4.51 acres · AE coastal"],
-    ["Current site (no-action baseline)","8 vacant-commercial parcels, ≈$9.39M county taxable (Pinellas, 2026)"],
+    ["Current site (no-action baseline)","Vacant-commercial parcels, ≈$9.4M county taxable (representative)"],
     ["Market","≈ $2.6M/unit (~$1,100–1,250/SF × 2,269 SF)"],
-    ["Public benefits (applicant est.)","≈ $3.0M, seawall, public park, roundabout plaza, promenade, streetscape / 53 public parking spaces, boat slips"],
-    ["Pool effect","Allocates 25 RU; divests the 150 vested under Ord. 2022-03 (net 125 returned) → 170 of 195 remaining"],
-    ["Outcome","Approved with conditions"]
+    ["Public benefits (applicant est.)","≈ $3.0M, seawall, public park, roundabout plaza, promenade, streetscape / public parking, boat slips"],
+    ["Pool effect","Allocates 25 RU; a prior vested approval on the site was divested (net 125 returned) → 170 of 195 remaining"],
+    ["Outcome","Representative: clears the break-even floor within the developer ceiling"]
   ],
   notes:"",
-  state:{pname:"Corey Landings",papp:"KT Corey Ave LLC / Kolter (CUP 25069)",use:"Condominium",btype:"High-rise (8+)",subtype:"Gulf-front",parking:"structured",coastal:"AE",district:"TC2",acres:4.51,byright:108,bonus:25,market:2600000,mktSF:2269,impact:3146,taxValue:9388710},
+  state:{pname:"Worked example (gulf-front condo tower)",papp:"",use:"Condominium",btype:"High-rise (8+)",subtype:"Gulf-front",parking:"structured",coastal:"AE",district:"TC2",acres:4.51,byright:108,bonus:25,market:2600000,mktSF:2269,impact:3146,taxValue:9388710},
   benefits:[{name:"Seawall / bulkhead",qty:103,pct:1,instr:"condition"},{name:"Public plaza / park",qty:24500,pct:1,instr:"condition"},{name:"Waterfront boardwalk / promenade",qty:600,pct:1,instr:"condition"},{name:"Public boat slip (Class A)",qty:4,pct:1,instr:"condition"}],
-  address:"64 Corey Avenue, Saint Pete Beach",
-  /* the real 8-parcel assembly (PINs in raw 18-digit form so dashPin renders the public number);
-     areas sum to 4.50 ac. Marker lat/lon are the footprint centroids from the embedded parcel layer. */
-  parcels:[
-    {pin:"153136000001400400",area:1.61,lat:27.74371,lon:-82.74587},  // 36-31-15-00000-140-0400
-    {pin:"153136000001400300",area:0.38,lat:27.74410,lon:-82.74556},  // 36-31-15-00000-140-0300
-    {pin:"153136000001400100",area:1.07,lat:27.74459,lon:-82.74547},  // 36-31-15-00000-140-0100
-    {pin:"153125780840000143",area:0.24,lat:27.74528,lon:-82.74603},  // 25-31-15-78084-000-0143
-    {pin:"153125780840000142",area:0.4,lat:27.74502,lon:-82.74618},   // 25-31-15-78084-000-0142
-    {pin:"153125780840000141",area:0.2,lat:27.74493,lon:-82.74653},   // 25-31-15-78084-000-0141
-    {pin:"153136135900000010",area:0.23,lat:27.74480,lon:-82.74683},  // 36-31-15-13590-000-0010
-    {pin:"153136306720630230",area:0.37,lat:27.74431,lon:-82.74648}   // 36-31-15-30672-063-0230
-  ]
+  address:"",
+  parcels:[]
 }];
 function buildCases(){
   let h='<p class="lede">A verified project, pre-filled for reference. Loading populates every input and replaces the current Project and Benefits; the '+secLink('Assumptions',"showAux('assumptions')")+' and the '+secLink('Allocation Ledger',"showAux('history')")+' are kept. Adjust any input to test alternatives.</p>';
@@ -3976,7 +3989,7 @@ function buildCases(){
        '</tbody></table></div>'+
        (c.notes?'<p class="hint" style="margin-top:10px">'+esc(c.notes)+'</p>':'');
     const imgPart=c.image?('<div class="case-img"><img src="'+esc(c.image)+'" alt="'+esc(c.name)+' rendering" loading="lazy"></div>'+(c.imgcap?'<div class="anote" style="margin-top:6px;font-size:11px">'+esc(c.imgcap)+'</div>':'')):'';
-    const mapPart=(c.lat!=null)?('<div class="case-map" id="case-map-'+i+'" role="img" aria-label="'+esc(c.name)+' location map"></div><div class="anote" style="margin-top:6px;font-size:11px">Corey Circle, St. Pete Beach</div>'):'';
+    const mapPart=(c.lat!=null)?('<div class="case-map" id="case-map-'+i+'" role="img" aria-label="'+esc(c.name)+' location map"></div><div class="anote" style="margin-top:6px;font-size:11px">St. Pete Beach</div>'):'';
     const mediaCol=imgPart+mapPart;
     h+='<div class="card"><div class="case-head"><div class="case-headtext"><h3>'+esc(c.name)+'</h3>'+
        '<div class="sub case-sub">'+esc(c.sub)+'</div></div>'+
@@ -4165,7 +4178,6 @@ document.getElementById("openmethod").addEventListener("click",()=>showAux("meth
 document.getElementById("openhistory").addEventListener("click",()=>showAux("history"));
 document.getElementById("openscenarios").addEventListener("click",()=>showAux("scenarios"));
 document.getElementById("opencases").addEventListener("click",()=>showAux("cases"));
-document.getElementById("opencompare").addEventListener("click",()=>showAux("comparables"));
 document.getElementById("aux-cases").addEventListener("click",e=>{const b=e.target.closest("[data-loadcase]"); if(b)loadCase(+b.dataset.loadcase);});
 document.getElementById("explore").addEventListener("input",function(){updateExplore();});
 document.querySelectorAll(".diagcard").forEach(function(d){d.addEventListener("toggle",function(){if(d.open)setTimeout(render,0);});});  // re-draw charts at the right width when a diagnostic opens
