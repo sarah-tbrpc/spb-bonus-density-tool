@@ -926,6 +926,35 @@ th.notecol{font-size:12px;font-weight:400}
       <div id="aux-cases"></div>
     </section>
 
+    <section class="panel" data-aux="comparables">
+      <button class="btn auxback" style="margin-bottom:14px">← Back</button>
+      <div class="eyebrow">Reference</div>
+      <h2 class="step-h">Comparable Programs</h2>
+      <p class="lede">How other jurisdictions structure density-bonus and value-capture programs, and why none transfers cleanly to a barrier island allocating a fixed, non-renewing supply of units. Reference only; it does not feed the calculation.</p>
+      <div class="card">
+        <p class="lede" style="margin:0 0 14px">Density-bonus programs nationally fall into three broad families. Each works in its own context, but none fully fits St. Pete Beach, where the population ceiling is set by evacuation clearance and infrastructure capacity, not market demand, and a small, finite pool is allocated case by case through quasi-judicial review.</p>
+        <div class="atable-wrap"><table class="atable" style="table-layout:fixed"><colgroup><col style="width:20%"><col style="width:30%"><col style="width:24%"><col style="width:26%"></colgroup>
+          <thead><tr><th scope="col">Model family</th><th scope="col">Examples</th><th scope="col">How it works</th><th scope="col">Why it doesn’t fit SPB</th></tr></thead>
+          <tbody>
+            <tr><td><b>Predictable / formulaic</b></td><td class="anote" style="white-space:normal">Tampa (10:1 bonus-cost ratio), Sarasota (4× base, 15% attainable set-aside), California (statewide 20–50%)</td><td class="anote" style="white-space:normal">A fixed exchange rate, $/SF, % affordable units, or a density multiplier</td><td class="anote" style="white-space:normal">Assumes added density is absorbable as long as the project pencils. SPB’s ceiling is physical (evacuation / infrastructure), not market-driven.</td></tr>
+            <tr><td><b>Hybrid / menu-based</b></td><td class="anote" style="white-space:normal">Clearwater (amenity pool + payment-in-lieu), Austin (fee-in-lieu), Montgomery County MD (points menu), Hollywood (affordable ratios), Portland (10-yr tax exemption)</td><td class="anote" style="white-space:normal">Developers choose from a benefit menu in exchange for added density</td><td class="anote" style="white-space:normal">Tuned to a single goal (usually housing / TOD). SPB needs a broader coastal-resilience, infrastructure and visitor-management mix.</td></tr>
+            <tr><td><b>Cap-based growth management</b></td><td class="anote" style="white-space:normal">Key West &amp; Monroe County (ROGO points), Sanibel (carrying-capacity caps), Longboat Key (voter approval), Fort Lauderdale (caps + indexed payment-in-lieu)</td><td class="anote" style="white-space:normal">Hard caps / annual allocations tied to infrastructure or environmental capacity</td><td class="anote" style="white-space:normal">Closest parallels, strict caps, but they <i>allocate</i> units; they don’t <i>value</i> an individual allocation from a small, high-value pool.</td></tr>
+          </tbody></table></div>
+        <p class="lede" style="margin:14px 0 0">St. Pete Beach sits between these: a fixed, non-renewable pool (195 residential units, 325 temporary-lodging units) allocated case by case without a formula or points system. No directly transferable model was identified, which is why this tool estimates a defensible <i>value per allocation</i> rather than applying a fixed rate.</p>
+        <details class="stephelp" style="margin-top:12px"><summary>Selected mechanisms (formulas)</summary>
+          <ul class="guide-list" style="margin:8px 0 0">
+            <li><b>Tampa, FL</b>. Bonus-cost ratio 10:1: $1 of contribution buys $10 of bonus development value, converted to FAR/units via code worksheets.</li>
+            <li><b>Sarasota, FL</b>. Up to 4× base density; 15% of the bonus units must be attainable.</li>
+            <li><b>California (statewide)</b>. 20–50% density increase (up to 80% for 100%-affordable) by prescribed affordable percentages.</li>
+            <li><b>Fort Lauderdale, FL</b>. Affordable payment-in-lieu = $10,000 × 1.03^(years since 2023) × bonus units.</li>
+            <li><b>Miami-Dade, FL</b>. Workforce-housing payment-in-lieu estimates the gap between market cost and what 60–140% AMI households can afford; plus a 10-yr county-millage tax exemption on improvement value for qualifying historic work.</li>
+            <li><b>Key West / Monroe County, FL</b>. ROGO/BPAS award a fixed number of permits annually by points tied to evacuation capacity and infrastructure.</li>
+          </ul>
+        </details>
+        <p class="anote" style="margin:12px 0 0">Compiled from municipal / county codes and plan documents (2024–2026) for the TBRPC framework draft. <b>AI-assisted research, verify specifics against each jurisdiction’s current adopted code before relying on or citing them.</b></p>
+      </div>
+    </section>
+
   </main>
 </div>
 </div>
@@ -938,7 +967,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.33.3", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.33.4", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -1925,7 +1954,7 @@ const navfoot=document.createElement("div");navfoot.className="navfoot";
 navfoot.innerHTML='<div class="navgrp" data-grp="work"><button class="navgrp-h" data-navtoggle="1"><span class="navcaret">▸</span> Workspace</button><div class="navgrp-body">'+
   '<button id="openassume">Assumptions</button><button id="openlibrary">Benefit Library</button><button id="openscenarios">Saved Scenarios</button></div></div>'+
   '<div class="navgrp" data-grp="ref"><button class="navgrp-h" data-navtoggle="1"><span class="navcaret">▸</span> Reference</button><div class="navgrp-body">'+
-  '<button id="openhistory">Allocation Ledger</button><button id="opencases">Test Project</button><button id="openmethod">User Guide</button></div></div>'+
+  '<button id="openhistory">Allocation Ledger</button><button id="opencompare">Comparable Programs</button><button id="opencases">Test Project</button><button id="openmethod">User Guide</button></div></div>'+
   '<button id="resetall" class="rst">Reset All</button>';
 navtop.appendChild(navfoot);
 stepnav.appendChild(navtop);
@@ -4260,6 +4289,7 @@ document.getElementById("aux-history").addEventListener("click",e=>{
   if(t.id==="histadd"){HISTORY.push({date:"",project:"",pool:"RU",approved:0,requested:0,decision:"Approved",status:"Approved",source:"",notes:""});renderAux("history");afterHistoryChange();}
   else if(t.dataset.del!==undefined){HISTORY.splice(+t.dataset.del,1);renderAux("history");afterHistoryChange();}
 });
+document.getElementById("opencompare").addEventListener("click",()=>showAux("comparables"));
 document.getElementById("resetall").addEventListener("click",resetAll);
 /* switch a hard-cost row between $/unit and $/SF entry. Stored values stay native. */
 function basisSelEdit(i,val){ASSUMP[i].basis=val;applyAssumptions();renderAux("assumptions");render();}
