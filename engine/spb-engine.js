@@ -249,8 +249,8 @@
    * @property {number} rem             pool units remaining (resolved from the ledger by the caller)
    * @property {number} dem             projected annual demand
    * @property {number} hor             planning horizon (yrs)
-   * @property {number} impact          impact $/unit (mitigation floor basis)
-   * @property {?string} impactPosture  "A" (default, adopted fees paid at permit; floor excludes I, ceiling nets I) or "B" (in-kind creditable; floor includes I, full ceiling)
+   * @property {number} impact          bonus-unit impact contribution $/unit (beyond adopted fees; floor component, delivered through the package)
+   * @property {?number} feeAtPermit    adopted impact fees $/unit (paid at building permit on all units; the bonus units' share nets the ceiling). 0/absent reproduces pre-1.30 outputs.
    * --- hard-cost bracket (resolved from the Assumptions hard-cost row) ---
    * @property {?number} hcLow
    * @property {?number} hcHigh
@@ -321,14 +321,18 @@
        high-cost) per-unit value, not the gross mid-cost residual r. */
     var vLowUnit = bonus > 0 ? Vlow / bonus : 0;
     var D = poolPath ? Math.max(0, vLowUnit) * Math.pow(scar, K.scarExp) * bonus : 0;
-    var I = use ? (impact * bonus) : 0; // adopted impact fees for the bonus units (no use type yet -> 0)
-    /* Impact-offset posture (input.impactPosture). A (DEFAULT, "adopted fees paid at permit"): the fees
-       are collected at building permit outside any deal, so they are NOT part of the package floor and
-       they reduce the value available for the package (ceiling = Vlow - I). B ("in-kind creditable
-       against fees"): the package delivers the offset, so it is part of the floor and the full residual
-       is available (the pre-1.30 behavior). */
-    var posture = (input.impactPosture === "B") ? "B" : "A";
-    var cityMin = (posture === "B") ? (D + I) : D;
+    /* Bonus-impact model (v1.33.0, replaces the two-posture toggle):
+       - input.feeAtPermit ($/unit): the ADOPTED impact fees, charged at building permit on every unit
+         (by-right and bonus alike). Outside the deal entirely; the bonus units' share reduces the value
+         available for the package (ceiling = Vlow - FEE).
+       - input.impact ($/unit): the BONUS-UNIT IMPACT CONTRIBUTION, the fair share of the bonus units'
+         impacts BEYOND what the adopted fee schedule captures, delivered THROUGH the benefit package.
+         Part of the break-even floor (never labeled an impact fee; avoids double-charging the impacts
+         the adopted fees already cover, per F.S. 163.31801). With feeAtPermit = 0 the outputs are
+         identical to the pre-1.30 (and posture-B) behavior. */
+    var I = use ? (impact * bonus) : 0;                                   // bonus-unit impact contribution (floor component)
+    var FEE = use ? ((+input.feeAtPermit || 0) * bonus) : 0;              // adopted fees on the bonus units (ceiling netting)
+    var cityMin = D + I;
 
     var K_consts = { CATMULT: CATMULT, PVD: PVD, ENFORCE: ENFORCE, SIMPLE_BENEFITS: SIMPLE_BENEFITS };
     var rows = input.benefits.map(function (item) {
@@ -338,7 +342,7 @@
     var Bplain = rows.reduce(function (s, x) { return s + x.cityPlain; }, 0); // PLAIN public value vs baseline
     var B = rows.reduce(function (s, x) { return s + x.cityVal; }, 0);        // WEIGHTED, ranking only
     var gPlain = A ? Bplain / A : 0, g = A ? B / A : 0;
-    var zCeil = (posture === "B") ? Vlow : (Vlow - I);   // conservative value available for the package (posture A nets out the fees paid at permit)
+    var zCeil = Vlow - FEE;   // conservative value available for the package (net of the adopted fees paid at permit)
     var zFloor = gPlain ? cityMin / gPlain : 0, room = zCeil - A;
     var worth = Bplain >= cityMin, feas = A <= zCeil;                         // feasibility on the conservative (low) ceiling
     var total = byright + bonus;
@@ -364,7 +368,7 @@
       A: A, B: B, Bplain: Bplain, g: g, gPlain: gPlain, zFloor: zFloor, zCeil: zCeil, room: room,
       worth: worth, feas: feas, poolPath: poolPath, total: total, maxUnits: maxUnits,
       byrightDerived: byrightDerived, overCap: overCap, headroom: headroom, tc: tc, impMargin: impMargin,
-      flags: flags, captureRate: captureRate, belowCapture: belowCapture, impactPosture: posture
+      flags: flags, captureRate: captureRate, belowCapture: belowCapture, permitFees: FEE
     };
   }
 

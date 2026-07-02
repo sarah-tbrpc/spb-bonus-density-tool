@@ -292,9 +292,11 @@ test("computeModel — non-pool pathway zeroes the pool opportunity cost", () =>
 });
 
 // ---------------------------------------------------------------------------
-// Impact-offset posture (v1.30.0). A (default) = adopted fees paid at permit:
-// floor excludes I, ceiling nets I. B = in-kind creditable: floor includes I.
-const POSTURE_BASE = {
+// Bonus-impact model (v1.33.0, replaces the v1.30 posture toggle):
+// input.impact = bonus-unit impact CONTRIBUTION (beyond adopted fees) -> in the floor;
+// input.feeAtPermit = ADOPTED fees $/unit (paid at permit) -> nets the ceiling.
+// With feeAtPermit absent/0, outputs are identical to the pre-1.30 behavior.
+const BI_BASE = {
   use: "Condominium", btype: "Low-rise (1-3)", parking: "surface", coastal: "AE",
   market: 1_000_000, margin: 0.20, decline: 0.80, bonus: 10, byright: 100,
   hardOv: null, pathway: "Pool Allocation", acres: 0, base: 0, cap: 0,
@@ -304,30 +306,27 @@ const POSTURE_BASE = {
   CATMULT, BMULT: ID_B, PMULT: ID_P, FMULT: ID_F,
   CAPTURE: { capLo: 0.25 }, PVD: { disc: 0.03, esc: 0.02, term: 30 }, ENFORCE, SIMPLE_BENEFITS: true
 };
-test("computeModel — posture A excludes I from the floor and nets I from the ceiling", () => {
-  const a = E.computeModel(Object.assign({}, POSTURE_BASE, { impactPosture: "A" }));
-  const b = E.computeModel(Object.assign({}, POSTURE_BASE, { impactPosture: "B" }));
-  dollar(a.I, 30_000);
+test("computeModel — contribution in the floor, adopted fees net the ceiling", () => {
+  const a = E.computeModel(Object.assign({}, BI_BASE, { feeAtPermit: 2000 }));
+  dollar(a.I, 30_000, "contribution = impact x bonus");
   dollar(a.D, 0);
-  dollar(a.cityMin, 0, "posture A floor = D only (fees paid at permit)");
-  dollar(a.zCeil, 4_770_000, "posture A ceiling = Vlow - I");
-  dollar(a.room, 4_770_000, "no package entered -> room = ceiling");
-  assert.strictEqual(a.impactPosture, "A");
-  dollar(b.cityMin, 30_000, "posture B floor = D + I");
-  dollar(b.zCeil, 4_800_000, "posture B ceiling = Vlow");
-  assert.strictEqual(b.impactPosture, "B");
+  dollar(a.cityMin, 30_000, "floor = D + contribution");
+  dollar(a.permitFees, 20_000, "adopted fees on the bonus units = feeAtPermit x bonus");
+  dollar(a.zCeil, 4_780_000, "ceiling = Vlow - permitFees");
+  dollar(a.room, 4_780_000, "no package entered -> room = ceiling");
 });
-test("computeModel — posture A: fees exceeding the residual leave no room for a package", () => {
-  // impact 500,000 * 10 = 5,000,000 > Vlow 4,800,000
-  const a = E.computeModel(Object.assign({}, POSTURE_BASE, { impactPosture: "A", impact: 500_000 }));
-  dollar(a.I, 5_000_000);
+test("computeModel — adopted fees exceeding the residual leave no room for a package", () => {
+  // feeAtPermit 500,000 * 10 = 5,000,000 > Vlow 4,800,000
+  const a = E.computeModel(Object.assign({}, BI_BASE, { feeAtPermit: 500_000 }));
+  dollar(a.permitFees, 5_000_000);
   assert.ok(a.zCeil <= 0, "ceiling net of fees is non-positive -> no package possible");
   assert.strictEqual(a.feas, false, "no package is feasible when fees consume the residual");
 });
-test("computeModel — default posture is A", () => {
-  const d = E.computeModel(POSTURE_BASE);   // no impactPosture set
-  assert.strictEqual(d.impactPosture, "A");
-  dollar(d.cityMin, 0);   // floor excludes I by default
+test("computeModel — feeAtPermit absent reproduces the legacy (pre-1.30 / posture-B) outputs", () => {
+  const d = E.computeModel(BI_BASE);   // no feeAtPermit
+  dollar(d.permitFees, 0);
+  dollar(d.cityMin, 30_000, "floor = D + I, as before");
+  dollar(d.zCeil, 4_800_000, "ceiling = Vlow, as before");
 });
 
 // ---------------------------------------------------------------------------
