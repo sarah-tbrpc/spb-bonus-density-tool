@@ -941,7 +941,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.33.0", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.33.1", VERSION_DATE="2026-07-01";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true (v1.19.6): every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -3832,8 +3832,6 @@ function buildAssumptions(){
   ASSUMP.forEach((r,i)=>{
     if(SIMPLE_BENEFITS && /^[HI]\./.test(r.sec)) return;   // recurring-PV (H) + enforceability (I) don't feed the model when benefits are assumed secured, hide them
     if(r.sec!==sec){sec=r.sec;h+='<tr class="asecrow asec-toggle" data-section="'+esc(sec)+'" role="button" tabindex="0" aria-label="Toggle '+esc(sec)+'"><td colspan="'+ncols+'"><span class="asec-caret">▾</span> '+sec+' <span class="anote">('+(secCount[sec]||0)+')</span></td></tr>';
-      if(/^E\./.test(sec)){
-        h+='<tr data-asec="'+esc(sec)+'" data-search="impact treatment adopted fees permit bonus-unit impact contribution"><td colspan="'+ncols+'"><div class="anote" style="padding:2px 2px 4px;white-space:normal">How the money flows: <b>adopted impact fees</b> are charged at building permit on every unit (by-right and bonus) like any project, outside this deal; the bonus units’ share reduces what the developer can spend on the package. The <b>bonus-unit impact contribution</b> is the fair share of the bonus units’ impacts beyond those fees, delivered through the public-benefit package (part of the break-even floor). Everything above the floor is voluntary incentive for the discretionary allocation.</div></td></tr>';}
     }
     const ahay=esc((""+r.label+" "+r.unit+" "+(r.notes||"")+" "+(r.source||"")).toLowerCase());
     const hasBasis=r.basis!==undefined;
