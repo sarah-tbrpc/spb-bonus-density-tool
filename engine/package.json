@@ -1,0 +1,11 @@
+{
+  "name": "spb-engine",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "description": "Pure, unit-tested core valuation engine for the SPB Bonus-Density Tool. Source of truth; embedded inline into SPB-Bonus-Density-Tool.html by build-engine.js. Dev/test artifact (not part of the published single-file tool).",
+  "scripts": {
+    "test": "node --test",
+    "build": "node build-engine.js"
+  }
+}
