@@ -1357,7 +1357,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.9.2", VERSION_DATE="2026-10-11";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.9.3", VERSION_DATE="2026-10-11";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true: every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -1384,9 +1384,9 @@ const IMPACT_BY_USE={"Condominium":1055,"Multifamily Rental":1119,"Temporary Lod
    (Feb-2025 232.26, Feb-2026 239.24); confirm the exact Aug-2025 cell against the copy SPB staff
    cited, and consider updating to the current Feb-2026 edition (239.24) as a deliberate change. */
 const XCHK={iccPSF:234.59,tampaRatio:10};
-/* Value-capture "guardrails" from the TBRPC framework (ANALYTIC OVERLAY, not adopted code):
-   a 15–25% contribution-rate floor (Koontz / FS 163.3180 basis) and a 25–50% value-capture ceiling.
-   Expressed as fractions of the available package budget; drawn as the fair-share band on the ZOPA bar. */
+/* Fair-share reference band from the analytical framework:
+   25–50% of available package budget.
+   Policy reference only; not adopted code or an empirical constant. */
 const CAPTURE={capLo:0.25,capHi:0.50};
 const POOL_DEFAULTS={RU:{rem:170,dem:8,hor:15},TLU:{rem:261,dem:14,hor:15}};
 const POOL_TOTAL={RU:195,TLU:325};
@@ -3611,7 +3611,13 @@ function verdictObj(m){
     const gated=m.belowCapture, extra={notes:[legalNote]};
     if(gated) return mk("Meets floor, below reference band","warn","Below the fair-share reference band","Meets the break-even floor; below the fair-share reference band",
       "The package fits within the available package budget.",extra);
-    return mk("Meets floor, reaches reference band","ok","Meets floor, reaches reference band","Meets the break-even floor and reaches the fair-share reference band",
+    /* At or above the band's lower bound. The status names the same position as the Fair-Share
+       Position figure (within the band, or above its upper bound), read from the same function.
+       Both are the same passing state in the same color: the upper bound is a reference, not a
+       limit, and nothing fails for being above it. */
+    const _pos=(gapFigures(m).where==="above")?"above":"within";
+    return mk("Meets floor, "+_pos+" reference band","ok","Meets floor, "+_pos+" reference band",
+      "Meets the break-even floor and is "+_pos+" the fair-share reference band",
       "The package fits within the available package budget.",extra);
   }
   /* 6. structural gaps: the floor exceeds the whole budget. The floor is public value and the budget
