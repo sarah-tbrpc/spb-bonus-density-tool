@@ -1357,7 +1357,7 @@ th.notecol{font-size:12px;font-weight:400}
 
 <script>
 "use strict";
-const VERSION="1.9.1", VERSION_DATE="2026-10-11";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
+const VERSION="1.9.2", VERSION_DATE="2026-10-11";   // bump whenever a push changes behavior OR methodology copy (the in-tool changelog was removed; document changes in commit messages)
 /* Two independent simplification flags. SIMPLE_BENEFITS=true: every benefit is treated as
    secured (credited at 100%), and the per-row "Recurring" + "Secured by" controls, the enforceability/
    recurring-PV Assumptions sections (H, I), and the unsecured/above-code caution chips are hidden, a
@@ -5878,7 +5878,18 @@ function sharedDemandScenario(sc){
 function loadScenario(idx){
   const sc=scenarios[idx]; if(!sc)return; const st=sc.state;
   const sv=sc.version||"";
-  if(sc.gen!==2||sv!==VERSION){try{window.alert("This scenario was saved under "+((sc.gen===2&&sv)?("v"+sv):"an earlier version of the tool")+". Its inputs are restored, but the figures recompute under the current v"+VERSION+" methodology, so the stored decision may change."+(sharedDemandScenario(sc)?"\n\nScarcity assumptions updated. This scenario was saved under an earlier version using a shared projected-demand assumption. Current results use separate residential and temporary-lodging demand assumptions; re-evaluate before relying on the prior result.":""));}catch(e){}}
+  if(sc.gen!==2||sv!==VERSION){try{
+    window.alert(
+      "This scenario was saved under "+((sc.gen===2&&sv)?("v"+sv):"an earlier version of the tool")+
+      ". Its inputs are restored, but the figures recompute under the current v"+VERSION+
+      " methodology, so the stored decision may change."+
+      (sharedDemandScenario(sc)?
+        "\n\nScarcity assumptions updated. This scenario was saved under an earlier version"+
+        " using a shared projected-demand assumption."+
+        "\nCurrent results use separate residential and temporary-lodging demand assumptions;"+
+        " re-evaluate before relying on the prior result."
+      :""));
+  }catch(e){}}
   Object.assign(S,JSON.parse(JSON.stringify(st.S)));
   delete S.dem;   // earlier versions kept one shared demand figure in the project state; it is not used, and each pool's demand comes from its own Assumptions row (applied below)
   /* impact contribution: older snapshots stored a blank field as 0 and carry no reviewed flag, so a
@@ -6215,7 +6226,15 @@ function buildScenarios(){
        recorded shows neither, nor its stored decision word, and says to load it to re-evaluate; a
        withheld or not-final floor is not shown as a figure, and a multiple of the floor (a
        floor-test conclusion) appears only for an established floor */
-    const _sS=(s.state&&s.state.S)||{}, baseOld=!("byrightSet" in _sS)&&!(+_sS.byright>0), gbrOld=(_sS.district==="GBR"&&_sS.use==="Temporary Lodging"&&(!("gbrChar" in _sS)||((_sS.gbrChar==="AC"||_sS.gbrChar==="BHC")&&!("acBuildableSiteConfirmed" in _sS)))), demOld=sharedDemandScenario(s), cur=!!u.fs&&u.fsBasis===3&&!baseOld&&!gbrOld&&!demOld, okFloor=(cur&&u.fs==="ok");   // a floor state recorded under the earlier density-basis rules is not carried forward: the row says to load it to re-evaluate. So is a Gulf Boulevard lodging row saved before the character district was recorded (its decision used the shared lodging pool, a default cap and no Activity Center checks), and an Activity Center or Boutique Hotel/Condo lodging row saved before the buildable-site confirmation and the pool-draw rule existed, and a pool-priced row whose scarcity cost was worked out on the single projected-demand figure the two pools once shared
+    /* A floor state recorded under the earlier density-basis rules is not carried forward: the
+       row says to load it to re-evaluate.
+       So is a Gulf Boulevard lodging row saved before the character district was recorded (its
+       decision used the shared lodging pool, a default cap and no Activity Center checks),
+       an Activity Center or Boutique Hotel/Condo lodging row saved before the buildable-site
+       confirmation and the pool-draw rule existed,
+       and a pool-priced row whose scarcity cost was worked out on the single projected-demand
+       figure the two pools once shared. */
+    const _sS=(s.state&&s.state.S)||{}, baseOld=!("byrightSet" in _sS)&&!(+_sS.byright>0), gbrOld=(_sS.district==="GBR"&&_sS.use==="Temporary Lodging"&&(!("gbrChar" in _sS)||((_sS.gbrChar==="AC"||_sS.gbrChar==="BHC")&&!("acBuildableSiteConfirmed" in _sS)))), demOld=sharedDemandScenario(s), cur=!!u.fs&&u.fsBasis===3&&!baseOld&&!gbrOld&&!demOld, okFloor=(cur&&u.fs==="ok");
     const ac=u.acres, _ea=savedEligibleAcres(s), pva=(_ea!=null&&u.B!=null&&isFinite(+u.B)&&+u.B>=0)?(+u.B)/_ea:null, overMin=(okFloor&&u.cityMin>0&&u.B!=null)?u.B/u.cityMin:null;
     const floorCell=!cur?"-":(u.fs==="withheld"?"Not evaluated":(u.fs==="notfinal"?"Not final":(fmt(u.cityMin||0)+(u.fs==="conditional"?" (conditional)":""))));
     const _vOld={"Pathway not established":"Not modeled by this tool","Meets floor, below target":"Meets floor, below reference band","Meets floor and target":"Meets floor, reaches reference band"};   // the same status under its earlier wording
